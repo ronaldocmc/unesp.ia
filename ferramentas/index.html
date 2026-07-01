@@ -1,37 +1,10 @@
-<!doctype html><html lang="pt-br"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Ferramentas | unesp.IA</title><link rel="stylesheet" href="../assets/css/style.css"><script src="../assets/js/search.js"></script>
-<style>
-.hero-tools{background:linear-gradient(135deg,#003B71,#0057A8);color:white;border-radius:28px;padding:38px;margin:10px 0 26px;box-shadow:var(--shadow)}
-.hero-tools h1{font-size:40px;line-height:1.05;margin:0 0 12px;color:white}
-.hero-tools p{font-size:18px;color:#eef7ff;max-width:900px}
-.tool-tabs{display:flex;flex-wrap:wrap;gap:10px;margin:20px 0}
-.tool-tabs a{background:#fff;border:1px solid var(--border);border-radius:999px;padding:8px 12px;font-weight:700}
-.tool-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:18px}
-.tool-card{background:#fff;border:1px solid var(--border);border-radius:20px;padding:20px;box-shadow:var(--shadow);display:flex;flex-direction:column;gap:10px}
-.tool-head{display:flex;gap:12px;align-items:center;border-bottom:1px solid #EDF3F8;padding-bottom:12px}
-.tool-icon{width:48px;height:48px;border-radius:16px;background:#E5F5FB;color:var(--blue);display:grid;place-items:center;font-size:25px;flex:0 0 auto}
-.tool-card h3{margin:0;color:var(--blue);font-size:22px}
-.tool-kind{margin:3px 0 0!important;color:var(--muted);font-size:14px!important}
-.tool-meta span{display:inline-block;background:#F4F9FD;border:1px solid var(--border);border-radius:999px;padding:5px 10px;font-size:13px;font-weight:700;color:var(--blue)}
-.tool-block{border-left:4px solid var(--blue2);background:#F8FBFD;border-radius:12px;padding:10px 12px}
-.tool-block strong{color:var(--blue)}
-.tool-block p{margin:4px 0 0;font-size:15px}
-details{background:#FFFAEE;border:1px solid #F5E2B4;border-radius:12px;padding:10px 12px}
-details summary{font-weight:800;color:#6A4B00;cursor:pointer}
-details ul{margin:10px 0 0;padding-left:20px}
-.btn-small{display:inline-block;align-self:flex-start;margin-top:auto;background:var(--blue);color:#fff!important;border-radius:999px;padding:8px 12px;font-weight:800}
-.btn-small:hover{background:var(--blue2);text-decoration:none}
-.matrix{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;margin:18px 0}
-.matrix .card{box-shadow:none}
-.check-list{list-style:none;padding-left:0}
-.check-list li{padding:7px 0 7px 28px;position:relative}
-.check-list li:before{content:'✓';position:absolute;left:0;color:var(--green);font-weight:900}
-@media(max-width:780px){.hero-tools h1{font-size:31px}.tool-grid{grid-template-columns:1fr}}
-</style></head><body>
-    <div class="topbar"><a class="brand" href="../index.html"><img class="brand-logo" src="../assets/img/logo-unesp-ia.svg" alt="unesp.IA"><small>Coleção Editorial | Portal Didático dos Participantes</small></a><div class="nav"><a href="../index.html">Início</a><a href="../modulos.html">Módulos</a><a href="../trilhas.html">Trilhas</a><a href="../conceitos.html">Conceitos</a><a href="../ferramentas.html">Ferramentas</a><a href="../laboratorios.html">Laboratórios</a><a href="../materiais.html">Materiais</a><a href="../personagens.html">Personagens</a><a href="../banco-visual.html">Banco Visual</a><a href="../mapa-conhecimento.html">Mapa</a></div></div><main><div class="container content" id="top">
-    <div class="hero-tools"><span class="badge">Biblioteca de ferramentas</span><h1>Ferramentas de Inteligência Artificial</h1><p>Esta página organiza as ferramentas pelo uso pedagógico no unesp.IA. Em vez de listar limites gratuitos, entrada e saída, o foco é: <strong>o que é a ferramenta, quando usar, por que usar, em quais módulos aparece e exemplos de aplicação</strong>.</p></div>
+<!doctype html><html lang="pt-br"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Ferramentas | unesp.IA</title><link rel="stylesheet" href="../assets/css/style.css?v=20260701"><script src="../assets/js/search.js"></script>
+</head><body class="tools-page">
+    <div class="topbar"><a class="brand" href="../index.html"><img class="brand-logo" src="../assets/img/logo-unesp-ia.svg" alt="unesp.IA"><small>Coleção Editorial | Portal Didático dos Participantes</small></a><div class="nav"><a href="../index.html">Início</a><a href="../modulos.html">Módulos</a><a href="../trilhas.html">Trilhas</a><a href="../conceitos.html">Conceitos</a><a href="../ferramentas.html">Ferramentas</a><a href="../laboratorios.html">Laboratórios</a><a href="../materiais.html">Materiais</a><a href="../personagens.html">Personagens</a><a href="../banco-visual.html">Banco Visual</a><a href="../mapa-conhecimento.html">Mapa</a></div></div><main><div class="container tools-catalog" id="top">
+    <header class="tools-intro"><h1 class="section-title">Ferramentas de Inteligência Artificial</h1><p class="tools-lead">Biblioteca organizada pelo uso pedagógico no unesp.IA: o que é cada ferramenta, quando utilizar, por que ela apoia a aprendizagem, em quais módulos aparece e exemplos de aplicação.</p></header><input id="searchBox" class="search" oninput="filterCards()" placeholder="Buscar por ferramenta, módulo, competência ou aplicação...">
     <div class="callout practice"><strong>Como escolher uma ferramenta?</strong><br>Comece pela competência que deseja desenvolver: explicar, pesquisar, criar, programar, visualizar dados, ensinar, avaliar ou comunicar. A ferramenta deve servir ao objetivo pedagógico, não o contrário.</div>
     <div class="tool-tabs"><a href="#assistentes-conversacionais">Assistentes conversacionais</a><a href="#pesquisa-e-organizacao-do-conhecimento">Pesquisa e organização do conhecimento</a><a href="#producao-visual-apresentacoes-e-comunicacao">Produção visual, apresentações e comunicação</a><a href="#dados-programacao-e-desenvolvimento">Dados, programação e desenvolvimento</a><a href="#educacao-interacao-e-avaliacao">Educação, interação e avaliação</a><a href="#gestao-publica-legislacao-e-cidadania-digital">Gestão pública, legislação e cidadania digital</a></div>
-    <input id="searchBox" class="search" oninput="filterCards()" placeholder="Buscar por ferramenta, módulo, competência ou aplicação...">
+
     <section><h2 class="section-title">Mapa rápido por competência</h2><div class="matrix">
       <div class="card"><h3>Compreender IA</h3><p>ChatGPT, Gemini, Claude, Teachable Machine</p></div>
       <div class="card"><h3>Pesquisar conhecimento</h3><p>NotebookLM, Perplexity, Elicit</p></div>
@@ -40,159 +13,159 @@ details ul{margin:10px 0 0;padding-left:20px}
       <div class="card"><h3>Ensinar e avaliar</h3><p>Kahoot, Mentimeter, Teachable Machine, Canva</p></div>
       <div class="card"><h3>Gestão pública e cidadania</h3><p>LexML Brasil, Portal da Legislação, NotebookLM, Power BI</p></div>
     </div></section>
-    <section id="assistentes-conversacionais"><h2 class="section-title">Assistentes conversacionais</h2><div class="tool-grid">
+    <section class="tools-section" id="assistentes-conversacionais"><h2 class="section-title">Assistentes conversacionais</h2><div class="tool-grid">
         <article class="tool-card" data-search="ChatGPT Assistente de IA multimodal Assistente conversacional para explicar conceitos, escrever, revisar, planejar, criar ideias, analisar materiais e apoiar atividades de estudo, trabalho e comunicação. M1, M2, M3, M5, M6, M7, M8, M10 Assistentes conversacionais">
-          <div class="tool-head"><span class="tool-icon">💬</span><div><h3>ChatGPT</h3><p class="tool-kind">Assistente de IA multimodal</p></div></div>
+          <div class="tool-head"><img class="tool-logo" src="../assets/img/ferramentas/chatgpt.svg" alt="Logotipo oficial de ChatGPT"><div><h3>ChatGPT</h3><p class="tool-kind">Assistente de IA multimodal</p></div></div>
           <p>Assistente conversacional para explicar conceitos, escrever, revisar, planejar, criar ideias, analisar materiais e apoiar atividades de estudo, trabalho e comunicação.</p>
-          <div class="tool-meta"><span>📘 Módulos: M1, M2, M3, M5, M6, M7, M8, M10</span></div>
+          <div class="tool-meta"><span>Módulos: M1, M2, M3, M5, M6, M7, M8, M10</span></div>
           <div class="tool-block"><strong>Quando usar</strong><p>Quando o participante precisa conversar com a IA, pedir explicações, gerar versões iniciais de textos, comparar alternativas, criar roteiros, organizar ideias ou receber apoio passo a passo.</p></div>
           <div class="tool-block"><strong>Por que usar no unesp.IA</strong><p>É uma porta de entrada didática para entender IA generativa, prompts, revisão crítica de respostas e uso responsável de assistentes digitais.</p></div>
-          <details><summary>Exemplos de aplicações</summary><ul><li>Pedir uma explicação simples sobre IA para iniciantes.</li><li>Revisar uma mensagem antes de enviar.</li><li>Criar um roteiro de apresentação para um projeto.</li><li>Comparar duas versões de um texto e melhorar clareza.</li></ul></details>
-          <a class="btn-small" href="https://chatgpt.com/overview/" target="_blank" rel="noopener">Site oficial</a>
+          <details class="application-examples"><summary>Exemplos de aplicações</summary><ul><li>Pedir uma explicação simples sobre IA para iniciantes.</li><li>Revisar uma mensagem antes de enviar.</li><li>Criar um roteiro de apresentação para um projeto.</li><li>Comparar duas versões de um texto e melhorar clareza.</li></ul></details>
+          <a class="btn-small" href="https://chatgpt.com/overview/" target="_blank" rel="noopener">Acessar site oficial <span aria-hidden="true">↗</span></a>
         </article>
         <article class="tool-card" data-search="Gemini Assistente de IA do ecossistema Google Assistente útil para perguntas, escrita, criação, pesquisa inicial e integração com recursos do Google Workspace, quando disponível na conta utilizada. M1, M2, M3, M6, M7, M8, M10 Assistentes conversacionais">
-          <div class="tool-head"><span class="tool-icon">✨</span><div><h3>Gemini</h3><p class="tool-kind">Assistente de IA do ecossistema Google</p></div></div>
+          <div class="tool-head"><img class="tool-logo" src="../assets/img/ferramentas/gemini.svg" alt="Logotipo oficial de Gemini"><div><h3>Gemini</h3><p class="tool-kind">Assistente de IA do ecossistema Google</p></div></div>
           <p>Assistente útil para perguntas, escrita, criação, pesquisa inicial e integração com recursos do Google Workspace, quando disponível na conta utilizada.</p>
-          <div class="tool-meta"><span>📘 Módulos: M1, M2, M3, M6, M7, M8, M10</span></div>
+          <div class="tool-meta"><span>Módulos: M1, M2, M3, M6, M7, M8, M10</span></div>
           <div class="tool-block"><strong>Quando usar</strong><p>Quando a atividade envolve documentos, e-mails, agenda, Drive, Docs, Slides, Classroom ou organização de informações em ambiente Google.</p></div>
           <div class="tool-block"><strong>Por que usar no unesp.IA</strong><p>Ajuda a aproximar a IA de ferramentas que muitos participantes já utilizam no cotidiano, na escola, no trabalho e em projetos colaborativos.</p></div>
-          <details><summary>Exemplos de aplicações</summary><ul><li>Criar uma estrutura de aula no Google Docs.</li><li>Resumir ideias para uma apresentação no Google Slides.</li><li>Organizar tarefas e compromissos com apoio de IA.</li><li>Comparar respostas com outras ferramentas.</li></ul></details>
-          <a class="btn-small" href="https://workspace.google.com/solutions/ai/" target="_blank" rel="noopener">Site oficial</a>
+          <details class="application-examples"><summary>Exemplos de aplicações</summary><ul><li>Criar uma estrutura de aula no Google Docs.</li><li>Resumir ideias para uma apresentação no Google Slides.</li><li>Organizar tarefas e compromissos com apoio de IA.</li><li>Comparar respostas com outras ferramentas.</li></ul></details>
+          <a class="btn-small" href="https://workspace.google.com/solutions/ai/" target="_blank" rel="noopener">Acessar site oficial <span aria-hidden="true">↗</span></a>
         </article>
         <article class="tool-card" data-search="Microsoft Copilot Assistente de produtividade Microsoft Assistente voltado à produtividade, apoio à escrita, síntese de informações, organização de documentos e trabalho integrado ao ecossistema Microsoft 365, quando disponível. M2, M3, M6, M7, M8 Assistentes conversacionais">
-          <div class="tool-head"><span class="tool-icon">🧭</span><div><h3>Microsoft Copilot</h3><p class="tool-kind">Assistente de produtividade Microsoft</p></div></div>
+          <div class="tool-head"><img class="tool-logo" src="../assets/img/ferramentas/copilot.svg" alt="Logotipo oficial de Microsoft Copilot"><div><h3>Microsoft Copilot</h3><p class="tool-kind">Assistente de produtividade Microsoft</p></div></div>
           <p>Assistente voltado à produtividade, apoio à escrita, síntese de informações, organização de documentos e trabalho integrado ao ecossistema Microsoft 365, quando disponível.</p>
-          <div class="tool-meta"><span>📘 Módulos: M2, M3, M6, M7, M8</span></div>
+          <div class="tool-meta"><span>Módulos: M2, M3, M6, M7, M8</span></div>
           <div class="tool-block"><strong>Quando usar</strong><p>Quando o participante usa Word, Excel, PowerPoint, Outlook, Teams ou precisa produzir textos, apresentações, resumos e materiais profissionais.</p></div>
           <div class="tool-block"><strong>Por que usar no unesp.IA</strong><p>É adequado para discutir produtividade com IA, colaboração em documentos e uso da IA em ambientes corporativos e institucionais.</p></div>
-          <details><summary>Exemplos de aplicações</summary><ul><li>Gerar um primeiro rascunho de comunicado.</li><li>Sugerir melhorias em uma apresentação.</li><li>Resumir uma conversa ou documento de trabalho.</li><li>Apoiar a criação de uma planilha explicativa.</li></ul></details>
-          <a class="btn-small" href="https://www.microsoft.com/en-us/microsoft-365-copilot" target="_blank" rel="noopener">Site oficial</a>
+          <details class="application-examples"><summary>Exemplos de aplicações</summary><ul><li>Gerar um primeiro rascunho de comunicado.</li><li>Sugerir melhorias em uma apresentação.</li><li>Resumir uma conversa ou documento de trabalho.</li><li>Apoiar a criação de uma planilha explicativa.</li></ul></details>
+          <a class="btn-small" href="https://www.microsoft.com/en-us/microsoft-365-copilot" target="_blank" rel="noopener">Acessar site oficial <span aria-hidden="true">↗</span></a>
         </article>
         <article class="tool-card" data-search="Claude Assistente para escrita, leitura e análise Assistente indicado para análise de textos longos, escrita estruturada, explicações, planejamento, apoio à programação e criação de artefatos textuais ou visuais. M2, M3, M5, M8, M10 Assistentes conversacionais">
-          <div class="tool-head"><span class="tool-icon">🧠</span><div><h3>Claude</h3><p class="tool-kind">Assistente para escrita, leitura e análise</p></div></div>
+          <div class="tool-head"><img class="tool-logo" src="../assets/img/ferramentas/claude.svg" alt="Logotipo oficial de Claude"><div><h3>Claude</h3><p class="tool-kind">Assistente para escrita, leitura e análise</p></div></div>
           <p>Assistente indicado para análise de textos longos, escrita estruturada, explicações, planejamento, apoio à programação e criação de artefatos textuais ou visuais.</p>
-          <div class="tool-meta"><span>📘 Módulos: M2, M3, M5, M8, M10</span></div>
+          <div class="tool-meta"><span>Módulos: M2, M3, M5, M8, M10</span></div>
           <div class="tool-block"><strong>Quando usar</strong><p>Quando a tarefa exige leitura cuidadosa, comparação de argumentos, escrita longa, organização de ideias, análise de documentos ou elaboração de conteúdo estruturado.</p></div>
           <div class="tool-block"><strong>Por que usar no unesp.IA</strong><p>Favorece atividades de reflexão, revisão, síntese e produção textual com maior profundidade.</p></div>
-          <details><summary>Exemplos de aplicações</summary><ul><li>Analisar um projeto de pesquisa.</li><li>Reescrever um texto com linguagem mais acessível.</li><li>Criar uma rubrica de avaliação.</li><li>Organizar uma sequência didática.</li></ul></details>
-          <a class="btn-small" href="https://claude.com/product/overview" target="_blank" rel="noopener">Site oficial</a>
-        </article></div></section><section id="pesquisa-e-organizacao-do-conhecimento"><h2 class="section-title">Pesquisa e organização do conhecimento</h2><div class="tool-grid">
+          <details class="application-examples"><summary>Exemplos de aplicações</summary><ul><li>Analisar um projeto de pesquisa.</li><li>Reescrever um texto com linguagem mais acessível.</li><li>Criar uma rubrica de avaliação.</li><li>Organizar uma sequência didática.</li></ul></details>
+          <a class="btn-small" href="https://claude.com/product/overview" target="_blank" rel="noopener">Acessar site oficial <span aria-hidden="true">↗</span></a>
+        </article></div></section><section class="tools-section" id="pesquisa-e-organizacao-do-conhecimento"><h2 class="section-title">Pesquisa e organização do conhecimento</h2><div class="tool-grid">
         <article class="tool-card" data-search="Perplexity Busca assistida por IA Ferramenta de busca com IA que organiza respostas com base em fontes da web e apresenta referências para verificação. M2, M7, M10 Pesquisa e organização do conhecimento">
-          <div class="tool-head"><span class="tool-icon">🔎</span><div><h3>Perplexity</h3><p class="tool-kind">Busca assistida por IA</p></div></div>
+          <div class="tool-head"><img class="tool-logo" src="../assets/img/ferramentas/perplexity.svg" alt="Logotipo oficial de Perplexity"><div><h3>Perplexity</h3><p class="tool-kind">Busca assistida por IA</p></div></div>
           <p>Ferramenta de busca com IA que organiza respostas com base em fontes da web e apresenta referências para verificação.</p>
-          <div class="tool-meta"><span>📘 Módulos: M2, M7, M10</span></div>
+          <div class="tool-meta"><span>Módulos: M2, M7, M10</span></div>
           <div class="tool-block"><strong>Quando usar</strong><p>Quando o participante precisa pesquisar informações atuais, comparar fontes, localizar explicações e verificar afirmações com links de apoio.</p></div>
           <div class="tool-block"><strong>Por que usar no unesp.IA</strong><p>É útil para ensinar que respostas de IA devem ser checadas e que a fonte da informação importa.</p></div>
-          <details><summary>Exemplos de aplicações</summary><ul><li>Pesquisar notícias recentes sobre IA.</li><li>Comparar definições de um conceito em diferentes fontes.</li><li>Levantar referências iniciais para um tema.</li><li>Verificar uma afirmação antes de compartilhar.</li></ul></details>
-          <a class="btn-small" href="https://www.perplexity.ai/hub" target="_blank" rel="noopener">Site oficial</a>
+          <details class="application-examples"><summary>Exemplos de aplicações</summary><ul><li>Pesquisar notícias recentes sobre IA.</li><li>Comparar definições de um conceito em diferentes fontes.</li><li>Levantar referências iniciais para um tema.</li><li>Verificar uma afirmação antes de compartilhar.</li></ul></details>
+          <a class="btn-small" href="https://www.perplexity.ai/hub" target="_blank" rel="noopener">Acessar site oficial <span aria-hidden="true">↗</span></a>
         </article>
         <article class="tool-card" data-search="NotebookLM Caderno de pesquisa com IA Ferramenta para organizar fontes selecionadas, fazer perguntas sobre documentos, gerar sínteses, guias de estudo, resumos e materiais de apoio baseados nas fontes do usuário. M2, M3, M8, M10 Pesquisa e organização do conhecimento">
-          <div class="tool-head"><span class="tool-icon">📚</span><div><h3>NotebookLM</h3><p class="tool-kind">Caderno de pesquisa com IA</p></div></div>
+          <div class="tool-head"><img class="tool-logo" src="../assets/img/ferramentas/notebooklm.svg" alt="Logotipo oficial de NotebookLM"><div><h3>NotebookLM</h3><p class="tool-kind">Caderno de pesquisa com IA</p></div></div>
           <p>Ferramenta para organizar fontes selecionadas, fazer perguntas sobre documentos, gerar sínteses, guias de estudo, resumos e materiais de apoio baseados nas fontes do usuário.</p>
-          <div class="tool-meta"><span>📘 Módulos: M2, M3, M8, M10</span></div>
+          <div class="tool-meta"><span>Módulos: M2, M3, M8, M10</span></div>
           <div class="tool-block"><strong>Quando usar</strong><p>Quando a atividade envolve leitura de PDFs, documentos, textos de apoio, apostilas, artigos, leis, relatórios ou materiais de estudo.</p></div>
           <div class="tool-block"><strong>Por que usar no unesp.IA</strong><p>É excelente para ensinar pesquisa orientada por fontes, leitura ativa e síntese de documentos sem depender apenas de respostas genéricas da IA.</p></div>
-          <details><summary>Exemplos de aplicações</summary><ul><li>Enviar uma apostila e pedir um guia de estudo.</li><li>Fazer perguntas sobre um PDF.</li><li>Gerar FAQ de um documento.</li><li>Criar um resumo estruturado de várias fontes.</li></ul></details>
-          <a class="btn-small" href="https://notebooklm.google/" target="_blank" rel="noopener">Site oficial</a>
+          <details class="application-examples"><summary>Exemplos de aplicações</summary><ul><li>Enviar uma apostila e pedir um guia de estudo.</li><li>Fazer perguntas sobre um PDF.</li><li>Gerar FAQ de um documento.</li><li>Criar um resumo estruturado de várias fontes.</li></ul></details>
+          <a class="btn-small" href="https://notebooklm.google/" target="_blank" rel="noopener">Acessar site oficial <span aria-hidden="true">↗</span></a>
         </article>
         <article class="tool-card" data-search="Elicit Pesquisa científica com IA Ferramenta voltada à pesquisa científica para buscar, resumir, extrair dados e conversar com artigos acadêmicos. M10 Pesquisa e organização do conhecimento">
-          <div class="tool-head"><span class="tool-icon">🧪</span><div><h3>Elicit</h3><p class="tool-kind">Pesquisa científica com IA</p></div></div>
+          <div class="tool-head"><img class="tool-logo" src="../assets/img/ferramentas/elicit.svg" alt="Logotipo oficial de Elicit"><div><h3>Elicit</h3><p class="tool-kind">Pesquisa científica com IA</p></div></div>
           <p>Ferramenta voltada à pesquisa científica para buscar, resumir, extrair dados e conversar com artigos acadêmicos.</p>
-          <div class="tool-meta"><span>📘 Módulos: M10</span></div>
+          <div class="tool-meta"><span>Módulos: M10</span></div>
           <div class="tool-block"><strong>Quando usar</strong><p>Quando pesquisadores, docentes ou estudantes precisam levantar literatura, comparar evidências, identificar estudos relevantes ou estruturar uma revisão inicial.</p></div>
           <div class="tool-block"><strong>Por que usar no unesp.IA</strong><p>Ajuda a demonstrar uso responsável da IA em pesquisa, com atenção à evidência, citação e verificação.</p></div>
-          <details><summary>Exemplos de aplicações</summary><ul><li>Buscar artigos sobre evasão estudantil.</li><li>Extrair métodos usados em estudos selecionados.</li><li>Comparar resultados de artigos.</li><li>Preparar uma síntese inicial de literatura.</li></ul></details>
-          <a class="btn-small" href="https://elicit.com/" target="_blank" rel="noopener">Site oficial</a>
-        </article></div></section><section id="producao-visual-apresentacoes-e-comunicacao"><h2 class="section-title">Produção visual, apresentações e comunicação</h2><div class="tool-grid">
+          <details class="application-examples"><summary>Exemplos de aplicações</summary><ul><li>Buscar artigos sobre evasão estudantil.</li><li>Extrair métodos usados em estudos selecionados.</li><li>Comparar resultados de artigos.</li><li>Preparar uma síntese inicial de literatura.</li></ul></details>
+          <a class="btn-small" href="https://elicit.com/" target="_blank" rel="noopener">Acessar site oficial <span aria-hidden="true">↗</span></a>
+        </article></div></section><section class="tools-section" id="producao-visual-apresentacoes-e-comunicacao"><h2 class="section-title">Produção visual, apresentações e comunicação</h2><div class="tool-grid">
         <article class="tool-card" data-search="Canva AI Design, apresentações e conteúdos visuais Ambiente de criação visual com recursos de IA para designs, apresentações, posts, imagens, vídeos, materiais didáticos e peças de divulgação. M3, M6, M8 Produção visual, apresentações e comunicação">
-          <div class="tool-head"><span class="tool-icon">🎨</span><div><h3>Canva AI</h3><p class="tool-kind">Design, apresentações e conteúdos visuais</p></div></div>
+          <div class="tool-head"><img class="tool-logo" src="../assets/img/ferramentas/canva.svg" alt="Logotipo oficial de Canva AI"><div><h3>Canva AI</h3><p class="tool-kind">Design, apresentações e conteúdos visuais</p></div></div>
           <p>Ambiente de criação visual com recursos de IA para designs, apresentações, posts, imagens, vídeos, materiais didáticos e peças de divulgação.</p>
-          <div class="tool-meta"><span>📘 Módulos: M3, M6, M8</span></div>
+          <div class="tool-meta"><span>Módulos: M3, M6, M8</span></div>
           <div class="tool-block"><strong>Quando usar</strong><p>Quando o objetivo é transformar ideias em materiais visuais acessíveis, como cartazes, slides, convites, infográficos e posts.</p></div>
           <div class="tool-block"><strong>Por que usar no unesp.IA</strong><p>É didático para participantes iniciantes porque combina modelos prontos, edição visual e recursos de IA em um mesmo ambiente.</p></div>
-          <details><summary>Exemplos de aplicações</summary><ul><li>Criar cartaz de divulgação do curso.</li><li>Gerar slides de uma oficina.</li><li>Adaptar um texto para um infográfico.</li><li>Produzir material visual para redes sociais.</li></ul></details>
-          <a class="btn-small" href="https://www.canva.com/canva-ai/" target="_blank" rel="noopener">Site oficial</a>
+          <details class="application-examples"><summary>Exemplos de aplicações</summary><ul><li>Criar cartaz de divulgação do curso.</li><li>Gerar slides de uma oficina.</li><li>Adaptar um texto para um infográfico.</li><li>Produzir material visual para redes sociais.</li></ul></details>
+          <a class="btn-small" href="https://www.canva.com/canva-ai/" target="_blank" rel="noopener">Acessar site oficial <span aria-hidden="true">↗</span></a>
         </article>
         <article class="tool-card" data-search="DALL·E / Geradores de imagem Geração de imagens por texto Ferramentas para criar imagens, ilustrações e composições visuais a partir de descrições textuais. M3, M8 Produção visual, apresentações e comunicação">
-          <div class="tool-head"><span class="tool-icon">🖼️</span><div><h3>DALL·E / Geradores de imagem</h3><p class="tool-kind">Geração de imagens por texto</p></div></div>
+          <div class="tool-head"><img class="tool-logo" src="../assets/img/ferramentas/dalle.svg" alt="Logotipo oficial de DALL·E / Geradores de imagem"><div><h3>DALL·E / Geradores de imagem</h3><p class="tool-kind">Geração de imagens por texto</p></div></div>
           <p>Ferramentas para criar imagens, ilustrações e composições visuais a partir de descrições textuais.</p>
-          <div class="tool-meta"><span>📘 Módulos: M3, M8</span></div>
+          <div class="tool-meta"><span>Módulos: M3, M8</span></div>
           <div class="tool-block"><strong>Quando usar</strong><p>Quando o participante precisa ilustrar uma ideia, criar personagens, representar um conceito ou gerar imagens para materiais educacionais e comunicacionais.</p></div>
           <div class="tool-block"><strong>Por que usar no unesp.IA</strong><p>Permite discutir criatividade, autoria, ética visual, direitos de imagem, deepfakes e uso responsável de imagens geradas por IA.</p></div>
-          <details><summary>Exemplos de aplicações</summary><ul><li>Criar ilustração para explicar Machine Learning.</li><li>Gerar personagem didático para uma apostila.</li><li>Produzir imagem para uma campanha educativa.</li><li>Comparar prompts visuais simples e detalhados.</li></ul></details>
-          <a class="btn-small" href="https://openai.com/index/dall-e-3/" target="_blank" rel="noopener">Site oficial</a>
+          <details class="application-examples"><summary>Exemplos de aplicações</summary><ul><li>Criar ilustração para explicar Machine Learning.</li><li>Gerar personagem didático para uma apostila.</li><li>Produzir imagem para uma campanha educativa.</li><li>Comparar prompts visuais simples e detalhados.</li></ul></details>
+          <a class="btn-small" href="https://openai.com/index/dall-e-3/" target="_blank" rel="noopener">Acessar site oficial <span aria-hidden="true">↗</span></a>
         </article>
         <article class="tool-card" data-search="Gamma Apresentações, documentos e páginas Ferramenta para transformar ideias, prompts e conteúdos em apresentações, documentos visuais, páginas e materiais estruturados. M3, M6, M8, M10 Produção visual, apresentações e comunicação">
-          <div class="tool-head"><span class="tool-icon">📊</span><div><h3>Gamma</h3><p class="tool-kind">Apresentações, documentos e páginas</p></div></div>
+          <div class="tool-head"><img class="tool-logo" src="../assets/img/ferramentas/gamma.svg" alt="Logotipo oficial de Gamma"><div><h3>Gamma</h3><p class="tool-kind">Apresentações, documentos e páginas</p></div></div>
           <p>Ferramenta para transformar ideias, prompts e conteúdos em apresentações, documentos visuais, páginas e materiais estruturados.</p>
-          <div class="tool-meta"><span>📘 Módulos: M3, M6, M8, M10</span></div>
+          <div class="tool-meta"><span>Módulos: M3, M6, M8, M10</span></div>
           <div class="tool-block"><strong>Quando usar</strong><p>Quando é necessário montar rapidamente uma apresentação inicial, organizar ideias em narrativa visual ou transformar conteúdo em formato de comunicação.</p></div>
           <div class="tool-block"><strong>Por que usar no unesp.IA</strong><p>Ajuda a ensinar estruturação de ideias, storytelling, organização de slides e revisão humana do material gerado.</p></div>
-          <details><summary>Exemplos de aplicações</summary><ul><li>Criar apresentação de um projeto de IA.</li><li>Transformar um resumo em slides.</li><li>Criar página de divulgação de uma oficina.</li><li>Preparar pitch de solução para negócios.</li></ul></details>
-          <a class="btn-small" href="https://gamma.app/" target="_blank" rel="noopener">Site oficial</a>
-        </article></div></section><section id="dados-programacao-e-desenvolvimento"><h2 class="section-title">Dados, programação e desenvolvimento</h2><div class="tool-grid">
+          <details class="application-examples"><summary>Exemplos de aplicações</summary><ul><li>Criar apresentação de um projeto de IA.</li><li>Transformar um resumo em slides.</li><li>Criar página de divulgação de uma oficina.</li><li>Preparar pitch de solução para negócios.</li></ul></details>
+          <a class="btn-small" href="https://gamma.app/" target="_blank" rel="noopener">Acessar site oficial <span aria-hidden="true">↗</span></a>
+        </article></div></section><section class="tools-section" id="dados-programacao-e-desenvolvimento"><h2 class="section-title">Dados, programação e desenvolvimento</h2><div class="tool-grid">
         <article class="tool-card" data-search="Google Colab Ambiente online para Python e IA Ambiente no navegador para escrever e executar código Python em notebooks, combinando texto, código, gráficos e resultados. M5 Dados, programação e desenvolvimento">
-          <div class="tool-head"><span class="tool-icon">🐍</span><div><h3>Google Colab</h3><p class="tool-kind">Ambiente online para Python e IA</p></div></div>
+          <div class="tool-head"><img class="tool-logo" src="../assets/img/ferramentas/google-colab.svg" alt="Logotipo oficial de Google Colab"><div><h3>Google Colab</h3><p class="tool-kind">Ambiente online para Python e IA</p></div></div>
           <p>Ambiente no navegador para escrever e executar código Python em notebooks, combinando texto, código, gráficos e resultados.</p>
-          <div class="tool-meta"><span>📘 Módulos: M5</span></div>
+          <div class="tool-meta"><span>Módulos: M5</span></div>
           <div class="tool-block"><strong>Quando usar</strong><p>Quando o participante irá trabalhar com dados, Python, visualizações, modelos simples de aprendizado de máquina e protótipos.</p></div>
           <div class="tool-block"><strong>Por que usar no unesp.IA</strong><p>Evita instalação local no início do curso e permite aprender programação, dados e IA em um ambiente acessível e documentável.</p></div>
-          <details><summary>Exemplos de aplicações</summary><ul><li>Carregar uma planilha CSV.</li><li>Gerar gráficos com Python.</li><li>Treinar um modelo simples de classificação.</li><li>Documentar um experimento de IA.</li></ul></details>
-          <a class="btn-small" href="https://developers.google.com/colab" target="_blank" rel="noopener">Site oficial</a>
+          <details class="application-examples"><summary>Exemplos de aplicações</summary><ul><li>Carregar uma planilha CSV.</li><li>Gerar gráficos com Python.</li><li>Treinar um modelo simples de classificação.</li><li>Documentar um experimento de IA.</li></ul></details>
+          <a class="btn-small" href="https://developers.google.com/colab" target="_blank" rel="noopener">Acessar site oficial <span aria-hidden="true">↗</span></a>
         </article>
         <article class="tool-card" data-search="Power BI Dashboards e análise de dados Plataforma para criação de painéis, relatórios e visualizações de dados, com recursos de linguagem natural e Copilot quando disponíveis. M6, M7 Dados, programação e desenvolvimento">
-          <div class="tool-head"><span class="tool-icon">📈</span><div><h3>Power BI</h3><p class="tool-kind">Dashboards e análise de dados</p></div></div>
+          <div class="tool-head"><img class="tool-logo" src="../assets/img/ferramentas/power-bi.svg" alt="Logotipo oficial de Power BI"><div><h3>Power BI</h3><p class="tool-kind">Dashboards e análise de dados</p></div></div>
           <p>Plataforma para criação de painéis, relatórios e visualizações de dados, com recursos de linguagem natural e Copilot quando disponíveis.</p>
-          <div class="tool-meta"><span>📘 Módulos: M6, M7</span></div>
+          <div class="tool-meta"><span>Módulos: M6, M7</span></div>
           <div class="tool-block"><strong>Quando usar</strong><p>Quando a atividade envolve indicadores, acompanhamento de políticas públicas, análise de vendas, relatórios de gestão ou tomada de decisão baseada em dados.</p></div>
           <div class="tool-block"><strong>Por que usar no unesp.IA</strong><p>É adequado para mostrar como IA e visualização de dados podem apoiar decisões em negócios, prefeituras e organizações.</p></div>
-          <details><summary>Exemplos de aplicações</summary><ul><li>Criar dashboard de atendimentos municipais.</li><li>Analisar vendas de um pequeno negócio.</li><li>Gerar resumo de um relatório.</li><li>Explorar dados por perguntas em linguagem natural.</li></ul></details>
-          <a class="btn-small" href="https://learn.microsoft.com/en-us/power-bi/create-reports/copilot-introduction" target="_blank" rel="noopener">Site oficial</a>
+          <details class="application-examples"><summary>Exemplos de aplicações</summary><ul><li>Criar dashboard de atendimentos municipais.</li><li>Analisar vendas de um pequeno negócio.</li><li>Gerar resumo de um relatório.</li><li>Explorar dados por perguntas em linguagem natural.</li></ul></details>
+          <a class="btn-small" href="https://learn.microsoft.com/en-us/power-bi/create-reports/copilot-introduction" target="_blank" rel="noopener">Acessar site oficial <span aria-hidden="true">↗</span></a>
         </article>
         <article class="tool-card" data-search="Google Teachable Machine Experimento prático de Machine Learning Ferramenta do Google para treinar modelos simples que reconhecem imagens, sons ou poses, sem necessidade de programação. M4 Dados, programação e desenvolvimento">
-          <div class="tool-head"><span class="tool-icon">🤖</span><div><h3>Google Teachable Machine</h3><p class="tool-kind">Experimento prático de Machine Learning</p></div></div>
+          <div class="tool-head"><img class="tool-logo" src="../assets/img/ferramentas/teachable-machine.svg" alt="Logotipo oficial de Google Teachable Machine"><div><h3>Google Teachable Machine</h3><p class="tool-kind">Experimento prático de Machine Learning</p></div></div>
           <p>Ferramenta do Google para treinar modelos simples que reconhecem imagens, sons ou poses, sem necessidade de programação.</p>
-          <div class="tool-meta"><span>📘 Módulos: M4</span></div>
+          <div class="tool-meta"><span>Módulos: M4</span></div>
           <div class="tool-block"><strong>Quando usar</strong><p>Quando o objetivo é mostrar, de forma visual e prática, como um modelo aprende com exemplos.</p></div>
           <div class="tool-block"><strong>Por que usar no unesp.IA</strong><p>É uma das melhores ferramentas introdutórias para explicar dados, treinamento, teste, erro, generalização e avaliação de modelos.</p></div>
-          <details><summary>Exemplos de aplicações</summary><ul><li>Treinar modelo para reconhecer objetos.</li><li>Classificar sons simples.</li><li>Comparar acertos e erros do modelo.</li><li>Discutir por que dados ruins geram resultados ruins.</li></ul></details>
-          <a class="btn-small" href="https://teachablemachine.withgoogle.com/" target="_blank" rel="noopener">Site oficial</a>
-        </article></div></section><section id="educacao-interacao-e-avaliacao"><h2 class="section-title">Educação, interação e avaliação</h2><div class="tool-grid">
+          <details class="application-examples"><summary>Exemplos de aplicações</summary><ul><li>Treinar modelo para reconhecer objetos.</li><li>Classificar sons simples.</li><li>Comparar acertos e erros do modelo.</li><li>Discutir por que dados ruins geram resultados ruins.</li></ul></details>
+          <a class="btn-small" href="https://teachablemachine.withgoogle.com/" target="_blank" rel="noopener">Acessar site oficial <span aria-hidden="true">↗</span></a>
+        </article></div></section><section class="tools-section" id="educacao-interacao-e-avaliacao"><h2 class="section-title">Educação, interação e avaliação</h2><div class="tool-grid">
         <article class="tool-card" data-search="Kahoot Quiz e gamificação Ferramenta para criar quizzes, jogos de perguntas e atividades rápidas de revisão em sala. M1, M2, M8 Educação, interação e avaliação">
-          <div class="tool-head"><span class="tool-icon">🎓</span><div><h3>Kahoot</h3><p class="tool-kind">Quiz e gamificação</p></div></div>
+          <div class="tool-head"><img class="tool-logo" src="../assets/img/ferramentas/kahoot.svg" alt="Logotipo oficial de Kahoot"><div><h3>Kahoot</h3><p class="tool-kind">Quiz e gamificação</p></div></div>
           <p>Ferramenta para criar quizzes, jogos de perguntas e atividades rápidas de revisão em sala.</p>
-          <div class="tool-meta"><span>📘 Módulos: M1, M2, M8</span></div>
+          <div class="tool-meta"><span>Módulos: M1, M2, M8</span></div>
           <div class="tool-block"><strong>Quando usar</strong><p>Quando o instrutor quer revisar conceitos, avaliar compreensão inicial ou tornar a aula mais participativa.</p></div>
           <div class="tool-block"><strong>Por que usar no unesp.IA</strong><p>Fortalece aprendizagem ativa, engajamento e avaliação formativa.</p></div>
-          <details><summary>Exemplos de aplicações</summary><ul><li>Quiz sobre IA, ML e Deep Learning.</li><li>Revisão de segurança digital.</li><li>Competição leve entre grupos.</li><li>Diagnóstico inicial da turma.</li></ul></details>
-          <a class="btn-small" href="https://kahoot.com/" target="_blank" rel="noopener">Site oficial</a>
+          <details class="application-examples"><summary>Exemplos de aplicações</summary><ul><li>Quiz sobre IA, ML e Deep Learning.</li><li>Revisão de segurança digital.</li><li>Competição leve entre grupos.</li><li>Diagnóstico inicial da turma.</li></ul></details>
+          <a class="btn-small" href="https://kahoot.com/" target="_blank" rel="noopener">Acessar site oficial <span aria-hidden="true">↗</span></a>
         </article>
         <article class="tool-card" data-search="Mentimeter Interação ao vivo Ferramenta para enquetes, nuvens de palavras, perguntas abertas e participação coletiva durante aulas e oficinas. M1, M2, M8 Educação, interação e avaliação">
-          <div class="tool-head"><span class="tool-icon">🗳️</span><div><h3>Mentimeter</h3><p class="tool-kind">Interação ao vivo</p></div></div>
+          <div class="tool-head"><img class="tool-logo" src="../assets/img/ferramentas/mentimeter.svg" alt="Logotipo oficial de Mentimeter"><div><h3>Mentimeter</h3><p class="tool-kind">Interação ao vivo</p></div></div>
           <p>Ferramenta para enquetes, nuvens de palavras, perguntas abertas e participação coletiva durante aulas e oficinas.</p>
-          <div class="tool-meta"><span>📘 Módulos: M1, M2, M8</span></div>
+          <div class="tool-meta"><span>Módulos: M1, M2, M8</span></div>
           <div class="tool-block"><strong>Quando usar</strong><p>Quando o instrutor precisa coletar percepções, exemplos dos participantes, dúvidas e respostas em tempo real.</p></div>
           <div class="tool-block"><strong>Por que usar no unesp.IA</strong><p>Ajuda a valorizar o conhecimento prévio dos participantes e tornar o curso mais participativo.</p></div>
-          <details><summary>Exemplos de aplicações</summary><ul><li>Nuvem de palavras: onde encontramos IA?</li><li>Enquete sobre riscos percebidos.</li><li>Coleta de dúvidas anônimas.</li><li>Votação de temas para laboratório.</li></ul></details>
-          <a class="btn-small" href="https://www.mentimeter.com/" target="_blank" rel="noopener">Site oficial</a>
-        </article></div></section><section id="gestao-publica-legislacao-e-cidadania-digital"><h2 class="section-title">Gestão pública, legislação e cidadania digital</h2><div class="tool-grid">
+          <details class="application-examples"><summary>Exemplos de aplicações</summary><ul><li>Nuvem de palavras: onde encontramos IA?</li><li>Enquete sobre riscos percebidos.</li><li>Coleta de dúvidas anônimas.</li><li>Votação de temas para laboratório.</li></ul></details>
+          <a class="btn-small" href="https://www.mentimeter.com/" target="_blank" rel="noopener">Acessar site oficial <span aria-hidden="true">↗</span></a>
+        </article></div></section><section class="tools-section" id="gestao-publica-legislacao-e-cidadania-digital"><h2 class="section-title">Gestão pública, legislação e cidadania digital</h2><div class="tool-grid">
         <article class="tool-card" data-search="LexML Brasil Pesquisa legislativa e normativa Portal brasileiro para localização de legislação, normas, jurisprudência e documentos jurídicos de interesse público. M2, M7 Gestão pública, legislação e cidadania digital">
-          <div class="tool-head"><span class="tool-icon">⚖️</span><div><h3>LexML Brasil</h3><p class="tool-kind">Pesquisa legislativa e normativa</p></div></div>
+          <div class="tool-head"><img class="tool-logo" src="../assets/img/ferramentas/lexml.svg" alt="Logotipo oficial de LexML Brasil"><div><h3>LexML Brasil</h3><p class="tool-kind">Pesquisa legislativa e normativa</p></div></div>
           <p>Portal brasileiro para localização de legislação, normas, jurisprudência e documentos jurídicos de interesse público.</p>
-          <div class="tool-meta"><span>📘 Módulos: M2, M7</span></div>
+          <div class="tool-meta"><span>Módulos: M2, M7</span></div>
           <div class="tool-block"><strong>Quando usar</strong><p>Quando a atividade envolve consulta a leis, decretos, normas ou documentos oficiais, especialmente em gestão pública e cidadania digital.</p></div>
           <div class="tool-block"><strong>Por que usar no unesp.IA</strong><p>Ajuda a diferenciar pesquisa oficial de interpretações automáticas geradas por IA.</p></div>
-          <details><summary>Exemplos de aplicações</summary><ul><li>Localizar uma lei citada em uma atividade.</li><li>Comparar texto legal com resumo gerado por IA.</li><li>Levantar normas relacionadas a serviços públicos.</li><li>Discutir limites do uso de IA em temas jurídicos.</li></ul></details>
-          <a class="btn-small" href="https://www.lexml.gov.br/" target="_blank" rel="noopener">Site oficial</a>
+          <details class="application-examples"><summary>Exemplos de aplicações</summary><ul><li>Localizar uma lei citada em uma atividade.</li><li>Comparar texto legal com resumo gerado por IA.</li><li>Levantar normas relacionadas a serviços públicos.</li><li>Discutir limites do uso de IA em temas jurídicos.</li></ul></details>
+          <a class="btn-small" href="https://www.lexml.gov.br/" target="_blank" rel="noopener">Acessar site oficial <span aria-hidden="true">↗</span></a>
         </article>
         <article class="tool-card" data-search="Portal da Legislação Federal Consulta oficial a normas federais Fonte oficial para consulta a legislação federal brasileira. M2, M7 Gestão pública, legislação e cidadania digital">
-          <div class="tool-head"><span class="tool-icon">🏛️</span><div><h3>Portal da Legislação Federal</h3><p class="tool-kind">Consulta oficial a normas federais</p></div></div>
+          <div class="tool-head"><img class="tool-logo" src="../assets/img/ferramentas/govbr.png" alt="Logotipo oficial de Portal da Legislação Federal"><div><h3>Portal da Legislação Federal</h3><p class="tool-kind">Consulta oficial a normas federais</p></div></div>
           <p>Fonte oficial para consulta a legislação federal brasileira.</p>
-          <div class="tool-meta"><span>📘 Módulos: M2, M7</span></div>
+          <div class="tool-meta"><span>Módulos: M2, M7</span></div>
           <div class="tool-block"><strong>Quando usar</strong><p>Quando é necessário verificar a redação oficial de leis, decretos e atos normativos federais.</p></div>
           <div class="tool-block"><strong>Por que usar no unesp.IA</strong><p>É essencial para ensinar que IA pode ajudar a resumir, mas a conferência deve ser feita em fonte oficial.</p></div>
-          <details><summary>Exemplos de aplicações</summary><ul><li>Verificar o texto de uma lei federal.</li><li>Comparar resumo de IA com norma oficial.</li><li>Criar checklist de conferência de fontes.</li><li>Apoiar discussão sobre LGPD e dados pessoais.</li></ul></details>
-          <a class="btn-small" href="https://www4.planalto.gov.br/legislacao" target="_blank" rel="noopener">Site oficial</a>
+          <details class="application-examples"><summary>Exemplos de aplicações</summary><ul><li>Verificar o texto de uma lei federal.</li><li>Comparar resumo de IA com norma oficial.</li><li>Criar checklist de conferência de fontes.</li><li>Apoiar discussão sobre LGPD e dados pessoais.</li></ul></details>
+          <a class="btn-small" href="https://www4.planalto.gov.br/legislacao" target="_blank" rel="noopener">Acessar site oficial <span aria-hidden="true">↗</span></a>
         </article></div></section>
     <section><h2 class="section-title">Boas práticas para uso das ferramentas</h2><div class="two-col"><div class="card"><h3>Antes de usar</h3><ul class="check-list"><li>Defina o objetivo da tarefa.</li><li>Escolha a ferramenta pela competência desejada.</li><li>Separe dados, fontes e contexto necessários.</li><li>Evite inserir dados pessoais ou sensíveis.</li></ul></div><div class="card"><h3>Depois de gerar a resposta</h3><ul class="check-list"><li>Revise criticamente o resultado.</li><li>Compare com fontes confiáveis.</li><li>Adapte a linguagem ao público.</li><li>Registre o que foi produzido e a ferramenta utilizada.</li></ul></div></div></section>
     <section><h2 class="section-title">Observação importante</h2><div class="callout warn">As ferramentas mudam rapidamente. Por isso, esta biblioteca deve ser revisada periodicamente. Para atividades oficiais, jurídicas, médicas, administrativas ou acadêmicas, utilize IA como apoio e sempre confira as informações em fontes oficiais ou com profissional responsável.</div></section>

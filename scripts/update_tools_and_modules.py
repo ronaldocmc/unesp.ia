@@ -1009,7 +1009,7 @@ def make_tool_pages() -> None:
     curated_root = ROOT / "ferramentas.html"
     if curated_root.exists():
         existing_root = curated_root.read_text(encoding="utf-8")
-        if 'class="hero-tools"' in existing_root:
+        if 'class="tools-catalog"' in existing_root:
             root_page = existing_root
 
     sub_page = root_page.replace(NAV_ROOT, NAV_SUB)
