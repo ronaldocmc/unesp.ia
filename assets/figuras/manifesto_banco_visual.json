@@ -1,0 +1,5252 @@
+[
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-001.svg",
+    "titulo": "Inteligência Artificial"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-002.svg",
+    "titulo": "Machine Learning"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-003.svg",
+    "titulo": "Deep Learning"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-004.svg",
+    "titulo": "IA Generativa"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-005.svg",
+    "titulo": "Prompt"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-006.svg",
+    "titulo": "Dados"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-007.svg",
+    "titulo": "Algoritmo"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-008.svg",
+    "titulo": "Modelo de IA"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-009.svg",
+    "titulo": "Processamento de Linguagem Natural"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-010.svg",
+    "titulo": "Visão Computacional"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-011.svg",
+    "titulo": "Sistemas de Recomendação"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-012.svg",
+    "titulo": "LLM - Modelo de Linguagem"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-013.svg",
+    "titulo": "Alucinação"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-014.svg",
+    "titulo": "Viés Algorítmico"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-015.svg",
+    "titulo": "LGPD e Privacidade"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-016.svg",
+    "titulo": "Deepfake"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-017.svg",
+    "titulo": "Fake News e Desinformação"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-018.svg",
+    "titulo": "RAG"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-019.svg",
+    "titulo": "Agentes de IA"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-020.svg",
+    "titulo": "Classificação"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-021.svg",
+    "titulo": "Regressão"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-022.svg",
+    "titulo": "Agrupamento"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-023.svg",
+    "titulo": "Explicabilidade"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-024.svg",
+    "titulo": "Automação com IA"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-025.svg",
+    "titulo": "NotebookLM"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-026.svg",
+    "titulo": "Canva AI"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-027.svg",
+    "titulo": "Google Colab"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-028.svg",
+    "titulo": "Power BI"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-029.svg",
+    "titulo": "Perplexity"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-030.svg",
+    "titulo": "Engenharia de Prompt"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-031.svg",
+    "titulo": "Fundamentos e Letramento em Inteligência Artificial"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-032.svg",
+    "titulo": "Ferramentas e Aplicações da Inteligência Artificial"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-033.svg",
+    "titulo": "Produção de Conteúdos com Inteligência Artificial"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-034.svg",
+    "titulo": "Compreendendo o Funcionamento da Inteligência Artificial"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-035.svg",
+    "titulo": "Desenvolvimento de Soluções Baseadas em Inteligência Artificial"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-036.svg",
+    "titulo": "Inteligência Artificial para Negócios e Empreendedorismo"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-037.svg",
+    "titulo": "Inteligência Artificial para Gestão Pública e Prefeituras"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-038.svg",
+    "titulo": "Inteligência Artificial na Educação"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-039.svg",
+    "titulo": "Inteligência Artificial para Saúde, Bem-Estar e Qualidade de Vida"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-040.svg",
+    "titulo": "Inteligência Artificial para Pesquisa Científica e Produção Acadêmica"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-041.svg",
+    "titulo": "Prompt"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-042.svg",
+    "titulo": "Chatbot"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-043.svg",
+    "titulo": "LLM"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-044.svg",
+    "titulo": "RAG"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-045.svg",
+    "titulo": "Agentes de IA"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-046.svg",
+    "titulo": "Privacidade"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-047.svg",
+    "titulo": "Fake News"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-048.svg",
+    "titulo": "Deepfake"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-049.svg",
+    "titulo": "NotebookLM"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-050.svg",
+    "titulo": "Canva AI"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-051.svg",
+    "titulo": "Google Colab"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-052.svg",
+    "titulo": "Power BI"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-053.svg",
+    "titulo": "Gestão Pública"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-054.svg",
+    "titulo": "Saúde"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-055.svg",
+    "titulo": "Pesquisa Científica"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-056.svg",
+    "titulo": "Educação"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-057.svg",
+    "titulo": "Negócios"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-058.svg",
+    "titulo": "Cidadania Digital"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-059.svg",
+    "titulo": "Inteligência Artificial"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-060.svg",
+    "titulo": "Machine Learning"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-061.svg",
+    "titulo": "Deep Learning"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-062.svg",
+    "titulo": "IA Generativa"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-063.svg",
+    "titulo": "Prompt"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-064.svg",
+    "titulo": "Dados"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-065.svg",
+    "titulo": "Algoritmo"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-066.svg",
+    "titulo": "Modelo de IA"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-067.svg",
+    "titulo": "Processamento de Linguagem Natural"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-068.svg",
+    "titulo": "Visão Computacional"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-069.svg",
+    "titulo": "Sistemas de Recomendação"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-070.svg",
+    "titulo": "LLM - Modelo de Linguagem"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-071.svg",
+    "titulo": "Alucinação"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-072.svg",
+    "titulo": "Viés Algorítmico"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-073.svg",
+    "titulo": "LGPD e Privacidade"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-074.svg",
+    "titulo": "Deepfake"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-075.svg",
+    "titulo": "Fake News e Desinformação"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-076.svg",
+    "titulo": "RAG"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-077.svg",
+    "titulo": "Agentes de IA"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-078.svg",
+    "titulo": "Classificação"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-079.svg",
+    "titulo": "Regressão"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-080.svg",
+    "titulo": "Agrupamento"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-081.svg",
+    "titulo": "Explicabilidade"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-082.svg",
+    "titulo": "Automação com IA"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-083.svg",
+    "titulo": "NotebookLM"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-084.svg",
+    "titulo": "Canva AI"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-085.svg",
+    "titulo": "Google Colab"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-086.svg",
+    "titulo": "Power BI"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-087.svg",
+    "titulo": "Perplexity"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-088.svg",
+    "titulo": "Engenharia de Prompt"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-089.svg",
+    "titulo": "Fundamentos e Letramento em Inteligência Artificial"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-090.svg",
+    "titulo": "Ferramentas e Aplicações da Inteligência Artificial"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-091.svg",
+    "titulo": "Produção de Conteúdos com Inteligência Artificial"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-092.svg",
+    "titulo": "Compreendendo o Funcionamento da Inteligência Artificial"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-093.svg",
+    "titulo": "Desenvolvimento de Soluções Baseadas em Inteligência Artificial"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-094.svg",
+    "titulo": "Inteligência Artificial para Negócios e Empreendedorismo"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-095.svg",
+    "titulo": "Inteligência Artificial para Gestão Pública e Prefeituras"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-096.svg",
+    "titulo": "Inteligência Artificial na Educação"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-097.svg",
+    "titulo": "Inteligência Artificial para Saúde, Bem-Estar e Qualidade de Vida"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-098.svg",
+    "titulo": "Inteligência Artificial para Pesquisa Científica e Produção Acadêmica"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-099.svg",
+    "titulo": "Prompt"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-100.svg",
+    "titulo": "Chatbot"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-101.svg",
+    "titulo": "LLM"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-102.svg",
+    "titulo": "RAG"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-103.svg",
+    "titulo": "Agentes de IA"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-104.svg",
+    "titulo": "Privacidade"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-105.svg",
+    "titulo": "Fake News"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-106.svg",
+    "titulo": "Deepfake"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-107.svg",
+    "titulo": "NotebookLM"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-108.svg",
+    "titulo": "Canva AI"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-109.svg",
+    "titulo": "Google Colab"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-110.svg",
+    "titulo": "Power BI"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-111.svg",
+    "titulo": "Gestão Pública"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-112.svg",
+    "titulo": "Saúde"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-113.svg",
+    "titulo": "Pesquisa Científica"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-114.svg",
+    "titulo": "Educação"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-115.svg",
+    "titulo": "Negócios"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-116.svg",
+    "titulo": "Cidadania Digital"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-117.svg",
+    "titulo": "Inteligência Artificial"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-118.svg",
+    "titulo": "Machine Learning"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-119.svg",
+    "titulo": "Deep Learning"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-120.svg",
+    "titulo": "IA Generativa"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-121.svg",
+    "titulo": "Prompt"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-122.svg",
+    "titulo": "Dados"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-123.svg",
+    "titulo": "Algoritmo"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-124.svg",
+    "titulo": "Modelo de IA"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-125.svg",
+    "titulo": "Processamento de Linguagem Natural"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-126.svg",
+    "titulo": "Visão Computacional"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-127.svg",
+    "titulo": "Sistemas de Recomendação"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-128.svg",
+    "titulo": "LLM - Modelo de Linguagem"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-129.svg",
+    "titulo": "Alucinação"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-130.svg",
+    "titulo": "Viés Algorítmico"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-131.svg",
+    "titulo": "LGPD e Privacidade"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-132.svg",
+    "titulo": "Deepfake"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-133.svg",
+    "titulo": "Fake News e Desinformação"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-134.svg",
+    "titulo": "RAG"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-135.svg",
+    "titulo": "Agentes de IA"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-136.svg",
+    "titulo": "Classificação"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-137.svg",
+    "titulo": "Regressão"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-138.svg",
+    "titulo": "Agrupamento"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-139.svg",
+    "titulo": "Explicabilidade"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-140.svg",
+    "titulo": "Automação com IA"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-141.svg",
+    "titulo": "NotebookLM"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-142.svg",
+    "titulo": "Canva AI"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-143.svg",
+    "titulo": "Google Colab"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-144.svg",
+    "titulo": "Power BI"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-145.svg",
+    "titulo": "Perplexity"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-146.svg",
+    "titulo": "Engenharia de Prompt"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-147.svg",
+    "titulo": "Fundamentos e Letramento em Inteligência Artificial"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-148.svg",
+    "titulo": "Ferramentas e Aplicações da Inteligência Artificial"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-149.svg",
+    "titulo": "Produção de Conteúdos com Inteligência Artificial"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-150.svg",
+    "titulo": "Compreendendo o Funcionamento da Inteligência Artificial"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-151.svg",
+    "titulo": "Desenvolvimento de Soluções Baseadas em Inteligência Artificial"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-152.svg",
+    "titulo": "Inteligência Artificial para Negócios e Empreendedorismo"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-153.svg",
+    "titulo": "Inteligência Artificial para Gestão Pública e Prefeituras"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-154.svg",
+    "titulo": "Inteligência Artificial na Educação"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-155.svg",
+    "titulo": "Inteligência Artificial para Saúde, Bem-Estar e Qualidade de Vida"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-156.svg",
+    "titulo": "Inteligência Artificial para Pesquisa Científica e Produção Acadêmica"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-157.svg",
+    "titulo": "Prompt"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-158.svg",
+    "titulo": "Chatbot"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-159.svg",
+    "titulo": "LLM"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-160.svg",
+    "titulo": "RAG"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-161.svg",
+    "titulo": "Agentes de IA"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-162.svg",
+    "titulo": "Privacidade"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-163.svg",
+    "titulo": "Fake News"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-164.svg",
+    "titulo": "Deepfake"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-165.svg",
+    "titulo": "NotebookLM"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-166.svg",
+    "titulo": "Canva AI"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-167.svg",
+    "titulo": "Google Colab"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-168.svg",
+    "titulo": "Power BI"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-169.svg",
+    "titulo": "Gestão Pública"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-170.svg",
+    "titulo": "Saúde"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-171.svg",
+    "titulo": "Pesquisa Científica"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-172.svg",
+    "titulo": "Educação"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-173.svg",
+    "titulo": "Negócios"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-174.svg",
+    "titulo": "Cidadania Digital"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-175.svg",
+    "titulo": "Inteligência Artificial"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-176.svg",
+    "titulo": "Machine Learning"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-177.svg",
+    "titulo": "Deep Learning"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-178.svg",
+    "titulo": "IA Generativa"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-179.svg",
+    "titulo": "Prompt"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-180.svg",
+    "titulo": "Dados"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-181.svg",
+    "titulo": "Algoritmo"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-182.svg",
+    "titulo": "Modelo de IA"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-183.svg",
+    "titulo": "Processamento de Linguagem Natural"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-184.svg",
+    "titulo": "Visão Computacional"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-185.svg",
+    "titulo": "Sistemas de Recomendação"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-186.svg",
+    "titulo": "LLM - Modelo de Linguagem"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-187.svg",
+    "titulo": "Alucinação"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-188.svg",
+    "titulo": "Viés Algorítmico"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-189.svg",
+    "titulo": "LGPD e Privacidade"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-190.svg",
+    "titulo": "Deepfake"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-191.svg",
+    "titulo": "Fake News e Desinformação"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-192.svg",
+    "titulo": "RAG"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-193.svg",
+    "titulo": "Agentes de IA"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-194.svg",
+    "titulo": "Classificação"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-195.svg",
+    "titulo": "Regressão"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-196.svg",
+    "titulo": "Agrupamento"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-197.svg",
+    "titulo": "Explicabilidade"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-198.svg",
+    "titulo": "Automação com IA"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-199.svg",
+    "titulo": "NotebookLM"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-200.svg",
+    "titulo": "Canva AI"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-201.svg",
+    "titulo": "Google Colab"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-202.svg",
+    "titulo": "Power BI"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-203.svg",
+    "titulo": "Perplexity"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-204.svg",
+    "titulo": "Engenharia de Prompt"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-205.svg",
+    "titulo": "Fundamentos e Letramento em Inteligência Artificial"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-206.svg",
+    "titulo": "Ferramentas e Aplicações da Inteligência Artificial"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-207.svg",
+    "titulo": "Produção de Conteúdos com Inteligência Artificial"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-208.svg",
+    "titulo": "Compreendendo o Funcionamento da Inteligência Artificial"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-209.svg",
+    "titulo": "Desenvolvimento de Soluções Baseadas em Inteligência Artificial"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-210.svg",
+    "titulo": "Inteligência Artificial para Negócios e Empreendedorismo"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-211.svg",
+    "titulo": "Inteligência Artificial para Gestão Pública e Prefeituras"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-212.svg",
+    "titulo": "Inteligência Artificial na Educação"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-213.svg",
+    "titulo": "Inteligência Artificial para Saúde, Bem-Estar e Qualidade de Vida"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-214.svg",
+    "titulo": "Inteligência Artificial para Pesquisa Científica e Produção Acadêmica"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-215.svg",
+    "titulo": "Prompt"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-216.svg",
+    "titulo": "Chatbot"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-217.svg",
+    "titulo": "LLM"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-218.svg",
+    "titulo": "RAG"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-219.svg",
+    "titulo": "Agentes de IA"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-220.svg",
+    "titulo": "Privacidade"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-221.svg",
+    "titulo": "Fake News"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-222.svg",
+    "titulo": "Deepfake"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-223.svg",
+    "titulo": "NotebookLM"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-224.svg",
+    "titulo": "Canva AI"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-225.svg",
+    "titulo": "Google Colab"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-226.svg",
+    "titulo": "Power BI"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-227.svg",
+    "titulo": "Gestão Pública"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-228.svg",
+    "titulo": "Saúde"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-229.svg",
+    "titulo": "Pesquisa Científica"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-230.svg",
+    "titulo": "Educação"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-231.svg",
+    "titulo": "Negócios"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-232.svg",
+    "titulo": "Cidadania Digital"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-233.svg",
+    "titulo": "Inteligência Artificial"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-234.svg",
+    "titulo": "Machine Learning"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-235.svg",
+    "titulo": "Deep Learning"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-236.svg",
+    "titulo": "IA Generativa"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-237.svg",
+    "titulo": "Prompt"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-238.svg",
+    "titulo": "Dados"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-239.svg",
+    "titulo": "Algoritmo"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-240.svg",
+    "titulo": "Modelo de IA"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-241.svg",
+    "titulo": "Processamento de Linguagem Natural"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-242.svg",
+    "titulo": "Visão Computacional"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-243.svg",
+    "titulo": "Sistemas de Recomendação"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-244.svg",
+    "titulo": "LLM - Modelo de Linguagem"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-245.svg",
+    "titulo": "Alucinação"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-246.svg",
+    "titulo": "Viés Algorítmico"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-247.svg",
+    "titulo": "LGPD e Privacidade"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-248.svg",
+    "titulo": "Deepfake"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-249.svg",
+    "titulo": "Fake News e Desinformação"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-250.svg",
+    "titulo": "RAG"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-251.svg",
+    "titulo": "Agentes de IA"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-252.svg",
+    "titulo": "Classificação"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-253.svg",
+    "titulo": "Regressão"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-254.svg",
+    "titulo": "Agrupamento"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-255.svg",
+    "titulo": "Explicabilidade"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-256.svg",
+    "titulo": "Automação com IA"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-257.svg",
+    "titulo": "NotebookLM"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-258.svg",
+    "titulo": "Canva AI"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-259.svg",
+    "titulo": "Google Colab"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-260.svg",
+    "titulo": "Power BI"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-261.svg",
+    "titulo": "Perplexity"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-262.svg",
+    "titulo": "Engenharia de Prompt"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-263.svg",
+    "titulo": "Fundamentos e Letramento em Inteligência Artificial"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-264.svg",
+    "titulo": "Ferramentas e Aplicações da Inteligência Artificial"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-265.svg",
+    "titulo": "Produção de Conteúdos com Inteligência Artificial"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-266.svg",
+    "titulo": "Compreendendo o Funcionamento da Inteligência Artificial"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-267.svg",
+    "titulo": "Desenvolvimento de Soluções Baseadas em Inteligência Artificial"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-268.svg",
+    "titulo": "Inteligência Artificial para Negócios e Empreendedorismo"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-269.svg",
+    "titulo": "Inteligência Artificial para Gestão Pública e Prefeituras"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-270.svg",
+    "titulo": "Inteligência Artificial na Educação"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-271.svg",
+    "titulo": "Inteligência Artificial para Saúde, Bem-Estar e Qualidade de Vida"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-272.svg",
+    "titulo": "Inteligência Artificial para Pesquisa Científica e Produção Acadêmica"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-273.svg",
+    "titulo": "Prompt"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-274.svg",
+    "titulo": "Chatbot"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-275.svg",
+    "titulo": "LLM"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-276.svg",
+    "titulo": "RAG"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-277.svg",
+    "titulo": "Agentes de IA"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-278.svg",
+    "titulo": "Privacidade"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-279.svg",
+    "titulo": "Fake News"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-280.svg",
+    "titulo": "Deepfake"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-281.svg",
+    "titulo": "NotebookLM"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-282.svg",
+    "titulo": "Canva AI"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-283.svg",
+    "titulo": "Google Colab"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-284.svg",
+    "titulo": "Power BI"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-285.svg",
+    "titulo": "Gestão Pública"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-286.svg",
+    "titulo": "Saúde"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-287.svg",
+    "titulo": "Pesquisa Científica"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-288.svg",
+    "titulo": "Educação"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-289.svg",
+    "titulo": "Negócios"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-290.svg",
+    "titulo": "Cidadania Digital"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-291.svg",
+    "titulo": "Inteligência Artificial"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-292.svg",
+    "titulo": "Machine Learning"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-293.svg",
+    "titulo": "Deep Learning"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-294.svg",
+    "titulo": "IA Generativa"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-295.svg",
+    "titulo": "Prompt"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-296.svg",
+    "titulo": "Dados"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-297.svg",
+    "titulo": "Algoritmo"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-298.svg",
+    "titulo": "Modelo de IA"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-299.svg",
+    "titulo": "Processamento de Linguagem Natural"
+  },
+  {
+    "tipo": "infografico",
+    "arquivo": "assets/figuras/infograficos/infografico-300.svg",
+    "titulo": "Visão Computacional"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-001.svg",
+    "titulo": "Inteligência Artificial"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-002.svg",
+    "titulo": "Machine Learning"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-003.svg",
+    "titulo": "Deep Learning"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-004.svg",
+    "titulo": "IA Generativa"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-005.svg",
+    "titulo": "Prompt"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-006.svg",
+    "titulo": "Dados"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-007.svg",
+    "titulo": "Algoritmo"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-008.svg",
+    "titulo": "Modelo de IA"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-009.svg",
+    "titulo": "Processamento de Linguagem Natural"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-010.svg",
+    "titulo": "Visão Computacional"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-011.svg",
+    "titulo": "Sistemas de Recomendação"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-012.svg",
+    "titulo": "LLM - Modelo de Linguagem"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-013.svg",
+    "titulo": "Alucinação"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-014.svg",
+    "titulo": "Viés Algorítmico"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-015.svg",
+    "titulo": "LGPD e Privacidade"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-016.svg",
+    "titulo": "Deepfake"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-017.svg",
+    "titulo": "Fake News e Desinformação"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-018.svg",
+    "titulo": "RAG"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-019.svg",
+    "titulo": "Agentes de IA"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-020.svg",
+    "titulo": "Classificação"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-021.svg",
+    "titulo": "Regressão"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-022.svg",
+    "titulo": "Agrupamento"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-023.svg",
+    "titulo": "Explicabilidade"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-024.svg",
+    "titulo": "Automação com IA"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-025.svg",
+    "titulo": "NotebookLM"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-026.svg",
+    "titulo": "Canva AI"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-027.svg",
+    "titulo": "Google Colab"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-028.svg",
+    "titulo": "Power BI"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-029.svg",
+    "titulo": "Perplexity"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-030.svg",
+    "titulo": "Engenharia de Prompt"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-031.svg",
+    "titulo": "Fundamentos e Letramento em Inteligência Artificial"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-032.svg",
+    "titulo": "Ferramentas e Aplicações da Inteligência Artificial"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-033.svg",
+    "titulo": "Produção de Conteúdos com Inteligência Artificial"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-034.svg",
+    "titulo": "Compreendendo o Funcionamento da Inteligência Artificial"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-035.svg",
+    "titulo": "Desenvolvimento de Soluções Baseadas em Inteligência Artificial"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-036.svg",
+    "titulo": "Inteligência Artificial para Negócios e Empreendedorismo"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-037.svg",
+    "titulo": "Inteligência Artificial para Gestão Pública e Prefeituras"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-038.svg",
+    "titulo": "Inteligência Artificial na Educação"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-039.svg",
+    "titulo": "Inteligência Artificial para Saúde, Bem-Estar e Qualidade de Vida"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-040.svg",
+    "titulo": "Inteligência Artificial para Pesquisa Científica e Produção Acadêmica"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-041.svg",
+    "titulo": "Prompt"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-042.svg",
+    "titulo": "Chatbot"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-043.svg",
+    "titulo": "LLM"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-044.svg",
+    "titulo": "RAG"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-045.svg",
+    "titulo": "Agentes de IA"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-046.svg",
+    "titulo": "Privacidade"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-047.svg",
+    "titulo": "Fake News"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-048.svg",
+    "titulo": "Deepfake"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-049.svg",
+    "titulo": "NotebookLM"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-050.svg",
+    "titulo": "Canva AI"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-051.svg",
+    "titulo": "Google Colab"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-052.svg",
+    "titulo": "Power BI"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-053.svg",
+    "titulo": "Gestão Pública"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-054.svg",
+    "titulo": "Saúde"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-055.svg",
+    "titulo": "Pesquisa Científica"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-056.svg",
+    "titulo": "Educação"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-057.svg",
+    "titulo": "Negócios"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-058.svg",
+    "titulo": "Cidadania Digital"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-059.svg",
+    "titulo": "Inteligência Artificial"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-060.svg",
+    "titulo": "Machine Learning"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-061.svg",
+    "titulo": "Deep Learning"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-062.svg",
+    "titulo": "IA Generativa"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-063.svg",
+    "titulo": "Prompt"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-064.svg",
+    "titulo": "Dados"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-065.svg",
+    "titulo": "Algoritmo"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-066.svg",
+    "titulo": "Modelo de IA"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-067.svg",
+    "titulo": "Processamento de Linguagem Natural"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-068.svg",
+    "titulo": "Visão Computacional"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-069.svg",
+    "titulo": "Sistemas de Recomendação"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-070.svg",
+    "titulo": "LLM - Modelo de Linguagem"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-071.svg",
+    "titulo": "Alucinação"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-072.svg",
+    "titulo": "Viés Algorítmico"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-073.svg",
+    "titulo": "LGPD e Privacidade"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-074.svg",
+    "titulo": "Deepfake"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-075.svg",
+    "titulo": "Fake News e Desinformação"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-076.svg",
+    "titulo": "RAG"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-077.svg",
+    "titulo": "Agentes de IA"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-078.svg",
+    "titulo": "Classificação"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-079.svg",
+    "titulo": "Regressão"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-080.svg",
+    "titulo": "Agrupamento"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-081.svg",
+    "titulo": "Explicabilidade"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-082.svg",
+    "titulo": "Automação com IA"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-083.svg",
+    "titulo": "NotebookLM"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-084.svg",
+    "titulo": "Canva AI"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-085.svg",
+    "titulo": "Google Colab"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-086.svg",
+    "titulo": "Power BI"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-087.svg",
+    "titulo": "Perplexity"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-088.svg",
+    "titulo": "Engenharia de Prompt"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-089.svg",
+    "titulo": "Fundamentos e Letramento em Inteligência Artificial"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-090.svg",
+    "titulo": "Ferramentas e Aplicações da Inteligência Artificial"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-091.svg",
+    "titulo": "Produção de Conteúdos com Inteligência Artificial"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-092.svg",
+    "titulo": "Compreendendo o Funcionamento da Inteligência Artificial"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-093.svg",
+    "titulo": "Desenvolvimento de Soluções Baseadas em Inteligência Artificial"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-094.svg",
+    "titulo": "Inteligência Artificial para Negócios e Empreendedorismo"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-095.svg",
+    "titulo": "Inteligência Artificial para Gestão Pública e Prefeituras"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-096.svg",
+    "titulo": "Inteligência Artificial na Educação"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-097.svg",
+    "titulo": "Inteligência Artificial para Saúde, Bem-Estar e Qualidade de Vida"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-098.svg",
+    "titulo": "Inteligência Artificial para Pesquisa Científica e Produção Acadêmica"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-099.svg",
+    "titulo": "Prompt"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-100.svg",
+    "titulo": "Chatbot"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-101.svg",
+    "titulo": "LLM"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-102.svg",
+    "titulo": "RAG"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-103.svg",
+    "titulo": "Agentes de IA"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-104.svg",
+    "titulo": "Privacidade"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-105.svg",
+    "titulo": "Fake News"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-106.svg",
+    "titulo": "Deepfake"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-107.svg",
+    "titulo": "NotebookLM"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-108.svg",
+    "titulo": "Canva AI"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-109.svg",
+    "titulo": "Google Colab"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-110.svg",
+    "titulo": "Power BI"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-111.svg",
+    "titulo": "Gestão Pública"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-112.svg",
+    "titulo": "Saúde"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-113.svg",
+    "titulo": "Pesquisa Científica"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-114.svg",
+    "titulo": "Educação"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-115.svg",
+    "titulo": "Negócios"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-116.svg",
+    "titulo": "Cidadania Digital"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-117.svg",
+    "titulo": "Inteligência Artificial"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-118.svg",
+    "titulo": "Machine Learning"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-119.svg",
+    "titulo": "Deep Learning"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-120.svg",
+    "titulo": "IA Generativa"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-121.svg",
+    "titulo": "Prompt"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-122.svg",
+    "titulo": "Dados"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-123.svg",
+    "titulo": "Algoritmo"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-124.svg",
+    "titulo": "Modelo de IA"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-125.svg",
+    "titulo": "Processamento de Linguagem Natural"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-126.svg",
+    "titulo": "Visão Computacional"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-127.svg",
+    "titulo": "Sistemas de Recomendação"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-128.svg",
+    "titulo": "LLM - Modelo de Linguagem"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-129.svg",
+    "titulo": "Alucinação"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-130.svg",
+    "titulo": "Viés Algorítmico"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-131.svg",
+    "titulo": "LGPD e Privacidade"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-132.svg",
+    "titulo": "Deepfake"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-133.svg",
+    "titulo": "Fake News e Desinformação"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-134.svg",
+    "titulo": "RAG"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-135.svg",
+    "titulo": "Agentes de IA"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-136.svg",
+    "titulo": "Classificação"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-137.svg",
+    "titulo": "Regressão"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-138.svg",
+    "titulo": "Agrupamento"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-139.svg",
+    "titulo": "Explicabilidade"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-140.svg",
+    "titulo": "Automação com IA"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-141.svg",
+    "titulo": "NotebookLM"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-142.svg",
+    "titulo": "Canva AI"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-143.svg",
+    "titulo": "Google Colab"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-144.svg",
+    "titulo": "Power BI"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-145.svg",
+    "titulo": "Perplexity"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-146.svg",
+    "titulo": "Engenharia de Prompt"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-147.svg",
+    "titulo": "Fundamentos e Letramento em Inteligência Artificial"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-148.svg",
+    "titulo": "Ferramentas e Aplicações da Inteligência Artificial"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-149.svg",
+    "titulo": "Produção de Conteúdos com Inteligência Artificial"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-150.svg",
+    "titulo": "Compreendendo o Funcionamento da Inteligência Artificial"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-151.svg",
+    "titulo": "Desenvolvimento de Soluções Baseadas em Inteligência Artificial"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-152.svg",
+    "titulo": "Inteligência Artificial para Negócios e Empreendedorismo"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-153.svg",
+    "titulo": "Inteligência Artificial para Gestão Pública e Prefeituras"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-154.svg",
+    "titulo": "Inteligência Artificial na Educação"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-155.svg",
+    "titulo": "Inteligência Artificial para Saúde, Bem-Estar e Qualidade de Vida"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-156.svg",
+    "titulo": "Inteligência Artificial para Pesquisa Científica e Produção Acadêmica"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-157.svg",
+    "titulo": "Prompt"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-158.svg",
+    "titulo": "Chatbot"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-159.svg",
+    "titulo": "LLM"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-160.svg",
+    "titulo": "RAG"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-161.svg",
+    "titulo": "Agentes de IA"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-162.svg",
+    "titulo": "Privacidade"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-163.svg",
+    "titulo": "Fake News"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-164.svg",
+    "titulo": "Deepfake"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-165.svg",
+    "titulo": "NotebookLM"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-166.svg",
+    "titulo": "Canva AI"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-167.svg",
+    "titulo": "Google Colab"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-168.svg",
+    "titulo": "Power BI"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-169.svg",
+    "titulo": "Gestão Pública"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-170.svg",
+    "titulo": "Saúde"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-171.svg",
+    "titulo": "Pesquisa Científica"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-172.svg",
+    "titulo": "Educação"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-173.svg",
+    "titulo": "Negócios"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-174.svg",
+    "titulo": "Cidadania Digital"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-175.svg",
+    "titulo": "Inteligência Artificial"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-176.svg",
+    "titulo": "Machine Learning"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-177.svg",
+    "titulo": "Deep Learning"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-178.svg",
+    "titulo": "IA Generativa"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-179.svg",
+    "titulo": "Prompt"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-180.svg",
+    "titulo": "Dados"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-181.svg",
+    "titulo": "Algoritmo"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-182.svg",
+    "titulo": "Modelo de IA"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-183.svg",
+    "titulo": "Processamento de Linguagem Natural"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-184.svg",
+    "titulo": "Visão Computacional"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-185.svg",
+    "titulo": "Sistemas de Recomendação"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-186.svg",
+    "titulo": "LLM - Modelo de Linguagem"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-187.svg",
+    "titulo": "Alucinação"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-188.svg",
+    "titulo": "Viés Algorítmico"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-189.svg",
+    "titulo": "LGPD e Privacidade"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-190.svg",
+    "titulo": "Deepfake"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-191.svg",
+    "titulo": "Fake News e Desinformação"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-192.svg",
+    "titulo": "RAG"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-193.svg",
+    "titulo": "Agentes de IA"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-194.svg",
+    "titulo": "Classificação"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-195.svg",
+    "titulo": "Regressão"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-196.svg",
+    "titulo": "Agrupamento"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-197.svg",
+    "titulo": "Explicabilidade"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-198.svg",
+    "titulo": "Automação com IA"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-199.svg",
+    "titulo": "NotebookLM"
+  },
+  {
+    "tipo": "fluxograma",
+    "arquivo": "assets/figuras/fluxogramas/fluxograma-200.svg",
+    "titulo": "Canva AI"
+  },
+  {
+    "tipo": "mapa",
+    "arquivo": "assets/figuras/mapas-mentais/mapa-mental-001.svg",
+    "titulo": "Inteligência Artificial"
+  },
+  {
+    "tipo": "mapa",
+    "arquivo": "assets/figuras/mapas-mentais/mapa-mental-002.svg",
+    "titulo": "Machine Learning"
+  },
+  {
+    "tipo": "mapa",
+    "arquivo": "assets/figuras/mapas-mentais/mapa-mental-003.svg",
+    "titulo": "Deep Learning"
+  },
+  {
+    "tipo": "mapa",
+    "arquivo": "assets/figuras/mapas-mentais/mapa-mental-004.svg",
+    "titulo": "IA Generativa"
+  },
+  {
+    "tipo": "mapa",
+    "arquivo": "assets/figuras/mapas-mentais/mapa-mental-005.svg",
+    "titulo": "Prompt"
+  },
+  {
+    "tipo": "mapa",
+    "arquivo": "assets/figuras/mapas-mentais/mapa-mental-006.svg",
+    "titulo": "Dados"
+  },
+  {
+    "tipo": "mapa",
+    "arquivo": "assets/figuras/mapas-mentais/mapa-mental-007.svg",
+    "titulo": "Algoritmo"
+  },
+  {
+    "tipo": "mapa",
+    "arquivo": "assets/figuras/mapas-mentais/mapa-mental-008.svg",
+    "titulo": "Modelo de IA"
+  },
+  {
+    "tipo": "mapa",
+    "arquivo": "assets/figuras/mapas-mentais/mapa-mental-009.svg",
+    "titulo": "Processamento de Linguagem Natural"
+  },
+  {
+    "tipo": "mapa",
+    "arquivo": "assets/figuras/mapas-mentais/mapa-mental-010.svg",
+    "titulo": "Visão Computacional"
+  },
+  {
+    "tipo": "mapa",
+    "arquivo": "assets/figuras/mapas-mentais/mapa-mental-011.svg",
+    "titulo": "Sistemas de Recomendação"
+  },
+  {
+    "tipo": "mapa",
+    "arquivo": "assets/figuras/mapas-mentais/mapa-mental-012.svg",
+    "titulo": "LLM - Modelo de Linguagem"
+  },
+  {
+    "tipo": "mapa",
+    "arquivo": "assets/figuras/mapas-mentais/mapa-mental-013.svg",
+    "titulo": "Alucinação"
+  },
+  {
+    "tipo": "mapa",
+    "arquivo": "assets/figuras/mapas-mentais/mapa-mental-014.svg",
+    "titulo": "Viés Algorítmico"
+  },
+  {
+    "tipo": "mapa",
+    "arquivo": "assets/figuras/mapas-mentais/mapa-mental-015.svg",
+    "titulo": "LGPD e Privacidade"
+  },
+  {
+    "tipo": "mapa",
+    "arquivo": "assets/figuras/mapas-mentais/mapa-mental-016.svg",
+    "titulo": "Deepfake"
+  },
+  {
+    "tipo": "mapa",
+    "arquivo": "assets/figuras/mapas-mentais/mapa-mental-017.svg",
+    "titulo": "Fake News e Desinformação"
+  },
+  {
+    "tipo": "mapa",
+    "arquivo": "assets/figuras/mapas-mentais/mapa-mental-018.svg",
+    "titulo": "RAG"
+  },
+  {
+    "tipo": "mapa",
+    "arquivo": "assets/figuras/mapas-mentais/mapa-mental-019.svg",
+    "titulo": "Agentes de IA"
+  },
+  {
+    "tipo": "mapa",
+    "arquivo": "assets/figuras/mapas-mentais/mapa-mental-020.svg",
+    "titulo": "Classificação"
+  },
+  {
+    "tipo": "mapa",
+    "arquivo": "assets/figuras/mapas-mentais/mapa-mental-021.svg",
+    "titulo": "Regressão"
+  },
+  {
+    "tipo": "mapa",
+    "arquivo": "assets/figuras/mapas-mentais/mapa-mental-022.svg",
+    "titulo": "Agrupamento"
+  },
+  {
+    "tipo": "mapa",
+    "arquivo": "assets/figuras/mapas-mentais/mapa-mental-023.svg",
+    "titulo": "Explicabilidade"
+  },
+  {
+    "tipo": "mapa",
+    "arquivo": "assets/figuras/mapas-mentais/mapa-mental-024.svg",
+    "titulo": "Automação com IA"
+  },
+  {
+    "tipo": "mapa",
+    "arquivo": "assets/figuras/mapas-mentais/mapa-mental-025.svg",
+    "titulo": "NotebookLM"
+  },
+  {
+    "tipo": "mapa",
+    "arquivo": "assets/figuras/mapas-mentais/mapa-mental-026.svg",
+    "titulo": "Canva AI"
+  },
+  {
+    "tipo": "mapa",
+    "arquivo": "assets/figuras/mapas-mentais/mapa-mental-027.svg",
+    "titulo": "Google Colab"
+  },
+  {
+    "tipo": "mapa",
+    "arquivo": "assets/figuras/mapas-mentais/mapa-mental-028.svg",
+    "titulo": "Power BI"
+  },
+  {
+    "tipo": "mapa",
+    "arquivo": "assets/figuras/mapas-mentais/mapa-mental-029.svg",
+    "titulo": "Perplexity"
+  },
+  {
+    "tipo": "mapa",
+    "arquivo": "assets/figuras/mapas-mentais/mapa-mental-030.svg",
+    "titulo": "Engenharia de Prompt"
+  },
+  {
+    "tipo": "mapa",
+    "arquivo": "assets/figuras/mapas-mentais/mapa-mental-031.svg",
+    "titulo": "Fundamentos e Letramento em Inteligência Artificial"
+  },
+  {
+    "tipo": "mapa",
+    "arquivo": "assets/figuras/mapas-mentais/mapa-mental-032.svg",
+    "titulo": "Ferramentas e Aplicações da Inteligência Artificial"
+  },
+  {
+    "tipo": "mapa",
+    "arquivo": "assets/figuras/mapas-mentais/mapa-mental-033.svg",
+    "titulo": "Produção de Conteúdos com Inteligência Artificial"
+  },
+  {
+    "tipo": "mapa",
+    "arquivo": "assets/figuras/mapas-mentais/mapa-mental-034.svg",
+    "titulo": "Compreendendo o Funcionamento da Inteligência Artificial"
+  },
+  {
+    "tipo": "mapa",
+    "arquivo": "assets/figuras/mapas-mentais/mapa-mental-035.svg",
+    "titulo": "Desenvolvimento de Soluções Baseadas em Inteligência Artificial"
+  },
+  {
+    "tipo": "mapa",
+    "arquivo": "assets/figuras/mapas-mentais/mapa-mental-036.svg",
+    "titulo": "Inteligência Artificial para Negócios e Empreendedorismo"
+  },
+  {
+    "tipo": "mapa",
+    "arquivo": "assets/figuras/mapas-mentais/mapa-mental-037.svg",
+    "titulo": "Inteligência Artificial para Gestão Pública e Prefeituras"
+  },
+  {
+    "tipo": "mapa",
+    "arquivo": "assets/figuras/mapas-mentais/mapa-mental-038.svg",
+    "titulo": "Inteligência Artificial na Educação"
+  },
+  {
+    "tipo": "mapa",
+    "arquivo": "assets/figuras/mapas-mentais/mapa-mental-039.svg",
+    "titulo": "Inteligência Artificial para Saúde, Bem-Estar e Qualidade de Vida"
+  },
+  {
+    "tipo": "mapa",
+    "arquivo": "assets/figuras/mapas-mentais/mapa-mental-040.svg",
+    "titulo": "Inteligência Artificial para Pesquisa Científica e Produção Acadêmica"
+  },
+  {
+    "tipo": "mapa",
+    "arquivo": "assets/figuras/mapas-mentais/mapa-mental-041.svg",
+    "titulo": "Prompt"
+  },
+  {
+    "tipo": "mapa",
+    "arquivo": "assets/figuras/mapas-mentais/mapa-mental-042.svg",
+    "titulo": "Chatbot"
+  },
+  {
+    "tipo": "mapa",
+    "arquivo": "assets/figuras/mapas-mentais/mapa-mental-043.svg",
+    "titulo": "LLM"
+  },
+  {
+    "tipo": "mapa",
+    "arquivo": "assets/figuras/mapas-mentais/mapa-mental-044.svg",
+    "titulo": "RAG"
+  },
+  {
+    "tipo": "mapa",
+    "arquivo": "assets/figuras/mapas-mentais/mapa-mental-045.svg",
+    "titulo": "Agentes de IA"
+  },
+  {
+    "tipo": "mapa",
+    "arquivo": "assets/figuras/mapas-mentais/mapa-mental-046.svg",
+    "titulo": "Privacidade"
+  },
+  {
+    "tipo": "mapa",
+    "arquivo": "assets/figuras/mapas-mentais/mapa-mental-047.svg",
+    "titulo": "Fake News"
+  },
+  {
+    "tipo": "mapa",
+    "arquivo": "assets/figuras/mapas-mentais/mapa-mental-048.svg",
+    "titulo": "Deepfake"
+  },
+  {
+    "tipo": "mapa",
+    "arquivo": "assets/figuras/mapas-mentais/mapa-mental-049.svg",
+    "titulo": "NotebookLM"
+  },
+  {
+    "tipo": "mapa",
+    "arquivo": "assets/figuras/mapas-mentais/mapa-mental-050.svg",
+    "titulo": "Canva AI"
+  },
+  {
+    "tipo": "mapa",
+    "arquivo": "assets/figuras/mapas-mentais/mapa-mental-051.svg",
+    "titulo": "Google Colab"
+  },
+  {
+    "tipo": "mapa",
+    "arquivo": "assets/figuras/mapas-mentais/mapa-mental-052.svg",
+    "titulo": "Power BI"
+  },
+  {
+    "tipo": "mapa",
+    "arquivo": "assets/figuras/mapas-mentais/mapa-mental-053.svg",
+    "titulo": "Gestão Pública"
+  },
+  {
+    "tipo": "mapa",
+    "arquivo": "assets/figuras/mapas-mentais/mapa-mental-054.svg",
+    "titulo": "Saúde"
+  },
+  {
+    "tipo": "mapa",
+    "arquivo": "assets/figuras/mapas-mentais/mapa-mental-055.svg",
+    "titulo": "Pesquisa Científica"
+  },
+  {
+    "tipo": "mapa",
+    "arquivo": "assets/figuras/mapas-mentais/mapa-mental-056.svg",
+    "titulo": "Educação"
+  },
+  {
+    "tipo": "mapa",
+    "arquivo": "assets/figuras/mapas-mentais/mapa-mental-057.svg",
+    "titulo": "Negócios"
+  },
+  {
+    "tipo": "mapa",
+    "arquivo": "assets/figuras/mapas-mentais/mapa-mental-058.svg",
+    "titulo": "Cidadania Digital"
+  },
+  {
+    "tipo": "mapa",
+    "arquivo": "assets/figuras/mapas-mentais/mapa-mental-059.svg",
+    "titulo": "Inteligência Artificial"
+  },
+  {
+    "tipo": "mapa",
+    "arquivo": "assets/figuras/mapas-mentais/mapa-mental-060.svg",
+    "titulo": "Machine Learning"
+  },
+  {
+    "tipo": "mapa",
+    "arquivo": "assets/figuras/mapas-mentais/mapa-mental-061.svg",
+    "titulo": "Deep Learning"
+  },
+  {
+    "tipo": "mapa",
+    "arquivo": "assets/figuras/mapas-mentais/mapa-mental-062.svg",
+    "titulo": "IA Generativa"
+  },
+  {
+    "tipo": "mapa",
+    "arquivo": "assets/figuras/mapas-mentais/mapa-mental-063.svg",
+    "titulo": "Prompt"
+  },
+  {
+    "tipo": "mapa",
+    "arquivo": "assets/figuras/mapas-mentais/mapa-mental-064.svg",
+    "titulo": "Dados"
+  },
+  {
+    "tipo": "mapa",
+    "arquivo": "assets/figuras/mapas-mentais/mapa-mental-065.svg",
+    "titulo": "Algoritmo"
+  },
+  {
+    "tipo": "mapa",
+    "arquivo": "assets/figuras/mapas-mentais/mapa-mental-066.svg",
+    "titulo": "Modelo de IA"
+  },
+  {
+    "tipo": "mapa",
+    "arquivo": "assets/figuras/mapas-mentais/mapa-mental-067.svg",
+    "titulo": "Processamento de Linguagem Natural"
+  },
+  {
+    "tipo": "mapa",
+    "arquivo": "assets/figuras/mapas-mentais/mapa-mental-068.svg",
+    "titulo": "Visão Computacional"
+  },
+  {
+    "tipo": "mapa",
+    "arquivo": "assets/figuras/mapas-mentais/mapa-mental-069.svg",
+    "titulo": "Sistemas de Recomendação"
+  },
+  {
+    "tipo": "mapa",
+    "arquivo": "assets/figuras/mapas-mentais/mapa-mental-070.svg",
+    "titulo": "LLM - Modelo de Linguagem"
+  },
+  {
+    "tipo": "mapa",
+    "arquivo": "assets/figuras/mapas-mentais/mapa-mental-071.svg",
+    "titulo": "Alucinação"
+  },
+  {
+    "tipo": "mapa",
+    "arquivo": "assets/figuras/mapas-mentais/mapa-mental-072.svg",
+    "titulo": "Viés Algorítmico"
+  },
+  {
+    "tipo": "mapa",
+    "arquivo": "assets/figuras/mapas-mentais/mapa-mental-073.svg",
+    "titulo": "LGPD e Privacidade"
+  },
+  {
+    "tipo": "mapa",
+    "arquivo": "assets/figuras/mapas-mentais/mapa-mental-074.svg",
+    "titulo": "Deepfake"
+  },
+  {
+    "tipo": "mapa",
+    "arquivo": "assets/figuras/mapas-mentais/mapa-mental-075.svg",
+    "titulo": "Fake News e Desinformação"
+  },
+  {
+    "tipo": "mapa",
+    "arquivo": "assets/figuras/mapas-mentais/mapa-mental-076.svg",
+    "titulo": "RAG"
+  },
+  {
+    "tipo": "mapa",
+    "arquivo": "assets/figuras/mapas-mentais/mapa-mental-077.svg",
+    "titulo": "Agentes de IA"
+  },
+  {
+    "tipo": "mapa",
+    "arquivo": "assets/figuras/mapas-mentais/mapa-mental-078.svg",
+    "titulo": "Classificação"
+  },
+  {
+    "tipo": "mapa",
+    "arquivo": "assets/figuras/mapas-mentais/mapa-mental-079.svg",
+    "titulo": "Regressão"
+  },
+  {
+    "tipo": "mapa",
+    "arquivo": "assets/figuras/mapas-mentais/mapa-mental-080.svg",
+    "titulo": "Agrupamento"
+  },
+  {
+    "tipo": "mapa",
+    "arquivo": "assets/figuras/mapas-mentais/mapa-mental-081.svg",
+    "titulo": "Explicabilidade"
+  },
+  {
+    "tipo": "mapa",
+    "arquivo": "assets/figuras/mapas-mentais/mapa-mental-082.svg",
+    "titulo": "Automação com IA"
+  },
+  {
+    "tipo": "mapa",
+    "arquivo": "assets/figuras/mapas-mentais/mapa-mental-083.svg",
+    "titulo": "NotebookLM"
+  },
+  {
+    "tipo": "mapa",
+    "arquivo": "assets/figuras/mapas-mentais/mapa-mental-084.svg",
+    "titulo": "Canva AI"
+  },
+  {
+    "tipo": "mapa",
+    "arquivo": "assets/figuras/mapas-mentais/mapa-mental-085.svg",
+    "titulo": "Google Colab"
+  },
+  {
+    "tipo": "mapa",
+    "arquivo": "assets/figuras/mapas-mentais/mapa-mental-086.svg",
+    "titulo": "Power BI"
+  },
+  {
+    "tipo": "mapa",
+    "arquivo": "assets/figuras/mapas-mentais/mapa-mental-087.svg",
+    "titulo": "Perplexity"
+  },
+  {
+    "tipo": "mapa",
+    "arquivo": "assets/figuras/mapas-mentais/mapa-mental-088.svg",
+    "titulo": "Engenharia de Prompt"
+  },
+  {
+    "tipo": "mapa",
+    "arquivo": "assets/figuras/mapas-mentais/mapa-mental-089.svg",
+    "titulo": "Fundamentos e Letramento em Inteligência Artificial"
+  },
+  {
+    "tipo": "mapa",
+    "arquivo": "assets/figuras/mapas-mentais/mapa-mental-090.svg",
+    "titulo": "Ferramentas e Aplicações da Inteligência Artificial"
+  },
+  {
+    "tipo": "mapa",
+    "arquivo": "assets/figuras/mapas-mentais/mapa-mental-091.svg",
+    "titulo": "Produção de Conteúdos com Inteligência Artificial"
+  },
+  {
+    "tipo": "mapa",
+    "arquivo": "assets/figuras/mapas-mentais/mapa-mental-092.svg",
+    "titulo": "Compreendendo o Funcionamento da Inteligência Artificial"
+  },
+  {
+    "tipo": "mapa",
+    "arquivo": "assets/figuras/mapas-mentais/mapa-mental-093.svg",
+    "titulo": "Desenvolvimento de Soluções Baseadas em Inteligência Artificial"
+  },
+  {
+    "tipo": "mapa",
+    "arquivo": "assets/figuras/mapas-mentais/mapa-mental-094.svg",
+    "titulo": "Inteligência Artificial para Negócios e Empreendedorismo"
+  },
+  {
+    "tipo": "mapa",
+    "arquivo": "assets/figuras/mapas-mentais/mapa-mental-095.svg",
+    "titulo": "Inteligência Artificial para Gestão Pública e Prefeituras"
+  },
+  {
+    "tipo": "mapa",
+    "arquivo": "assets/figuras/mapas-mentais/mapa-mental-096.svg",
+    "titulo": "Inteligência Artificial na Educação"
+  },
+  {
+    "tipo": "mapa",
+    "arquivo": "assets/figuras/mapas-mentais/mapa-mental-097.svg",
+    "titulo": "Inteligência Artificial para Saúde, Bem-Estar e Qualidade de Vida"
+  },
+  {
+    "tipo": "mapa",
+    "arquivo": "assets/figuras/mapas-mentais/mapa-mental-098.svg",
+    "titulo": "Inteligência Artificial para Pesquisa Científica e Produção Acadêmica"
+  },
+  {
+    "tipo": "mapa",
+    "arquivo": "assets/figuras/mapas-mentais/mapa-mental-099.svg",
+    "titulo": "Prompt"
+  },
+  {
+    "tipo": "mapa",
+    "arquivo": "assets/figuras/mapas-mentais/mapa-mental-100.svg",
+    "titulo": "Chatbot"
+  },
+  {
+    "tipo": "mapa",
+    "arquivo": "assets/figuras/mapas-mentais/mapa-mental-101.svg",
+    "titulo": "LLM"
+  },
+  {
+    "tipo": "mapa",
+    "arquivo": "assets/figuras/mapas-mentais/mapa-mental-102.svg",
+    "titulo": "RAG"
+  },
+  {
+    "tipo": "mapa",
+    "arquivo": "assets/figuras/mapas-mentais/mapa-mental-103.svg",
+    "titulo": "Agentes de IA"
+  },
+  {
+    "tipo": "mapa",
+    "arquivo": "assets/figuras/mapas-mentais/mapa-mental-104.svg",
+    "titulo": "Privacidade"
+  },
+  {
+    "tipo": "mapa",
+    "arquivo": "assets/figuras/mapas-mentais/mapa-mental-105.svg",
+    "titulo": "Fake News"
+  },
+  {
+    "tipo": "mapa",
+    "arquivo": "assets/figuras/mapas-mentais/mapa-mental-106.svg",
+    "titulo": "Deepfake"
+  },
+  {
+    "tipo": "mapa",
+    "arquivo": "assets/figuras/mapas-mentais/mapa-mental-107.svg",
+    "titulo": "NotebookLM"
+  },
+  {
+    "tipo": "mapa",
+    "arquivo": "assets/figuras/mapas-mentais/mapa-mental-108.svg",
+    "titulo": "Canva AI"
+  },
+  {
+    "tipo": "mapa",
+    "arquivo": "assets/figuras/mapas-mentais/mapa-mental-109.svg",
+    "titulo": "Google Colab"
+  },
+  {
+    "tipo": "mapa",
+    "arquivo": "assets/figuras/mapas-mentais/mapa-mental-110.svg",
+    "titulo": "Power BI"
+  },
+  {
+    "tipo": "mapa",
+    "arquivo": "assets/figuras/mapas-mentais/mapa-mental-111.svg",
+    "titulo": "Gestão Pública"
+  },
+  {
+    "tipo": "mapa",
+    "arquivo": "assets/figuras/mapas-mentais/mapa-mental-112.svg",
+    "titulo": "Saúde"
+  },
+  {
+    "tipo": "mapa",
+    "arquivo": "assets/figuras/mapas-mentais/mapa-mental-113.svg",
+    "titulo": "Pesquisa Científica"
+  },
+  {
+    "tipo": "mapa",
+    "arquivo": "assets/figuras/mapas-mentais/mapa-mental-114.svg",
+    "titulo": "Educação"
+  },
+  {
+    "tipo": "mapa",
+    "arquivo": "assets/figuras/mapas-mentais/mapa-mental-115.svg",
+    "titulo": "Negócios"
+  },
+  {
+    "tipo": "mapa",
+    "arquivo": "assets/figuras/mapas-mentais/mapa-mental-116.svg",
+    "titulo": "Cidadania Digital"
+  },
+  {
+    "tipo": "mapa",
+    "arquivo": "assets/figuras/mapas-mentais/mapa-mental-117.svg",
+    "titulo": "Inteligência Artificial"
+  },
+  {
+    "tipo": "mapa",
+    "arquivo": "assets/figuras/mapas-mentais/mapa-mental-118.svg",
+    "titulo": "Machine Learning"
+  },
+  {
+    "tipo": "mapa",
+    "arquivo": "assets/figuras/mapas-mentais/mapa-mental-119.svg",
+    "titulo": "Deep Learning"
+  },
+  {
+    "tipo": "mapa",
+    "arquivo": "assets/figuras/mapas-mentais/mapa-mental-120.svg",
+    "titulo": "IA Generativa"
+  },
+  {
+    "tipo": "mapa",
+    "arquivo": "assets/figuras/mapas-mentais/mapa-mental-121.svg",
+    "titulo": "Prompt"
+  },
+  {
+    "tipo": "mapa",
+    "arquivo": "assets/figuras/mapas-mentais/mapa-mental-122.svg",
+    "titulo": "Dados"
+  },
+  {
+    "tipo": "mapa",
+    "arquivo": "assets/figuras/mapas-mentais/mapa-mental-123.svg",
+    "titulo": "Algoritmo"
+  },
+  {
+    "tipo": "mapa",
+    "arquivo": "assets/figuras/mapas-mentais/mapa-mental-124.svg",
+    "titulo": "Modelo de IA"
+  },
+  {
+    "tipo": "mapa",
+    "arquivo": "assets/figuras/mapas-mentais/mapa-mental-125.svg",
+    "titulo": "Processamento de Linguagem Natural"
+  },
+  {
+    "tipo": "mapa",
+    "arquivo": "assets/figuras/mapas-mentais/mapa-mental-126.svg",
+    "titulo": "Visão Computacional"
+  },
+  {
+    "tipo": "mapa",
+    "arquivo": "assets/figuras/mapas-mentais/mapa-mental-127.svg",
+    "titulo": "Sistemas de Recomendação"
+  },
+  {
+    "tipo": "mapa",
+    "arquivo": "assets/figuras/mapas-mentais/mapa-mental-128.svg",
+    "titulo": "LLM - Modelo de Linguagem"
+  },
+  {
+    "tipo": "mapa",
+    "arquivo": "assets/figuras/mapas-mentais/mapa-mental-129.svg",
+    "titulo": "Alucinação"
+  },
+  {
+    "tipo": "mapa",
+    "arquivo": "assets/figuras/mapas-mentais/mapa-mental-130.svg",
+    "titulo": "Viés Algorítmico"
+  },
+  {
+    "tipo": "mapa",
+    "arquivo": "assets/figuras/mapas-mentais/mapa-mental-131.svg",
+    "titulo": "LGPD e Privacidade"
+  },
+  {
+    "tipo": "mapa",
+    "arquivo": "assets/figuras/mapas-mentais/mapa-mental-132.svg",
+    "titulo": "Deepfake"
+  },
+  {
+    "tipo": "mapa",
+    "arquivo": "assets/figuras/mapas-mentais/mapa-mental-133.svg",
+    "titulo": "Fake News e Desinformação"
+  },
+  {
+    "tipo": "mapa",
+    "arquivo": "assets/figuras/mapas-mentais/mapa-mental-134.svg",
+    "titulo": "RAG"
+  },
+  {
+    "tipo": "mapa",
+    "arquivo": "assets/figuras/mapas-mentais/mapa-mental-135.svg",
+    "titulo": "Agentes de IA"
+  },
+  {
+    "tipo": "mapa",
+    "arquivo": "assets/figuras/mapas-mentais/mapa-mental-136.svg",
+    "titulo": "Classificação"
+  },
+  {
+    "tipo": "mapa",
+    "arquivo": "assets/figuras/mapas-mentais/mapa-mental-137.svg",
+    "titulo": "Regressão"
+  },
+  {
+    "tipo": "mapa",
+    "arquivo": "assets/figuras/mapas-mentais/mapa-mental-138.svg",
+    "titulo": "Agrupamento"
+  },
+  {
+    "tipo": "mapa",
+    "arquivo": "assets/figuras/mapas-mentais/mapa-mental-139.svg",
+    "titulo": "Explicabilidade"
+  },
+  {
+    "tipo": "mapa",
+    "arquivo": "assets/figuras/mapas-mentais/mapa-mental-140.svg",
+    "titulo": "Automação com IA"
+  },
+  {
+    "tipo": "mapa",
+    "arquivo": "assets/figuras/mapas-mentais/mapa-mental-141.svg",
+    "titulo": "NotebookLM"
+  },
+  {
+    "tipo": "mapa",
+    "arquivo": "assets/figuras/mapas-mentais/mapa-mental-142.svg",
+    "titulo": "Canva AI"
+  },
+  {
+    "tipo": "mapa",
+    "arquivo": "assets/figuras/mapas-mentais/mapa-mental-143.svg",
+    "titulo": "Google Colab"
+  },
+  {
+    "tipo": "mapa",
+    "arquivo": "assets/figuras/mapas-mentais/mapa-mental-144.svg",
+    "titulo": "Power BI"
+  },
+  {
+    "tipo": "mapa",
+    "arquivo": "assets/figuras/mapas-mentais/mapa-mental-145.svg",
+    "titulo": "Perplexity"
+  },
+  {
+    "tipo": "mapa",
+    "arquivo": "assets/figuras/mapas-mentais/mapa-mental-146.svg",
+    "titulo": "Engenharia de Prompt"
+  },
+  {
+    "tipo": "mapa",
+    "arquivo": "assets/figuras/mapas-mentais/mapa-mental-147.svg",
+    "titulo": "Fundamentos e Letramento em Inteligência Artificial"
+  },
+  {
+    "tipo": "mapa",
+    "arquivo": "assets/figuras/mapas-mentais/mapa-mental-148.svg",
+    "titulo": "Ferramentas e Aplicações da Inteligência Artificial"
+  },
+  {
+    "tipo": "mapa",
+    "arquivo": "assets/figuras/mapas-mentais/mapa-mental-149.svg",
+    "titulo": "Produção de Conteúdos com Inteligência Artificial"
+  },
+  {
+    "tipo": "mapa",
+    "arquivo": "assets/figuras/mapas-mentais/mapa-mental-150.svg",
+    "titulo": "Compreendendo o Funcionamento da Inteligência Artificial"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-001.svg",
+    "titulo": "Inteligência Artificial"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-002.svg",
+    "titulo": "Machine Learning"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-003.svg",
+    "titulo": "Deep Learning"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-004.svg",
+    "titulo": "IA Generativa"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-005.svg",
+    "titulo": "Prompt"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-006.svg",
+    "titulo": "Dados"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-007.svg",
+    "titulo": "Algoritmo"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-008.svg",
+    "titulo": "Modelo de IA"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-009.svg",
+    "titulo": "Processamento de Linguagem Natural"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-010.svg",
+    "titulo": "Visão Computacional"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-011.svg",
+    "titulo": "Sistemas de Recomendação"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-012.svg",
+    "titulo": "LLM - Modelo de Linguagem"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-013.svg",
+    "titulo": "Alucinação"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-014.svg",
+    "titulo": "Viés Algorítmico"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-015.svg",
+    "titulo": "LGPD e Privacidade"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-016.svg",
+    "titulo": "Deepfake"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-017.svg",
+    "titulo": "Fake News e Desinformação"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-018.svg",
+    "titulo": "RAG"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-019.svg",
+    "titulo": "Agentes de IA"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-020.svg",
+    "titulo": "Classificação"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-021.svg",
+    "titulo": "Regressão"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-022.svg",
+    "titulo": "Agrupamento"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-023.svg",
+    "titulo": "Explicabilidade"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-024.svg",
+    "titulo": "Automação com IA"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-025.svg",
+    "titulo": "NotebookLM"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-026.svg",
+    "titulo": "Canva AI"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-027.svg",
+    "titulo": "Google Colab"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-028.svg",
+    "titulo": "Power BI"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-029.svg",
+    "titulo": "Perplexity"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-030.svg",
+    "titulo": "Engenharia de Prompt"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-031.svg",
+    "titulo": "Fundamentos e Letramento em Inteligência Artificial"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-032.svg",
+    "titulo": "Ferramentas e Aplicações da Inteligência Artificial"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-033.svg",
+    "titulo": "Produção de Conteúdos com Inteligência Artificial"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-034.svg",
+    "titulo": "Compreendendo o Funcionamento da Inteligência Artificial"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-035.svg",
+    "titulo": "Desenvolvimento de Soluções Baseadas em Inteligência Artificial"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-036.svg",
+    "titulo": "Inteligência Artificial para Negócios e Empreendedorismo"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-037.svg",
+    "titulo": "Inteligência Artificial para Gestão Pública e Prefeituras"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-038.svg",
+    "titulo": "Inteligência Artificial na Educação"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-039.svg",
+    "titulo": "Inteligência Artificial para Saúde, Bem-Estar e Qualidade de Vida"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-040.svg",
+    "titulo": "Inteligência Artificial para Pesquisa Científica e Produção Acadêmica"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-041.svg",
+    "titulo": "Prompt"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-042.svg",
+    "titulo": "Chatbot"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-043.svg",
+    "titulo": "LLM"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-044.svg",
+    "titulo": "RAG"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-045.svg",
+    "titulo": "Agentes de IA"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-046.svg",
+    "titulo": "Privacidade"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-047.svg",
+    "titulo": "Fake News"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-048.svg",
+    "titulo": "Deepfake"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-049.svg",
+    "titulo": "NotebookLM"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-050.svg",
+    "titulo": "Canva AI"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-051.svg",
+    "titulo": "Google Colab"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-052.svg",
+    "titulo": "Power BI"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-053.svg",
+    "titulo": "Gestão Pública"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-054.svg",
+    "titulo": "Saúde"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-055.svg",
+    "titulo": "Pesquisa Científica"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-056.svg",
+    "titulo": "Educação"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-057.svg",
+    "titulo": "Negócios"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-058.svg",
+    "titulo": "Cidadania Digital"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-059.svg",
+    "titulo": "Inteligência Artificial"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-060.svg",
+    "titulo": "Machine Learning"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-061.svg",
+    "titulo": "Deep Learning"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-062.svg",
+    "titulo": "IA Generativa"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-063.svg",
+    "titulo": "Prompt"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-064.svg",
+    "titulo": "Dados"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-065.svg",
+    "titulo": "Algoritmo"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-066.svg",
+    "titulo": "Modelo de IA"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-067.svg",
+    "titulo": "Processamento de Linguagem Natural"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-068.svg",
+    "titulo": "Visão Computacional"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-069.svg",
+    "titulo": "Sistemas de Recomendação"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-070.svg",
+    "titulo": "LLM - Modelo de Linguagem"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-071.svg",
+    "titulo": "Alucinação"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-072.svg",
+    "titulo": "Viés Algorítmico"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-073.svg",
+    "titulo": "LGPD e Privacidade"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-074.svg",
+    "titulo": "Deepfake"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-075.svg",
+    "titulo": "Fake News e Desinformação"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-076.svg",
+    "titulo": "RAG"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-077.svg",
+    "titulo": "Agentes de IA"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-078.svg",
+    "titulo": "Classificação"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-079.svg",
+    "titulo": "Regressão"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-080.svg",
+    "titulo": "Agrupamento"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-081.svg",
+    "titulo": "Explicabilidade"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-082.svg",
+    "titulo": "Automação com IA"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-083.svg",
+    "titulo": "NotebookLM"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-084.svg",
+    "titulo": "Canva AI"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-085.svg",
+    "titulo": "Google Colab"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-086.svg",
+    "titulo": "Power BI"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-087.svg",
+    "titulo": "Perplexity"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-088.svg",
+    "titulo": "Engenharia de Prompt"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-089.svg",
+    "titulo": "Fundamentos e Letramento em Inteligência Artificial"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-090.svg",
+    "titulo": "Ferramentas e Aplicações da Inteligência Artificial"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-091.svg",
+    "titulo": "Produção de Conteúdos com Inteligência Artificial"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-092.svg",
+    "titulo": "Compreendendo o Funcionamento da Inteligência Artificial"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-093.svg",
+    "titulo": "Desenvolvimento de Soluções Baseadas em Inteligência Artificial"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-094.svg",
+    "titulo": "Inteligência Artificial para Negócios e Empreendedorismo"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-095.svg",
+    "titulo": "Inteligência Artificial para Gestão Pública e Prefeituras"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-096.svg",
+    "titulo": "Inteligência Artificial na Educação"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-097.svg",
+    "titulo": "Inteligência Artificial para Saúde, Bem-Estar e Qualidade de Vida"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-098.svg",
+    "titulo": "Inteligência Artificial para Pesquisa Científica e Produção Acadêmica"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-099.svg",
+    "titulo": "Prompt"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-100.svg",
+    "titulo": "Chatbot"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-101.svg",
+    "titulo": "LLM"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-102.svg",
+    "titulo": "RAG"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-103.svg",
+    "titulo": "Agentes de IA"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-104.svg",
+    "titulo": "Privacidade"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-105.svg",
+    "titulo": "Fake News"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-106.svg",
+    "titulo": "Deepfake"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-107.svg",
+    "titulo": "NotebookLM"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-108.svg",
+    "titulo": "Canva AI"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-109.svg",
+    "titulo": "Google Colab"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-110.svg",
+    "titulo": "Power BI"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-111.svg",
+    "titulo": "Gestão Pública"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-112.svg",
+    "titulo": "Saúde"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-113.svg",
+    "titulo": "Pesquisa Científica"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-114.svg",
+    "titulo": "Educação"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-115.svg",
+    "titulo": "Negócios"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-116.svg",
+    "titulo": "Cidadania Digital"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-117.svg",
+    "titulo": "Inteligência Artificial"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-118.svg",
+    "titulo": "Machine Learning"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-119.svg",
+    "titulo": "Deep Learning"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-120.svg",
+    "titulo": "IA Generativa"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-121.svg",
+    "titulo": "Prompt"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-122.svg",
+    "titulo": "Dados"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-123.svg",
+    "titulo": "Algoritmo"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-124.svg",
+    "titulo": "Modelo de IA"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-125.svg",
+    "titulo": "Processamento de Linguagem Natural"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-126.svg",
+    "titulo": "Visão Computacional"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-127.svg",
+    "titulo": "Sistemas de Recomendação"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-128.svg",
+    "titulo": "LLM - Modelo de Linguagem"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-129.svg",
+    "titulo": "Alucinação"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-130.svg",
+    "titulo": "Viés Algorítmico"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-131.svg",
+    "titulo": "LGPD e Privacidade"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-132.svg",
+    "titulo": "Deepfake"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-133.svg",
+    "titulo": "Fake News e Desinformação"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-134.svg",
+    "titulo": "RAG"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-135.svg",
+    "titulo": "Agentes de IA"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-136.svg",
+    "titulo": "Classificação"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-137.svg",
+    "titulo": "Regressão"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-138.svg",
+    "titulo": "Agrupamento"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-139.svg",
+    "titulo": "Explicabilidade"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-140.svg",
+    "titulo": "Automação com IA"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-141.svg",
+    "titulo": "NotebookLM"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-142.svg",
+    "titulo": "Canva AI"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-143.svg",
+    "titulo": "Google Colab"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-144.svg",
+    "titulo": "Power BI"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-145.svg",
+    "titulo": "Perplexity"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-146.svg",
+    "titulo": "Engenharia de Prompt"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-147.svg",
+    "titulo": "Fundamentos e Letramento em Inteligência Artificial"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-148.svg",
+    "titulo": "Ferramentas e Aplicações da Inteligência Artificial"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-149.svg",
+    "titulo": "Produção de Conteúdos com Inteligência Artificial"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-150.svg",
+    "titulo": "Compreendendo o Funcionamento da Inteligência Artificial"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-151.svg",
+    "titulo": "Desenvolvimento de Soluções Baseadas em Inteligência Artificial"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-152.svg",
+    "titulo": "Inteligência Artificial para Negócios e Empreendedorismo"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-153.svg",
+    "titulo": "Inteligência Artificial para Gestão Pública e Prefeituras"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-154.svg",
+    "titulo": "Inteligência Artificial na Educação"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-155.svg",
+    "titulo": "Inteligência Artificial para Saúde, Bem-Estar e Qualidade de Vida"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-156.svg",
+    "titulo": "Inteligência Artificial para Pesquisa Científica e Produção Acadêmica"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-157.svg",
+    "titulo": "Prompt"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-158.svg",
+    "titulo": "Chatbot"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-159.svg",
+    "titulo": "LLM"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-160.svg",
+    "titulo": "RAG"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-161.svg",
+    "titulo": "Agentes de IA"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-162.svg",
+    "titulo": "Privacidade"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-163.svg",
+    "titulo": "Fake News"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-164.svg",
+    "titulo": "Deepfake"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-165.svg",
+    "titulo": "NotebookLM"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-166.svg",
+    "titulo": "Canva AI"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-167.svg",
+    "titulo": "Google Colab"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-168.svg",
+    "titulo": "Power BI"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-169.svg",
+    "titulo": "Gestão Pública"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-170.svg",
+    "titulo": "Saúde"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-171.svg",
+    "titulo": "Pesquisa Científica"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-172.svg",
+    "titulo": "Educação"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-173.svg",
+    "titulo": "Negócios"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-174.svg",
+    "titulo": "Cidadania Digital"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-175.svg",
+    "titulo": "Inteligência Artificial"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-176.svg",
+    "titulo": "Machine Learning"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-177.svg",
+    "titulo": "Deep Learning"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-178.svg",
+    "titulo": "IA Generativa"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-179.svg",
+    "titulo": "Prompt"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-180.svg",
+    "titulo": "Dados"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-181.svg",
+    "titulo": "Algoritmo"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-182.svg",
+    "titulo": "Modelo de IA"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-183.svg",
+    "titulo": "Processamento de Linguagem Natural"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-184.svg",
+    "titulo": "Visão Computacional"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-185.svg",
+    "titulo": "Sistemas de Recomendação"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-186.svg",
+    "titulo": "LLM - Modelo de Linguagem"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-187.svg",
+    "titulo": "Alucinação"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-188.svg",
+    "titulo": "Viés Algorítmico"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-189.svg",
+    "titulo": "LGPD e Privacidade"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-190.svg",
+    "titulo": "Deepfake"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-191.svg",
+    "titulo": "Fake News e Desinformação"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-192.svg",
+    "titulo": "RAG"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-193.svg",
+    "titulo": "Agentes de IA"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-194.svg",
+    "titulo": "Classificação"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-195.svg",
+    "titulo": "Regressão"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-196.svg",
+    "titulo": "Agrupamento"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-197.svg",
+    "titulo": "Explicabilidade"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-198.svg",
+    "titulo": "Automação com IA"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-199.svg",
+    "titulo": "NotebookLM"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-200.svg",
+    "titulo": "Canva AI"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-201.svg",
+    "titulo": "Google Colab"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-202.svg",
+    "titulo": "Power BI"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-203.svg",
+    "titulo": "Perplexity"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-204.svg",
+    "titulo": "Engenharia de Prompt"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-205.svg",
+    "titulo": "Fundamentos e Letramento em Inteligência Artificial"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-206.svg",
+    "titulo": "Ferramentas e Aplicações da Inteligência Artificial"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-207.svg",
+    "titulo": "Produção de Conteúdos com Inteligência Artificial"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-208.svg",
+    "titulo": "Compreendendo o Funcionamento da Inteligência Artificial"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-209.svg",
+    "titulo": "Desenvolvimento de Soluções Baseadas em Inteligência Artificial"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-210.svg",
+    "titulo": "Inteligência Artificial para Negócios e Empreendedorismo"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-211.svg",
+    "titulo": "Inteligência Artificial para Gestão Pública e Prefeituras"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-212.svg",
+    "titulo": "Inteligência Artificial na Educação"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-213.svg",
+    "titulo": "Inteligência Artificial para Saúde, Bem-Estar e Qualidade de Vida"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-214.svg",
+    "titulo": "Inteligência Artificial para Pesquisa Científica e Produção Acadêmica"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-215.svg",
+    "titulo": "Prompt"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-216.svg",
+    "titulo": "Chatbot"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-217.svg",
+    "titulo": "LLM"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-218.svg",
+    "titulo": "RAG"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-219.svg",
+    "titulo": "Agentes de IA"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-220.svg",
+    "titulo": "Privacidade"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-221.svg",
+    "titulo": "Fake News"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-222.svg",
+    "titulo": "Deepfake"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-223.svg",
+    "titulo": "NotebookLM"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-224.svg",
+    "titulo": "Canva AI"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-225.svg",
+    "titulo": "Google Colab"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-226.svg",
+    "titulo": "Power BI"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-227.svg",
+    "titulo": "Gestão Pública"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-228.svg",
+    "titulo": "Saúde"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-229.svg",
+    "titulo": "Pesquisa Científica"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-230.svg",
+    "titulo": "Educação"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-231.svg",
+    "titulo": "Negócios"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-232.svg",
+    "titulo": "Cidadania Digital"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-233.svg",
+    "titulo": "Inteligência Artificial"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-234.svg",
+    "titulo": "Machine Learning"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-235.svg",
+    "titulo": "Deep Learning"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-236.svg",
+    "titulo": "IA Generativa"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-237.svg",
+    "titulo": "Prompt"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-238.svg",
+    "titulo": "Dados"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-239.svg",
+    "titulo": "Algoritmo"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-240.svg",
+    "titulo": "Modelo de IA"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-241.svg",
+    "titulo": "Processamento de Linguagem Natural"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-242.svg",
+    "titulo": "Visão Computacional"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-243.svg",
+    "titulo": "Sistemas de Recomendação"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-244.svg",
+    "titulo": "LLM - Modelo de Linguagem"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-245.svg",
+    "titulo": "Alucinação"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-246.svg",
+    "titulo": "Viés Algorítmico"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-247.svg",
+    "titulo": "LGPD e Privacidade"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-248.svg",
+    "titulo": "Deepfake"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-249.svg",
+    "titulo": "Fake News e Desinformação"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-250.svg",
+    "titulo": "RAG"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-251.svg",
+    "titulo": "Agentes de IA"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-252.svg",
+    "titulo": "Classificação"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-253.svg",
+    "titulo": "Regressão"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-254.svg",
+    "titulo": "Agrupamento"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-255.svg",
+    "titulo": "Explicabilidade"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-256.svg",
+    "titulo": "Automação com IA"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-257.svg",
+    "titulo": "NotebookLM"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-258.svg",
+    "titulo": "Canva AI"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-259.svg",
+    "titulo": "Google Colab"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-260.svg",
+    "titulo": "Power BI"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-261.svg",
+    "titulo": "Perplexity"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-262.svg",
+    "titulo": "Engenharia de Prompt"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-263.svg",
+    "titulo": "Fundamentos e Letramento em Inteligência Artificial"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-264.svg",
+    "titulo": "Ferramentas e Aplicações da Inteligência Artificial"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-265.svg",
+    "titulo": "Produção de Conteúdos com Inteligência Artificial"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-266.svg",
+    "titulo": "Compreendendo o Funcionamento da Inteligência Artificial"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-267.svg",
+    "titulo": "Desenvolvimento de Soluções Baseadas em Inteligência Artificial"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-268.svg",
+    "titulo": "Inteligência Artificial para Negócios e Empreendedorismo"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-269.svg",
+    "titulo": "Inteligência Artificial para Gestão Pública e Prefeituras"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-270.svg",
+    "titulo": "Inteligência Artificial na Educação"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-271.svg",
+    "titulo": "Inteligência Artificial para Saúde, Bem-Estar e Qualidade de Vida"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-272.svg",
+    "titulo": "Inteligência Artificial para Pesquisa Científica e Produção Acadêmica"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-273.svg",
+    "titulo": "Prompt"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-274.svg",
+    "titulo": "Chatbot"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-275.svg",
+    "titulo": "LLM"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-276.svg",
+    "titulo": "RAG"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-277.svg",
+    "titulo": "Agentes de IA"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-278.svg",
+    "titulo": "Privacidade"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-279.svg",
+    "titulo": "Fake News"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-280.svg",
+    "titulo": "Deepfake"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-281.svg",
+    "titulo": "NotebookLM"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-282.svg",
+    "titulo": "Canva AI"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-283.svg",
+    "titulo": "Google Colab"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-284.svg",
+    "titulo": "Power BI"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-285.svg",
+    "titulo": "Gestão Pública"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-286.svg",
+    "titulo": "Saúde"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-287.svg",
+    "titulo": "Pesquisa Científica"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-288.svg",
+    "titulo": "Educação"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-289.svg",
+    "titulo": "Negócios"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-290.svg",
+    "titulo": "Cidadania Digital"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-291.svg",
+    "titulo": "Inteligência Artificial"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-292.svg",
+    "titulo": "Machine Learning"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-293.svg",
+    "titulo": "Deep Learning"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-294.svg",
+    "titulo": "IA Generativa"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-295.svg",
+    "titulo": "Prompt"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-296.svg",
+    "titulo": "Dados"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-297.svg",
+    "titulo": "Algoritmo"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-298.svg",
+    "titulo": "Modelo de IA"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-299.svg",
+    "titulo": "Processamento de Linguagem Natural"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-300.svg",
+    "titulo": "Visão Computacional"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-301.svg",
+    "titulo": "Sistemas de Recomendação"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-302.svg",
+    "titulo": "LLM - Modelo de Linguagem"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-303.svg",
+    "titulo": "Alucinação"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-304.svg",
+    "titulo": "Viés Algorítmico"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-305.svg",
+    "titulo": "LGPD e Privacidade"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-306.svg",
+    "titulo": "Deepfake"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-307.svg",
+    "titulo": "Fake News e Desinformação"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-308.svg",
+    "titulo": "RAG"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-309.svg",
+    "titulo": "Agentes de IA"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-310.svg",
+    "titulo": "Classificação"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-311.svg",
+    "titulo": "Regressão"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-312.svg",
+    "titulo": "Agrupamento"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-313.svg",
+    "titulo": "Explicabilidade"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-314.svg",
+    "titulo": "Automação com IA"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-315.svg",
+    "titulo": "NotebookLM"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-316.svg",
+    "titulo": "Canva AI"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-317.svg",
+    "titulo": "Google Colab"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-318.svg",
+    "titulo": "Power BI"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-319.svg",
+    "titulo": "Perplexity"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-320.svg",
+    "titulo": "Engenharia de Prompt"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-321.svg",
+    "titulo": "Fundamentos e Letramento em Inteligência Artificial"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-322.svg",
+    "titulo": "Ferramentas e Aplicações da Inteligência Artificial"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-323.svg",
+    "titulo": "Produção de Conteúdos com Inteligência Artificial"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-324.svg",
+    "titulo": "Compreendendo o Funcionamento da Inteligência Artificial"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-325.svg",
+    "titulo": "Desenvolvimento de Soluções Baseadas em Inteligência Artificial"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-326.svg",
+    "titulo": "Inteligência Artificial para Negócios e Empreendedorismo"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-327.svg",
+    "titulo": "Inteligência Artificial para Gestão Pública e Prefeituras"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-328.svg",
+    "titulo": "Inteligência Artificial na Educação"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-329.svg",
+    "titulo": "Inteligência Artificial para Saúde, Bem-Estar e Qualidade de Vida"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-330.svg",
+    "titulo": "Inteligência Artificial para Pesquisa Científica e Produção Acadêmica"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-331.svg",
+    "titulo": "Prompt"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-332.svg",
+    "titulo": "Chatbot"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-333.svg",
+    "titulo": "LLM"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-334.svg",
+    "titulo": "RAG"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-335.svg",
+    "titulo": "Agentes de IA"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-336.svg",
+    "titulo": "Privacidade"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-337.svg",
+    "titulo": "Fake News"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-338.svg",
+    "titulo": "Deepfake"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-339.svg",
+    "titulo": "NotebookLM"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-340.svg",
+    "titulo": "Canva AI"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-341.svg",
+    "titulo": "Google Colab"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-342.svg",
+    "titulo": "Power BI"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-343.svg",
+    "titulo": "Gestão Pública"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-344.svg",
+    "titulo": "Saúde"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-345.svg",
+    "titulo": "Pesquisa Científica"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-346.svg",
+    "titulo": "Educação"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-347.svg",
+    "titulo": "Negócios"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-348.svg",
+    "titulo": "Cidadania Digital"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-349.svg",
+    "titulo": "Inteligência Artificial"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-350.svg",
+    "titulo": "Machine Learning"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-351.svg",
+    "titulo": "Deep Learning"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-352.svg",
+    "titulo": "IA Generativa"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-353.svg",
+    "titulo": "Prompt"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-354.svg",
+    "titulo": "Dados"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-355.svg",
+    "titulo": "Algoritmo"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-356.svg",
+    "titulo": "Modelo de IA"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-357.svg",
+    "titulo": "Processamento de Linguagem Natural"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-358.svg",
+    "titulo": "Visão Computacional"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-359.svg",
+    "titulo": "Sistemas de Recomendação"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-360.svg",
+    "titulo": "LLM - Modelo de Linguagem"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-361.svg",
+    "titulo": "Alucinação"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-362.svg",
+    "titulo": "Viés Algorítmico"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-363.svg",
+    "titulo": "LGPD e Privacidade"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-364.svg",
+    "titulo": "Deepfake"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-365.svg",
+    "titulo": "Fake News e Desinformação"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-366.svg",
+    "titulo": "RAG"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-367.svg",
+    "titulo": "Agentes de IA"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-368.svg",
+    "titulo": "Classificação"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-369.svg",
+    "titulo": "Regressão"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-370.svg",
+    "titulo": "Agrupamento"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-371.svg",
+    "titulo": "Explicabilidade"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-372.svg",
+    "titulo": "Automação com IA"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-373.svg",
+    "titulo": "NotebookLM"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-374.svg",
+    "titulo": "Canva AI"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-375.svg",
+    "titulo": "Google Colab"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-376.svg",
+    "titulo": "Power BI"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-377.svg",
+    "titulo": "Perplexity"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-378.svg",
+    "titulo": "Engenharia de Prompt"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-379.svg",
+    "titulo": "Fundamentos e Letramento em Inteligência Artificial"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-380.svg",
+    "titulo": "Ferramentas e Aplicações da Inteligência Artificial"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-381.svg",
+    "titulo": "Produção de Conteúdos com Inteligência Artificial"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-382.svg",
+    "titulo": "Compreendendo o Funcionamento da Inteligência Artificial"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-383.svg",
+    "titulo": "Desenvolvimento de Soluções Baseadas em Inteligência Artificial"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-384.svg",
+    "titulo": "Inteligência Artificial para Negócios e Empreendedorismo"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-385.svg",
+    "titulo": "Inteligência Artificial para Gestão Pública e Prefeituras"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-386.svg",
+    "titulo": "Inteligência Artificial na Educação"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-387.svg",
+    "titulo": "Inteligência Artificial para Saúde, Bem-Estar e Qualidade de Vida"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-388.svg",
+    "titulo": "Inteligência Artificial para Pesquisa Científica e Produção Acadêmica"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-389.svg",
+    "titulo": "Prompt"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-390.svg",
+    "titulo": "Chatbot"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-391.svg",
+    "titulo": "LLM"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-392.svg",
+    "titulo": "RAG"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-393.svg",
+    "titulo": "Agentes de IA"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-394.svg",
+    "titulo": "Privacidade"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-395.svg",
+    "titulo": "Fake News"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-396.svg",
+    "titulo": "Deepfake"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-397.svg",
+    "titulo": "NotebookLM"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-398.svg",
+    "titulo": "Canva AI"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-399.svg",
+    "titulo": "Google Colab"
+  },
+  {
+    "tipo": "ilustracao",
+    "arquivo": "assets/figuras/ilustracoes/ilustracao-400.svg",
+    "titulo": "Power BI"
+  }
+]

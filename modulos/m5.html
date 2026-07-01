@@ -1,0 +1,797 @@
+<!doctype html><html lang="pt-br"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Módulo 5 – Desenvolvimento de Soluções Baseadas em Inteligência Artificial • unesp.IA</title><link rel="stylesheet" href="../assets/css/style.css"><script src="../assets/js/search.js"></script></head><body>
+<div class="topbar"><a class="brand" href="../index.html"><img class="brand-logo" src="../assets/img/logo-unesp-ia.svg" alt="unesp.IA"><small>Coleção Editorial | Portal Didático dos Participantes</small></a><div class="nav"><a href="../index.html">Início</a><a href="../modulos.html">Módulos</a><a href="../trilhas.html">Trilhas</a><a href="../conceitos.html">Conceitos</a><a href="../ferramentas.html">Ferramentas</a><a href="../laboratorios.html">Laboratórios</a><a href="../materiais.html">Materiais</a><a href="../personagens.html">Personagens</a><a href="../banco-visual.html">Banco Visual</a><a href="../mapa-conhecimento.html">Mapa</a></div></div><main><div class="container content module-full module-m5" id="top"><div class="breadcrumbs"><a href="../index.html">Início</a> / <a href="../modulos.html">Módulos</a> / Módulo 5</div><div class="hero"><span class="badge">M5</span><h1>Desenvolvimento de Soluções Baseadas em Inteligência Artificial</h1></div><div class="module-actions"><a class="pill" href="../conceitos.html">Conceitos</a><a class="pill" href="../laboratorios.html">Laboratórios</a><a class="pill" href="../atividades/atividades-m5.html">Atividades</a><a class="pill" href="../slides/slides-m5.html">Slides</a><a class="pill" href="../banco-visual.html">Banco visual</a></div><section class="module-toolbox"><h3>Ferramentas relacionadas neste módulo</h3><div class="related-strip"><a class="pill" href="../ferramentas/google-colab.html">Google Colab</a><a class="pill" href="../ferramentas/teachable-machine.html">Teachable Machine</a><a class="pill" href="../ferramentas/github-copilot.html">GitHub Copilot</a><a class="pill" href="../ferramentas/phind.html">Phind</a><a class="pill" href="../ferramentas/excel-sheets.html">Excel e Google Sheets</a><a class="pill" href="../ferramentas/drawio.html">Draw.io</a></div></section><div class="mini-toc"><strong>Unidades deste módulo</strong><a href="#unidade-5-1-da-ideia-ao-problema-identificando-oportunidades-para-ia">Unidade 5.1 – Da ideia ao problema: identificando oportunidades para IA</a><a href="#unidade-5-2-dados-para-solucoes-com-ia">Unidade 5.2 – Dados para soluções com IA</a><a href="#unidade-5-3-prototipagem-no-code-e-low-code-com-ia">Unidade 5.3 – Prototipagem no-code (sem código) e low-code (pouco código) com IA</a><a href="#unidade-5-4-introducao-pratica-ao-python-e-google-colab">Unidade 5.4 – Introdução prática ao Python e Google Colab</a><a href="#unidade-5-5-construcao-de-um-modelo-ou-solucao-simples">Unidade 5.5 – Construção de um modelo ou solução simples</a><a href="#unidade-5-6-avaliacao-documentacao-e-apresentacao-do-prototipo">Unidade 5.6 – Avaliação, documentação e apresentação do protótipo</a></div><section class="module-visual" aria-label="Apoio visual do módulo"><figure><img src="../assets/img/modulos/m5-visual.svg" alt="Mapa visual do módulo 5: Da necessidade ao protótipo"></figure><aside class="character-guide"><img src="../assets/img/personagens/pedro.png" alt="Personagem Pedro"><h3>Pedro acompanha este módulo</h3><p>Pedro constrói uma solução pequena, testa com usuários e registra limites antes de ampliar o projeto.</p><a class="pill" href="../personagens/pedro.html">Conhecer Pedro</a></aside></section><h3 id="apresentacao">Apresentação</h3>
+<p>Nos módulos anteriores, o participante conheceu os fundamentos da <a class="term" href="../conceitos/ia.html">Inteligência Artificial</a>, utilizou ferramentas de IA, produziu conteúdos digitais e compreendeu, de forma introdutória, como <a class="term" href="../conceitos/modelo.html">modelos</a> aprendem a partir de <a class="term" href="../conceitos/dados.html">dados</a>. O Módulo 5 avança para a criação de soluções simples baseadas em IA, aproximando o participante do desenvolvimento de protótipos, experimentos e aplicações práticas.</p>
+<p>A proposta deste módulo não é formar programadores avançados ou cientistas de <a class="term" href="../conceitos/dados.html">dados</a>, mas introduzir o processo de desenvolvimento de soluções com IA de maneira acessível, orientada por problemas reais e apoiada por ferramentas simples. O participante será conduzido desde a identificação de um problema até a construção de um protótipo funcional ou demonstrativo.</p>
+<p>O foco será aprender fazendo: definir um problema, pensar nos <a class="term" href="../conceitos/dados.html">dados</a> necessários, escolher uma abordagem, utilizar ferramentas de IA, construir uma solução simples, testar resultados, avaliar limitações e apresentar o protótipo de forma clara.</p>
+<h2 class="section-title" id="1-organizacao-do-modulo">1. Organização do Módulo</h2>
+<h3 id="carga-horaria-total">Carga horária total</h3>
+<p>16 horas.</p>
+<h3 id="publico-recomendado">Público recomendado</h3>
+<p>Estudantes, professores, trabalhadores, empreendedores, servidores públicos, jovens, adultos e participantes interessados em desenvolver soluções simples com IA. Recomenda-se que o participante tenha realizado os Módulos 1, 2 e 4, ou possua noções básicas sobre IA, ferramentas digitais e funcionamento de <a class="term" href="../conceitos/modelo.html">modelos</a>.</p>
+<h3 id="objetivo-geral">Objetivo geral</h3>
+<p>Capacitar os participantes para planejar, prototipar, testar e apresentar soluções simples baseadas em <a class="term" href="../conceitos/ia.html">Inteligência Artificial</a>, utilizando ferramentas acessíveis, <a class="term" href="../conceitos/dados.html">dados</a> simples, programação introdutória ou plataformas no-code/low-code, com atenção à <a class="term" href="../conceitos/lgpd.html">ética</a>, segurança, <a class="term" href="../conceitos/lgpd.html">privacidade</a>, qualidade dos <a class="term" href="../conceitos/dados.html">dados</a> e utilidade prática.</p>
+<h3 id="competencias-desenvolvidas">Competências desenvolvidas</h3>
+<p>Ao final do módulo, espera-se que o participante seja capaz de:</p>
+<ul class="list">
+<li>identificar problemas que podem ser apoiados por IA;</li>
+<li>transformar uma necessidade real em proposta de solução;</li>
+<li>definir objetivo, público-alvo, <a class="term" href="../conceitos/dados.html">dados</a> necessários e resultado esperado;</li>
+<li>compreender o ciclo básico de desenvolvimento de uma solução com IA;</li>
+<li>organizar <a class="term" href="../conceitos/dados.html">dados</a> simples para uso em protótipos;</li>
+<li>utilizar ferramentas no-code, low-code ou ambientes introdutórios como <a class="term" href="../ferramentas/google-colab.html">Google Colab</a>;</li>
+<li>compreender noções básicas de Python aplicado à IA, quando pertinente;</li>
+<li>construir protótipos simples com IA;</li>
+<li>testar e avaliar resultados iniciais;</li>
+<li>reconhecer limitações, riscos, <a class="term" href="../conceitos/vies.html">vieses</a> e cuidados éticos;</li>
+<li>documentar uma solução de IA;</li>
+<li>apresentar um protótipo funcional ou demonstrativo.</li>
+</ul>
+<h2 class="section-title" id="2-estrutura-das-unidades">2. Estrutura das Unidades</h2>
+<div class="table-wrap"><table class="table"><tr><th>Unidade</th><th>Tema</th><th>Carga horária</th></tr><tr><td>Unidade 5.1</td><td>Da ideia ao problema: identificando oportunidades para IA</td><td>2h</td></tr><tr><td>Unidade 5.2</td><td><a class="term" href="../conceitos/dados.html">Dados</a> para soluções com IA</td><td>2h</td></tr><tr><td>Unidade 5.3</td><td>Prototipagem no-code e low-code com IA</td><td>3h</td></tr><tr><td>Unidade 5.4</td><td>Introdução prática ao Python e <a class="term" href="../ferramentas/google-colab.html">Google Colab</a></td><td>3h</td></tr><tr><td>Unidade 5.5</td><td>Construção de um <a class="term" href="../conceitos/modelo.html">modelo</a> ou solução simples</td><td>3h</td></tr><tr><td>Unidade 5.6</td><td>Avaliação, documentação e apresentação do protótipo</td><td>3h</td></tr><tr><td>Total</td><td></td><td>16h</td></tr></table></div>
+<p>A sequência pedagógica segue a lógica:</p>
+<p>problema → <a class="term" href="../conceitos/dados.html">dados</a> → protótipo → programação introdutória → solução simples → avaliação e apresentação</p>
+<h2 class="unit-title" id="unidade-5-1-da-ideia-ao-problema-identificando-oportunidades-para-ia">Unidade 5.1 – Da ideia ao problema: identificando oportunidades para IA</h2>
+<h3 id="carga-horaria">Carga horária</h3>
+<p>2 horas</p>
+<h3 id="objetivo-da-unidade">Objetivo da unidade</h3>
+<p>Capacitar os participantes para identificar problemas reais que podem ser apoiados por IA, definindo objetivo, público-alvo, contexto, necessidade e resultado esperado.</p>
+<h3 id="situacao-de-abertura">Situação de abertura</h3>
+<p>Uma escola quer identificar estudantes que precisam de apoio.</p><p>Uma pequena loja quer melhorar o atendimento aos clientes.</p><p>Uma prefeitura quer organizar solicitações recebidas pela ouvidoria.</p><p>Um professor quer criar atividades personalizadas.</p><p>Um cidadão quer organizar documentos e informações.</p><p>Um empreendedor quer prever quais produtos vendem mais.</p>
+<p>Todas essas situações podem se beneficiar da IA, mas antes de pensar na ferramenta é necessário compreender o problema.</p>
+<h3 id="conceitos-principais">Conceitos principais</h3>
+<p>Uma solução com IA começa com uma necessidade real. A IA não deve ser usada apenas porque é moderna ou atrativa. Ela deve ser utilizada quando ajuda a resolver um problema, organizar informações, apoiar decisões, automatizar tarefas ou melhorar um processo.</p>
+<p>Antes de desenvolver uma solução, é necessário responder:</p>
+<ul class="list">
+<li>Qual é o problema?</li>
+<li>Quem é afetado por ele?</li>
+<li>Por que ele é importante?</li>
+<li>Que <a class="term" href="../conceitos/dados.html">dados</a> estão disponíveis?</li>
+<li>Que resultado esperamos?</li>
+<li>A IA é realmente necessária?</li>
+<li>Há riscos ou cuidados éticos?</li>
+<li>Quem será responsável pela decisão final?</li>
+</ul>
+<h3 id="diferenca-entre-ideia-problema-e-solucao">Diferença entre ideia, problema e solução</h3>
+<h4 id="ideia">Ideia</h4>
+<p>É uma possibilidade inicial.</p>
+<p>Exemplo: “usar IA em uma escola”.</p>
+<h4 id="problema">Problema</h4>
+<p>É uma necessidade concreta a ser resolvida.</p>
+<p>Exemplo: “identificar estudantes com dificuldade para que recebam apoio antes da reprovação”.</p>
+<h4 id="solucao">Solução</h4>
+<p>É a proposta prática para enfrentar o problema.</p>
+<p>Exemplo: “criar um painel simples que organize frequência, notas e atividades para indicar estudantes que precisam de acompanhamento”.</p>
+<h3 id="quando-usar-ia">Quando usar IA?</h3>
+<p>A IA pode ser útil quando há necessidade de:</p>
+<ul class="list">
+<li>organizar muitos <a class="term" href="../conceitos/dados.html">dados</a>;</li>
+<li>identificar padrões;</li>
+<li>classificar informações;</li>
+<li>prever tendências;</li>
+<li>recomendar ações;</li>
+<li>gerar conteúdos;</li>
+<li>automatizar tarefas repetitivas;</li>
+<li>apoiar atendimento;</li>
+<li>resumir documentos;</li>
+<li>criar protótipos inteligentes.</li>
+</ul>
+<h3 id="quando-nao-usar-ia">Quando não usar IA?</h3>
+<p>Nem todo problema precisa de IA.</p>
+<p>A IA pode não ser adequada quando:</p>
+<ul class="list">
+<li>não há <a class="term" href="../conceitos/dados.html">dados</a> suficientes;</li>
+<li>o problema pode ser resolvido com uma regra simples;</li>
+<li>o risco de erro é muito alto;</li>
+<li>há <a class="term" href="../conceitos/dados.html">dados</a> sensíveis sem proteção adequada;</li>
+<li>não há supervisão humana;</li>
+<li>a solução pode prejudicar pessoas;</li>
+<li>o objetivo não está claro.</li>
+</ul>
+<h3 id="exemplos-de-problemas-possiveis">Exemplos de problemas possíveis</h3>
+<h4 id="educacao">Educação</h4>
+<ul class="list">
+<li>identificar dúvidas frequentes de estudantes;</li>
+<li>criar exercícios personalizados;</li>
+<li>organizar materiais de estudo;</li>
+<li>acompanhar frequência e desempenho.</li>
+</ul>
+<h4 id="negocios">Negócios</h4>
+<ul class="list">
+<li>classificar mensagens de clientes;</li>
+<li>gerar descrições de produtos;</li>
+<li>prever vendas simples;</li>
+<li>organizar feedbacks.</li>
+</ul>
+<h4 id="gestao-publica">Gestão pública</h4>
+<ul class="list">
+<li>agrupar solicitações por tema;</li>
+<li>resumir documentos;</li>
+<li>organizar demandas de cidadãos;</li>
+<li>apoiar produção de comunicados.</li>
+</ul>
+<h4 id="saude-e-bem-estar">Saúde e bem-estar</h4>
+<ul class="list">
+<li>organizar rotina de autocuidado;</li>
+<li>criar lembretes;</li>
+<li>classificar informações gerais;</li>
+<li>apoiar orientação inicial, sem substituir profissional.</li>
+</ul>
+<h4 id="cidadania-digital">Cidadania digital</h4>
+<ul class="list">
+<li>organizar dúvidas para atendimento;</li>
+<li>resumir documentos públicos;</li>
+<li>identificar sinais de golpes;</li>
+<li>criar guias simples.</li>
+</ul>
+<div class="box warn"><strong>Atenção</strong></div>
+<p>A IA deve apoiar decisões, não substituir responsabilidade humana. Em áreas sensíveis como saúde, justiça, segurança, educação, crédito e políticas públicas, decisões automatizadas exigem cuidado, transparência e supervisão.</p>
+<div class="box tip"><strong>Teste agora</strong></div>
+<p>Escolha uma situação real e responda:</p>
+<ol class="steps">
+<li>Qual é o problema?</li>
+<li>Quem é afetado?</li>
+<li>Que <a class="term" href="../conceitos/dados.html">dados</a> poderiam ajudar?</li>
+<li>Que resultado seria útil?</li>
+<li>A IA é necessária?</li>
+<li>Qual cuidado ético deve ser considerado?</li>
+</ol>
+<h3 id="atividade-guiada-canvas-do-problema-de-ia">Atividade guiada – Canvas do problema de IA</h3>
+<h4 id="objetivo">Objetivo</h4>
+<p>Transformar uma ideia inicial em um problema claro para uma solução com IA.</p>
+<h4 id="passo-a-passo">Passo a passo</h4>
+<ol class="steps">
+<li>Escolher uma área de interesse:</li>
+</ol>
+<ul class="list">
+<li>educação;</li>
+<li>negócios;</li>
+<li>gestão pública;</li>
+<li>saúde e bem-estar;</li>
+<li>vida cotidiana;</li>
+<li>comunicação;</li>
+<li>cidadania digital.</li>
+</ul>
+<ol class="steps">
+<li>Descrever a ideia inicial.</li>
+<li>Transformar a ideia em problema.</li>
+<li>Identificar o público beneficiado.</li>
+<li>Listar <a class="term" href="../conceitos/dados.html">dados</a> que poderiam ser usados.</li>
+<li>Definir o resultado esperado.</li>
+<li>Identificar riscos e cuidados.</li>
+<li>Registrar tudo em um quadro ou formulário.</li>
+</ol>
+<h3 id="modelo-de-canvas"><a class="term" href="../conceitos/modelo.html">Modelo</a> de canvas</h3>
+<p>Título da ideia:</p>
+<p>Problema identificado:</p>
+<p>Público-alvo:</p>
+<p><a class="term" href="../conceitos/dados.html">Dados</a> necessários:</p>
+<p>Tipo de apoio da IA:</p>
+<p>Resultado esperado:</p>
+<p>Riscos e cuidados:</p>
+<p>Responsável pela decisão final:</p>
+<div class="box practice"><strong>Produto da unidade</strong></div>
+<p>Canvas do problema de IA.</p>
+<div class="box tip"><strong>Para refletir</strong></div>
+<p>A pergunta mais importante é “qual ferramenta de IA usar?” ou “qual problema realmente precisamos resolver?”</p>
+<h2 class="unit-title" id="unidade-5-2-dados-para-solucoes-com-ia">Unidade 5.2 – <a class="term" href="../conceitos/dados.html">Dados</a> para soluções com IA</h2>
+<h3 id="carga-horaria">Carga horária</h3>
+<p>2 horas</p>
+<h3 id="objetivo-da-unidade">Objetivo da unidade</h3>
+<p>Capacitar os participantes para compreender, organizar e preparar <a class="term" href="../conceitos/dados.html">dados</a> simples que possam ser utilizados em protótipos ou soluções introdutórias com IA.</p>
+<h3 id="situacao-de-abertura">Situação de abertura</h3>
+<p>Carlos quer prever quais produtos vendem mais em sua loja, mas seus registros estão espalhados em cadernos, mensagens e planilhas incompletas.</p>
+<p>Uma professora quer acompanhar dificuldades dos alunos, mas as informações estão em diferentes documentos.</p>
+<p>Uma prefeitura quer organizar solicitações de cidadãos, mas os textos estão escritos de formas muito diferentes.</p>
+<p>Antes de usar IA, é preciso organizar os <a class="term" href="../conceitos/dados.html">dados</a>.</p>
+<h3 id="conceitos-principais">Conceitos principais</h3>
+<p><a class="term" href="../conceitos/dados.html">Dados</a> são a base de muitas soluções com IA. Uma solução só será útil se os <a class="term" href="../conceitos/dados.html">dados</a> forem relevantes, organizados, atualizados e adequados ao problema.</p>
+<p>Nem sempre é necessário ter uma base grande. Para um protótipo, é possível trabalhar com <a class="term" href="../conceitos/dados.html">dados</a> pequenos e exemplos simples, desde que sejam bem compreendidos.</p>
+<h3 id="tipos-de-dados-usados-em-solucoes-com-ia">Tipos de <a class="term" href="../conceitos/dados.html">dados</a> usados em soluções com IA</h3>
+<h4 id="dados-numericos"><a class="term" href="../conceitos/dados.html">Dados</a> numéricos</h4>
+<p>Exemplos:</p>
+<ul class="list">
+<li>idade;</li>
+<li>valor de venda;</li>
+<li>quantidade;</li>
+<li>nota;</li>
+<li>frequência;</li>
+<li>tempo;</li>
+<li>número de atendimentos.</li>
+</ul>
+<h4 id="dados-categoricos"><a class="term" href="../conceitos/dados.html">Dados</a> categóricos</h4>
+<p>Exemplos:</p>
+<ul class="list">
+<li>tipo de produto;</li>
+<li>bairro;</li>
+<li>turma;</li>
+<li>status;</li>
+<li>categoria de solicitação;</li>
+<li>forma de pagamento.</li>
+</ul>
+<h4 id="dados-textuais"><a class="term" href="../conceitos/dados.html">Dados</a> textuais</h4>
+<p>Exemplos:</p>
+<ul class="list">
+<li>comentários;</li>
+<li>mensagens;</li>
+<li>reclamações;</li>
+<li>descrições;</li>
+<li>respostas abertas;</li>
+<li>documentos.</li>
+</ul>
+<h4 id="dados-visuais"><a class="term" href="../conceitos/dados.html">Dados</a> visuais</h4>
+<p>Exemplos:</p>
+<ul class="list">
+<li>imagens;</li>
+<li>fotos;</li>
+<li>capturas de tela;</li>
+<li>desenhos;</li>
+<li>produtos;</li>
+<li>objetos.</li>
+</ul>
+<h3 id="organizacao-dos-dados">Organização dos <a class="term" href="../conceitos/dados.html">dados</a></h3>
+<p>Uma forma simples de organizar <a class="term" href="../conceitos/dados.html">dados</a> é usar uma tabela.</p>
+<p>Exemplo de tabela para solicitações de cidadãos:</p>
+<div class="table-wrap"><table class="table"><tr><th>Data</th><th>Bairro</th><th>Texto da solicitação</th><th>Categoria</th></tr><tr><td>10/03</td><td>Centro</td><td>Lâmpada queimada na rua</td><td>Iluminação</td></tr><tr><td>11/03</td><td>Vila Nova</td><td>Buraco na avenida</td><td>Infraestrutura</td></tr><tr><td>12/03</td><td>Jardim Sul</td><td>Falta de médico no posto</td><td>Saúde</td></tr></table></div>
+<h3 id="cuidados-com-dados-pessoais">Cuidados com <a class="term" href="../conceitos/dados.html">dados</a> pessoais</h3>
+<p>Antes de usar <a class="term" href="../conceitos/dados.html">dados</a> em uma solução com IA, verifique se existem:</p>
+<ul class="list">
+<li>nomes;</li>
+<li>CPFs;</li>
+<li>endereços;</li>
+<li>telefones;</li>
+<li>e-mails;</li>
+<li>informações de saúde;</li>
+<li><a class="term" href="../conceitos/dados.html">dados</a> bancários;</li>
+<li><a class="term" href="../conceitos/dados.html">dados</a> de crianças ou adolescentes;</li>
+<li>informações sensíveis.</li>
+</ul>
+<p>Sempre que possível, use <a class="term" href="../conceitos/dados.html">dados</a> fictícios, anonimizados ou exemplos simulados em atividades didáticas.</p>
+<h3 id="dados-ficticios-e-dados-reais"><a class="term" href="../conceitos/dados.html">Dados</a> fictícios e <a class="term" href="../conceitos/dados.html">dados</a> reais</h3>
+<h4 id="dados-ficticios"><a class="term" href="../conceitos/dados.html">Dados</a> fictícios</h4>
+<p>São <a class="term" href="../conceitos/dados.html">dados</a> inventados para estudo ou teste.</p>
+<p>Exemplo:</p>
+<p>Cliente A, Produto X, Valor R$ 50,00.</p>
+<h4 id="dados-reais"><a class="term" href="../conceitos/dados.html">Dados</a> reais</h4>
+<p>São <a class="term" href="../conceitos/dados.html">dados</a> verdadeiros de pessoas, empresas ou instituições.</p>
+<p>Exigem cuidado, autorização, proteção e finalidade clara.</p>
+<h3 id="preparacao-dos-dados">Preparação dos <a class="term" href="../conceitos/dados.html">dados</a></h3>
+<p>Preparar <a class="term" href="../conceitos/dados.html">dados</a> pode envolver:</p>
+<ul class="list">
+<li>remover duplicidades;</li>
+<li>corrigir erros;</li>
+<li>preencher <a class="term" href="../conceitos/dados.html">dados</a> faltantes;</li>
+<li>padronizar categorias;</li>
+<li>remover informações sensíveis;</li>
+<li>organizar colunas;</li>
+<li>transformar texto em categorias;</li>
+<li>separar exemplos para teste.</li>
+</ul>
+<h3 id="qualidade-dos-dados">Qualidade dos <a class="term" href="../conceitos/dados.html">dados</a></h3>
+<p><a class="term" href="../conceitos/dados.html">Dados</a> bons devem ser:</p>
+<ul class="list">
+<li>relevantes;</li>
+<li>corretos;</li>
+<li>atualizados;</li>
+<li>organizados;</li>
+<li>compreensíveis;</li>
+<li>representativos;</li>
+<li>seguros.</li>
+</ul>
+<div class="box warn"><strong>Atenção</strong></div>
+<p>Nunca copie bases com <a class="term" href="../conceitos/dados.html">dados</a> pessoais ou sensíveis para ferramentas de IA sem autorização. Em atividades do curso, prefira bases fictícias, públicas ou anonimizadas.</p>
+<div class="box tip"><strong>Teste agora</strong></div>
+<p>Observe uma pequena tabela e responda:</p>
+<ol class="steps">
+<li>Quais colunas existem?</li>
+<li>Há <a class="term" href="../conceitos/dados.html">dados</a> pessoais?</li>
+<li>Há <a class="term" href="../conceitos/dados.html">dados</a> faltantes?</li>
+<li>Há categorias inconsistentes?</li>
+<li>O que precisa ser corrigido?</li>
+<li>A tabela poderia ser usada em um protótipo?</li>
+</ol>
+<h3 id="atividade-guiada-preparando-dados-para-um-prototipo">Atividade guiada – Preparando <a class="term" href="../conceitos/dados.html">dados</a> para um protótipo</h3>
+<h4 id="objetivo">Objetivo</h4>
+<p>Organizar uma pequena base de <a class="term" href="../conceitos/dados.html">dados</a> para uso em uma solução simples com IA.</p>
+<h4 id="passo-a-passo">Passo a passo</h4>
+<ol class="steps">
+<li>Escolher um problema definido na Unidade 5.1.</li>
+<li>Criar ou receber uma pequena base fictícia.</li>
+<li>Identificar as colunas.</li>
+<li>Verificar <a class="term" href="../conceitos/dados.html">dados</a> faltantes ou incorretos.</li>
+<li>Padronizar categorias.</li>
+<li>Remover ou evitar <a class="term" href="../conceitos/dados.html">dados</a> pessoais.</li>
+<li>Definir qual coluna pode ser a resposta esperada, quando houver.</li>
+<li>Salvar a base organizada.</li>
+</ol>
+<h4 id="produto-da-unidade">Produto da unidade</h4>
+<p>Base simples organizada para protótipo.</p>
+<div class="box tip"><strong>Para refletir</strong></div>
+<p>É melhor ter muitos <a class="term" href="../conceitos/dados.html">dados</a> desorganizados ou poucos <a class="term" href="../conceitos/dados.html">dados</a> bem compreendidos e bem organizados?</p>
+<h2 class="unit-title" id="unidade-5-3-prototipagem-no-code-e-low-code-com-ia">Unidade 5.3 – Prototipagem no-code e low-code com IA</h2>
+<h3 id="carga-horaria">Carga horária</h3>
+<p>3 horas</p>
+<h3 id="objetivo-da-unidade">Objetivo da unidade</h3>
+<p>Apresentar formas simples de criar protótipos com IA utilizando ferramentas no-code e low-code, sem exigir programação avançada.</p>
+<h3 id="situacao-de-abertura">Situação de abertura</h3>
+<p>Dona Maria quer criar um guia simples para identificar golpes.</p><p>Carlos quer criar um formulário para receber pedidos de clientes.</p><p>Uma professora quer criar uma atividade interativa.</p><p>Uma equipe municipal quer organizar solicitações por tema.</p><p>Um estudante quer criar um classificador simples de imagens.</p>
+<p>Nem sempre é necessário começar programando. Muitas ideias podem ser testadas com ferramentas simples.</p>
+<h3 id="conceitos-principais">Conceitos principais</h3>
+<h4 id="prototipo">Protótipo</h4>
+<p>Protótipo é uma primeira versão de uma solução. Ele não precisa estar perfeito. Serve para testar uma ideia, mostrar como funcionaria e receber melhorias.</p>
+<h4 id="no-code">No-code</h4>
+<p>Ferramentas no-code permitem criar soluções sem escrever código.</p>
+<p>Exemplos:</p>
+<ul class="list">
+<li>Google Forms;</li>
+<li><a class="term" href="../ferramentas/excel-sheets.html">Google Sheets</a>;</li>
+<li><a class="term" href="../ferramentas/canva.html">Canva</a>;</li>
+<li><a class="term" href="../ferramentas/teachable-machine.html">Teachable Machine</a>;</li>
+<li>plataformas de chatbot (assistente conversacional);</li>
+<li>construtores de sites simples.</li>
+</ul>
+<h4 id="low-code">Low-code</h4>
+<p>Ferramentas low-code exigem pouco código ou configurações simples.</p>
+<p>Exemplos:</p>
+<ul class="list">
+<li>Make;</li>
+<li>Zapier;</li>
+<li>Power Automate;</li>
+<li>AppSheet;</li>
+<li>Power Apps.</li>
+</ul>
+<h3 id="tipos-de-prototipos-possiveis">Tipos de protótipos possíveis</h3>
+<h4 id="prototipo-de-chatbot">Protótipo de chatbot</h4>
+<p>Um assistente simples que responde perguntas frequentes.</p>
+<h4 id="prototipo-de-classificador">Protótipo de classificador</h4>
+<p>Um sistema que classifica imagens, textos ou solicitações.</p>
+<h4 id="prototipo-de-painel">Protótipo de painel</h4>
+<p>Uma visualização simples de <a class="term" href="../conceitos/dados.html">dados</a> em tabela ou gráfico.</p>
+<h4 id="prototipo-de-formulario-inteligente">Protótipo de formulário inteligente</h4>
+<p>Um formulário que organiza respostas e gera encaminhamentos.</p>
+<h4 id="prototipo-de-guia-interativo">Protótipo de guia interativo</h4>
+<p>Um material que ajuda o usuário a tomar decisões simples.</p>
+<h3 id="exemplo-1-classificador-com-teachable-machine">Exemplo 1 – Classificador com <a class="term" href="../ferramentas/teachable-machine.html">Teachable Machine</a></h3>
+<p>Problema: identificar objetos simples.</p>
+<p>Classes:</p>
+<ul class="list">
+<li>caneta;</li>
+<li>celular;</li>
+<li>garrafa.</li>
+</ul>
+<p>O participante coleta imagens, treina o <a class="term" href="../conceitos/modelo.html">modelo</a> e testa se ele consegue reconhecer novos exemplos.</p>
+<h3 id="exemplo-2-organizacao-de-solicitacoes-com-google-sheets">Exemplo 2 – Organização de solicitações com <a class="term" href="../ferramentas/excel-sheets.html">Google Sheets</a></h3>
+<p>Problema: organizar pedidos recebidos.</p>
+<p>Colunas:</p>
+<ul class="list">
+<li>data;</li>
+<li>bairro;</li>
+<li>descrição;</li>
+<li>categoria;</li>
+<li>prioridade.</li>
+</ul>
+<p>A IA pode ajudar a sugerir categorias ou resumir descrições.</p>
+<h3 id="exemplo-3-guia-de-atendimento-com-ia">Exemplo 3 – Guia de atendimento com IA</h3>
+<p>Problema: ajudar cidadãos a organizar dúvidas antes de procurar um serviço.</p>
+<p>A solução pode conter:</p>
+<ul class="list">
+<li>perguntas frequentes;</li>
+<li>documentos necessários;</li>
+<li>cuidados;</li>
+<li>fontes oficiais.</li>
+</ul>
+<div class="box practice"><strong>Na prática</strong></div>
+<p>Um protótipo bom não precisa ser sofisticado. Ele precisa mostrar claramente:</p>
+<ul class="list">
+<li>qual problema resolve;</li>
+<li>quem será beneficiado;</li>
+<li>como funciona;</li>
+<li>quais <a class="term" href="../conceitos/dados.html">dados</a> usa;</li>
+<li>quais limites possui;</li>
+<li>que cuidado exige.</li>
+</ul>
+<div class="box warn"><strong>Atenção</strong></div>
+<p>Protótipo não é produto final. Ele pode conter erros, limitações e funcionalidades incompletas. Deve ser apresentado como demonstração, não como solução definitiva.</p>
+<div class="box tip"><strong>Teste agora</strong></div>
+<p>Escolha uma ideia de solução e responda:</p>
+<ol class="steps">
+<li>Essa ideia pode virar um protótipo?</li>
+<li>O protótipo seria chatbot, formulário, classificador, painel ou guia?</li>
+<li>Qual ferramenta simples poderia ser usada?</li>
+<li>Que resultado o usuário veria?</li>
+<li>Que limitação o protótipo teria?</li>
+</ol>
+<h3 id="atividade-guiada-criando-um-prototipo-no-code">Atividade guiada – Criando um protótipo no-code</h3>
+<h4 id="objetivo">Objetivo</h4>
+<p>Criar uma primeira versão simples de solução com IA ou apoio de IA.</p>
+<h4 id="passo-a-passo">Passo a passo</h4>
+<ol class="steps">
+<li>Retomar o problema definido no canvas.</li>
+<li>Escolher o tipo de protótipo.</li>
+<li>Escolher a ferramenta.</li>
+<li>Criar a estrutura inicial.</li>
+<li>Inserir <a class="term" href="../conceitos/dados.html">dados</a> fictícios ou exemplos.</li>
+<li>Usar IA para gerar textos, categorias, instruções ou respostas.</li>
+<li>Testar com colegas.</li>
+<li>Registrar dificuldades e melhorias.</li>
+</ol>
+<h3 id="exemplos-de-produtos">Exemplos de produtos</h3>
+<ul class="list">
+<li>formulário inteligente;</li>
+<li>guia de perguntas e respostas;</li>
+<li>classificador simples;</li>
+<li>painel em planilha;</li>
+<li>roteiro de chatbot;</li>
+<li>protótipo visual de aplicativo.</li>
+</ul>
+<h3 id="ferramentas">Ferramentas</h3>
+<p><a class="term" href="../ferramentas/teachable-machine.html">Teachable Machine</a>, Google Forms, <a class="term" href="../ferramentas/excel-sheets.html">Google Sheets</a>, <a class="term" href="../ferramentas/canva.html">Canva</a>, <a class="term" href="../ferramentas/google-slides.html">Google Slides</a>, <a class="term" href="../ferramentas/chatgpt.html">ChatGPT</a>, <a class="term" href="../ferramentas/gemini.html">Gemini</a>, <a class="term" href="../ferramentas/copilot.html">Copilot</a>, AppSheet, Make ou Zapier, conforme disponibilidade.</p>
+<div class="box practice"><strong>Produto da unidade</strong></div>
+<p>Protótipo no-code ou low-code inicial.</p>
+<div class="box tip"><strong>Para refletir</strong></div>
+<p>O que é mais importante em um protótipo inicial: parecer pronto ou permitir aprender rapidamente com testes?</p>
+<h2 class="unit-title" id="unidade-5-4-introducao-pratica-ao-python-e-google-colab">Unidade 5.4 – Introdução prática ao Python e <a class="term" href="../ferramentas/google-colab.html">Google Colab</a></h2>
+<h3 id="carga-horaria">Carga horária</h3>
+<p>3 horas</p>
+<h3 id="objetivo-da-unidade">Objetivo da unidade</h3>
+<p>Apresentar noções introdutórias de Python e <a class="term" href="../ferramentas/google-colab.html">Google Colab</a> para manipulação simples de <a class="term" href="../conceitos/dados.html">dados</a> e construção de pequenos experimentos com IA.</p>
+<h3 id="situacao-de-abertura">Situação de abertura</h3>
+<p>Até aqui, muitos protótipos puderam ser criados com ferramentas prontas. Mas em alguns casos é necessário manipular <a class="term" href="../conceitos/dados.html">dados</a>, criar gráficos, testar <a class="term" href="../conceitos/modelo.html">modelos</a> ou personalizar soluções.</p>
+<p>Para isso, a programação pode ajudar. O Python é uma das linguagens mais utilizadas em <a class="term" href="../conceitos/ia.html">Inteligência Artificial</a>, Ciência de <a class="term" href="../conceitos/dados.html">Dados</a> e automação.</p>
+<h3 id="conceitos-principais">Conceitos principais</h3>
+<h4 id="python">Python</h4>
+<p>Python é uma linguagem de programação muito usada por ser simples, legível e poderosa.</p>
+<p>É utilizada em:</p>
+<ul class="list">
+<li>análise de <a class="term" href="../conceitos/dados.html">dados</a>;</li>
+<li>automação;</li>
+<li>IA;</li>
+<li>aprendizado de máquina;</li>
+<li>visualização de informações;</li>
+<li>desenvolvimento de protótipos.</li>
+</ul>
+<h4 id="google-colab"><a class="term" href="../ferramentas/google-colab.html">Google Colab</a></h4>
+<p><a class="term" href="../ferramentas/google-colab.html">Google Colab</a> é uma ferramenta online que permite escrever e executar códigos Python no navegador, sem instalar programas no computador.</p>
+<p>Ele permite combinar:</p>
+<ul class="list">
+<li>textos explicativos;</li>
+<li>códigos;</li>
+<li>tabelas;</li>
+<li>gráficos;</li>
+<li>resultados.</li>
+</ul>
+<h4 id="notebook">Notebook</h4>
+<p>Um notebook é um documento interativo com células de texto e células de código.</p>
+<h3 id="primeiros-conceitos-de-python">Primeiros conceitos de Python</h3>
+<h4 id="variaveis">Variáveis</h4>
+<p>Guardam valores.</p>
+<p>Exemplo conceitual:</p>
+<p>nome = &quot;Maria&quot;</p><p>idade = 65</p>
+<h4 id="listas">Listas</h4>
+<p>Guardam vários valores.</p>
+<p>Exemplo:</p>
+<p>produtos = [&quot;arroz&quot;, &quot;feijão&quot;, &quot;leite&quot;]</p>
+<h4 id="tabelas">Tabelas</h4>
+<p>Podem representar <a class="term" href="../conceitos/dados.html">dados</a> organizados em linhas e colunas.</p>
+<h4 id="bibliotecas">Bibliotecas</h4>
+<p>São conjuntos de recursos prontos.</p>
+<p>Exemplos:</p>
+<ul class="list">
+<li>Pandas para <a class="term" href="../conceitos/dados.html">dados</a>;</li>
+<li>Matplotlib para gráficos;</li>
+<li>Scikit-learn para <a class="term" href="../conceitos/modelo.html">modelos</a>;</li>
+<li>NumPy para cálculos.</li>
+</ul>
+<h3 id="manipulacao-simples-de-dados">Manipulação simples de <a class="term" href="../conceitos/dados.html">dados</a></h3>
+<p>Com Python, é possível:</p>
+<ul class="list">
+<li>abrir uma tabela;</li>
+<li>visualizar linhas;</li>
+<li>contar registros;</li>
+<li>calcular médias;</li>
+<li>criar gráficos;</li>
+<li>separar <a class="term" href="../conceitos/dados.html">dados</a>;</li>
+<li>treinar <a class="term" href="../conceitos/modelo.html">modelos</a> simples.</li>
+</ul>
+<h3 id="exemplo-de-problema-simples">Exemplo de problema simples</h3>
+<p>Prever se uma pessoa prefere produto A ou B com base em respostas simuladas.</p>
+<p>Ou classificar solicitações simples por categoria.</p>
+<p>Ou visualizar vendas por mês.</p>
+<div class="box warn"><strong>Atenção</strong></div>
+<p>Neste módulo, a programação será introdutória. O objetivo é compreender a lógica, não dominar todos os comandos.</p>
+<p>Erros de código são normais e fazem parte do aprendizado.</p>
+<div class="box tip"><strong>Teste agora</strong></div>
+<p>Observe um pequeno trecho de código apresentado pelo instrutor e identifique:</p>
+<ol class="steps">
+<li>Onde estão os <a class="term" href="../conceitos/dados.html">dados</a>?</li>
+<li>O que o código está tentando fazer?</li>
+<li>Qual resultado aparece?</li>
+<li>Há alguma parte que parece repetitiva?</li>
+<li>O que poderia ser alterado?</li>
+</ol>
+<h3 id="atividade-guiada-primeiro-notebook-com-dados">Atividade guiada – Primeiro notebook com <a class="term" href="../conceitos/dados.html">dados</a></h3>
+<h4 id="objetivo">Objetivo</h4>
+<p>Criar ou executar um notebook simples no <a class="term" href="../ferramentas/google-colab.html">Google Colab</a>.</p>
+<h4 id="passo-a-passo">Passo a passo</h4>
+<ol class="steps">
+<li>Abrir o <a class="term" href="../ferramentas/google-colab.html">Google Colab</a>.</li>
+<li>Criar um novo notebook.</li>
+<li>Escrever um título em texto.</li>
+<li>Criar uma pequena tabela de <a class="term" href="../conceitos/dados.html">dados</a> ou carregar exemplo.</li>
+<li>Visualizar os <a class="term" href="../conceitos/dados.html">dados</a>.</li>
+<li>Gerar uma estatística simples.</li>
+<li>Criar um gráfico simples.</li>
+<li>Escrever uma interpretação do resultado.</li>
+<li>Salvar o notebook.</li>
+</ol>
+<h3 id="exemplo-de-estrutura-do-notebook">Exemplo de estrutura do notebook</h3>
+<p>Título:</p>
+<p>Objetivo:</p>
+<p><a class="term" href="../conceitos/dados.html">Dados</a> utilizados:</p>
+<p>Código executado:</p>
+<p>Resultado observado:</p>
+<p>Interpretação:</p>
+<p>Limitações:</p>
+<h3 id="ferramentas">Ferramentas</h3>
+<p><a class="term" href="../ferramentas/google-colab.html">Google Colab</a>, Python, Pandas, Matplotlib, <a class="term" href="../ferramentas/excel-sheets.html">Google Sheets</a> ou base fictícia fornecida.</p>
+<div class="box practice"><strong>Produto da unidade</strong></div>
+<p>Notebook introdutório com leitura, visualização ou análise simples de <a class="term" href="../conceitos/dados.html">dados</a>.</p>
+<div class="box tip"><strong>Para refletir</strong></div>
+<p>Programar é apenas escrever código ou é uma forma de organizar o pensamento para resolver problemas?</p>
+<h2 class="unit-title" id="unidade-5-5-construcao-de-um-modelo-ou-solucao-simples">Unidade 5.5 – Construção de um <a class="term" href="../conceitos/modelo.html">modelo</a> ou solução simples</h2>
+<h3 id="carga-horaria">Carga horária</h3>
+<p>3 horas</p>
+<h3 id="objetivo-da-unidade">Objetivo da unidade</h3>
+<p>Construir uma solução simples baseada em IA, utilizando ferramenta no-code, low-code ou notebook introdutório, conforme o perfil da turma.</p>
+<h3 id="situacao-de-abertura">Situação de abertura</h3>
+<p>Agora que o problema foi definido, os <a class="term" href="../conceitos/dados.html">dados</a> foram organizados, o protótipo foi pensado e as ferramentas foram exploradas, chegou o momento de construir uma solução simples.</p>
+<p>A solução pode ser um <a class="term" href="../conceitos/modelo.html">modelo</a>, um classificador, um painel, um guia inteligente, um chatbot inicial ou um notebook com análise de <a class="term" href="../conceitos/dados.html">dados</a>.</p>
+<h3 id="conceitos-principais">Conceitos principais</h3>
+<p>Uma solução simples com IA deve conter:</p>
+<ul class="list">
+<li>problema claro;</li>
+<li>público-alvo definido;</li>
+<li><a class="term" href="../conceitos/dados.html">dados</a> ou exemplos;</li>
+<li>funcionamento básico;</li>
+<li>resultado apresentado ao usuário;</li>
+<li>avaliação inicial;</li>
+<li>cuidados e limites.</li>
+</ul>
+<h3 id="possiveis-caminhos-de-construcao">Possíveis caminhos de construção</h3>
+<h4 id="caminho-1-classificador-simples">Caminho 1 – Classificador simples</h4>
+<p>Ferramenta: <a class="term" href="../ferramentas/teachable-machine.html">Teachable Machine</a> ou notebook.</p>
+<p>Exemplo:</p>
+<ul class="list">
+<li>classificar objetos;</li>
+<li>classificar imagens;</li>
+<li>classificar intenções simples;</li>
+<li>classificar solicitações.</li>
+</ul>
+<h4 id="caminho-2-analise-de-dados-simples">Caminho 2 – Análise de <a class="term" href="../conceitos/dados.html">dados</a> simples</h4>
+<p>Ferramenta: <a class="term" href="../ferramentas/excel-sheets.html">Google Sheets</a> ou <a class="term" href="../ferramentas/google-colab.html">Google Colab</a>.</p>
+<p>Exemplo:</p>
+<ul class="list">
+<li>analisar vendas;</li>
+<li>contar categorias;</li>
+<li>gerar gráficos;</li>
+<li>identificar padrões;</li>
+<li>organizar indicadores.</li>
+</ul>
+<h4 id="caminho-3-guia-inteligente">Caminho 3 – Guia inteligente</h4>
+<p>Ferramenta: <a class="term" href="../ferramentas/google-docs.html">Google Docs</a>, <a class="term" href="../ferramentas/canva.html">Canva</a>, <a class="term" href="../ferramentas/chatgpt.html">ChatGPT</a> ou <a class="term" href="../ferramentas/gemini.html">Gemini</a>.</p>
+<p>Exemplo:</p>
+<ul class="list">
+<li>guia de cidadania digital;</li>
+<li>guia de segurança;</li>
+<li>guia de atendimento;</li>
+<li>guia de estudo.</li>
+</ul>
+<h4 id="caminho-4-roteiro-de-chatbot">Caminho 4 – Roteiro de chatbot</h4>
+<p>Ferramenta: <a class="term" href="../ferramentas/google-docs.html">Google Docs</a>, <a class="term" href="../ferramentas/canva.html">Canva</a>, chatbot simples ou plataforma no-code.</p>
+<p>Exemplo:</p>
+<ul class="list">
+<li>atendimento a dúvidas frequentes;</li>
+<li>orientação inicial;</li>
+<li>perguntas e respostas;</li>
+<li>triagem simples.</li>
+</ul>
+<h4 id="caminho-5-prototipo-visual-de-aplicativo">Caminho 5 – Protótipo visual de aplicativo</h4>
+<p>Ferramenta: <a class="term" href="../ferramentas/canva.html">Canva</a>, <a class="term" href="../ferramentas/google-slides.html">Google Slides</a> ou Figma, se disponível.</p>
+<p>Exemplo:</p>
+<ul class="list">
+<li>telas de um aplicativo;</li>
+<li>fluxo de uso;</li>
+<li>painel de informações;</li>
+<li>simulação de solução.</li>
+</ul>
+<h3 id="etapas-de-construcao">Etapas de construção</h3>
+<ol class="steps">
+<li>Retomar o problema.</li>
+<li>Escolher o tipo de solução.</li>
+<li>Organizar <a class="term" href="../conceitos/dados.html">dados</a> ou exemplos.</li>
+<li>Escolher ferramenta.</li>
+<li>Construir a primeira versão.</li>
+<li>Testar com exemplos.</li>
+<li>Registrar acertos e falhas.</li>
+<li>Ajustar a solução.</li>
+<li>Preparar apresentação.</li>
+</ol>
+<h3 id="exemplo-de-solucao">Exemplo de solução</h3>
+<h4 id="problema">Problema</h4>
+<p>Cidadãos têm dificuldade para identificar golpes digitais.</p>
+<h4 id="solucao">Solução</h4>
+<p>Guia interativo com perguntas, sinais de alerta e orientações.</p>
+<h4 id="dados"><a class="term" href="../conceitos/dados.html">Dados</a></h4>
+<p>Exemplos fictícios de mensagens suspeitas.</p>
+<h4 id="ferramenta">Ferramenta</h4>
+<p><a class="term" href="../ferramentas/canva.html">Canva</a>, <a class="term" href="../ferramentas/google-slides.html">Google Slides</a> ou chatbot simples.</p>
+<h4 id="resultado">Resultado</h4>
+<p>O usuário aprende a verificar mensagens antes de clicar ou enviar dinheiro.</p>
+<h4 id="cuidados">Cuidados</h4>
+<p>Indicar que o guia não substitui orientação especializada e que golpes devem ser denunciados.</p>
+<div class="box warn"><strong>Atenção</strong></div>
+<p>Uma solução simples não precisa resolver tudo. Ela deve resolver uma parte do problema de forma clara, segura e demonstrável.</p>
+<div class="box tip"><strong>Teste agora</strong></div>
+<p>Verifique sua solução:</p>
+<ol class="steps">
+<li>O problema está claro?</li>
+<li>O público está definido?</li>
+<li>A solução funciona em um exemplo?</li>
+<li>O resultado é compreensível?</li>
+<li>Há riscos?</li>
+<li>Há <a class="term" href="../conceitos/dados.html">dados</a> sensíveis?</li>
+<li>O que precisa melhorar?</li>
+</ol>
+<h3 id="atividade-guiada-construindo-a-solucao">Atividade guiada – Construindo a solução</h3>
+<h4 id="objetivo">Objetivo</h4>
+<p>Construir uma primeira versão funcional ou demonstrativa da solução.</p>
+<h4 id="passo-a-passo">Passo a passo</h4>
+<ol class="steps">
+<li>Organizar o grupo ou trabalho individual.</li>
+<li>Escolher o caminho de construção.</li>
+<li>Preparar <a class="term" href="../conceitos/dados.html">dados</a> ou exemplos.</li>
+<li>Criar a solução na ferramenta escolhida.</li>
+<li>Testar com pelo menos três exemplos.</li>
+<li>Registrar resultados.</li>
+<li>Ajustar a solução.</li>
+<li>Preparar uma explicação curta.</li>
+</ol>
+<div class="box practice"><strong>Produto da unidade</strong></div>
+<p>Primeira versão da solução baseada em IA.</p>
+<div class="box tip"><strong>Para refletir</strong></div>
+<p>Uma solução simples, bem explicada e segura pode ser mais útil do que uma solução complexa que ninguém entende?</p>
+<h2 class="unit-title" id="unidade-5-6-avaliacao-documentacao-e-apresentacao-do-prototipo">Unidade 5.6 – Avaliação, documentação e apresentação do protótipo</h2>
+<h3 id="carga-horaria">Carga horária</h3>
+<p>3 horas</p>
+<h3 id="objetivo-da-unidade">Objetivo da unidade</h3>
+<p>Avaliar, documentar e apresentar o protótipo desenvolvido, destacando problema, funcionamento, resultados, limitações, cuidados éticos e possibilidades de melhoria.</p>
+<h3 id="situacao-de-abertura">Situação de abertura</h3>
+<p>Um grupo criou um classificador simples. Outro criou um guia digital. Outro desenvolveu uma análise em planilha. Outro montou o roteiro de um chatbot.</p>
+<p>Todos possuem protótipos diferentes, mas precisam responder às mesmas perguntas: o que a solução faz, para quem serve, como funciona, quais resultados apresentou, quais limitações possui e quais cuidados exige.</p>
+<h3 id="conceitos-principais">Conceitos principais</h3>
+<h4 id="avaliacao">Avaliação</h4>
+<p>Avaliar é verificar se a solução atende ao objetivo proposto.</p>
+<p>Perguntas de avaliação:</p>
+<ul class="list">
+<li>a solução resolve o problema definido?</li>
+<li>funciona com exemplos simples?</li>
+<li>é fácil de entender?</li>
+<li>apresenta riscos?</li>
+<li>os resultados fazem sentido?</li>
+<li>o usuário conseguiria utilizar?</li>
+</ul>
+<h4 id="documentacao">Documentação</h4>
+<p>Documentar é registrar como a solução foi construída, quais <a class="term" href="../conceitos/dados.html">dados</a> foram usados, quais ferramentas foram utilizadas e quais cuidados foram adotados.</p>
+<p>Uma solução sem documentação é difícil de entender, melhorar ou reutilizar.</p>
+<h4 id="apresentacao">Apresentação</h4>
+<p>Apresentar é comunicar a solução de forma clara para outras pessoas.</p>
+<p>A apresentação deve mostrar:</p>
+<ul class="list">
+<li>problema;</li>
+<li>público-alvo;</li>
+<li>solução proposta;</li>
+<li>funcionamento;</li>
+<li>ferramentas usadas;</li>
+<li>resultados;</li>
+<li>limitações;</li>
+<li>cuidados;</li>
+<li>próximos passos.</li>
+</ul>
+<h3 id="avaliacao-simples-do-prototipo">Avaliação simples do protótipo</h3>
+<p>Use a escala:</p>
+<div class="table-wrap"><table class="table"><tr><th>Critério</th><th>Baixo</th><th>Médio</th><th>Alto</th></tr><tr><td>Clareza do problema</td><td></td><td></td><td></td></tr><tr><td>Adequação da solução</td><td></td><td></td><td></td></tr><tr><td>Facilidade de uso</td><td></td><td></td><td></td></tr><tr><td>Utilidade prática</td><td></td><td></td><td></td></tr><tr><td>Segurança e <a class="term" href="../conceitos/lgpd.html">privacidade</a></td><td></td><td></td><td></td></tr><tr><td>Potencial de melhoria</td><td></td><td></td><td></td></tr></table></div>
+<h3 id="documentacao-minima-da-solucao">Documentação mínima da solução</h3>
+<p>A documentação deve conter:</p>
+<ul class="list">
+<li>título da solução;</li>
+<li>problema;</li>
+<li>público-alvo;</li>
+<li>objetivo;</li>
+<li><a class="term" href="../conceitos/dados.html">dados</a> ou exemplos utilizados;</li>
+<li>ferramenta escolhida;</li>
+<li>funcionamento;</li>
+<li>testes realizados;</li>
+<li>resultados observados;</li>
+<li>limitações;</li>
+<li>riscos e cuidados;</li>
+<li>melhorias futuras.</li>
+</ul>
+<h3 id="modelo-de-apresentacao"><a class="term" href="../conceitos/modelo.html">Modelo</a> de apresentação</h3>
+<h4 id="slide-1-titulo-da-solucao">Slide 1 – Título da solução</h4>
+<p>Nome da solução e integrantes.</p>
+<h4 id="slide-2-problema">Slide 2 – Problema</h4>
+<p>Qual problema foi identificado?</p>
+<h4 id="slide-3-publico-alvo">Slide 3 – Público-alvo</h4>
+<p>Quem será beneficiado?</p>
+<h4 id="slide-4-solucao-proposta">Slide 4 – Solução proposta</h4>
+<p>O que foi criado?</p>
+<h4 id="slide-5-como-funciona">Slide 5 – Como funciona</h4>
+<p>Fluxo, <a class="term" href="../conceitos/dados.html">dados</a> e ferramenta.</p>
+<h4 id="slide-6-testes-e-resultados">Slide 6 – Testes e resultados</h4>
+<p>O que funcionou? O que falhou?</p>
+<h4 id="slide-7-cuidados-e-limitacoes">Slide 7 – Cuidados e limitações</h4>
+<p><a class="term" href="../conceitos/lgpd.html">Privacidade</a>, <a class="term" href="../conceitos/lgpd.html">ética</a>, <a class="term" href="../conceitos/dados.html">dados</a> e riscos.</p>
+<h4 id="slide-8-proximos-passos">Slide 8 – Próximos passos</h4>
+<p>Como a solução poderia evoluir?</p>
+<div class="box warn"><strong>Atenção</strong></div>
+<p>Não apresente o protótipo como solução definitiva. Use expressões como:</p>
+<ul class="list">
+<li>versão inicial;</li>
+<li>demonstração;</li>
+<li>protótipo;</li>
+<li>proposta preliminar;</li>
+<li>experimento;</li>
+<li>solução em desenvolvimento.</li>
+</ul>
+<h3 id="atividade-pratica-apresentacao-final-do-prototipo">Atividade prática – Apresentação final do protótipo</h3>
+<h4 id="objetivo">Objetivo</h4>
+<p>Apresentar o protótipo desenvolvido de forma clara, crítica e responsável.</p>
+<h4 id="passo-a-passo">Passo a passo</h4>
+<ol class="steps">
+<li>Finalizar a solução ou demonstração.</li>
+<li>Preencher a documentação mínima.</li>
+<li>Avaliar o protótipo usando critérios simples.</li>
+<li>Criar apresentação curta.</li>
+<li>Ensaiar explicação de até cinco minutos.</li>
+<li>Apresentar para a turma.</li>
+<li>Receber feedback (retorno).</li>
+<li>Registrar melhorias futuras.</li>
+</ol>
+<h3 id="ferramentas">Ferramentas</h3>
+<p><a class="term" href="../ferramentas/google-slides.html">Google Slides</a>, <a class="term" href="../ferramentas/canva.html">Canva</a>, <a class="term" href="../ferramentas/google-docs.html">Google Docs</a>, <a class="term" href="../ferramentas/google-colab.html">Google Colab</a>, <a class="term" href="../ferramentas/teachable-machine.html">Teachable Machine</a>, <a class="term" href="../ferramentas/excel-sheets.html">Google Sheets</a> ou ferramenta usada no protótipo.</p>
+<div class="box practice"><strong>Produto final do módulo</strong></div>
+<p>Protótipo funcional ou demonstrativo de solução baseada em <a class="term" href="../conceitos/ia.html">Inteligência Artificial</a>.</p>
+<div class="box tip"><strong>Para refletir</strong></div>
+<p>O valor de uma solução com IA está apenas na tecnologia usada ou na forma como ela resolve um problema real com responsabilidade?</p>
+<h2 class="section-title" id="avaliacao-do-modulo-5">Avaliação do Módulo 5</h2>
+<p>A avaliação será formativa, prática e participativa.</p>
+<h3 id="criterios">Critérios</h3>
+<ul class="list">
+<li>clareza na definição do problema;</li>
+<li>adequação da solução ao público-alvo;</li>
+<li>organização dos <a class="term" href="../conceitos/dados.html">dados</a> ou exemplos;</li>
+<li>uso adequado das ferramentas;</li>
+<li>construção do protótipo;</li>
+<li>teste inicial da solução;</li>
+<li>identificação de limitações;</li>
+<li>cuidado com <a class="term" href="../conceitos/lgpd.html">privacidade</a> e <a class="term" href="../conceitos/dados.html">dados</a> sensíveis;</li>
+<li>documentação da solução;</li>
+<li>apresentação clara do protótipo;</li>
+<li>reflexão crítica sobre riscos, melhorias e responsabilidade.</li>
+</ul>
+<h2 class="section-title" id="produto-final-do-modulo">Produto final do módulo</h2>
+<p>Ao final do Módulo 5, o participante terá produzido:</p>
+<p>Protótipo funcional ou demonstrativo de solução baseada em <a class="term" href="../conceitos/ia.html">Inteligência Artificial</a>.</p>
+<p>Esse protótipo poderá ser:</p>
+<ul class="list">
+<li>classificador simples;</li>
+<li>análise de <a class="term" href="../conceitos/dados.html">dados</a>;</li>
+<li>guia inteligente;</li>
+<li>roteiro de chatbot;</li>
+<li>painel em planilha;</li>
+<li>protótipo visual de aplicativo;</li>
+<li>notebook introdutório;</li>
+<li>solução no-code ou low-code.</li>
+</ul>
+<h2 class="section-title" id="resultado-esperado">Resultado esperado</h2>
+<p>Ao final do Módulo 5, o participante deverá ser capaz de identificar um problema real, organizar <a class="term" href="../conceitos/dados.html">dados</a> ou exemplos, escolher uma abordagem adequada, construir uma solução simples com apoio de IA, testar resultados, reconhecer limitações, documentar o processo e apresentar um protótipo de forma clara, <a class="term" href="../conceitos/lgpd.html">ética</a> e responsável.</p>
+<p>O participante também deverá estar preparado para avançar para módulos temáticos, como IA para Negócios e Empreendedorismo, IA para Gestão Pública, IA na Educação, IA para Saúde e Bem-Estar ou IA para Pesquisa Científica.</p><h2 class="section-title">Materiais relacionados</h2><div class="grid"><div class="card"><h3>Conceitos</h3><p>Consulte os conceitos associados ao módulo.</p><a class="btn" href="../conceitos/index.html">Abrir conceitos</a></div><div class="card"><h3>Laboratórios</h3><p>Acesse roteiros práticos e oficinas passo a passo.</p><a class="btn" href="../laboratorios/index.html">Abrir laboratórios</a></div><div class="card"><h3>Banco visual</h3><p>Infográficos e mapas mentais para apoiar o estudo.</p><a class="btn" href="../banco-visual.html">Abrir banco visual</a></div></div></div></main><a class="backtop" href="#top">Topo</a><footer class="footer">unesp.IA - Inteligência Artificial para Todos | Programa de Extensão Universitária | Coleção Editorial</footer></body></html>

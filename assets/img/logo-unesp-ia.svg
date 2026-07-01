@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 620 170" role="img" aria-labelledby="title desc">
+<title id="title">unesp.IA</title><desc id="desc">Cérebro conectado a circuitos e nome unesp.IA</desc>
+<g fill="none" stroke="#08769A" stroke-width="8" stroke-linecap="round" stroke-linejoin="round">
+<path d="M78 28c-20 0-35 15-35 35-17 5-27 19-27 36 0 16 9 29 23 35 5 20 22 31 41 27 14 10 36 4 42-12V45c-5-13-18-20-31-17-4-1-8-1-13 0Z"/>
+<path d="M70 50c16-3 27 7 27 22M42 73c14-8 30-3 34 10M39 112c14-8 30-4 36 9M78 145c-2-17 7-29 22-31M91 91c13 0 24 8 31 20"/>
+<path d="M123 58h34l17-17h24M123 82h58l19-19h30M123 106h73l18 18h28M123 130h42l19 19h29"/>
+<circle cx="202" cy="41" r="7"/><circle cx="234" cy="63" r="7"/><circle cx="246" cy="124" r="7"/><circle cx="217" cy="149" r="7"/>
+</g>
+<text x="278" y="98" font-family="Arial,Helvetica,sans-serif" font-size="70" font-weight="800"><tspan fill="#111111">unesp</tspan><tspan fill="#20549A">.IA</tspan></text>
+<text x="281" y="132" font-family="Arial,Helvetica,sans-serif" font-size="19" font-weight="700" fill="#08769A">Inteligência Artificial para Todos</text>
+</svg>

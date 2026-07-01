@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="pt-br"><head><meta charset="utf-8"/><meta content="width=device-width,initial-scale=1" name="viewport"/><title>Módulo 4 – Compreendendo o Funcionamento da Inteligência Artificial | UNESP.IA</title><link href="../assets/css/style.css" rel="stylesheet"/><script src="../assets/js/search.js"></script></head><body>
+<div class="topbar"><div class="brand">UNESP.IA <small>Coleção Editorial | Portal Didático dos Participantes</small></div>
+<div class="nav">
+<a href="../index.html">Início</a><a href="../modulos.html">Módulos</a><a href="../trilhas.html">Trilhas</a><a href="../conceitos.html">Conceitos</a><a href="../ferramentas.html">Ferramentas</a><a href="../laboratorios.html">Laboratórios</a><a href="../materiais.html">Materiais</a><a href="../personagens.html">Personagens</a><a href="../banco-visual.html">Banco Visual</a><a href="../mapa-conhecimento.html">Mapa</a>
+</div></div><main><div class="container content" id="top"><div class="breadcrumbs"><a href="../index.html">Início</a> / <a href="../modulos.html">Módulos</a> / Módulo 4</div><h1>Módulo 4 – Compreendendo o Funcionamento da Inteligência Artificial </h1><div class="callout"><b>Como estudar este módulo:</b> percorra as unidades abaixo ou leia o módulo completo nesta página.</div><h2>Unidades do módulo</h2><table class="table unit-table"><tr><th>Unidade</th><th>Tema</th></tr><tr><td><a href="../unidades/m4-u1.html">Unidade 4.1</a></td><td><a href="../unidades/m4-u1.html">Dados, informação e qualidade dos dados</a></td></tr><tr><td><a href="../unidades/m4-u2.html">Unidade 4.2</a></td><td><a href="../unidades/m4-u2.html">Como modelos aprendem: treinamento, teste e padrões</a></td></tr><tr><td><a href="../unidades/m4-u3.html">Unidade 4.3</a></td><td><a href="../unidades/m4-u3.html">Tipos de problemas em IA: classificação, regressão, agrupamento e geração</a></td></tr><tr><td><a href="../unidades/m4-u4.html">Unidade 4.4</a></td><td><a href="../unidades/m4-u4.html">Redes neurais, Deep Learning e IA Generativa</a></td></tr><tr><td><a href="../unidades/m4-u5.html">Unidade 4.5</a></td><td><a href="../unidades/m4-u5.html">Avaliação, erros, vieses, explicabilidade e laboratório experimental</a></td></tr></table><h2>Conteúdo completo do módulo</h2><h1>Módulo 4 – Compreendendo o Funcionamento da Inteligência Artificial</h1>
+<h3>Material Didático do Participante</h3>
+<h3>Apresentação</h3>
+<p>Nos módulos anteriores, o participante conheceu os fundamentos da Inteligência Artificial, utilizou ferramentas de IA em situações práticas e produziu conteúdos digitais com apoio de tecnologias generativas. O Módulo 4 aprofunda a compreensão sobre como a IA funciona, sem exigir programação avançada ou conhecimento matemático aprofundado.</p>
+<p>A proposta é explicar, de forma acessível e prática, como sistemas inteligentes utilizam dados, aprendem padrões, produzem respostas, cometem erros, são avaliados e podem ser interpretados. O objetivo é ajudar o participante a compreender melhor o que acontece “por trás” das ferramentas de IA, desenvolvendo uma visão mais crítica, segura e consciente.</p>
+<p>Este módulo apresenta conceitos como dados, atributos, exemplos, treinamento, teste, classificação, regressão, agrupamento, redes neurais, modelos generativos, avaliação de modelos, viés, qualidade dos dados, explicabilidade e limites da IA. A abordagem será sempre contextualizada por exemplos reais e atividades práticas simples.</p>
+<h2>1. Organização do Módulo</h2>
+<h3>Carga horária total</h3>
+<h2>10 horas.</h2>
+<h3>Público recomendado</h3>
+<p>Cidadãos em geral, estudantes, professores, trabalhadores, servidores públicos, empreendedores e participantes interessados em compreender melhor o funcionamento da Inteligência Artificial, especialmente aqueles que já realizaram os Módulos 1, 2 e/ou 3.</p>
+<h3>Objetivo geral</h3>
+<p>Compreender, de forma introdutória e acessível, como sistemas de Inteligência Artificial funcionam, como aprendem a partir de dados, como produzem respostas, como são avaliados, quais erros podem ocorrer e quais cuidados são necessários para interpretar seus resultados de forma crítica e responsável.</p>
+<h3>Competências desenvolvidas</h3>
+<h3>Ao final do módulo, espera-se que o participante seja capaz de:</h3>
+<ul class="didactic-list"><li>compreender o papel dos dados no funcionamento da IA;</li><li>diferenciar dado, informação, atributo, exemplo, classe e rótulo;</li><li>compreender o ciclo básico de construção de um modelo de IA;</li><li>diferenciar tarefas de classificação, regressão, agrupamento e geração;</li><li>compreender, em nível introdutório, como funciona o treinamento e o teste de modelos;</li><li>reconhecer o que são erro, acerto, generalização e sobreajuste;</li><li>entender noções básicas de redes neurais e aprendizado profundo;</li><li>compreender como modelos generativos produzem textos e imagens de forma introdutória;</li><li>interpretar métricas simples de avaliação, como acurácia, precisão e recall;</li><li>reconhecer problemas relacionados à qualidade dos dados, vieses e limitações;</li><li>utilizar ferramentas simples para realizar experimentos introdutórios com IA;</li><li>produzir um mini experimento ou relatório explicativo sobre funcionamento da IA.</li></ul>
+
+
+
+
+
+
+
+
+
+
+
+<h3>Ferramentas utilizadas</h3>
+<ul class="didactic-list"><li>Google Teachable Machine;</li><li>Google Sheets;</li><li>Excel;</li><li>Canva;</li><li>Google Slides;</li><li>ChatGPT;</li><li>Gemini;</li><li>Copilot;</li><li>NotebookLM;</li><li>Google Colab, apenas para demonstração opcional;</li><li>papel, cartões, imagens e quadro.</li></ul>
+
+
+
+
+
+
+
+
+
+
+<h2>2. Estrutura das Unidades</h2>
+<h3>A sequência pedagógica segue a lógica:</h3>
+<p>dados → aprendizagem → tipos de problemas → redes neurais/generação → avaliação e experimento</p>
+<h2>Unidade 4.1 – Dados, informação e qualidade dos dados</h2>
+<h3>Carga horária</h3>
+<h2>2 horas</h2>
+<h3>Objetivo da unidade</h3>
+<p>Compreender o papel dos dados no funcionamento da Inteligência Artificial, diferenciando dados, informação, atributos, exemplos, rótulos e qualidade dos dados.</p>
+<h3>Situação de abertura</h3>
+<p>Uma escola quer entender quais estudantes podem precisar de apoio extra.
+Uma loja quer saber quais produtos vendem mais.
+Uma prefeitura quer organizar solicitações de cidadãos.
+Um aplicativo de fotos quer reconhecer pessoas, animais e lugares.
+Um banco quer identificar compras suspeitas.</p>
+<p>Em todos esses casos, a IA precisa de dados. Sem dados adequados, o sistema não consegue aprender padrões confiáveis.</p>
+<h3>Conceitos principais</h3>
+<h3>Dados</h3>
+<p>Dados são registros brutos que representam fatos, eventos, características ou observações.</p>
+<h3>Exemplos:</h3>
+<ul class="didactic-list"><li>idade;</li><li>data;</li><li>nota;</li><li>foto;</li><li>texto;</li><li>localização;</li><li>valor de compra;</li><li>horário;</li><li>frequência;</li><li>número de atendimentos;</li><li>mensagem;</li><li>categoria de produto.</li></ul>
+
+
+
+
+
+
+
+
+
+
+
+<h3>Informação</h3>
+<p>Informação é o dado organizado e interpretado de forma significativa.</p>
+<h3>Exemplo:</h3>
+<p>Dado: “35”.
+Informação: “A pessoa tem 35 anos”.</p>
+<p>Dado: “R$ 500,00”.
+Informação: “Compra no valor de R$ 500,00 realizada às 2h da manhã”.</p>
+<h3>Exemplo ou instância</h3>
+<p>Um exemplo é um registro usado para o aprendizado da IA.</p>
+<h3>Exemplo em uma tabela de estudantes:</h3>
+<p>Cada linha da tabela pode ser um exemplo.</p>
+<h3>Atributos ou características</h3>
+<p>Atributos são as informações usadas para descrever cada exemplo.</p>
+<h3>No caso de estudantes, atributos podem ser:</h3>
+<ul class="didactic-list"><li>idade;</li><li>frequência;</li><li>nota;</li><li>participação;</li><li>atividades entregues.</li></ul>
+
+
+
+
+<h3>No caso de compras, atributos podem ser:</h3>
+<ul class="didactic-list"><li>valor;</li><li>horário;</li><li>local;</li><li>tipo de produto;</li><li>forma de pagamento.</li></ul>
+
+
+
+
+<h3>Rótulo ou classe</h3>
+<p>Rótulo é a resposta que o modelo tenta aprender em alguns tipos de problemas.</p>
+<h3>Exemplos:</h3>
+<ul class="didactic-list"><li>aprovado ou reprovado;</li><li>fraude ou compra normal;</li><li>gato ou cachorro;</li><li>spam ou mensagem legítima;</li><li>cliente interessado ou não interessado.</li></ul>
+
+
+
+
+<h3>Dados estruturados e não estruturados</h3>
+<h3>Dados estruturados</h3>
+<p>São dados organizados em tabelas, com linhas e colunas.</p>
+<h3>Exemplos:</h3>
+<ul class="didactic-list"><li>planilhas;</li><li>cadastros;</li><li>registros de vendas;</li><li>notas escolares;</li><li>indicadores municipais.</li></ul>
+
+
+
+
+<h3>Dados não estruturados</h3>
+<p>São dados sem organização em tabela tradicional.</p>
+<h3>Exemplos:</h3>
+<ul class="didactic-list"><li>textos;</li><li>imagens;</li><li>áudios;</li><li>vídeos;</li><li>mensagens;</li><li>documentos PDF.</li></ul>
+
+
+
+
+
+<h3>Qualidade dos dados</h3>
+<p>A qualidade dos dados influencia diretamente o resultado da IA.</p>
+<p>Dados de baixa qualidade podem gerar respostas ruins, injustas ou pouco confiáveis.</p>
+<h3>Problemas comuns nos dados</h3>
+<h3>Dados ausentes</h3>
+<p>Informações faltando.</p>
+<p>Exemplo: cadastro sem telefone ou endereço.</p>
+<h3>Dados incorretos</h3>
+<p>Informações registradas de forma errada.</p>
+<p>Exemplo: idade digitada como 250 anos.</p>
+<h3>Dados duplicados</h3>
+<p>Mesmo registro aparece mais de uma vez.</p>
+<p>Exemplo: o mesmo cliente cadastrado duas vezes.</p>
+<h3>Dados desatualizados</h3>
+<p>Informações antigas que não representam a realidade atual.</p>
+<p>Exemplo: endereço antigo.</p>
+<h3>Dados enviesados</h3>
+<p>Dados que representam apenas parte da população ou carregam desigualdades históricas.</p>
+<p>Exemplo: sistema treinado apenas com dados de um grupo específico.</p>
+<h3>Na prática</h3>
+<p>Se uma IA for treinada com fotos de frutas apenas em ambientes bem iluminados, ela pode errar ao reconhecer frutas em fotos escuras.</p>
+<p>Se um sistema de atendimento for treinado com poucos exemplos de reclamações, pode classificar pedidos de forma inadequada.</p>
+<p>Se um modelo de crédito usar dados históricos injustos, pode repetir desigualdades.</p>
+<h3>Atenção</h3>
+<p>A IA não melhora automaticamente dados ruins. Muitas vezes, quanto mais sofisticado o sistema, mais importante se torna a qualidade dos dados.</p>
+<h3>Teste agora</h3>
+<h3>Observe uma tabela simples com informações de pessoas, produtos ou estudantes e responda:</h3>
+<ul class="didactic-list"><li>Quais são os dados?</li><li>Quais são os atributos?</li><li>Existe algum rótulo?</li><li>Há dados faltando?</li><li>Há dados incorretos?</li><li>Como esses problemas poderiam afetar uma IA?</li></ul>
+
+
+
+
+
+<h3>Atividade guiada – Limpando uma pequena base de dados</h3>
+<h3>Objetivo</h3>
+<p>Identificar problemas simples de qualidade dos dados.</p>
+<h3>Passo a passo</h3>
+<p>O instrutor apresenta uma pequena tabela com erros.</p>
+<p>Os participantes identificam dados faltantes, duplicados ou incorretos.</p>
+<p>O grupo discute quais problemas poderiam prejudicar uma IA.</p>
+<p>Os participantes sugerem correções.</p>
+<p>O instrutor mostra a tabela corrigida.</p>
+<p>A turma discute como dados melhores ajudam a gerar resultados melhores.</p>
+<h3>Produto da unidade</h3>
+<p>Tabela simples revisada e lista de problemas de qualidade dos dados.</p>
+<h3>Para refletir</h3>
+<p>Se a IA aprende com dados, o que acontece quando os dados são incompletos, injustos ou não representam todas as pessoas?</p>
+<h2>Unidade 4.2 – Como modelos aprendem: treinamento, teste e padrões</h2>
+<h3>Carga horária</h3>
+<h2>2 horas</h2>
+<h3>Objetivo da unidade</h3>
+<p>Compreender como modelos de IA aprendem padrões a partir de exemplos, como são treinados, testados e avaliados de forma introdutória.</p>
+<h3>Situação de abertura</h3>
+<p>Imagine que uma pessoa quer aprender a diferenciar mensagens normais de golpes. Ela observa vários exemplos: mensagens verdadeiras, mensagens falsas, pedidos suspeitos, links estranhos e textos com urgência.</p>
+<p>Com o tempo, começa a perceber padrões: mensagens falsas costumam pedir dinheiro rapidamente, usam links desconhecidos ou tentam causar medo.</p>
+<p>Um modelo de IA aprende de forma parecida: observa exemplos, identifica padrões e tenta aplicar esses padrões a novos casos.</p>
+<h3>Conceitos principais</h3>
+<h3>Modelo de IA</h3>
+<p>Um modelo é uma estrutura computacional que aprende padrões a partir de dados.</p>
+<p>Depois de treinado, o modelo pode receber uma nova entrada e produzir uma resposta.</p>
+<h3>Treinamento</h3>
+<p>Treinamento é o processo em que o modelo analisa exemplos para aprender padrões.</p>
+<h3>Exemplo:</h3>
+<p>Um modelo recebe muitas imagens de gatos e cachorros. Ele aprende características comuns de cada animal.</p>
+<h3>Teste</h3>
+<p>Teste é a etapa em que o modelo é avaliado com exemplos que ele ainda não viu.</p>
+<p>Isso ajuda a verificar se ele realmente aprendeu ou apenas decorou os exemplos de treinamento.</p>
+<h3>Padrão</h3>
+<p>Padrão é uma regularidade observada nos dados.</p>
+<h3>Exemplos:</h3>
+<ul class="didactic-list"><li>mensagens fraudulentas podem conter links suspeitos;</li><li>compras suspeitas podem ocorrer em horários incomuns;</li><li>vídeos recomendados podem ter temas parecidos com vídeos assistidos;</li><li>fotos de gatos podem ter características visuais semelhantes.</li></ul>
+
+
+
+<h3>Treino e teste: uma analogia</h3>
+<p>Imagine um aluno estudando para uma prova.</p>
+<p>Se ele apenas decora as respostas dos exercícios, pode ir mal em uma questão nova. Mas se entende o conceito, consegue resolver problemas diferentes.</p>
+<p>Com IA ocorre algo semelhante. Um bom modelo não deve apenas “decorar” exemplos. Ele deve aprender padrões que funcionem em novas situações.</p>
+<h3>Generalização</h3>
+<p>Generalização é a capacidade do modelo de funcionar bem em exemplos novos, não apenas nos dados usados no treinamento.</p>
+<h3>Exemplo:</h3>
+<p>Um modelo treinado com várias fotos de cachorros deve reconhecer um cachorro em uma foto nova, com outro fundo, outra luz ou outra posição.</p>
+<h3>Sobreajuste</h3>
+<p>Sobreajuste, ou overfitting, ocorre quando o modelo se adapta demais aos dados de treinamento e não funciona bem em situações novas.</p>
+<h3>Exemplo:</h3>
+<p>Um estudante decora exatamente as respostas de uma lista, mas não consegue resolver uma questão parecida na prova.</p>
+<h3>Subajuste</h3>
+<p>Subajuste ocorre quando o modelo não aprende padrões suficientes.</p>
+<h3>Exemplo:</h3>
+<p>Um estudante estudou pouco e não consegue resolver nem os exercícios já vistos.</p>
+<h3>Etapas básicas de criação de um modelo</h3>
+<p>Definir o problema.</p>
+<p>Coletar dados.</p>
+<p>Organizar e preparar dados.</p>
+<p>Separar dados de treinamento e teste.</p>
+<p>Treinar o modelo.</p>
+<p>Testar o modelo.</p>
+<p>Avaliar os resultados.</p>
+<p>Ajustar ou melhorar.</p>
+<p>Usar com supervisão humana.</p>
+<h3>Na prática</h3>
+<p>Um banco pode treinar um modelo com exemplos de compras normais e suspeitas.</p>
+<p>Depois, quando uma nova compra acontece, o modelo analisa se ela parece normal ou suspeita.</p>
+<p>Mas a decisão não deve depender apenas do modelo. Pode haver bloqueios indevidos ou falhas na detecção.</p>
+<h3>Atenção</h3>
+<p>Um modelo pode acertar muitos casos e ainda assim errar casos importantes. Por isso, é necessário avaliar os resultados e compreender os tipos de erro.</p>
+<h3>Teste agora</h3>
+<p>Pense em um modelo que identifica golpes em mensagens.</p>
+<ul class="didactic-list"><li>Quais exemplos seriam usados no treinamento?</li><li>Quais sinais poderiam indicar golpe?</li><li>Como testar se o modelo funciona?</li><li>Que erro seria mais perigoso: marcar mensagem verdadeira como golpe ou deixar passar uma mensagem falsa?</li></ul>
+
+
+
+<h3>Atividade guiada – Treinamento e teste no papel</h3>
+<h3>Objetivo</h3>
+<p>Simular o processo de treinamento e teste de um modelo.</p>
+<h3>Passo a passo</h3>
+<p>O instrutor apresenta exemplos de mensagens ou imagens.</p>
+<p>A turma separa os exemplos em categorias.</p>
+<p>O grupo define padrões observados.</p>
+<p>O instrutor apresenta novos exemplos.</p>
+<p>Os participantes classificam os novos casos.</p>
+<p>A turma compara acertos e erros.</p>
+<p>O grupo discute como melhorar a classificação.</p>
+<h3>Produto da unidade</h3>
+<p>Quadro com padrões observados, exemplos de teste, acertos e erros.</p>
+<h3>Para refletir</h3>
+<p>Quando uma IA erra, o problema está sempre no modelo ou também pode estar nos dados, no contexto e na forma como o sistema foi usado?</p>
+<h2>Unidade 4.3 – Tipos de problemas em IA: classificação, regressão, agrupamento e geração</h2>
+<h3>Carga horária</h3>
+<h2>2 horas</h2>
+<h3>Objetivo da unidade</h3>
+<p>Apresentar os principais tipos de problemas que a IA pode resolver, diferenciando classificação, regressão, agrupamento e geração de conteúdo.</p>
+<h3>Situação de abertura</h3>
+<p>Uma IA pode dizer se uma mensagem é golpe ou não.
+Outra pode prever o valor aproximado de uma casa.
+Outra pode agrupar clientes com comportamentos parecidos.
+Outra pode gerar uma imagem a partir de uma descrição.</p>
+<p>Essas tarefas são diferentes. Cada uma representa um tipo de problema em IA.</p>
+<h3>Tipo 1 – Classificação</h3>
+<p>Classificação é quando a IA escolhe uma categoria para uma entrada.</p>
+<h3>Exemplos:</h3>
+<ul class="didactic-list"><li>spam ou não spam;</li><li>fraude ou compra normal;</li><li>gato ou cachorro;</li><li>aprovado ou reprovado;</li><li>urgente ou não urgente;</li><li>reclamação sobre saúde, educação ou transporte;</li><li>comentário positivo, negativo ou neutro.</li></ul>
+
+
+
+
+
+
+<h3>Na prática</h3>
+<p>Uma prefeitura pode classificar solicitações dos cidadãos por tema, como iluminação pública, saúde, transporte ou limpeza urbana.</p>
+<p>Um banco pode classificar uma transação como normal ou suspeita.</p>
+<p>Um aplicativo de fotos pode classificar imagens por objetos ou pessoas.</p>
+<h3>Tipo 2 – Regressão</h3>
+<p>Regressão é quando a IA tenta prever um valor numérico.</p>
+<h3>Exemplos:</h3>
+<ul class="didactic-list"><li>prever preço de imóvel;</li><li>estimar tempo de chegada;</li><li>prever vendas;</li><li>estimar consumo de energia;</li><li>prever temperatura;</li><li>estimar nota provável;</li><li>prever demanda de atendimento.</li></ul>
+
+
+
+
+
+
+<h3>Na prática</h3>
+<p>Um aplicativo de transporte estima o tempo de chegada.</p>
+<p>Uma empresa pode prever vendas do próximo mês.</p>
+<p>Uma prefeitura pode estimar aumento de demanda em um serviço.</p>
+<h3>Tipo 3 – Agrupamento</h3>
+<p>Agrupamento é quando a IA organiza exemplos em grupos parecidos, sem necessariamente ter respostas prontas.</p>
+<h3>Exemplos:</h3>
+<ul class="didactic-list"><li>agrupar clientes com perfis semelhantes;</li><li>agrupar estudantes com dificuldades parecidas;</li><li>agrupar reclamações por assunto;</li><li>agrupar notícias por tema;</li><li>organizar documentos semelhantes.</li></ul>
+
+
+
+
+<h3>Na prática</h3>
+<p>Uma escola pode identificar grupos de estudantes com diferentes necessidades de apoio.</p>
+<p>Uma empresa pode identificar perfis de clientes.</p>
+<p>Uma secretaria municipal pode agrupar solicitações semelhantes.</p>
+<h3>Tipo 4 – Geração</h3>
+<p>Geração é quando a IA cria novos conteúdos.</p>
+<h3>Exemplos:</h3>
+<ul class="didactic-list"><li>gerar texto;</li><li>gerar imagem;</li><li>gerar roteiro;</li><li>gerar código;</li><li>gerar música;</li><li>gerar vídeo;</li><li>gerar resumo;</li><li>gerar apresentação.</li></ul>
+
+
+
+
+
+
+
+<h3>Na prática</h3>
+<p>Um professor pode gerar exemplos para uma aula.</p>
+<p>Um comerciante pode gerar ideias de divulgação.</p>
+<p>Um cidadão pode gerar uma mensagem formal.</p>
+<p>Um servidor público pode gerar uma primeira versão de comunicado.</p>
+<h3>Diferenças entre os tipos</h3>
+<h3>Atenção</h3>
+<p>Cada tipo de problema exige dados, métodos e formas de avaliação diferentes. Usar a abordagem errada pode gerar resultados inadequados.</p>
+<h3>Teste agora</h3>
+<h3>Classifique as situações abaixo:</h3>
+<p>Prever o preço de uma casa.</p>
+<p>Identificar se uma mensagem é golpe.</p>
+<p>Agrupar alunos por dificuldades semelhantes.</p>
+<p>Criar uma imagem para um cartaz.</p>
+<p>Estimar o número de atendimentos em uma unidade de saúde.</p>
+<p>Separar reclamações por tema.</p>
+<h3>Atividade guiada – Que tipo de problema é esse?</h3>
+<h3>Objetivo</h3>
+<p>Identificar o tipo de tarefa de IA em diferentes situações reais.</p>
+<h3>Passo a passo</h3>
+<p>O instrutor apresenta cartões com situações.</p>
+<h3>Os participantes classificam cada situação como:</h3>
+<ul class="didactic-list"><li>classificação;</li><li>regressão;</li><li>agrupamento;</li><li>geração.</li></ul>
+
+
+
+<p>O grupo justifica a escolha.</p>
+<p>O instrutor discute possíveis dúvidas.</p>
+<p>A turma cria uma tabela final com exemplos.</p>
+<h3>Produto da unidade</h3>
+<p>Tabela de tipos de problemas em IA com exemplos reais.</p>
+<h3>Para refletir</h3>
+<p>Antes de usar IA, por que é importante entender qual tipo de problema queremos resolver?</p>
+<h2>Unidade 4.4 – Redes neurais, Deep Learning e IA Generativa</h2>
+<h3>Carga horária</h3>
+<h2>2 horas</h2>
+<h3>Objetivo da unidade</h3>
+<p>Compreender, em nível introdutório, o que são redes neurais, aprendizado profundo e modelos generativos, relacionando esses conceitos a aplicações reais como reconhecimento de imagens, linguagem natural e geração de conteúdos.</p>
+<h3>Situação de abertura</h3>
+<p>Um celular reconhece o rosto de uma pessoa.
+Uma ferramenta traduz automaticamente um texto.
+Um assistente virtual responde perguntas.
+Uma IA cria uma imagem a partir de uma frase.
+Um aplicativo transforma fala em texto.</p>
+<p>Essas aplicações geralmente envolvem modelos mais complexos, como redes neurais e aprendizado profundo.</p>
+<h3>O que são redes neurais?</h3>
+<p>Redes neurais artificiais são modelos computacionais inspirados, de forma simplificada, na ideia de conexões entre neurônios.</p>
+<p>Elas não funcionam como o cérebro humano, mas utilizam unidades conectadas que recebem informações, processam sinais e produzem saídas.</p>
+<h3>Analogia simples</h3>
+<p>Imagine uma equipe de pessoas avaliando uma imagem.</p>
+<p>Uma pessoa observa a cor.
+Outra observa o formato.
+Outra observa a textura.
+Outra observa o contorno.
+No final, o grupo decide se a imagem parece ser de uma maçã ou de uma laranja.</p>
+<p>Uma rede neural faz algo parecido de forma matemática, analisando diferentes características e combinando informações.</p>
+<h3>Camadas de uma rede neural</h3>
+<h3>Uma rede neural pode ser entendida como formada por camadas:</h3>
+<h3>Camada de entrada</h3>
+<p>Recebe os dados.</p>
+<p>Exemplo: pixels de uma imagem ou palavras de um texto.</p>
+<h3>Camadas intermediárias</h3>
+<p>Processam padrões e características.</p>
+<p>Exemplo: bordas, formas, combinações de palavras, relações entre termos.</p>
+<h3>Camada de saída</h3>
+<p>Produz a resposta.</p>
+<p>Exemplo: “gato”, “cachorro”, “fraude”, “não fraude”, “próxima palavra”.</p>
+<h3>Deep Learning</h3>
+<p>Deep Learning, ou aprendizado profundo, utiliza redes neurais com muitas camadas.</p>
+<p>Essas camadas permitem aprender padrões mais complexos em imagens, textos, sons e vídeos.</p>
+<h3>Aplicações do Deep Learning</h3>
+<ul class="didactic-list"><li>reconhecimento facial;</li><li>tradução automática;</li><li>assistentes virtuais;</li><li>carros autônomos;</li><li>diagnóstico por imagem;</li><li>geração de texto;</li><li>geração de imagem;</li><li>reconhecimento de voz.</li><li>Como modelos generativos produzem texto?</li></ul>
+
+
+
+
+
+
+
+
+<p>Modelos de linguagem, como assistentes conversacionais, são treinados com grandes quantidades de textos. Eles aprendem padrões de linguagem, relações entre palavras, estruturas de frases e estilos de escrita.</p>
+<p>Quando recebem um prompt, tentam produzir uma resposta provável com base no contexto fornecido.</p>
+<p>Isso não significa que “sabem” tudo. Eles geram respostas com base em padrões aprendidos.</p>
+<h3>Como modelos generativos produzem imagens?</h3>
+<p>Modelos de geração de imagem aprendem relações entre descrições textuais e características visuais.</p>
+<p>Quando recebem um prompt como “uma sala de aula com pessoas aprendendo IA”, o modelo tenta criar uma imagem compatível com essa descrição.</p>
+<h3>Tokens, contexto e resposta</h3>
+<h3>Tokens</h3>
+<p>São partes do texto processadas pelo modelo.</p>
+<h3>Contexto</h3>
+<p>É o conjunto de informações fornecidas no prompt.</p>
+<h3>Resposta</h3>
+<p>É o texto produzido com base nos padrões aprendidos e no contexto recebido.</p>
+<h3>Atenção</h3>
+<p>Modelos generativos podem criar respostas convincentes, mas falsas. Também podem gerar imagens com erros, textos incorretos dentro da imagem, distorções ou elementos inadequados.</p>
+<h3>Teste agora</h3>
+<h3>Peça a uma IA generativa para explicar o mesmo conceito em três formas:</h3>
+<ul class="didactic-list"><li>para uma criança;</li><li>para um adulto iniciante;</li><li>para um técnico.</li><li>Observe como a linguagem muda.</li></ul>
+
+
+
+<h3>Atividade guiada – Visualizando uma rede neural</h3>
+<h3>Objetivo</h3>
+<p>Compreender visualmente o funcionamento básico de uma rede neural.</p>
+<h3>Passo a passo</h3>
+<p>O instrutor apresenta um desenho simples de rede neural.</p>
+<h3>A turma identifica:</h3>
+<ul class="didactic-list"><li>entradas;</li><li>camadas intermediárias;</li><li>saída.</li></ul>
+
+
+<p>O grupo relaciona o desenho a um exemplo prático, como reconhecer fruta.</p>
+<p>Os participantes criam um diagrama simples em papel, Canva ou Google Slides.</p>
+<p>Cada grupo explica o diagrama.</p>
+<h3>Produto da unidade</h3>
+<p>Diagrama simples de rede neural aplicado a um exemplo cotidiano.</p>
+<h3>Para refletir</h3>
+<p>Se uma IA gera uma resposta com base em padrões, como podemos saber quando ela realmente está ajudando e quando está apenas produzindo algo que parece correto?</p>
+<h2>Unidade 4.5 – Avaliação, erros, vieses, explicabilidade e laboratório experimental</h2>
+<h3>Carga horária</h3>
+<h2>2 horas</h2>
+<h3>Objetivo da unidade</h3>
+<p>Compreender como avaliar resultados de IA, reconhecer erros, interpretar limitações, identificar riscos de viés e realizar um experimento prático simples com IA.</p>
+<h3>Situação de abertura</h3>
+<p>Um sistema de IA identifica 90 de cada 100 imagens corretamente. Parece ótimo. Mas e se os 10 erros ocorrerem justamente em situações importantes? E se o sistema funcionar bem para um grupo de pessoas, mas mal para outro? E se a resposta estiver correta, mas ninguém souber explicar por quê?</p>
+<p>Avaliar IA não é apenas contar acertos. É compreender erros, limites, contexto e consequências.</p>
+<h3>Conceitos principais</h3>
+<h3>Acerto</h3>
+<p>Quando o modelo produz uma resposta correta.</p>
+<h3>Erro</h3>
+<p>Quando o modelo produz uma resposta incorreta.</p>
+<h3>Acurácia</h3>
+<p>Indica a proporção geral de acertos.</p>
+<h3>Exemplo:</h3>
+<p>Se o modelo acertou 80 de 100 casos, sua acurácia foi 80%.</p>
+<h3>Precisão</h3>
+<p>Indica, entre os casos que o modelo marcou como positivos, quantos realmente eram positivos.</p>
+<h3>Exemplo:</h3>
+<h3>Entre as mensagens marcadas como golpe, quantas eram realmente golpe?</h3>
+<h3>Recall</h3>
+<p>Indica, entre os casos positivos reais, quantos o modelo conseguiu encontrar.</p>
+<h3>Exemplo:</h3>
+<h3>Entre todas as mensagens que eram golpe, quantas o modelo identificou?</h3>
+<h3>Exemplo simples</h3>
+<p>Imagine um sistema que tenta identificar golpes no WhatsApp.</p>
+<p>Se ele marca uma mensagem verdadeira como golpe, pode gerar incômodo.</p>
+<p>Se ele deixa passar uma mensagem falsa, pode causar prejuízo.</p>
+<p>Por isso, diferentes erros têm diferentes consequências.</p>
+<h3>Matriz de confusão</h3>
+<p>A matriz de confusão é uma forma de organizar acertos e erros.</p>
+<h3>Viés em modelos de IA</h3>
+<p>Viés ocorre quando o modelo produz resultados injustos, desequilibrados ou discriminatórios.</p>
+<h3>Isso pode acontecer por:</h3>
+<ul class="didactic-list"><li>dados incompletos;</li><li>dados históricos injustos;</li><li>pouca diversidade;</li><li>escolhas inadequadas no treinamento;</li><li>uso incorreto do modelo.</li></ul>
+
+
+
+
+<h3>Exemplo de viés</h3>
+<p>Um sistema de reconhecimento facial pode funcionar melhor para alguns grupos do que para outros se os dados de treinamento não forem diversos.</p>
+<p>Um sistema de crédito pode prejudicar grupos historicamente excluídos se aprender com dados antigos e injustos.</p>
+<h3>Explicabilidade</h3>
+<p>Explicabilidade é a capacidade de compreender, ao menos em parte, por que um modelo chegou a determinado resultado.</p>
+<h3>Em decisões importantes, não basta a IA responder. É necessário entender:</h3>
+<ul class="didactic-list"><li>quais dados foram usados;</li><li>quais fatores influenciaram;</li><li>qual é o grau de confiança;</li><li>quais limites existem;</li><li>quem revisou a decisão.</li></ul>
+
+
+
+
+<h3>Supervisão humana</h3>
+<p>A supervisão humana é essencial em decisões importantes.</p>
+<p>A IA pode apoiar, mas decisões em saúde, justiça, crédito, educação, segurança, emprego e políticas públicas devem envolver responsabilidade humana.</p>
+<h3>Laboratório experimental com Teachable Machine</h3>
+<p>O Google Teachable Machine permite treinar modelos simples sem programação.</p>
+<h3>É possível criar modelos para:</h3>
+<ul class="didactic-list"><li>imagens;</li><li>sons;</li><li>poses.</li></ul>
+
+
+<h3>Atividade prática – Mini experimento com IA</h3>
+<h3>Objetivo</h3>
+<p>Criar e testar um modelo simples de classificação usando Google Teachable Machine ou atividade equivalente.</p>
+<h3>Passo a passo</h3>
+<p>Escolher um problema simples.</p>
+<ul class="didactic-list"><li>exemplo: classificar objetos;</li><li>exemplo: reconhecer gestos;</li><li>exemplo: diferenciar imagens.</li></ul>
+
+
+<p>Criar duas ou três classes.</p>
+<p>exemplo: caneta, celular e garrafa.</p>
+<p>Coletar exemplos usando câmera ou imagens.</p>
+<p>Treinar o modelo.</p>
+<p>Testar com novos exemplos.</p>
+<p>Registrar acertos e erros.</p>
+<h3>Discutir:</h3>
+<ul class="didactic-list"><li>o modelo acertou?</li><li>onde errou?</li><li>por que pode ter errado?</li><li>os dados eram suficientes?</li><li>havia variedade nos exemplos?</li><li>como melhorar?</li></ul>
+
+
+
+
+
+<h3>Alternativa sem computador</h3>
+<p>Caso não haja acesso à ferramenta, a atividade pode ser feita com cartões, imagens impressas ou objetos reais.</p>
+<h3>Produto da unidade</h3>
+<p>Mini experimento de IA ou relatório simples de avaliação.</p>
+<h3>Modelo de relatório</h3>
+<h3>Título do experimento:</h3>
+<h3>Problema escolhido:</h3>
+<h3>Classes utilizadas:</h3>
+<h3>Dados coletados:</h3>
+<h3>Resultado observado:</h3>
+<h3>Principais acertos:</h3>
+<h3>Principais erros:</h3>
+<h3>Possíveis causas dos erros:</h3>
+<h3>Como melhorar o modelo:</h3>
+<h3>Reflexão final:</h3>
+<h3>Para refletir</h3>
+<p>Uma IA com muitos acertos pode ainda ser inadequada para certas decisões? Em quais situações o erro de uma IA pode ter consequências graves?</p>
+<h3>Avaliação do Módulo 4</h3>
+<p>A avaliação será formativa, prática e participativa.</p>
+<h3>Critérios</h3>
+<ul class="didactic-list"><li>participação nas discussões;</li><li>compreensão dos conceitos de dados, atributos, rótulos e modelos;</li><li>identificação de problemas de qualidade dos dados;</li><li>compreensão do processo de treinamento e teste;</li><li>diferenciação entre classificação, regressão, agrupamento e geração;</li><li>compreensão introdutória de redes neurais e IA generativa;</li><li>interpretação de acertos, erros e métricas simples;</li><li>reconhecimento de vieses e limitações;</li><li>participação no laboratório experimental;</li><li>clareza no relatório ou apresentação final.</li></ul>
+
+
+
+
+
+
+
+
+
+<h3>Produto final do módulo</h3>
+<h3>Ao final do Módulo 4, o participante terá produzido:</h3>
+<p>Mini experimento ou relatório explicativo sobre o funcionamento da Inteligência Artificial.</p>
+<h3>Esse produto poderá conter:</h3>
+<ul class="didactic-list"><li>problema escolhido;</li><li>dados utilizados;</li><li>tipo de tarefa de IA;</li><li>modelo ou simulação construída;</li><li>acertos e erros observados;</li><li>possíveis limitações;</li><li>reflexão sobre melhorias e cuidados.</li></ul>
+
+
+
+
+
+
+<h3>Resultado esperado</h3>
+<p>Ao final do Módulo 4, o participante deverá compreender, em nível introdutório, como a IA aprende a partir de dados, como modelos são treinados e testados, quais tipos de problemas podem ser resolvidos, como redes neurais e modelos generativos funcionam de forma simplificada, como resultados podem ser avaliados e por que erros, vieses, explicabilidade e supervisão humana são essenciais.</p>
+<p>O participante também deverá estar preparado para avançar para o Módulo 5 – Desenvolvimento de Soluções Baseadas em Inteligência Artificial.</p><div class="callout practice"><a href="../laboratorios.html">Ver laboratórios relacionados</a> | <a href="../atividades/atividades-m4.html">Ver atividades do módulo</a> | <a href="../slides/slides-m4.html">Ver roteiro de slides</a></div></div></main><a class="backtop" href="#top">Topo</a><footer class="footer">UNESP.IA - Inteligência Artificial para Todos | Programa de Extensão Universitária | Coleção Editorial</footer></body></html>
