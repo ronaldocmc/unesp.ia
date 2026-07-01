@@ -16,8 +16,8 @@ ROOT = Path(__file__).resolve().parents[1]
 FOOTER = (
     '<footer class="footer"><span class="footer-primary">unesp.IA - Inteligência Artificial para Todos | '
     'Programa de Extensão Universitária | Coleção Editorial</span>'
-    '<span class="footer-institution">Departamento de Matemática e Computação</span>'
-    '<span class="footer-coordinator">Coordenador Prof. Ronaldo Celso Messias Correia</span></footer>'
+    '<span class="footer-unit">Faculdade de Ciências e Tecnologia de Presidente Prudente - FCT/UNESP</span>'
+    '<span class="footer-institution">Departamento de Matemática e Computação</span></footer>'
 )
 NAV_ROOT = (
     '<div class="topbar"><a class="brand" href="index.html"><img class="brand-logo" '

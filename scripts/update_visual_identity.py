@@ -345,8 +345,8 @@ def concept_page(title: str, definition: str, examples: list[str], associated: l
         '</div></main><a class="backtop" href="#top">Topo</a>'
         '<footer class="footer"><span class="footer-primary">unesp.IA - Inteligência Artificial para Todos | '
         'Programa de Extensão Universitária | Coleção Editorial</span>'
-        '<span class="footer-institution">Departamento de Matemática e Computação</span>'
-        '<span class="footer-coordinator">Coordenador Prof. Ronaldo Celso Messias Correia</span></footer></body></html>'
+        '<span class="footer-unit">Faculdade de Ciências e Tecnologia de Presidente Prudente - FCT/UNESP</span>'
+        '<span class="footer-institution">Departamento de Matemática e Computação</span></footer></body></html>'
     )
 
 
@@ -459,8 +459,8 @@ def create_characters_index() -> None:
         '<a class="backtop" href="#top">Topo</a>'
         '<footer class="footer"><span class="footer-primary">unesp.IA - Inteligência Artificial para Todos | '
         'Programa de Extensão Universitária | Coleção Editorial</span>'
-        '<span class="footer-institution">Departamento de Matemática e Computação</span>'
-        '<span class="footer-coordinator">Coordenador Prof. Ronaldo Celso Messias Correia</span></footer></body></html>'
+        '<span class="footer-unit">Faculdade de Ciências e Tecnologia de Presidente Prudente - FCT/UNESP</span>'
+        '<span class="footer-institution">Departamento de Matemática e Computação</span></footer></body></html>'
     )
     write(ROOT / "personagens" / "index.html", page)
 

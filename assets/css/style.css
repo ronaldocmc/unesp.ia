@@ -208,8 +208,8 @@
 @media(max-width:780px){.tools-catalog .tool-grid{grid-template-columns:1fr}.tools-section{scroll-margin-top:20px}.tools-catalog .matrix{grid-template-columns:1fr}.tools-catalog .tool-tabs a{font-size:13px}.tools-catalog .tool-logo{width:54px;height:54px;flex-basis:54px}}
 /* Equipe e rodapé institucional */
 .footer span{display:block}
-.footer-institution{margin-top:8px;color:#405363;font-weight:700}
-.footer-coordinator{margin-top:2px;color:#5A6470;font-size:14px}
+.footer-unit{margin-top:8px;color:#405363;font-weight:700}
+.footer-institution{margin-top:2px;color:#5A6470;font-size:14px}
 .nav a[aria-current="page"]{border-color:var(--blue);background:var(--blue);color:#fff}
 .team-page main{min-height:calc(100vh - 280px);background:linear-gradient(180deg,#F7FBFD 0,#fff 420px)}
 .team-container{max-width:1120px;padding-top:34px;padding-bottom:54px}
@@ -227,6 +227,11 @@
 .team-profile h2{margin:0 0 14px;color:var(--blue);font-size:23px;line-height:1.25}
 .team-card .team-profile h2{font-size:20px}
 .team-section-title{margin:0 0 16px;color:var(--blue);font-size:24px}
+.team-group{margin-top:40px}
+.team-group-description{margin:-8px 0 18px;color:#526372;font-size:16px}
+.team-student-card{min-height:180px}
+.team-student-card .team-profile h3{margin:0 0 14px;color:var(--blue);font-size:20px;line-height:1.25}
+.team-student-card .team-details{margin-bottom:0}
 .team-details{display:grid;width:100%;gap:9px;margin:0 0 18px}
 .team-details div{padding-bottom:8px;border-bottom:1px solid #E7EEF4}
 .team-details dt{margin-bottom:2px;color:#667684;font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.04em}
