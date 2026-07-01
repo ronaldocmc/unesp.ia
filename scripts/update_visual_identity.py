@@ -392,34 +392,69 @@ def create_missing_concepts() -> None:
 
 def create_characters_index() -> None:
     characters = [
-        ("maria", "Maria", "72 anos, participante iniciante", "Autonomia digital, segurança e qualidade de vida."),
-        ("joao", "João", "Professor", "Planejamento de aulas, materiais e orientação de estudantes."),
-        ("carlos", "Carlos", "Empreendedor", "Atendimento, comunicação, organização e análise de dados."),
-        ("ana", "Ana", "Servidora pública", "Documentos, indicadores, atendimento ao cidadão e transparência."),
-        ("pedro", "Pedro", "Pesquisador", "Literatura científica, dados, síntese e comunicação acadêmica."),
+        (
+            "maria",
+            "Maria",
+            "72 anos · Participante iniciante",
+            "Está começando a usar IA para ganhar autonomia digital, comunicar-se com segurança e cuidar melhor da rotina.",
+        ),
+        (
+            "joao",
+            "João",
+            "Professor",
+            "Explora a IA para planejar aulas, criar materiais didáticos e acompanhar a aprendizagem dos estudantes.",
+        ),
+        (
+            "carlos",
+            "Carlos",
+            "Empreendedor",
+            "Aplica IA na divulgação de produtos, no atendimento a clientes e na organização do dia a dia do negócio.",
+        ),
+        (
+            "ana",
+            "Ana",
+            "Servidora pública",
+            "Utiliza IA para apoiar o atendimento ao cidadão, produzir documentos e analisar indicadores municipais.",
+        ),
+        (
+            "pedro",
+            "Pedro",
+            "Pesquisador",
+            "Recorre à IA para pesquisar referências, analisar dados e comunicar resultados acadêmicos com clareza.",
+        ),
     ]
     cards = []
     for slug, name, profile, description in characters:
         cards.append(
-            f'<article class="card character" id="{slug}">'
-            f'<img src="../assets/img/personagens/{slug}.png" alt="{name}"><div>'
-            f"<h3>{name}</h3><p><b>{profile}</b></p><p>{description}</p>"
-            f'<a class="pill" href="{slug}.html">Conhecer personagem</a></div></article>'
+            f'<article class="card character-card" id="{slug}">'
+            '<figure class="character-portrait">'
+            f'<img src="../assets/img/personagens/{slug}.png" alt="Ilustração de {name}">'
+            '</figure><div class="character-content">'
+            f'<h2>{name}</h2><span class="character-role">{profile}</span>'
+            f'<p>{description}</p><a class="character-link" href="{slug}.html">'
+            f'Conhecer {name} <span aria-hidden="true">→</span></a></div></article>'
         )
     page = (
         '<!doctype html><html lang="pt-br"><head><meta charset="utf-8">'
         '<meta name="viewport" content="width=device-width,initial-scale=1">'
-        '<title>Personagens | unesp.IA</title><link rel="stylesheet" href="../assets/css/style.css">'
-        '<script src="../assets/js/search.js"></script></head><body><div class="topbar">'
+        '<title>Personagens | unesp.IA</title>'
+        '<link rel="stylesheet" href="../assets/css/style.css?v=20260630">'
+        '<script src="../assets/js/search.js"></script></head>'
+        '<body class="characters-page"><div class="topbar" id="top">'
         f'{brand_html("../")}<div class="nav"><a href="../index.html">Início</a>'
         '<a href="../modulos.html">Módulos</a><a href="../trilhas.html">Trilhas</a>'
         '<a href="../conceitos.html">Conceitos</a><a href="../ferramentas.html">Ferramentas</a>'
         '<a href="../laboratorios.html">Laboratórios</a><a href="../materiais.html">Materiais</a>'
-        '<a href="../personagens.html">Personagens</a><a href="../banco-visual.html">Banco Visual</a>'
-        '<a href="../mapa-conhecimento.html">Mapa</a></div></div><main><div class="container" id="top">'
-        '<h1 class="section-title">Personagens da Coleção</h1>'
-        '<p>Os personagens conectam os conteúdos a situações reais e ajudam a observar necessidades, riscos e decisões humanas.</p>'
-        f'<div class="grid">{"".join(cards)}</div></div></main><a class="backtop" href="#top">Topo</a>'
+        '<a href="../personagens.html" aria-current="page">Personagens</a>'
+        '<a href="../banco-visual.html">Banco Visual</a>'
+        '<a href="../mapa-conhecimento.html">Mapa</a></div></div><main>'
+        '<div class="container characters-container"><header class="characters-hero">'
+        '<span class="characters-eyebrow">Aprendizagem com histórias</span>'
+        '<h1>Personagens da Coleção</h1>'
+        '<p>Personagens lúdicos e recorrentes aproximam os conteúdos de situações reais '
+        'e ajudam a criar vínculo com os participantes.</p></header>'
+        f'<div class="characters-grid">{"".join(cards)}</div></div></main>'
+        '<a class="backtop" href="#top">Topo</a>'
         '<footer class="footer">unesp.IA - Inteligência Artificial para Todos | '
         "Programa de Extensão Universitária | Coleção Editorial</footer></body></html>"
     )
