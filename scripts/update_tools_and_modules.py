@@ -14,8 +14,10 @@ from standardize_portal import standardize_portal
 
 ROOT = Path(__file__).resolve().parents[1]
 FOOTER = (
-    '<footer class="footer">unesp.IA - Inteligência Artificial para Todos | '
-    "Programa de Extensão Universitária | Coleção Editorial</footer>"
+    '<footer class="footer"><span class="footer-primary">unesp.IA - Inteligência Artificial para Todos | '
+    'Programa de Extensão Universitária | Coleção Editorial</span>'
+    '<span class="footer-institution">Departamento de Matemática e Computação</span>'
+    '<span class="footer-coordinator">Coordenador Prof. Ronaldo Celso Messias Correia</span></footer>'
 )
 NAV_ROOT = (
     '<div class="topbar"><a class="brand" href="index.html"><img class="brand-logo" '
@@ -25,7 +27,7 @@ NAV_ROOT = (
     '<a href="trilhas.html">Trilhas</a><a href="conceitos.html">Conceitos</a>'
     '<a href="ferramentas.html">Ferramentas</a><a href="laboratorios.html">Laboratórios</a>'
     '<a href="materiais.html">Materiais</a><a href="personagens.html">Personagens</a>'
-    '<a href="banco-visual.html">Banco Visual</a><a href="mapa-conhecimento.html">Mapa</a>'
+    '<a href="equipe.html">Equipe</a><a href="mapa-conhecimento.html">Mapa</a>'
     "</div></div>"
 )
 NAV_SUB = (

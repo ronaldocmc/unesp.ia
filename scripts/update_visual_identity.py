@@ -333,7 +333,7 @@ def concept_page(title: str, definition: str, examples: list[str], associated: l
         '<a href="../trilhas.html">Trilhas</a><a href="../conceitos.html">Conceitos</a>'
         '<a href="../ferramentas.html">Ferramentas</a><a href="../laboratorios.html">Laboratórios</a>'
         '<a href="../materiais.html">Materiais</a><a href="../personagens.html">Personagens</a>'
-        '<a href="../banco-visual.html">Banco Visual</a><a href="../mapa-conhecimento.html">Mapa</a>'
+        '<a href="../equipe.html">Equipe</a><a href="../mapa-conhecimento.html">Mapa</a>'
         '</div></div><main><div class="container content" id="top">'
         '<div class="breadcrumbs"><a href="../index.html">Início</a> / '
         f'<a href="../conceitos.html">Conceitos</a> / {html.escape(title)}</div>'
@@ -343,8 +343,10 @@ def concept_page(title: str, definition: str, examples: list[str], associated: l
         f"<p>Em qual situação do curso o conceito de {html.escape(title.lower())} ajuda a compreender ou avaliar melhor uma resposta de IA?</p></div>"
         f'<h2>Conceitos associados</h2><div class="concept-related-links">{links}</div>'
         '</div></main><a class="backtop" href="#top">Topo</a>'
-        '<footer class="footer">unesp.IA - Inteligência Artificial para Todos | '
-        "Programa de Extensão Universitária | Coleção Editorial</footer></body></html>"
+        '<footer class="footer"><span class="footer-primary">unesp.IA - Inteligência Artificial para Todos | '
+        'Programa de Extensão Universitária | Coleção Editorial</span>'
+        '<span class="footer-institution">Departamento de Matemática e Computação</span>'
+        '<span class="footer-coordinator">Coordenador Prof. Ronaldo Celso Messias Correia</span></footer></body></html>'
     )
 
 
@@ -446,7 +448,7 @@ def create_characters_index() -> None:
         '<a href="../conceitos.html">Conceitos</a><a href="../ferramentas.html">Ferramentas</a>'
         '<a href="../laboratorios.html">Laboratórios</a><a href="../materiais.html">Materiais</a>'
         '<a href="../personagens.html" aria-current="page">Personagens</a>'
-        '<a href="../banco-visual.html">Banco Visual</a>'
+        '<a href="../equipe.html">Equipe</a>'
         '<a href="../mapa-conhecimento.html">Mapa</a></div></div><main>'
         '<div class="container characters-container"><header class="characters-hero">'
         '<span class="characters-eyebrow">Aprendizagem com histórias</span>'
@@ -455,8 +457,10 @@ def create_characters_index() -> None:
         'e ajudam a criar vínculo com os participantes.</p></header>'
         f'<div class="characters-grid">{"".join(cards)}</div></div></main>'
         '<a class="backtop" href="#top">Topo</a>'
-        '<footer class="footer">unesp.IA - Inteligência Artificial para Todos | '
-        "Programa de Extensão Universitária | Coleção Editorial</footer></body></html>"
+        '<footer class="footer"><span class="footer-primary">unesp.IA - Inteligência Artificial para Todos | '
+        'Programa de Extensão Universitária | Coleção Editorial</span>'
+        '<span class="footer-institution">Departamento de Matemática e Computação</span>'
+        '<span class="footer-coordinator">Coordenador Prof. Ronaldo Celso Messias Correia</span></footer></body></html>'
     )
     write(ROOT / "personagens" / "index.html", page)
 
