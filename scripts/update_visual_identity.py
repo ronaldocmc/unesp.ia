@@ -329,7 +329,8 @@ def concept_page(title: str, definition: str, examples: list[str], associated: l
         f"<title>{html.escape(title)} | unesp.IA</title>"
         '<link rel="stylesheet" href="../assets/css/style.css"><script src="../assets/js/search.js"></script>'
         f'</head><body><div class="topbar">{brand_html("../")}<div class="nav">'
-        '<a href="../index.html">Início</a><a href="../modulos.html">Módulos</a>'
+        '<a href="../index.html">Início</a><a href="../inscricoes.html">Inscrições</a>'
+        '<a href="../modulos.html">Módulos</a>'
         '<a href="../trilhas.html">Trilhas</a><a href="../conceitos.html">Conceitos</a>'
         '<a href="../ferramentas.html">Ferramentas</a><a href="../laboratorios.html">Laboratórios</a>'
         '<a href="../materiais.html">Materiais</a><a href="../personagens.html">Personagens</a>'
@@ -444,6 +445,7 @@ def create_characters_index() -> None:
         '<script src="../assets/js/search.js"></script></head>'
         '<body class="characters-page"><div class="topbar" id="top">'
         f'{brand_html("../")}<div class="nav"><a href="../index.html">Início</a>'
+        '<a href="../inscricoes.html">Inscrições</a>'
         '<a href="../modulos.html">Módulos</a><a href="../trilhas.html">Trilhas</a>'
         '<a href="../conceitos.html">Conceitos</a><a href="../ferramentas.html">Ferramentas</a>'
         '<a href="../laboratorios.html">Laboratórios</a><a href="../materiais.html">Materiais</a>'
