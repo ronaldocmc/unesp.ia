@@ -289,6 +289,8 @@
 .cohort-card h3{margin:16px 0 9px;color:var(--blue);font-size:24px}
 .cohort-card p{margin:0;color:#344654;font-size:16px;line-height:1.65}
 .cohort-audience{margin-top:auto;padding-top:18px;color:#405363}
+.cohort-registration-link{display:inline-flex;align-items:center;justify-content:center;gap:7px;margin-top:16px;padding:11px 15px;border-radius:11px;background:var(--blue);color:#fff;font-weight:800;text-align:center}
+.cohort-registration-link:hover{background:var(--blue2);text-decoration:none}
 .registration-note{display:flex;gap:8px;margin-top:26px;padding:17px 20px;border-left:6px solid var(--orange);border-radius:14px;background:#FFFAEE;color:#483B20}
 .home-registration{display:flex;gap:26px;align-items:center;justify-content:space-between;margin:10px 0 36px;padding:24px 28px;border:1px solid #AFCFDF;border-left:7px solid var(--blue2);border-radius:18px;background:linear-gradient(135deg,#F4FAFD,#fff);box-shadow:var(--shadow)}
 .home-registration-copy{max-width:830px}
