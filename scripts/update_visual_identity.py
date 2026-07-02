@@ -261,7 +261,7 @@ def active_html_files() -> list[Path]:
 def brand_html(prefix: str) -> str:
     return (
         f'<a class="brand" href="{prefix}index.html"><img class="brand-logo" '
-        f'src="{prefix}assets/img/logo-unesp-ia.svg" alt="unesp.IA">'
+        f'src="{prefix}assets/img/logo-unesp-ia-portal.jpg" alt="unesp.IA">'
         "<small>Coleção Editorial | Portal Didático dos Participantes</small></a>"
     )
 
@@ -327,7 +327,7 @@ def concept_page(title: str, definition: str, examples: list[str], associated: l
         '<!doctype html><html lang="pt-br"><head><meta charset="utf-8">'
         '<meta name="viewport" content="width=device-width,initial-scale=1">'
         f"<title>{html.escape(title)} | unesp.IA</title>"
-        '<link rel="stylesheet" href="../assets/css/style.css"><script src="../assets/js/search.js"></script>'
+        '<link rel="stylesheet" href="../assets/css/style.css?v=20260702-logo"><script src="../assets/js/search.js"></script>'
         f'</head><body><div class="topbar">{brand_html("../")}<div class="nav">'
         '<a href="../index.html">Início</a><a href="../inscricoes.html">Inscrições</a>'
         '<a href="../modulos.html">Módulos</a>'
@@ -441,7 +441,7 @@ def create_characters_index() -> None:
         '<!doctype html><html lang="pt-br"><head><meta charset="utf-8">'
         '<meta name="viewport" content="width=device-width,initial-scale=1">'
         '<title>Personagens | unesp.IA</title>'
-        '<link rel="stylesheet" href="../assets/css/style.css?v=20260630">'
+        '<link rel="stylesheet" href="../assets/css/style.css?v=20260702-logo">'
         '<script src="../assets/js/search.js"></script></head>'
         '<body class="characters-page"><div class="topbar" id="top">'
         f'{brand_html("../")}<div class="nav"><a href="../index.html">Início</a>'

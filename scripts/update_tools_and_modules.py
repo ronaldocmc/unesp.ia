@@ -21,7 +21,7 @@ FOOTER = (
 )
 NAV_ROOT = (
     '<div class="topbar"><a class="brand" href="index.html"><img class="brand-logo" '
-    'src="assets/img/logo-unesp-ia.svg" alt="unesp.IA"><small>Coleção Editorial | '
+    'src="assets/img/logo-unesp-ia-portal.jpg" alt="unesp.IA"><small>Coleção Editorial | '
     'Portal Didático dos Participantes</small></a><div class="nav">'
     '<a href="index.html">Início</a><a href="inscricoes.html">Inscrições</a>'
     '<a href="modulos.html">Módulos</a>'
@@ -963,7 +963,7 @@ def tool_page(tool: dict[str, object]) -> str:
     return (
         '<!doctype html><html lang="pt-br"><head><meta charset="utf-8"><meta name="viewport" '
         f'content="width=device-width,initial-scale=1"><title>{e(tool["name"])} | unesp.IA</title>'
-        '<link rel="stylesheet" href="../assets/css/style.css"><script src="../assets/js/search.js"></script>'
+        '<link rel="stylesheet" href="../assets/css/style.css?v=20260702-logo"><script src="../assets/js/search.js"></script>'
         f'</head><body>{NAV_SUB}<main><div class="container content" id="top">'
         f'<div class="breadcrumbs"><a href="../index.html">Início</a> / <a href="../ferramentas.html">Ferramentas</a> / {e(tool["name"])}</div>'
         '<section class="tool-page-hero">'
@@ -1002,7 +1002,7 @@ def make_tool_pages() -> None:
 
     root_page = (
         '<!doctype html><html lang="pt-br"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">'
-        '<title>Ferramentas | unesp.IA</title><link rel="stylesheet" href="assets/css/style.css"><script src="assets/js/search.js"></script>'
+        '<title>Ferramentas | unesp.IA</title><link rel="stylesheet" href="assets/css/style.css?v=20260702-logo"><script src="assets/js/search.js"></script>'
         f'</head><body>{NAV_ROOT}<main><div class="container content tool-library" id="top"><h1 class="section-title">Biblioteca de Ferramentas</h1>'
         '<p>Ferramentas organizadas por tipo de uso, com exemplos, cuidados, módulos e atividades relacionadas. Elas são meios para desenvolver competências, não substitutos da análise humana.</p>'
         '<div class="callout tool-language-note"><b>Termos técnicos em contexto.</b> Na primeira ocorrência de cada página, o equivalente em português acompanha termos como Machine Learning (Aprendizado de Máquina) e Deep Learning (Aprendizado Profundo).</div>'
