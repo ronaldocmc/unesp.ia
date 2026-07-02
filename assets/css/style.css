@@ -97,6 +97,25 @@
 .project-pillar:nth-child(2){border-color:var(--green);background:#F4FBF6}
 .project-pillar:nth-child(3){border-color:var(--orange);background:#FFFAEE}
 .project-pillar h3{margin:0 0 8px;color:var(--blue)}
+.project-overview{margin:0 0 54px;scroll-margin-top:210px}
+.project-overview-heading>p{max-width:920px;margin:0 0 22px;color:#435363;font-size:18px}
+.project-overview-figure{margin:0;overflow:hidden;border:1px solid #BFD6E4;border-radius:18px;background:#fff;box-shadow:var(--shadow)}
+.project-overview-link{display:block;color:var(--blue);background:#F7FBFD}
+.project-overview-link:hover{text-decoration:none}
+.project-overview-link picture,.project-overview-link img{display:block;width:100%}
+.project-overview-link img{height:auto;aspect-ratio:3/2;object-fit:contain;background:#fff}
+.project-overview-action{display:flex;justify-content:center;align-items:center;gap:7px;padding:12px 18px;border-top:1px solid #DDEAF2;background:#F3F9FC;font-weight:800}
+.project-overview-link:hover .project-overview-action{background:#E6F4FA}
+.project-overview-figure figcaption{padding:10px 18px;color:#5B6874;font-size:14px;text-align:center}
+.map-overview-card{margin:24px 0}
+.map-overview-card>a{display:grid;grid-template-columns:minmax(220px,300px) 1fr;gap:22px;align-items:center;overflow:hidden;border:1px solid #BFD6E4;border-radius:16px;background:linear-gradient(135deg,#F4F9FD,#fff);box-shadow:var(--shadow);color:var(--dark)}
+.map-overview-card>a:hover{text-decoration:none;border-color:var(--blue2)}
+.map-overview-card picture,.map-overview-card img{display:block;width:100%}
+.map-overview-card img{height:auto;aspect-ratio:3/2;object-fit:cover}
+.map-overview-card span{display:flex;flex-direction:column;gap:5px;padding:18px 22px 18px 0}
+.map-overview-card strong{color:var(--blue);font-size:20px}
+.map-overview-card small{color:#435363;font-size:15px;line-height:1.5}
+@media(max-width:680px){.project-overview-heading>p{font-size:17px}.project-overview-action{font-size:14px}.map-overview-card>a{grid-template-columns:1fr}.map-overview-card span{padding:0 18px 18px}.map-overview-card img{object-fit:contain}}
 .topbar{background:#fff;color:#111;border-bottom:5px solid #08769A;padding:14px 28px}
 .brand{display:inline-flex;align-items:center;gap:14px;color:#111;text-decoration:none}
 .brand:hover{text-decoration:none}
