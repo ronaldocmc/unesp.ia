@@ -344,7 +344,7 @@ def concept_page(title: str, definition: str, examples: list[str], associated: l
         f'<h2>Conceitos associados</h2><div class="concept-related-links">{links}</div>'
         '</div></main><a class="backtop" href="#top">Topo</a>'
         '<footer class="footer"><span class="footer-primary">unesp.IA - Inteligência Artificial para Todos | '
-        'Programa de Extensão Universitária | Coleção Editorial</span>'
+        'Projeto de Extensão Universitária | Coleção Editorial</span>'
         '<span class="footer-unit">Faculdade de Ciências e Tecnologia de Presidente Prudente - FCT/UNESP</span>'
         '<span class="footer-institution">Departamento de Matemática e Computação</span></footer></body></html>'
     )
@@ -458,7 +458,7 @@ def create_characters_index() -> None:
         f'<div class="characters-grid">{"".join(cards)}</div></div></main>'
         '<a class="backtop" href="#top">Topo</a>'
         '<footer class="footer"><span class="footer-primary">unesp.IA - Inteligência Artificial para Todos | '
-        'Programa de Extensão Universitária | Coleção Editorial</span>'
+        'Projeto de Extensão Universitária | Coleção Editorial</span>'
         '<span class="footer-unit">Faculdade de Ciências e Tecnologia de Presidente Prudente - FCT/UNESP</span>'
         '<span class="footer-institution">Departamento de Matemática e Computação</span></footer></body></html>'
     )

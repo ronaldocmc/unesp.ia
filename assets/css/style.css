@@ -241,6 +241,8 @@
 .team-card{align-items:flex-start;padding:22px}
 .team-avatar{display:grid;width:72px;height:72px;flex:0 0 72px;place-items:center;border-radius:20px;background:linear-gradient(135deg,var(--blue),var(--cyan));color:#fff;font-size:22px;font-weight:800;letter-spacing:.04em;box-shadow:0 8px 18px rgba(0,87,168,.18)}
 .team-featured .team-avatar{width:88px;height:88px;flex-basis:88px;border-radius:24px;font-size:27px}
+.team-photo{display:block;object-fit:cover;object-position:center 32%;border:3px solid #fff}
+.team-featured .team-photo{width:156px;height:156px;flex-basis:156px}
 .team-profile{display:flex;min-width:0;flex:1;flex-direction:column;align-items:flex-start}
 .team-role{display:inline-block;margin-bottom:7px;padding:4px 9px;border-radius:999px;background:#E6F4FA;color:var(--blue);font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.04em}
 .team-profile h2{margin:0 0 14px;color:var(--blue);font-size:23px;line-height:1.25}
@@ -258,3 +260,4 @@
 .team-lattes{display:inline-flex;align-items:center;gap:7px;margin-top:auto;padding:9px 13px;border-radius:10px;background:var(--blue);color:#fff;font-size:14px;font-weight:800}
 .team-lattes:hover{background:var(--blue2);text-decoration:none}
 @media(max-width:780px){.team-grid{grid-template-columns:1fr}.team-featured,.team-card{flex-direction:column}.team-featured{align-items:flex-start}.team-avatar,.team-featured .team-avatar{width:64px;height:64px;flex-basis:64px;border-radius:18px;font-size:20px}.team-intro p{font-size:17px}}
+@media(max-width:780px){.team-featured .team-photo{width:104px;height:104px;flex-basis:104px}}

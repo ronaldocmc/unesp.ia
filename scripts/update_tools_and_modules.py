@@ -15,7 +15,7 @@ from standardize_portal import standardize_portal
 ROOT = Path(__file__).resolve().parents[1]
 FOOTER = (
     '<footer class="footer"><span class="footer-primary">unesp.IA - Inteligência Artificial para Todos | '
-    'Programa de Extensão Universitária | Coleção Editorial</span>'
+    'Projeto de Extensão Universitária | Coleção Editorial</span>'
     '<span class="footer-unit">Faculdade de Ciências e Tecnologia de Presidente Prudente - FCT/UNESP</span>'
     '<span class="footer-institution">Departamento de Matemática e Computação</span></footer>'
 )
