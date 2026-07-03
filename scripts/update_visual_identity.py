@@ -261,8 +261,7 @@ def active_html_files() -> list[Path]:
 def brand_html(prefix: str) -> str:
     return (
         f'<a class="brand" href="{prefix}index.html"><img class="brand-logo" '
-        f'src="{prefix}assets/img/logo-unesp-ia-portal.jpg" alt="unesp.IA">'
-        "<small>Coleção Editorial | Portal Didático dos Participantes</small></a>"
+        f'src="{prefix}assets/img/logo-unesp-ia-portal.jpg" alt="unesp.IA"></a>'
     )
 
 
