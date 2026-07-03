@@ -104,7 +104,7 @@
 .home-intro-panel{align-self:center;padding:20px;border:1px solid #BFD6E4;border-radius:18px;background:rgba(255,255,255,.94);box-shadow:0 8px 22px rgba(13,70,104,.07)}
 .home-intro-panel h2{margin:6px 0 8px;color:var(--blue);font-size:21px;line-height:1.18}
 .home-intro-panel p{margin-bottom:11px;font-size:13px;line-height:1.45}
-.home-registration-panel{justify-self:end;width:100%;max-width:470px;border-top:3px solid var(--blue2)}
+.home-registration-panel{justify-self:end;width:100%;max-width:430px;border-top:3px solid var(--blue2)}
 .home-registration-panel .registration-eyebrow{display:block;margin-bottom:7px;font-size:11px}
 .home-registration-module{display:inline-flex;padding:3px 7px;border-radius:6px;background:#E3F2F8;color:var(--blue);font-size:10.5px;font-weight:900;letter-spacing:.04em;text-transform:uppercase}
 .home-registration-facts{display:grid;grid-template-columns:1.12fr .92fr 1.15fr;margin:13px 0 12px;padding:10px 0;border-top:1px solid #D9E8EF;border-bottom:1px solid #D9E8EF}
