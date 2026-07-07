@@ -250,6 +250,34 @@
 .tools-catalog .check-list li{position:relative;padding:7px 0 7px 28px}
 .tools-catalog .check-list li::before{content:"✓";position:absolute;left:0;color:var(--green);font-weight:900}
 @media(max-width:780px){.tools-catalog .tool-grid{grid-template-columns:1fr}.tools-section{scroll-margin-top:20px}.tools-catalog .matrix{grid-template-columns:1fr}.tools-catalog .tool-tabs a{font-size:13px}.tools-catalog .tool-logo{width:54px;height:54px;flex-basis:54px}}
+/* Ferramentas - guia da Aula 01 */
+.tools-lesson{max-width:1180px}
+.tools-lesson-hero{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:26px;align-items:stretch;margin:34px 0 26px;padding:32px;border:1px solid #BBD8E7;border-left:7px solid var(--blue2);border-radius:22px;background:linear-gradient(135deg,#fff,#EEF8FC);box-shadow:var(--shadow)}
+.lesson-eyebrow{display:inline-block;margin-bottom:10px;color:var(--blue2);font-size:13px;font-weight:900;letter-spacing:.08em;text-transform:uppercase}
+.tools-lesson-hero h1{max-width:790px;margin:0 0 14px;color:var(--blue);font-size:clamp(34px,4vw,52px);line-height:1.08}
+.tools-lesson-hero p{max-width:860px;margin:0;color:#33475B;font-size:18px;line-height:1.62}
+.lesson-summary{padding:22px;border-radius:18px;background:#fff;border:1px solid #D8E8F1;box-shadow:0 14px 28px rgba(0,59,113,.08)}
+.lesson-summary strong{display:block;margin-bottom:12px;color:var(--blue);font-size:18px}
+.lesson-summary ol{display:grid;gap:10px;margin:0;padding-left:20px;color:#344654;font-size:15px;line-height:1.45}
+.lesson-strip{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:34px}
+.lesson-strip a{display:grid;grid-template-columns:44px 1fr;gap:10px;align-items:center;padding:13px;border:1px solid var(--border);border-radius:15px;background:#fff;color:var(--blue);font-weight:900;box-shadow:0 8px 18px rgba(0,59,113,.04)}
+.lesson-strip a:hover{transform:translateY(-1px);text-decoration:none;box-shadow:0 12px 24px rgba(0,59,113,.08)}
+.lesson-strip img{grid-row:span 2;width:44px;height:44px;object-fit:contain;border-radius:12px;background:#fff}
+.lesson-strip span{display:block;color:#5A6470;font-size:12.5px;font-weight:600;line-height:1.3}
+.lesson-matrix .card{border-left-color:var(--blue2)}
+.lesson-tool{scroll-margin-top:180px}
+.lesson-tool .prompt-card{margin-top:auto}
+.prompt-card{padding:13px 14px;border:1px solid #CFE3EE;border-left:4px solid var(--cyan);border-radius:13px;background:#F6FBFD;color:#33475B}
+.prompt-card strong{display:block;margin-bottom:6px;color:var(--blue);font-size:14px}
+.prompt-card p{margin:0;font-size:14px;line-height:1.48}
+.lesson-flow{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin:18px 0 28px}
+.lesson-flow article{position:relative;padding:20px 20px 18px 72px;border:1px solid var(--border);border-radius:16px;background:#fff;box-shadow:var(--shadow)}
+.lesson-flow span{position:absolute;left:18px;top:18px;display:grid;width:38px;height:38px;place-items:center;border-radius:50%;background:var(--blue);color:#fff;font-weight:900}
+.lesson-flow h3{margin:0 0 7px;color:var(--blue);font-size:18px}
+.lesson-flow p{margin:0;color:#435363;font-size:15px;line-height:1.5}
+.prompt-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin:18px 0}
+@media(max-width:900px){.tools-lesson-hero{grid-template-columns:1fr}.lesson-strip{grid-template-columns:repeat(2,minmax(0,1fr))}.lesson-flow{grid-template-columns:1fr}}
+@media(max-width:620px){.tools-lesson-hero{padding:23px}.tools-lesson-hero h1{font-size:32px}.tools-lesson-hero p{font-size:16px}.lesson-strip,.prompt-grid{grid-template-columns:1fr}.lesson-strip a{grid-template-columns:38px 1fr}.lesson-strip img{width:38px;height:38px}}
 /* Equipe e rodapé institucional */
 .footer span{display:block}
 .footer-unit{margin-top:8px;color:#405363;font-weight:700}
