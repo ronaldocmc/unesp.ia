@@ -347,3 +347,54 @@
 .registration-note{display:flex;gap:8px;margin-top:26px;padding:17px 20px;border-left:6px solid var(--orange);border-radius:14px;background:#FFFAEE;color:#483B20}
 @media(max-width:840px){.registration-hero{grid-template-columns:1fr}.registration-period{min-width:0}.registration-facts{grid-template-columns:repeat(2,minmax(0,1fr))}.registration-facts .registration-location{grid-column:span 2}}
 @media(max-width:620px){.registration-container{padding-top:26px}.registration-hero{padding:24px}.registration-facts,.cohort-grid{grid-template-columns:1fr}.registration-facts .registration-location{grid-column:auto}.registration-note{flex-direction:column}.cohort-card{min-height:0}}
+
+
+/* Ferramentas v3 - biblioteca completa */
+.tool-library-v2{max-width:1380px;padding-top:0}
+.hero-tools{margin:0 -28px 28px;padding:34px 36px;background:#003B71;color:#fff;border-bottom:5px solid #08769A}
+.hero-tools .badge{margin:0 0 10px;background:#fff;color:#003B71}
+.hero-tools h1{max-width:900px;margin:0 0 12px;color:#fff;font-size:40px;line-height:1.1}
+.hero-tools p{max-width:980px;margin:0;color:#F0F7FC;font-size:18px}
+.tool-tabs{display:flex;flex-wrap:wrap;gap:9px;margin:22px 0}
+.tool-tabs a{padding:8px 12px;border:1px solid #AFC8D7;border-radius:999px;background:#F7FBFD;color:var(--blue);font-size:14px;font-weight:800}
+.tool-tabs a:hover{background:#E9F5FA;text-decoration:none}
+.competency-map{margin:34px 0 12px}
+.competency-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:14px}
+.competency-item{display:flex;flex-direction:column;gap:5px;padding:15px 16px;border-left:5px solid var(--blue2);background:#F5F9FC;color:var(--dark)}
+.competency-item strong{color:var(--blue);font-size:17px}
+.competency-item span{color:#425362;font-size:14px}
+.competency-item:hover{background:#EAF4FA;text-decoration:none}
+.tool-library-section{margin-top:42px;scroll-margin-top:150px}
+.tool-library-section>.section-title{margin-bottom:5px;font-size:30px}
+.category-description{max-width:900px;margin:0 0 18px;color:#435363;font-size:17px}
+.tool-library-v2 .tool-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(360px,1fr));gap:20px}
+.tool-library-v2 .tool-card{display:flex;min-height:0;flex-direction:column;gap:13px;padding:20px;border:1px solid var(--border);border-radius:8px;background:#fff;box-shadow:var(--shadow)}
+.tool-library-v2 .tool-head{display:flex;align-items:center;gap:14px;padding-bottom:12px;border-bottom:1px solid #E5EDF3}
+.tool-library-v2 .tool-logo{width:60px;height:60px;flex:0 0 60px;padding:8px;border-radius:8px}
+.tool-library-v2 .tool-card h3{margin:1px 0 0;font-size:22px;line-height:1.25}
+.tool-library-v2 .tool-type{font-size:12px}
+.tool-summary{margin:0;color:#263746;font-size:16px!important;line-height:1.55}
+.tool-module-links{display:flex;flex-direction:column;gap:5px}
+.tool-module-links strong{color:var(--blue);font-size:14px}
+.tool-module-links .pill{margin:2px;padding:4px 9px;font-size:13px}
+.tool-library-v2 .tool-block{padding:11px 13px;border-left:4px solid var(--blue2);background:#F6FAFD}
+.tool-library-v2 .tool-block strong{color:var(--blue)}
+.tool-library-v2 .tool-block p{margin:5px 0 0;font-size:15px;line-height:1.5}
+.tool-library-v2 .tool-block ul{margin:6px 0 0;padding-left:20px}
+.tool-library-v2 .tool-block li{margin:3px 0;font-size:15px}
+.tool-library-v2 .course-relation{border-color:var(--green);background:#F4FBF6}
+.tool-library-v2 details{padding:10px 12px;border:1px solid #E8D9AC;border-radius:8px;background:#FFFAEE}
+.tool-library-v2 details summary{color:#654900;font-weight:800;cursor:pointer}
+.tool-library-v2 details ul{margin:9px 0 0;padding-left:20px}
+.tool-actions{display:flex;flex-wrap:wrap;gap:9px;margin-top:auto;padding-top:2px}
+.btn-small{display:inline-flex;align-items:center;justify-content:center;padding:9px 13px;border:1px solid var(--blue);border-radius:8px;background:var(--blue);color:#fff!important;font-weight:800}
+.btn-small:hover{background:var(--blue2);text-decoration:none}
+.btn-small.secondary{background:#fff;color:var(--blue)!important}
+.btn-small.secondary:hover{background:#EAF4FA}
+.tool-good-practices{margin-top:46px}
+.practice-panel{padding:18px;border-left:5px solid var(--green);background:#F4FBF6}
+.practice-panel h3{margin:0 0 8px;color:var(--blue)}
+.check-list{margin:0;padding:0;list-style:none}
+.check-list li{position:relative;padding:5px 0 5px 25px}
+.check-list li:before{position:absolute;left:0;color:var(--green);font-weight:900;content:"✓"}
+@media(max-width:780px){.tool-library-v2 .tool-grid{grid-template-columns:1fr}.tool-library-section{scroll-margin-top:20px}}
