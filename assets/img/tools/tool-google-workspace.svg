@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="220" viewBox="0 0 720 220" role="img" aria-label="Google Workspace">
+<rect width="720" height="220" rx="28" fill="#EEF5FF"/>
+<rect x="24" y="24" width="672" height="172" rx="22" fill="white" stroke="#4285F4" stroke-width="4"/>
+<circle cx="98" cy="110" r="30" fill="#4285F4" opacity="0.9"/>
+<circle cx="98" cy="110" r="45" fill="#4285F4" opacity="0.12"/>
+<text x="160" y="95" font-family="Arial, Helvetica, sans-serif" font-size="40" font-weight="700" fill="#003B71">Google Workspace</text>
+<text x="160" y="133" font-family="Arial, Helvetica, sans-serif" font-size="22" fill="#334">Forms + Sheets + Gmail + Calendar</text>
+<text x="160" y="170" font-family="Arial, Helvetica, sans-serif" font-size="18" fill="#5A6470">Exemplo visual didático para o portal unesp.IA</text>
+</svg>
