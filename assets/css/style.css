@@ -436,3 +436,28 @@
 .technique-card{margin:18px 0;padding:18px;border:1px solid var(--border);border-radius:14px;background:#fff;box-shadow:var(--shadow)}
 .technique-card h3{margin-top:0!important;color:var(--module-color)}
 .technique-card p{margin-bottom:12px}
+
+
+/* Contratos de aprendizagem do Módulo 14 */
+.unit-learning-contract{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin:16px 0}
+.unit-learning-contract>div,.assessment-grid>div{display:flex;flex-direction:column;gap:4px;padding:14px;border:1px solid var(--border);border-radius:12px;background:var(--module-soft)}
+.unit-learning-contract strong,.assessment-grid strong{color:var(--module-color);font-size:18px}
+.mastery-list{border-left:5px solid var(--module-color);padding:14px 14px 14px 34px;background:#F8FAFC;border-radius:12px}
+.assessment-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin:16px 0}
+
+/* Autenticação e administração do portal */
+.auth-layout{min-height:70vh;display:grid;place-items:center;padding:32px 16px}
+.auth-card{width:min(100%,520px);padding:28px;border:1px solid var(--border);border-radius:18px;background:#fff;box-shadow:var(--shadow)}
+.portal-form{display:grid;gap:14px}.portal-form label{display:grid;gap:6px;font-weight:700;color:#24445f}
+.portal-form input,.portal-form select,.portal-form textarea{width:100%;box-sizing:border-box;padding:11px 12px;border:1px solid #AFC5D5;border-radius:9px;background:#fff;font:inherit}
+.portal-form textarea{min-height:88px;resize:vertical}.portal-form-actions{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.portal-message{margin:14px 0;padding:11px 13px;border-radius:10px;background:#EAF4FF}.portal-message.error{background:#FDECEC;color:#8B1E1E}.portal-message.success{background:#E8F7EF;color:#176438}
+.admin-shell{display:grid;grid-template-columns:230px minmax(0,1fr);gap:24px}.admin-nav{display:grid;align-content:start;gap:8px;position:sticky;top:12px}
+.admin-nav button{padding:11px;text-align:left;border:1px solid var(--border);border-radius:9px;background:#fff;cursor:pointer}.admin-nav button.active{background:#003B71;color:#fff}
+.admin-panel{display:none}.admin-panel.active{display:block}.admin-toolbar{display:flex;gap:10px;flex-wrap:wrap;justify-content:space-between;align-items:center;margin:14px 0}
+.admin-table{width:100%;border-collapse:collapse;background:#fff}.admin-table th,.admin-table td{padding:9px;border:1px solid var(--border);text-align:left;vertical-align:top}.admin-table th{background:#EAF4FF}
+.admin-table-actions{display:flex;gap:6px;flex-wrap:wrap}.admin-table-actions button{font-size:13px;padding:6px 8px}.portal-dialog{width:min(720px,calc(100% - 24px));border:0;border-radius:16px;padding:0;box-shadow:0 20px 60px #001b3340}
+.portal-dialog::backdrop{background:#001b3377}.portal-dialog-inner{padding:22px}.student-modules{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:16px}
+.student-module{padding:18px;border:1px solid var(--border);border-radius:14px;background:#fff}.python-cell{position:relative;margin:16px 0}.python-cell textarea{width:100%;min-height:170px;box-sizing:border-box;background:#0F172A;color:#E2E8F0;border:0;border-radius:12px;padding:16px;font:14px/1.5 Consolas,monospace;tab-size:4}
+.python-cell-actions{display:flex;gap:8px;margin:8px 0}.python-output{min-height:38px;padding:12px;border-radius:10px;background:#F1F5F9;white-space:pre-wrap;font:13px/1.5 Consolas,monospace}.python-output.error{background:#FDECEC;color:#8B1E1E}.python-output pre{margin:0;white-space:pre-wrap;background:transparent;color:inherit;border:0;padding:0;font:inherit}.python-figure{display:block;max-width:100%;height:auto;margin:12px auto 0;border-radius:10px;background:#fff}
+@media(max-width:800px){.admin-shell{grid-template-columns:1fr}.admin-nav{position:static;grid-template-columns:repeat(2,1fr)}.admin-table{font-size:13px}}

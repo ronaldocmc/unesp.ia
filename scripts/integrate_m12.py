@@ -14,7 +14,7 @@ NAV_ROOT = (
     '<a href="index.html">Início</a><a href="inscricoes.html">Inscrições</a><a href="modulos.html">Módulos</a>'
     '<a href="trilhas.html">Trilhas</a><a href="conceitos.html">Conceitos</a><a href="ferramentas.html">Ferramentas</a>'
     '<a href="laboratorios.html">Laboratórios</a><a href="materiais.html">Materiais</a><a href="personagens.html">Personagens</a>'
-    '<a href="equipe.html">Equipe</a><a href="mapa-conhecimento.html">Mapa</a>'
+    '<a href="equipe.html">Equipe</a><a href="mapa-conhecimento.html">Mapa</a><a href="login.html">Área do aluno</a>'
 )
 NAV_UP = NAV_ROOT.replace('href="', 'href="../')
 FOOTER_ROOT = (
@@ -48,12 +48,149 @@ def footer() -> str:
     return FOOTER_UP
 
 
+def python_code(source: str) -> str:
+    """Renderiza uma célula Python editável pelo executor do portal."""
+    return f'<pre class="code-block"><code>{html.escape(source.strip())}</code></pre>'
+
+
+def pipeline_technique(title: str, explanation: str, source: str) -> str:
+    return (
+        f'<article class="technique-card"><h3>{title}</h3><p>{explanation}</p>'
+        f'{python_code(source)}</article>'
+    )
+
+
+def data_pipeline_lab() -> str:
+    techniques = [
+        ("1. Perfilamento antes da correção",
+         "Mede tipos, ausências, cardinalidade e duplicidades sem alterar a fonte. O relatório inicial é a linha de base para avaliar a melhoria.", """
+import pandas as pd
+from io import StringIO
+csv = StringIO('''id;nome;email;idade;cidade;presencas;total_aulas
+1;  ANA silva ;ANA@EXEMPLO.COM;68;Pres. Prudente;10;12
+2;Carlos Souza;carlos@exemplo.com;;presidente prudente;7;12
+2;Carlos Souza;carlos@exemplo.com;;presidente prudente;7;12
+3;Maria Lima;email-invalido;999;Assis;13;12
+4;;bia@exemplo.com;34;ASSIS;;12''')
+df = pd.read_csv(csv, sep=';')
+perfil = pd.DataFrame({'tipo': df.dtypes.astype(str), 'ausentes': df.isna().sum(),
+    'ausentes_pct': (df.isna().mean() * 100).round(1),
+    'distintos': df.nunique(dropna=True)})
+print(perfil)
+print('Duplicidades por id:', df.duplicated('id', keep=False).sum())
+"""),
+        ("2. Contrato, validação e quarentena",
+         "Schema verifica estrutura; regras semânticas verificam chave, formato, intervalo e coerência. Registros reprovados conservam o motivo na quarentena.", """
+import pandas as pd
+obrigatorias = {'id', 'nome', 'email', 'idade', 'cidade', 'presencas', 'total_aulas'}
+faltantes = obrigatorias - set(df.columns)
+if faltantes:
+    raise ValueError(f'Colunas ausentes: {sorted(faltantes)}')
+regras = pd.DataFrame(index=df.index)
+regras['id_valido'] = pd.to_numeric(df['id'], errors='coerce').notna()
+regras['nome_valido'] = df['nome'].fillna('').str.strip().ne('')
+regras['email_valido'] = df['email'].fillna('').str.fullmatch(r'[^@\\s]+@[^@\\s]+\\.[^@\\s]+')
+regras['idade_valida'] = pd.to_numeric(df['idade'], errors='coerce').between(0, 110)
+regras['frequencia_valida'] = df['presencas'].le(df['total_aulas']) | df['presencas'].isna()
+motivos = regras.apply(lambda linha: ', '.join(linha.index[~linha]), axis=1)
+validos = df.loc[regras.all(axis=1)].copy()
+quarentena = df.loc[~regras.all(axis=1)].assign(motivo_rejeicao=motivos)
+print('Conformidade por regra:\\n', regras.mean().round(2))
+print('\\nQuarentena:\\n', quarentena)
+"""),
+        ("3. Limpeza, tipos e deduplicação",
+         "Limpeza remove ruído textual, coerção converte tipos e deduplicação escolhe a representação canônica. Chave e critério de sobrevivência devem ser declarados.", """
+import pandas as pd
+import unicodedata
+def sem_acentos(texto):
+    texto = '' if pd.isna(texto) else str(texto)
+    return ''.join(c for c in unicodedata.normalize('NFKD', texto)
+                   if not unicodedata.combining(c))
+tratado = df.copy()
+tratado['nome'] = tratado['nome'].fillna('não informado').str.strip().str.title()
+tratado['email'] = tratado['email'].str.strip().str.lower()
+tratado['cidade_chave'] = tratado['cidade'].map(sem_acentos).str.strip().str.lower()
+tratado['idade'] = pd.to_numeric(tratado['idade'], errors='coerce').astype('Float64')
+tratado['presencas'] = pd.to_numeric(tratado['presencas'], errors='coerce')
+tratado = tratado.drop_duplicates(subset='id', keep='last')
+print(tratado)
+"""),
+        ("4. Remoção e imputação de ausências",
+         "Remova apenas registros inutilizáveis com impacto conhecido. Média, mediana, moda ou constante exigem justificativa; um indicador distingue o que foi observado do que foi imputado.", """
+idade_valida = tratado['idade'].where(tratado['idade'].between(0, 110))
+tratado['idade_era_ausente'] = idade_valida.isna()
+tratado['idade_imputada'] = idade_valida.fillna(idade_valida.median())
+tratado['presencas_era_ausente'] = tratado['presencas'].isna()
+tratado['presencas'] = tratado['presencas'].fillna(0)
+tratado['cidade'] = tratado['cidade'].fillna('não informado')
+print(tratado[['id', 'idade', 'idade_era_ausente', 'idade_imputada']])
+"""),
+        ("5. Normalização, padronização e encoding",
+         "Min-max cria escalas comparáveis; z-score produz média zero e desvio padrão unitário; encoding converte categorias. Em IA, ajuste parâmetros somente no treino.", """
+import pandas as pd
+for coluna, nome in [('idade_imputada', 'idade'), ('presencas', 'presencas')]:
+    minimo, maximo = tratado[coluna].min(), tratado[coluna].max()
+    tratado[f'{nome}_minmax'] = (tratado[coluna] - minimo) / (maximo - minimo)
+    tratado[f'{nome}_z'] = (tratado[coluna] - tratado[coluna].mean()) / tratado[coluna].std(ddof=0)
+categorias = pd.get_dummies(tratado['cidade_chave'], prefix='cidade', dtype=int)
+print(pd.concat([tratado[['id', 'idade_minmax', 'idade_z']], categorias], axis=1))
+"""),
+        ("6. Outliers e winsorização",
+         "Um extremo pode ser erro ou evento importante. A winsorização limita valores além do IQR sem apagar a linha e nunca substitui a investigação da causa.", """
+serie = tratado['idade_imputada'].astype(float)
+q1, q3 = serie.quantile([0.25, 0.75]); iqr = q3 - q1
+inferior, superior = q1 - 1.5 * iqr, q3 + 1.5 * iqr
+tratado['idade_outlier'] = ~serie.between(inferior, superior)
+tratado['idade_winsorizada'] = serie.clip(inferior, superior)
+print(tratado[['id', 'idade_imputada', 'idade_outlier', 'idade_winsorizada']])
+"""),
+        ("7. Regras de negócio e testes",
+         "Campos derivados traduzem políticas em condições explícitas. Assertivas e casos-limite impedem resultados impossíveis depois de uma alteração.", """
+import numpy as np
+tratado['frequencia'] = tratado['presencas'].div(tratado['total_aulas']).clip(0, 1)
+tratado['situacao'] = np.where(tratado['frequencia'].ge(0.75),
+                               'frequência suficiente', 'revisão necessária')
+assert tratado['id'].is_unique, 'A chave deve ser única após deduplicação'
+assert tratado['frequencia'].between(0, 1).all(), 'Frequência fora do domínio'
+print(tratado[['id', 'frequencia', 'situacao']])
+"""),
+        ("8. Idempotência, manifesto e linhagem",
+         "Repetir a mesma entrada não pode duplicar efeitos. O manifesto registra horário, volume, regras e hash para auditoria e reprodutibilidade.", """
+from datetime import datetime, timezone
+import hashlib, json
+def executar_pipeline(entrada):
+    saida = entrada.copy(); saida.columns = saida.columns.str.strip().str.lower()
+    saida['email'] = saida['email'].str.strip().str.lower()
+    saida = saida.drop_duplicates('id', keep='last')
+    saida['presencas'] = pd.to_numeric(saida['presencas'], errors='coerce').fillna(0)
+    saida['frequencia'] = saida['presencas'].div(saida['total_aulas']).clip(0, 1)
+    return saida
+resultado = executar_pipeline(df)
+manifesto = {'executado_em': datetime.now(timezone.utc).isoformat(),
+    'linhas_entrada': len(df), 'linhas_saida': len(resultado),
+    'hash_saida': hashlib.sha256(resultado.to_csv(index=False).encode()).hexdigest(),
+    'regras': ['email_lower', 'deduplicar_id', 'frequencia_0_1']}
+print(resultado)
+print(json.dumps(manifesto, indent=2, ensure_ascii=False))
+""")]
+    cards = "".join(pipeline_technique(*item) for item in techniques)
+    return f"""
+<section id="pipeline-dados" class="unit-section"><h2 class="section-title">Laboratório transversal — pipeline de tratamento de dados do UnespDataLens-RM</h2>
+<div class="box practice"><strong>Carga horária: 8 horas, incluídas nas 44 horas do módulo.</strong> O participante deverá diagnosticar uma base, declarar regras, tratar problemas sem ocultá-los, separar inválidos, gerar métricas e documentar a execução.</div>
+<p>No n8n, as técnicas são organizadas em nós de leitura, código, decisão, quarentena, persistência e notificação. As células Python abaixo tornam cada decisão observável e testável.</p>
+<div class="table-wrap"><table class="table"><tr><th>Etapa</th><th>Métodos</th><th>Nós n8n</th><th>Evidência</th></tr><tr><td>Inventariar</td><td>tipos, ausências, domínio, cardinalidade</td><td>Read/HTTP + Code</td><td>perfil</td></tr><tr><td>Validar</td><td>schema, chave, intervalo, formato</td><td>Code + IF</td><td>taxas e motivos</td></tr><tr><td>Tratar</td><td>limpeza, imputação, deduplicação, escala e outlier</td><td>Code/Set</td><td>base + auditoria</td></tr><tr><td>Carregar</td><td>upsert, idempotência, log, hash e alerta</td><td>Database + Error Trigger</td><td>manifesto</td></tr></table></div>
+<div class="technique-grid">{cards}</div>
+<div class="box lab"><strong>Desafio avaliativo:</strong> implemente Webhook → validação → IF → quarentena/base válida → frequência → upsert → log. Entregue o JSON do workflow, três casos de teste, qualidade antes/depois e uma reexecução sem duplicidade.</div></section>"""
+
+
 def clean_source_body() -> str:
     src = read(SOURCE)
     match = re.search(r"<main>\s*(.*?)\s*</main>\s*<aside", src, flags=re.S)
     if not match:
         raise RuntimeError("Não foi possível extrair o conteúdo principal do M12.")
     body = match.group(1).strip()
+    body = body.replace("<td>Carga horária recomendada</td><td>36 horas</td>",
+                        "<td>Carga horária total</td><td>44 horas (36h nas unidades + 8h no laboratório transversal)</td>")
     body = re.sub(r'<section id="portal">.*?</section>\s*', "", body, flags=re.S)
     body = body.replace('<section id="ana">', '<section id="ana" class="box practice">')
     body = body.replace("<h2>Ana acompanha este módulo</h2>", "<h3>Ana acompanha este módulo</h3>")
@@ -93,7 +230,7 @@ def clean_source_body() -> str:
 
 
 def build_m12() -> None:
-    body = clean_source_body()
+    body = clean_source_body() + data_pipeline_lab()
     toc_items = [
         ("#ana", "Ana acompanha"),
         ("#apresentacao", "Apresentação"),
@@ -113,6 +250,7 @@ def build_m12() -> None:
         ("#u1210", "Unidade 12.10"),
         ("#u1211", "Unidade 12.11"),
         ("#u1212", "Unidade 12.12"),
+        ("#pipeline-dados", "Pipeline de dados"),
         ("#catalogo", "Catálogo de Skills"),
         ("#avaliacao", "Avaliação"),
     ]
@@ -143,6 +281,7 @@ def build_m12() -> None:
 <title>Módulo 12 – Automação Inteligente com n8n, Pipelines, Skills e LLMs • unesp.IA</title>
 <link rel="stylesheet" href="../assets/css/style.css?v={CSS_VERSION}">
 <script src="../assets/js/search.js"></script>
+<script type="module" src="../assets/js/python-runner.js"></script>
 <style>
 .module-full.module-m12{{--module-color:#0B5AA6;--module-soft:#EAF4FF}}
 </style>

@@ -12,7 +12,7 @@ NAV_UP = (
     '<a href="../modulos.html">Módulos</a><a href="../trilhas.html">Trilhas</a>'
     '<a href="../conceitos.html">Conceitos</a><a href="../ferramentas.html">Ferramentas</a>'
     '<a href="../laboratorios.html">Laboratórios</a><a href="../materiais.html">Materiais</a>'
-    '<a href="../personagens.html">Personagens</a><a href="../equipe.html">Equipe</a><a href="../mapa-conhecimento.html">Mapa</a>'
+    '<a href="../personagens.html">Personagens</a><a href="../equipe.html">Equipe</a><a href="../mapa-conhecimento.html">Mapa</a><a href="../login.html">Área do aluno</a>'
 )
 
 FOOTER = (
@@ -49,7 +49,7 @@ def html_shell(num: int, title: str, subtitle: str, color: str, soft: str, body:
         '<!doctype html><html lang="pt-br"><head><meta charset="utf-8">'
         '<meta name="viewport" content="width=device-width,initial-scale=1">'
         f'<title>Módulo {num} – {esc(title)} • unesp.IA</title>'
-        f'<link rel="stylesheet" href="../assets/css/style.css?v={CSS_VERSION}"><script src="../assets/js/search.js"></script>'
+        f'<link rel="stylesheet" href="../assets/css/style.css?v={CSS_VERSION}"><script src="../assets/js/search.js"></script><script type="module" src="../assets/js/python-runner.js"></script>'
         f'<style>.module-full.module-m{num}' + f'{{--module-color:{color};--module-soft:{soft}}}</style>'
         '</head><body>'
         + topbar()
@@ -81,7 +81,23 @@ def concept_grid(items: list[tuple[str, str, str]]) -> str:
 def unit(title: str, objective: str, content: str) -> str:
     number = title.split(" ", 1)[0].replace(".", "")
     anchor = f"u{number}"
-    return f'<section id="{anchor}"><h2 class="unit-title">{esc(title)}</h2><p class="unit-objective"><strong>Objetivo:</strong> {objective}</p>{content}</section>'
+    learning = M14_LEARNING.get(title.split(" ", 1)[0])
+    framework = ""
+    if learning:
+        framework = (
+            f'<div class="unit-learning-contract"><div><strong>Carga horária</strong><span>{learning["hours"]} horas</span></div>'
+            f'<div><strong>Nível de domínio esperado</strong><span>{esc(learning["level"])}</span></div></div>'
+            '<h3>Habilidades demonstráveis</h3><ul>'
+            + ''.join(f'<li>{item}</li>' for item in learning["skills"])
+            + '</ul><h3>Laboratório orientado pelo UnespDataLens-RM</h3><p>'
+            + learning["lab"]
+            + '</p><h3>Entregáveis da unidade</h3><ul>'
+            + ''.join(f'<li>{item}</li>' for item in learning["deliverables"])
+            + '</ul><h3>Critérios de domínio</h3><ul class="mastery-list">'
+            + ''.join(f'<li>{item}</li>' for item in learning["criteria"])
+            + '</ul>'
+        )
+    return f'<section id="{anchor}"><h2 class="unit-title">{esc(title)}</h2><p class="unit-objective"><strong>Objetivo:</strong> {objective}</p>{framework}{content}</section>'
 
 
 def technique(title: str, explanation: str, example: str) -> str:
@@ -119,19 +135,114 @@ DE_CONCEPTS = [
 ]
 
 
+M14_LEARNING = {
+    "14.1": {
+        "hours": 3, "level": "Projetar e justificar",
+        "skills": ["mapear o ciclo de vida de um dado do sistema de origem ao produto analítico;", "distinguir arquitetura operacional e analítica;", "definir zonas, responsáveis, entradas, saídas e critérios de passagem."],
+        "lab": "Desenhar a arquitetura reduzida do UnespDataLens-RM para um domínio educacional, conectando inventário, ingestão, integração, transformação, qualidade, armazenamento e consumo.",
+        "deliverables": ["diagrama de arquitetura;", "matriz etapa × entrada × processamento × saída;", "registro de decisões arquiteturais."],
+        "criteria": ["todas as etapas possuem entradas e saídas identificáveis;", "as escolhas são justificadas por volume, frequência, sensibilidade e consumo;", "o fluxo permite localizar origem e destino de cada ativo."],
+    },
+    "14.2": {
+        "hours": 4, "level": "Implementar com tolerância a falhas",
+        "skills": ["ingerir CSV, Excel, JSON, API e SQL com parâmetros explícitos;", "preservar snapshots e manifestos de ingestão;", "implementar timeout, paginação, idempotência e tratamento de rejeições."],
+        "lab": "Construir a camada de ingestão do estudo de caso, preservando arquivos brutos, hash, schema observado, horário, origem, volume e status da execução.",
+        "deliverables": ["script de ingestão;", "snapshot bruto;", "manifesto e log de rejeições;", "teste de reexecução sem duplicação."],
+        "criteria": ["a ingestão é reexecutável e não altera a fonte;", "falhas produzem diagnóstico e não resultados parciais silenciosos;", "o manifesto permite provar o que foi recebido."],
+    },
+    "14.3": {
+        "hours": 4, "level": "Especificar, testar e monitorar",
+        "skills": ["formalizar contratos de schema e regras de qualidade;", "calcular completude, validade, consistência, unicidade e atualidade;", "classificar não conformidades por severidade e ação."],
+        "lab": "Criar o contrato e o plano de validação do dataset educacional, com registros válidos, quarentena, métricas e relatório de qualidade.",
+        "deliverables": ["contrato de dados;", "catálogo de regras;", "dataset de quarentena;", "relatório de qualidade com evidências."],
+        "criteria": ["cada regra possui identificador, campo, condição, severidade e ação;", "as métricas são reproduzíveis;", "nenhuma rejeição ocorre sem motivo registrado."],
+    },
+    "14.4": {
+        "hours": 5, "level": "Construir transformação rastreável",
+        "skills": ["diagnosticar tipos, formatos, domínios e anomalias;", "implementar limpeza e harmonização sem perder valores originais;", "versionar regras e medir impacto antes/depois."],
+        "lab": "Produzir a camada tratada do UnespDataLens-RM, com regras unitárias, campos derivados, comparação antes/depois e manifesto de transformação.",
+        "deliverables": ["pipeline de transformação;", "registro versionado de regras;", "dataset tratado;", "relatório de impacto."],
+        "criteria": ["transformações são determinísticas e testáveis;", "valores alterados podem ser explicados;", "campos derivados possuem fórmula, finalidade e versão."],
+    },
+    "14.5": {
+        "hours": 4, "level": "Selecionar técnica com justificativa estatística",
+        "skills": ["diagnosticar mecanismo e padrão de ausência;", "comparar estratégias de imputação;", "detectar duplicidades e outliers sem confundir exceções legítimas com erros;", "evitar vazamento entre treino e teste."],
+        "lab": "Comparar cenários de remoção, imputação, encoding, normalização e winsorização, medindo linhas afetadas e mudanças nas distribuições.",
+        "deliverables": ["notebook comparativo;", "registro de parâmetros aprendidos;", "base pré-processada;", "justificativa metodológica."],
+        "criteria": ["a técnica é compatível com o significado da variável;", "o impacto por grupo é avaliado;", "parâmetros não são aprendidos com dados de teste."],
+    },
+    "14.6": {
+        "hours": 4, "level": "Integrar com controle de cardinalidade",
+        "skills": ["definir entidade, chave e granularidade de cada fonte;", "executar merge, join e concat com validação;", "harmonizar semântica e tempo;", "produzir indicadores sem dupla contagem."],
+        "lab": "Integrar inscrições e presenças, registrar correspondências e conflitos e produzir um data mart por módulo e perfil.",
+        "deliverables": ["plano de integração;", "matriz de correspondência;", "registro de conflitos;", "dataset integrado e indicadores reconciliados."],
+        "criteria": ["a cardinalidade esperada é testada;", "não pareamentos e conflitos são quantificados;", "totais antes e depois são reconciliados."],
+    },
+    "14.7": {
+        "hours": 5, "level": "Projetar, implementar e avaliar armazenamento analítico",
+        "skills": ["selecionar entre arquivos, banco relacional, warehouse, lake e lakehouse;", "projetar zonas, schema analítico e data mart;", "aplicar particionamento, índices, snapshots e carga incremental;", "avaliar desempenho, reprocessabilidade, custo e acesso."],
+        "lab": "Implementar o armazenamento analítico do UnespDataLens-RM com zonas bronze/prata/ouro, Parquet particionado, DuckDB, data mart educacional, snapshots e benchmark de consultas.",
+        "deliverables": ["arquitetura e mapa de armazenamento;", "especificação de schemas e zonas;", "data mart persistido;", "registro de particionamento e snapshots;", "relatório de desempenho e adequação."],
+        "criteria": ["cada ativo possui zona, formato, schema, versão e responsável;", "a carga incremental é idempotente;", "consultas de validação reconciliam origem e destino;", "o relatório comprova desempenho e possibilidade de reconstrução."],
+    },
+    "14.8": {
+        "hours": 3, "level": "Operar com rastreabilidade e governança",
+        "skills": ["distinguir log, auditoria, linhagem, catálogo e observabilidade;", "instrumentar métricas operacionais;", "classificar sensibilidade, acesso e retenção."],
+        "lab": "Instrumentar o pipeline com logs estruturados, catálogo, lineage e indicadores de cobertura, falha e atualidade.",
+        "deliverables": ["log estruturado;", "catálogo de dados;", "grafo ou registro de linhagem;", "matriz de acesso e retenção."],
+        "criteria": ["incidentes podem ser reconstruídos pelos logs;", "dados pessoais não aparecem em mensagens operacionais;", "origem, transformação e consumo estão conectados."],
+    },
+    "14.9": {
+        "hours": 3, "level": "Preparar e avaliar dados para IA",
+        "skills": ["formular alvo e atributos evitando leakage;", "separar treino, validação e teste;", "construir pipeline de pré-processamento;", "avaliar representatividade, desempenho e limitações."],
+        "lab": "Preparar um experimento de classificação didático a partir do data mart, documentando riscos, vieses, métricas e usos proibidos.",
+        "deliverables": ["notebook de análise exploratória;", "pipeline de preparação;", "relatório de avaliação;", "ficha de limitações."],
+        "criteria": ["o experimento é reproduzível;", "não há vazamento de alvo ou de tempo;", "a conclusão não excede a evidência disponível."],
+    },
+    "14.10": {
+        "hours": 5, "level": "Entregar produto de dados operacional",
+        "skills": ["orquestrar extração, validação, transformação, carga e monitoramento;", "implementar testes e recuperação de falha;", "documentar execução, arquitetura e operação;", "apresentar evidências de qualidade e reprocessabilidade."],
+        "lab": "Construir e demonstrar um mini-UnespDataLens-RM executável de ponta a ponta, partindo de dados fictícios até um data mart consultável e governado.",
+        "deliverables": ["repositório executável;", "dados fictícios e contratos;", "pipeline, testes e logs;", "data mart e indicadores;", "documentação técnica e apresentação."],
+        "criteria": ["uma execução limpa produz todos os artefatos;", "testes impedem publicação de dados inválidos;", "o pipeline suporta reexecução e falha controlada;", "outro participante consegue reproduzir o resultado pela documentação."],
+    },
+}
+
+
+def m14_workload_table() -> str:
+    rows = ''.join(
+        f'<tr><td>{key}</td><td>{data["level"]}</td><td>{data["hours"]}h</td></tr>'
+        for key, data in M14_LEARNING.items()
+    )
+    return '<div class="table-wrap"><table class="table"><tr><th>Unidade</th><th>Domínio esperado</th><th>Carga</th></tr>' + rows + '<tr><th colspan="2">Carga horária total</th><th>40h</th></tr></table></div>'
+
+
 def build_m13() -> str:
     setup_code = code("""
 # Verificar versão do Python
 import sys
 print(sys.version)
 
-# Instalar pacotes pelo terminal ou em uma célula de notebook
-pip install pandas numpy matplotlib seaborn plotly openpyxl lxml xlrd==1.2.0
-pip install mysql-connector-python
+# No portal, as bibliotecas são carregadas automaticamente pelo Pyodide.
+# Em ambiente local, use no terminal:
+# python -m pip install pandas numpy matplotlib seaborn scikit-learn openpyxl
 
-# Verificar versão de um pacote instalado
-import pkg_resources
-print(pkg_resources.get_distribution("pandas").version)
+import pandas as pd
+import numpy as np
+print("pandas:", pd.__version__)
+print("NumPy:", np.__version__)
+""")
+    notebook_code = code("""
+# Células de Markdown documentam objetivo, fonte, hipótese e interpretação.
+# Células de código devem ser executadas em ordem, do início ao fim.
+SEMENTE = 42
+import random, numpy as np
+random.seed(SEMENTE)
+np.random.seed(SEMENTE)
+
+dados = np.random.normal(loc=10, scale=2, size=5)
+print("Amostra reproduzível:", dados.round(2))
+print("Teste mínimo:", len(dados) == 5 and dados.min() > 0)
 """)
     vars_code = code("""
 nome = "Murilo"
@@ -292,6 +403,46 @@ except FileNotFoundError:
 except Exception as erro:
     print("Erro inesperado:", erro)
 """)
+    import_formats_code = code("""
+import pandas as pd
+from io import StringIO
+import sqlite3
+
+csv = StringIO("id,nome,nota\\n1,Ana,8.5\\n2,Caio,7.0")
+tsv = StringIO("id\\tcidade\\n1\\tAssis\\n2\\tBauru")
+json_texto = '[{"id": 1, "perfil": "comunidade"}, {"id": 2, "perfil": "servidor"}]'
+
+alunos = pd.read_csv(csv)
+cidades = pd.read_csv(tsv, sep="\\t")
+perfis = pd.read_json(StringIO(json_texto))
+
+conexao = sqlite3.connect(":memory:")
+alunos.to_sql("alunos", conexao, index=False)
+consulta = pd.read_sql_query("SELECT * FROM alunos WHERE nota >= 7.5", conexao)
+print(alunos.merge(cidades, on="id").merge(perfis, on="id"))
+print("Consulta SQL:\\n", consulta)
+""")
+    reproducibility_code = code("""
+from pathlib import Path
+import hashlib, json, platform
+import pandas as pd, numpy as np
+
+artefato = Path("dados/participantes.csv")
+metadados = {
+    "python": platform.python_version(),
+    "pandas": pd.__version__, "numpy": np.__version__,
+    "semente": 42,
+    "entrada_sha256": hashlib.sha256(artefato.read_bytes()).hexdigest()
+}
+Path("dados/manifesto.json").write_text(
+    json.dumps(metadados, indent=2, ensure_ascii=False), encoding="utf-8")
+
+# Restart & Run All deve reproduzir estes testes sem depender de estado oculto.
+recarregado = pd.read_csv(artefato)
+assert set(["nome", "modulo", "presencas", "total_aulas"]) <= set(recarregado.columns)
+assert recarregado["total_aulas"].gt(0).all()
+print(metadados)
+""")
     oop_code = code("""
 class Participante:
     def __init__(self, nome, email, modulo, presencas, total_aulas):
@@ -327,23 +478,36 @@ plt.xticks(rotation=20)
 plt.tight_layout()
 plt.show()
 """)
+    eda_code = code("""
+import pandas as pd
+df_eda = pd.DataFrame({
+    "idade": [18, 22, 35, 48, 67, 72],
+    "frequencia": [0.92, 0.75, 0.83, 0.58, 1.0, 0.91],
+    "perfil": ["estudante", "estudante", "comunidade", "comunidade", "idoso", "idoso"]
+})
+print(df_eda.describe(include="all"))
+print("Mediana:", df_eda["frequencia"].median())
+print("Correlação numérica:\\n", df_eda.corr(numeric_only=True))
+print("Resumo por perfil:\\n", df_eda.groupby("perfil")["frequencia"].agg(["count", "mean", "std"]))
+""")
 
     body = f"""
 <div class="module-actions"><a class="pill" href="../conceitos.html">Conceitos</a><a class="pill" href="../ferramentas.html">Ferramentas</a><a class="pill" href="../trilhas.html">Trilhas</a><a class="pill" href="../laboratorios.html">Laboratórios</a></div>
 <section class="module-toolbox"><h3>Ferramentas relacionadas neste módulo</h3><div class="related-strip"><a class="pill" href="../ferramentas/python.html">Python</a><a class="pill" href="../ferramentas/anaconda.html">Anaconda</a><a class="pill" href="../ferramentas/jupyter.html">Jupyter Notebook/JupyterLab</a><a class="pill" href="../ferramentas/google-colab.html">Google Colab</a><a class="pill" href="../ferramentas/vscode.html">VS Code</a><a class="pill" href="../ferramentas/pycharm.html">PyCharm</a><a class="pill" href="../ferramentas/spyder.html">Spyder</a><a class="pill" href="../ferramentas/pandas.html">pandas</a><a class="pill" href="../ferramentas/numpy.html">NumPy</a><a class="pill" href="../ferramentas/matplotlib-seaborn-plotly.html">Matplotlib, Seaborn e Plotly</a></div></section>
-{mini_toc([("Apresentação e competências","apresentacao"),("Glossário interno do módulo","glossario"),("13.1 Ambiente e instalação","u131"),("13.2 Variáveis, tipos e operadores","u132"),("13.3 Condições, loops e compreensão de listas","u133"),("13.4 Listas, tuplas, range, conjuntos e dicionários","u134"),("13.5 Series, DataFrames e índices","u135"),("13.6 Funções, lambda e organização de código","u136"),("13.7 Arquivos, CSV, JSON e exceções","u137"),("13.8 Programação orientada a objetos","u138"),("13.9 Visualização e análise exploratória","u139"),("13.10 Projeto aplicado","u1310")])}
+{mini_toc([("Apresentação e competências","apresentacao"),("Carga horária","carga-horaria"),("Glossário interno do módulo","glossario"),("13.1 Ambiente e instalação","u131"),("13.2 Variáveis, tipos e operadores","u132"),("13.3 Condições, loops e compreensão de listas","u133"),("13.4 Listas, tuplas, range, conjuntos e dicionários","u134"),("13.5 Series, DataFrames e índices","u135"),("13.6 Funções, lambda e organização de código","u136"),("13.7 Arquivos, CSV, JSON e exceções","u137"),("13.8 Programação orientada a objetos","u138"),("13.9 Visualização e análise exploratória","u139"),("13.10 Projeto aplicado","u1310")])}
 <section class="module-visual"><figure><img src="../assets/img/modulos/m13-visual.svg" alt="Mapa visual do Módulo 13"><figcaption>O módulo parte do ambiente Python e chega a aplicações com dados, visualização e projeto final.</figcaption></figure><aside class="character-guide"><img src="../assets/img/personagens/joao.png" alt="Personagem João"><h3>João transforma ideias em código</h3><p>O foco é aprender a pensar computacionalmente: representar dados, escrever regras, testar hipóteses, documentar resultados e revisar limites.</p></aside></section>
+<section id="carga-horaria"><h2 class="section-title">Carga horária e progressão</h2><div class="box practice"><strong>Carga horária total: 40 horas.</strong> A progressão combina explicação, prática guiada, desafios, evidências e projeto reprodutível.</div><div class="table-wrap"><table class="table"><tr><th>Unidade</th><th>Foco demonstrável</th><th>Carga</th></tr><tr><td>13.1</td><td>ambiente e notebook reproduzível</td><td>3h</td></tr><tr><td>13.2–13.4</td><td>fundamentos e estruturas da linguagem</td><td>9h</td></tr><tr><td>13.5</td><td>Series, DataFrames e índices</td><td>5h</td></tr><tr><td>13.6</td><td>funções, organização e testes</td><td>4h</td></tr><tr><td>13.7</td><td>arquivos, formatos, exceções e manifesto</td><td>5h</td></tr><tr><td>13.8</td><td>orientação a objetos</td><td>3h</td></tr><tr><td>13.9</td><td>EDA, estatística e visualização</td><td>5h</td></tr><tr><td>13.10</td><td>projeto aplicado</td><td>6h</td></tr><tr><th colspan="2">Total</th><th>40h</th></tr></table></div></section>
 <section id="apresentacao"><h2 class="section-title">Apresentação e competências</h2><p>Este módulo aprofunda a estrutura indicada nos anexos: ferramentas de desenvolvimento, instalação e uso inicial, sintaxe, comentários, variáveis, tipos de dados, operadores, estruturas de dados, condicionais, laços, funções, arquivos, tratamento de exceções, orientação a objetos, pandas, NumPy, visualização de dados e aplicações em mineração de dados.</p><div class="box practice"><strong>Ao final do módulo, espera-se que o participante seja capaz de:</strong><ul><li>instalar ou acessar um ambiente Python e gerenciar pacotes com PIP;</li><li>escrever códigos com variáveis, tipos, operadores, condicionais, laços e funções;</li><li>usar listas, tuplas, ranges, conjuntos, dicionários, Series e DataFrames;</li><li>ler, transformar e salvar arquivos CSV, Excel e JSON com tratamento de erros;</li><li>criar análises exploratórias, gráficos e relatórios simples com dados fictícios ou anonimizados;</li><li>organizar uma miniaplicação Python documentada e reprodutível.</li></ul></div></section>
 <section id="glossario"><h2 class="section-title">Glossário interno do módulo</h2><p>Os conceitos abaixo aparecem no módulo e também possuem páginas próprias na enciclopédia. Eles ficam aqui para que o participante não precise sair da página para acompanhar a aula.</p>{concept_grid(PY_CONCEPTS)}</section>
-{unit("13.1 Ferramentas disponíveis, instalação e uso inicial", "Conhecer opções de ambiente local e em nuvem, instalar pacotes e importar bibliotecas.", "<p>Python pode ser usado de várias formas. Para iniciantes, o <strong>Google Colab</strong> reduz barreiras porque roda no navegador. Para cursos de dados em laboratório, <strong>Anaconda</strong> facilita a instalação de pacotes científicos e traz Jupyter e Spyder. Para desenvolvimento de projetos, <strong>VS Code</strong> e <strong>PyCharm</strong> ajudam a organizar arquivos, depurar e versionar código.</p><div class=\"table-wrap\"><table class=\"table\"><tr><th>Ferramenta</th><th>Quando usar</th><th>Cuidados</th></tr><tr><td>Anaconda</td><td>Ambiente completo para ciência de dados e aprendizado de máquina.</td><td>Verificar espaço em disco, atualizações e política institucional.</td></tr><tr><td>Spyder</td><td>Ambiente científico com exploração de variáveis e depuração.</td><td>Bom para análise; menos adequado para projetos web complexos.</td></tr><tr><td>Jupyter Notebook/Lab</td><td>Aulas, experimentos, textos narrativos, gráficos e código juntos.</td><td>Não compartilhar notebooks com dados pessoais.</td></tr><tr><td>PyCharm</td><td>Projetos maiores, testes, classes e depuração.</td><td>Pode ser pesado para computadores simples.</td></tr><tr><td>Google Colab</td><td>Uso rápido no navegador, sem instalação local.</td><td>Há limites de sessão, memória e recursos.</td></tr><tr><td>VS Code</td><td>Editor leve, extensível, com suporte a Python e notebooks.</td><td>Instalar extensões confiáveis.</td></tr></table></div><h3>Preparando o ambiente com PIP</h3>" + setup_code)}
+{unit("13.1 Ferramentas disponíveis, instalação e uso inicial", "Conhecer opções de ambiente local e em nuvem, instalar pacotes e importar bibliotecas.", "<p>Python pode ser usado de várias formas. Para iniciantes, o <strong>Google Colab</strong> reduz barreiras porque roda no navegador. Para cursos de dados em laboratório, <strong>Anaconda</strong> facilita a instalação de pacotes científicos e traz Jupyter e Spyder. Para desenvolvimento de projetos, <strong>VS Code</strong> e <strong>PyCharm</strong> ajudam a organizar arquivos, depurar e versionar código.</p><div class=\"table-wrap\"><table class=\"table\"><tr><th>Ferramenta</th><th>Quando usar</th><th>Cuidados</th></tr><tr><td>Anaconda</td><td>Ambiente completo para ciência de dados e aprendizado de máquina.</td><td>Verificar espaço em disco, atualizações e política institucional.</td></tr><tr><td>Spyder</td><td>Ambiente científico com exploração de variáveis e depuração.</td><td>Bom para análise; menos adequado para projetos web complexos.</td></tr><tr><td>Jupyter Notebook/Lab</td><td>Aulas, experimentos, textos narrativos, gráficos e código juntos.</td><td>Não compartilhar notebooks com dados pessoais.</td></tr><tr><td>PyCharm</td><td>Projetos maiores, testes, classes e depuração.</td><td>Pode ser pesado para computadores simples.</td></tr><tr><td>Google Colab</td><td>Uso rápido no navegador, sem instalação local.</td><td>Há limites de sessão, memória e recursos.</td></tr><tr><td>VS Code</td><td>Editor leve, extensível, com suporte a Python e notebooks.</td><td>Instalar extensões confiáveis.</td></tr></table></div><h3>Preparando o ambiente com PIP</h3>" + setup_code + "<h3>Notebook como documento computacional</h3><p>Um notebook combina células Markdown, código e resultados. Para ser reprodutível, deve declarar entradas, semente, dependências e ordem de execução; use <em>Restart &amp; Run All</em> antes da entrega.</p>" + notebook_code)}
 {unit("13.2 Variáveis, tipos de dados, constantes e operadores", "Compreender como Python representa valores e executa operações aritméticas, lógicas e de comparação.", "<p>Uma variável é um nome que referencia um valor. Em Python, os tipos são inferidos automaticamente. A convenção de nomes usa letras minúsculas e underscore, padrão conhecido como <em>snake_case</em>.</p>" + vars_code + "<h3>Operadores aritméticos e lógicos</h3><div class=\"table-wrap\"><table class=\"table\"><tr><th>Operação</th><th>Significado</th></tr><tr><td>a + b</td><td>adição</td></tr><tr><td>a - b</td><td>subtração</td></tr><tr><td>a * b</td><td>multiplicação</td></tr><tr><td>a / b</td><td>divisão</td></tr><tr><td>a // b</td><td>divisão inteira</td></tr><tr><td>a % b</td><td>resto da divisão</td></tr><tr><td>a ** b</td><td>exponenciação</td></tr><tr><td>==, !=, &lt;, &gt;, &lt;=, &gt;=</td><td>comparações</td></tr><tr><td>and, or, not</td><td>operações lógicas</td></tr></table></div>" + operators_code)}
 {unit("13.3 Controle de fluxo, estruturas condicionais, while, for e compreensões", "Usar decisões e repetições para transformar regras em algoritmos.", "<p>Estruturas condicionais permitem que o programa escolha caminhos. Laços de repetição permitem executar uma ação várias vezes. O <code>while</code> executa enquanto uma condição for verdadeira; o <code>for</code> percorre sequências como listas, ranges e DataFrames.</p>" + flow_code + code("nomes = ['ana', 'carlos', 'maria']\nnomes_formatados = [nome.title() for nome in nomes]\nprint(nomes_formatados)"))}
 {unit("13.4 Estruturas de dados: listas, tuplas, range, conjuntos e dicionários", "Organizar coleções de informações conforme o tipo de problema.", "<p>Listas são mutáveis; tuplas são imutáveis; ranges representam sequências numéricas; conjuntos removem duplicidades e permitem união/interseção/diferença; dicionários armazenam pares chave-valor e são úteis para representar registros.</p>" + structures_code + "<div class=\"box tip\"><strong>Atenção:</strong> em Python, interseção de conjuntos usa <code>&amp;</code>, união usa <code>|</code> e diferença usa <code>-</code>.</div>")}
 {unit("13.5 Series, DataFrames, índices e métodos básicos do pandas", "Criar estruturas tabulares, identificar valores ausentes e usar métodos de inspeção.", "<p>Uma <strong>Series</strong> é uma estrutura unidimensional. Um <strong>DataFrame</strong> organiza dados em linhas e colunas, permitindo filtros, agrupamentos, junções, estatísticas e visualizações.</p>" + pandas_code + "<h3>Series, índices personalizados e índices hierárquicos</h3>" + series_code + "<h3>Métodos essenciais do pandas</h3><ul><li><code>head()</code>: visualiza primeiras linhas;</li><li><code>shape</code>: mostra linhas e colunas;</li><li><code>describe()</code>: estatísticas descritivas;</li><li><code>isna()</code>: identifica ausências;</li><li><code>loc</code> e <code>iloc</code>: selecionam dados por rótulo ou posição;</li><li><code>merge</code>, <code>join</code> e <code>concat</code>: combinam tabelas.</li></ul>")}
 {unit("13.6 Funções, parâmetros, retorno, lambda e organização de código", "Criar blocos reutilizáveis e melhorar legibilidade, teste e manutenção.", "<p>Funções reduzem repetição, deixam o código mais legível e permitem testar partes pequenas de uma solução. Uma função deve ter objetivo claro, entradas, processamento e saída.</p>" + functions_code)}
-{unit("13.7 Manipulação de arquivos, CSV, JSON, Excel e tratamento de exceções", "Ler e escrever arquivos com segurança, tratando erros previsíveis.", "<p>Grande parte das aplicações de dados começa lendo arquivos. O participante deve aprender a validar caminhos, tratar erros e nunca publicar bases com dados pessoais sem autorização.</p>" + files_code)}
+{unit("13.7 Manipulação de arquivos, CSV, JSON, Excel e tratamento de exceções", "Ler e escrever arquivos com segurança, tratando erros previsíveis.", "<p>Grande parte das aplicações de dados começa lendo arquivos. O participante deve aprender separador, codificação, tipos e caminho; validar a importação; tratar erros; e nunca publicar dados pessoais sem autorização.</p>" + files_code + "<h3>CSV, TSV, JSON e SQL sem arquivos externos</h3>" + import_formats_code + "<h3>Manifesto, versões, hash e testes de reprodução</h3><p>Reprodutibilidade exige ambiente identificável, entrada íntegra, caminhos relativos, funções determinísticas, sementes e testes. O notebook deve explicar licença, autoria, limitações e como reconstruir o resultado.</p>" + reproducibility_code)}
 {unit("13.8 Programação orientada a objetos: classes, objetos, herança, encapsulamento e composição", "Compreender como organizar entidades e comportamentos em classes.", "<p>Orientação a objetos ajuda quando queremos representar entidades do problema, como participante, turma, módulo ou certificado. Classes definem estrutura; objetos são instâncias concretas.</p>" + oop_code + "<div class=\"box practice\"><strong>Extensão:</strong> implemente uma classe <code>Turma</code> que receba uma lista de participantes e calcule média de frequência.</div>")}
-{unit("13.9 Visualização de dados, análise exploratória e comunicação", "Criar gráficos e interpretar dados com cuidado metodológico.", "<p>Visualização não é decoração: é uma forma de revelar padrões e comunicar resultados. O gráfico deve ter título, eixos claros, escala adequada e interpretação compatível com os dados.</p>" + viz_code + "<ul><li><strong>Matplotlib:</strong> base para gráficos personalizáveis;</li><li><strong>Seaborn:</strong> gráficos estatísticos com bom padrão visual;</li><li><strong>Plotly:</strong> visualizações interativas.</li></ul>")}
+{unit("13.9 Visualização de dados, análise exploratória e comunicação", "Criar gráficos e interpretar dados com cuidado metodológico.", "<p>Análise exploratória combina distribuição, tendência central, dispersão, grupos, correlações e visualização. Correlação não demonstra causalidade, e o resumo precisa registrar ausências e tamanho de cada grupo.</p>" + eda_code + "<h3>Gráfico com título, escala e contexto</h3>" + viz_code + "<ul><li><strong>Matplotlib:</strong> base para gráficos personalizáveis;</li><li><strong>Seaborn:</strong> gráficos estatísticos com bom padrão visual;</li><li><strong>Plotly:</strong> visualizações interativas.</li></ul>")}
 {unit("13.10 Projeto aplicado: miniaplicação Python com dados", "Integrar ambiente, código, dados, funções, arquivos e visualização.", "<p>O projeto final deve usar dados fictícios ou anonimizados e entregar um notebook ou script reprodutível.</p>" + code("import pandas as pd\n\n# 1. Extrair ou criar base fictícia\ndf = pd.DataFrame({\n    'nome': ['Ana', 'Carlos', 'Maria', 'Ana'],\n    'perfil': ['Melhor Idade', 'Comunidade', 'Comunidade', 'Melhor Idade'],\n    'presencas': [10, 7, 12, 10],\n    'total_aulas': [12, 12, 12, 12]\n})\n\n# 2. Transformar\ndf['nome'] = df['nome'].str.strip().str.title()\ndf['frequencia'] = df['presencas'] / df['total_aulas']\ndf['situacao'] = df['frequencia'].apply(lambda x: 'aprovado' if x >= 0.75 else 'pendente')\n\n# 3. Validar e resumir\nresumo = df.drop_duplicates().groupby('perfil').agg(\n    participantes=('nome', 'count'),\n    frequencia_media=('frequencia', 'mean')\n).reset_index()\n\nprint(resumo)\nresumo.to_csv('resumo_turma.csv', index=False, encoding='utf-8')") + "<div class=\"box lab\"><strong>Entrega:</strong> notebook ou script com objetivo, base fictícia, código, gráfico, interpretação, limitações e próximos passos.</div>")}
 """
     return html_shell(13, "Python: Fundamentos e Aplicações", "Caderno aprofundado de programação Python para fundamentos, análise de dados, visualização, mineração de dados e aplicações em IA.", "#1976D2", "#EAF4FF", body)
@@ -791,6 +955,33 @@ with sqlite3.connect(CURATED / "portal_ia.db") as conn:
     indicadores.to_sql("indicadores", conn, if_exists="replace", index=False)
 """)
     storage_methods = "".join([
+        technique("Decisão arquitetural orientada a requisitos", "A tecnologia é consequência dos requisitos. Volume, variedade, atualização, tipos de consulta, transações, reprocessamento, governança, equipe e custo devem ser avaliados em conjunto.", """requisitos = pd.DataFrame({
+    "criterio": ["volume_gb", "atualizacoes_dia", "consulta_sql", "schema_evolutivo", "transacoes"],
+    "peso": [3, 2, 3, 2, 1],
+    "parquet_duckdb": [3, 2, 3, 2, 1],
+    "sqlite": [1, 2, 3, 1, 3],
+    "warehouse": [3, 3, 3, 3, 3]
+})
+for opcao in ["parquet_duckdb", "sqlite", "warehouse"]:
+    requisitos[f"pontos_{opcao}"] = requisitos["peso"] * requisitos[opcao]
+print(requisitos.filter(like="pontos_").sum())"""),
+        technique("Zonas e critérios de promoção", "No UnespDataLens-RM, uma zona não é somente uma pasta: possui finalidade, entrada, saída, retenção, acesso e critérios de promoção. Somente dados que passam pelas regras avançam para consumo.", """ZONAS = {
+    "bronze": {"imutavel": True, "entrada": "fonte", "saida": "snapshot+manifesto"},
+    "prata": {"criterio": "schema_ok e qualidade >= 0.95", "saida": "dataset_tratado"},
+    "ouro": {"criterio": "reconciliado e aprovado", "saida": "data_mart"}
+}
+qualidade, reconciliado = 0.97, True
+zona_destino = "ouro" if qualidade >= 0.95 and reconciliado else "quarentena"
+print("Destino:", zona_destino)"""),
+        technique("Modelo dimensional: fato e dimensões", "Dashboards e indicadores se beneficiam de uma granularidade explícita. A tabela fato registra eventos mensuráveis; dimensões fornecem contexto estável.", """dim_participante = base_curada[["email", "perfil", "idade"]].drop_duplicates("email")
+dim_participante["participante_sk"] = range(1, len(dim_participante) + 1)
+dim_modulo = base_curada[["modulo"]].drop_duplicates().reset_index(drop=True)
+dim_modulo["modulo_sk"] = range(1, len(dim_modulo) + 1)
+fato_frequencia = (base_curada
+    .merge(dim_participante[["email", "participante_sk"]], on="email")
+    .merge(dim_modulo, on="modulo")
+    [["participante_sk", "modulo_sk", "presencas", "total_aulas", "frequencia"]])
+assert len(fato_frequencia) == len(base_curada)"""),
         technique("CSV e Excel", "CSV é interoperável e simples; Excel é conveniente para consumo humano. Ambos exigem atenção a encoding, tipos e limites de volume.", """base_curada.to_csv("dados/curated/base.csv", index=False, encoding="utf-8")
 with pd.ExcelWriter("dados/curated/relatorio.xlsx", engine="openpyxl") as writer:
     base_curada.to_excel(writer, sheet_name="Base", index=False)
@@ -815,6 +1006,47 @@ incremento = base_curada.loc[
     base_curada["atualizado_em"].gt(ultima_carga)
 ].copy()
 print(f"Linhas para carga incremental: {len(incremento)}")"""),
+        technique("Particionamento e leitura seletiva", "Particione por colunas usadas nos filtros, como ano e módulo. Partições excessivamente pequenas aumentam custo de metadados e pioram a leitura.", """base_curada["ano"] = pd.to_datetime(base_curada["data_inscricao"]).dt.year
+base_curada.to_parquet(
+    "dados/ouro/participacoes", partition_cols=["ano", "modulo"], index=False
+)
+consulta_2026 = pd.read_parquet(
+    "dados/ouro/participacoes", filters=[("ano", "==", 2026)]
+)
+assert consulta_2026["ano"].eq(2026).all()"""),
+        technique("Snapshots, hash e manifesto", "Um snapshot precisa de identidade verificável. O manifesto registra arquivo, versão, quantidade, schema, horário e hash para auditoria e reconstrução.", """import hashlib, json
+arquivo = Path("dados/ouro/indicadores_modulo.csv")
+manifesto = {
+    "ativo": "indicadores_modulo", "versao": "2026.07.1",
+    "linhas": len(indicadores), "colunas": indicadores.columns.tolist(),
+    "sha256": hashlib.sha256(arquivo.read_bytes()).hexdigest(),
+    "gerado_em": pd.Timestamp.now().isoformat()
+}
+arquivo.with_suffix(".manifest.json").write_text(
+    json.dumps(manifesto, ensure_ascii=False, indent=2), encoding="utf-8"
+)"""),
+        technique("Benchmark e adequação", "Meça consultas representativas, não apenas tempo de gravação. Compare formatos com o mesmo resultado e registre volume, hardware, repetição e limitação do teste.", """from time import perf_counter
+def medir(rotulo, funcao, repeticoes=5):
+    tempos = []
+    for _ in range(repeticoes):
+        inicio = perf_counter(); funcao(); tempos.append(perf_counter() - inicio)
+    return {"teste": rotulo, "mediana_s": float(np.median(tempos))}
+
+testes = [
+    medir("parquet_filtrado", lambda: pd.read_parquet("dados/ouro/participacoes", filters=[("ano", "==", 2026)])),
+    medir("duckdb_agregado", lambda: duckdb.sql("SELECT modulo, count(*) FROM base_curada GROUP BY modulo").fetchall())
+]
+print(pd.DataFrame(testes))"""),
+        technique("Controle de acesso e minimização", "A zona de consumo deve expor somente os campos necessários. Identificadores diretos podem ser pseudonimizados e o mapa de acesso deve relacionar ativo, finalidade e perfil.", """import hashlib
+consumo = base_curada.copy()
+consumo["participante_id"] = consumo["email"].fillna("").map(
+    lambda x: hashlib.sha256(x.encode()).hexdigest()[:16]
+)
+consumo = consumo[["participante_id", "modulo", "perfil", "frequencia", "situacao"]]
+assert "email" not in consumo.columns
+matriz_acesso = pd.DataFrame([
+    {"ativo": "data_mart_frequencia", "perfil": "analista", "permissao": "leitura"}
+])"""),
     ])
     log_code = code("""
 import logging
@@ -879,21 +1111,103 @@ modelo = Pipeline([("imputar", SimpleImputer(strategy="median")),
                    ("classificar", LogisticRegression())])
 modelo.fit(X_treino, y_treino)
 print("Acurácia:", modelo.score(X_teste, y_teste))"""),
+        technique("Classificação e matriz de confusão", "Classificação prevê uma categoria. Acurácia isolada pode ocultar erros em classes raras; compare precisão, revocação, F1 e a matriz de confusão.", """import numpy as np
+from sklearn.datasets import make_classification
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import classification_report, confusion_matrix
+X, y = make_classification(n_samples=240, n_features=5, weights=[0.7, 0.3],
+                           class_sep=1.2, random_state=42)
+X_tr, X_te, y_tr, y_te = train_test_split(X, y, test_size=.25,
+    stratify=y, random_state=42)
+classificador = LogisticRegression(max_iter=500).fit(X_tr, y_tr)
+previsto = classificador.predict(X_te)
+print("Matriz de confusão:\\n", confusion_matrix(y_te, previsto))
+print(classification_report(y_te, previsto, digits=3))"""),
+        technique("Regressão e erro de previsão", "Regressão prevê valores contínuos. MAE mantém a unidade original; RMSE penaliza mais os erros grandes; R² compara o modelo com a média.", """from sklearn.datasets import make_regression
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LinearRegression
+from sklearn.metrics import mean_absolute_error, root_mean_squared_error, r2_score
+X, y = make_regression(n_samples=180, n_features=4, noise=12, random_state=42)
+X_tr, X_te, y_tr, y_te = train_test_split(X, y, test_size=.25, random_state=42)
+regressor = LinearRegression().fit(X_tr, y_tr)
+previsto = regressor.predict(X_te)
+print("MAE:", round(mean_absolute_error(y_te, previsto), 2))
+print("RMSE:", round(root_mean_squared_error(y_te, previsto), 2))
+print("R²:", round(r2_score(y_te, previsto), 3))"""),
+        technique("Clusterização com K-means", "Agrupamento procura estruturas sem rótulo. Padronize variáveis, teste diferentes valores de k e interprete os centroides; um cluster não é automaticamente um perfil social real.", """import pandas as pd
+from sklearn.preprocessing import StandardScaler
+from sklearn.cluster import KMeans
+dados_cluster = pd.DataFrame({
+    "idade": [19, 22, 24, 45, 48, 52, 67, 70, 74],
+    "frequencia": [.78, .82, .75, .91, .88, .94, .62, .67, .64],
+    "atividades": [3, 4, 3, 8, 7, 9, 2, 3, 2]})
+X = StandardScaler().fit_transform(dados_cluster)
+modelo_k = KMeans(n_clusters=3, random_state=42, n_init=10).fit(X)
+dados_cluster["cluster"] = modelo_k.labels_
+print(dados_cluster.groupby("cluster").mean().round(2))
+print("Inércia:", round(modelo_k.inertia_, 2))"""),
+        technique("Regras de associação", "Associação descobre itens que ocorrem juntos. Suporte mede frequência conjunta, confiança mede P(B|A) e lift compara essa chance com a ocorrência geral de B; lift acima de 1 sugere associação positiva.", """import pandas as pd
+cestas = [
+    {"python", "pandas", "jupyter"}, {"python", "pandas"},
+    {"python", "jupyter"}, {"excel", "powerbi"},
+    {"python", "pandas", "powerbi"}, {"pandas", "jupyter"}]
+def metricas_regra(a, b, transacoes):
+    n = len(transacoes)
+    sup_a = sum(a in t for t in transacoes) / n
+    sup_b = sum(b in t for t in transacoes) / n
+    sup_ab = sum(a in t and b in t for t in transacoes) / n
+    confianca = sup_ab / sup_a if sup_a else 0
+    lift = confianca / sup_b if sup_b else 0
+    return {"regra": f"{a} -> {b}", "suporte": sup_ab,
+            "confianca": confianca, "lift": lift}
+regras = pd.DataFrame([metricas_regra("python", "pandas", cestas),
+                       metricas_regra("pandas", "jupyter", cestas)])
+print(regras.round(3))"""),
+        technique("Redução dimensional com PCA", "PCA cria componentes ortogonais que preservam parte da variância. É útil para compressão e visualização, mas reduz interpretabilidade e requer escala quando unidades diferem.", """from sklearn.datasets import load_wine
+from sklearn.preprocessing import StandardScaler
+from sklearn.decomposition import PCA
+vinho = load_wine()
+X = StandardScaler().fit_transform(vinho.data)
+pca = PCA(n_components=2).fit(X)
+componentes = pca.transform(X)
+print("Forma original:", X.shape, "| reduzida:", componentes.shape)
+print("Variância explicada:", pca.explained_variance_ratio_.round(3))
+print("Total preservado:", round(pca.explained_variance_ratio_.sum(), 3))"""),
+        technique("Validação cruzada e comparação com baseline", "Uma divisão única pode ser otimista. A validação cruzada estima variação entre partições, e o baseline mostra se o modelo supera uma regra simples.", """from sklearn.datasets import load_breast_cancer
+from sklearn.dummy import DummyClassifier
+from sklearn.linear_model import LogisticRegression
+from sklearn.pipeline import make_pipeline
+from sklearn.preprocessing import StandardScaler
+from sklearn.model_selection import StratifiedKFold, cross_val_score
+X, y = load_breast_cancer(return_X_y=True)
+cv = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)
+baseline = cross_val_score(DummyClassifier(strategy="most_frequent"), X, y, cv=cv)
+modelo = make_pipeline(StandardScaler(), LogisticRegression(max_iter=1000))
+f1 = cross_val_score(modelo, X, y, cv=cv, scoring="f1")
+print("Baseline acurácia:", baseline.mean().round(3))
+print("F1 por dobra:", f1.round(3), "| média:", f1.mean().round(3))"""),
     ])
     full_pipeline_code = code("""
 from pathlib import Path
 from datetime import datetime
+import json
 import logging
+import os
 import numpy as np
 import pandas as pd
 
 RAW = Path("dados/raw")
 CURATED = Path("dados/curated")
+QUARANTINE = Path("dados/quarentena")
 LOGS = Path("logs")
-for pasta in [RAW, CURATED, LOGS]:
+for pasta in [RAW, CURATED, QUARANTINE, LOGS]:
     pasta.mkdir(parents=True, exist_ok=True)
 
-logging.basicConfig(filename=LOGS / "etl.log", level=logging.INFO)
+logging.basicConfig(
+    filename=LOGS / "etl.log", level=logging.INFO,
+    format="%(asctime)s | %(levelname)s | %(message)s"
+)
 
 def extract():
     inscricoes = pd.read_csv(RAW / "inscricoes.csv", encoding="utf-8")
@@ -901,44 +1215,78 @@ def extract():
     return inscricoes, presencas
 
 def validate(df):
-    erros = {
-        "duplicados": int(df.duplicated(subset=["id_inscricao"]).sum()),
-        "email_ausente": int(df["email"].isna().sum()),
-        "nome_ausente": int(df["nome"].isna().sum())
-    }
-    return erros
+    colunas = {"id_inscricao", "nome", "email", "idade", "modulo", "data_inscricao"}
+    faltantes = colunas - set(df.columns)
+    if faltantes:
+        raise ValueError(f"Schema incompatível: {sorted(faltantes)}")
 
-def transform(inscricoes, presencas):
-    dados = inscricoes.copy()
+    regras = pd.DataFrame(index=df.index)
+    regras["id_unico"] = df["id_inscricao"].notna() & ~df.duplicated("id_inscricao", False)
+    regras["nome_ok"] = df["nome"].fillna("").str.strip().ne("")
+    regras["email_ok"] = df["email"].fillna("").str.fullmatch(r"[^@\\s]+@[^@\\s]+\\.[^@\\s]+")
+    regras["idade_ok"] = pd.to_numeric(df["idade"], errors="coerce").between(0, 110)
+    motivos = regras.apply(lambda linha: ",".join(linha.index[~linha]), axis=1)
+    validos = df.loc[regras.all(axis=1)].copy()
+    rejeitados = df.loc[~regras.all(axis=1)].assign(motivo=motivos)
+    metricas = regras.mean().round(4).to_dict()
+    return validos, rejeitados, metricas
+
+def transform(validos, presencas):
+    dados = validos.copy()
     dados["nome"] = dados["nome"].fillna("não informado").str.strip().str.title()
     dados["email"] = dados["email"].str.strip().str.lower()
     dados["perfil"] = dados["perfil"].str.strip().str.lower()
     dados["data_inscricao"] = pd.to_datetime(dados["data_inscricao"], errors="coerce")
-    dados = dados.drop_duplicates(subset=["id_inscricao"], keep="last")
-    dados = dados.merge(presencas, on="email", how="left")
+    dados = dados.merge(presencas, on="email", how="left", validate="many_to_one")
     dados["presencas"] = dados["presencas"].fillna(0)
     dados["total_aulas"] = dados["total_aulas"].fillna(12)
-    dados["frequencia"] = dados["presencas"] / dados["total_aulas"]
+    dados["frequencia"] = dados["presencas"].div(dados["total_aulas"]).clip(0, 1)
     dados["situacao"] = np.where(dados["frequencia"] >= 0.75, "aprovado", "pendente")
     return dados
 
-def load(base):
-    base.to_csv(CURATED / "participantes_curado.csv", index=False, encoding="utf-8")
+def load_atomic(base, execucao_id):
+    temporario = CURATED / f"participantes_{execucao_id}.tmp.csv"
+    destino = CURATED / "participantes_curado.csv"
+    base.to_csv(temporario, index=False, encoding="utf-8")
+    os.replace(temporario, destino)
     resumo = base.groupby(["perfil", "situacao"]).size().reset_index(name="total")
     resumo.to_excel(CURATED / "indicadores.xlsx", index=False)
     return resumo
 
 def run():
     inicio = datetime.now()
-    logging.info("Início do pipeline")
-    inscricoes, presencas = extract()
-    logging.info("Validação: %s", validate(inscricoes))
-    base = transform(inscricoes, presencas)
-    resumo = load(base)
-    logging.info("Fim do pipeline: %s linhas, %s indicadores", len(base), len(resumo))
-    print("Pipeline concluído em", datetime.now() - inicio)
+    execucao_id = inicio.strftime("%Y%m%dT%H%M%S")
+    relatorio = {"execucao_id": execucao_id, "status": "iniciado"}
+    try:
+        inscricoes, presencas = extract()
+        validos, rejeitados, metricas = validate(inscricoes)
+        rejeitados.to_csv(QUARANTINE / f"rejeitados_{execucao_id}.csv", index=False)
+        if metricas["id_unico"] < 0.95 or metricas["email_ok"] < 0.95:
+            raise ValueError(f"Qualidade abaixo do limite: {metricas}")
+        base = transform(validos, presencas)
+        resumo = load_atomic(base, execucao_id)
+        relatorio.update(status="sucesso", extraidas=len(inscricoes),
+                         rejeitadas=len(rejeitados), carregadas=len(base), metricas=metricas)
+        return resumo
+    except Exception as erro:
+        relatorio.update(status="falha", erro=type(erro).__name__, mensagem=str(erro))
+        raise
+    finally:
+        relatorio["duracao_s"] = (datetime.now() - inicio).total_seconds()
+        (LOGS / f"execucao_{execucao_id}.json").write_text(
+            json.dumps(relatorio, ensure_ascii=False, indent=2), encoding="utf-8"
+        )
+        logging.info(json.dumps(relatorio, ensure_ascii=False))
 
 run()
+
+# Testes mínimos que devem integrar a avaliação do projeto
+def test_frequencia_limitada():
+    exemplo = pd.DataFrame({"presencas": [15], "total_aulas": [12]})
+    resultado = exemplo["presencas"].div(exemplo["total_aulas"]).clip(0, 1)
+    assert resultado.iloc[0] == 1.0
+
+test_frequencia_limitada()
 """)
 
     body = f"""
@@ -946,7 +1294,7 @@ run()
 <section class="module-toolbox"><h3>Ferramentas relacionadas neste módulo</h3><div class="related-strip"><a class="pill" href="../ferramentas/python.html">Python</a><a class="pill" href="../ferramentas/pandas.html">pandas</a><a class="pill" href="../ferramentas/numpy.html">NumPy</a><a class="pill" href="../ferramentas/jupyter.html">Jupyter</a><a class="pill" href="../ferramentas/google-colab.html">Google Colab</a><a class="pill" href="../ferramentas/excel-sheets.html">Excel e Google Sheets</a><a class="pill" href="../ferramentas/power-bi.html">Power BI</a><a class="pill" href="../ferramentas/looker-studio.html">Looker Studio</a><a class="pill" href="../ferramentas/scikit-learn.html">scikit-learn</a><a class="pill" href="../ferramentas/duckdb.html">DuckDB</a></div></section>
 {mini_toc([("Apresentação e competências","apresentacao"),("Glossário interno do módulo","glossario"),("14.1 Ciclo de vida e arquitetura","u141"),("14.2 Extração e ingestão","u142"),("14.3 Qualidade e validação","u143"),("14.4 Transformação e padronização","u144"),("14.5 Ausências, duplicidades e outliers","u145"),("14.6 Integração, joins e indicadores","u146"),("14.7 Carga, armazenamento e camadas","u147"),("14.8 Logs, auditoria e linhagem","u148"),("14.9 Mineração, modelos e preparação para IA","u149"),("14.10 Pipeline ETL completo","u1410")])}
 <section class="module-visual"><figure><img src="../assets/img/modulos/m14-visual.svg" alt="Mapa visual do Módulo 14"><figcaption>Engenharia de dados conecta fontes, qualidade, transformação, armazenamento, governança e uso em IA.</figcaption></figure><aside class="character-guide"><img src="../assets/img/personagens/carlos.png" alt="Personagem Carlos"><h3>Carlos constrói dados confiáveis</h3><p>Sem dados organizados e rastreáveis, dashboards, automações e modelos de IA ficam frágeis. O módulo ensina a preparar dados com método.</p></aside></section>
-<section id="apresentacao"><h2 class="section-title">Apresentação e competências</h2><p>Este módulo aprofunda engenharia de dados aplicada ao unesp.IA. O foco é construir pipelines reprodutíveis com Python, da extração à carga, passando por validação, limpeza, transformação, integração, logs, governança e preparação para análise, mineração de dados e IA.</p><div class="box practice"><strong>Ao final do módulo, espera-se que o participante seja capaz de:</strong><ul><li>diferenciar dado bruto, tratado, curado e produto de dados;</li><li>desenhar pipelines ETL e ELT com entradas, regras, saídas e logs;</li><li>extrair dados de CSV, Excel, JSON, APIs e bancos;</li><li>aplicar validações de qualidade, schema, duplicidade, consistência e completude;</li><li>tratar ausências, outliers, tipos, categorias e formatos;</li><li>integrar bases por chaves, gerar indicadores e carregar resultados em arquivos ou bancos;</li><li>documentar catálogo, linhagem, LGPD, riscos e responsáveis.</li></ul></div></section>
+<section id="apresentacao"><h2 class="section-title">Apresentação, competências e carga horária</h2><div class="box practice"><strong>Carga horária total: 40 horas.</strong> O módulo foi estruturado para aprendizagem baseada em desempenho: estudar conceitos, implementar, testar, produzir artefatos e demonstrar domínio.</div><p>O percurso usa o <strong>UnespDataLens-RM</strong> como modelo de referência e estudo de caso transversal. Em vez de aprender comandos isolados, o participante constrói progressivamente um pipeline técnico-operacional reduzido: inventário, ingestão, integração, transformação, qualidade, armazenamento analítico, consumo, governança e preparação para IA.</p><p>Ao concluir, o participante deverá ser capaz de projetar e operar um produto de dados reprodutível, justificar decisões arquiteturais, medir qualidade e desempenho, preservar linhagem e entregar evidências verificáveis de que os dados estão aptos ao uso.</p>{m14_workload_table()}<h3>Estratégia de avaliação</h3><div class="assessment-grid"><div><strong>30%</strong><span>laboratórios e códigos executáveis</span></div><div><strong>25%</strong><span>artefatos técnicos e documentação</span></div><div><strong>20%</strong><span>testes, métricas e evidências</span></div><div><strong>25%</strong><span>projeto integrador UnespDataLens-RM</span></div></div><div class="box warn"><strong>Regra de aprovação por competência:</strong> a média não substitui habilidades essenciais. O projeto final deve executar de ponta a ponta, bloquear dados inválidos, produzir logs e permitir reprodução por outra pessoa.</div></section>
 <section id="glossario"><h2 class="section-title">Glossário interno do módulo</h2>{concept_grid(DE_CONCEPTS)}</section>
 {unit("14.1 Fundamentos, ciclo de vida e arquitetura de dados", "Compreender o percurso do dado desde a origem até o uso em relatórios, automações e IA.", "<p>Engenharia de dados não é apenas programação: envolve arquitetura, qualidade, governança, segurança, documentação e operação. As camadas bronze, prata e ouro separam preservação, curadoria e consumo.</p>" + imports_code + sample_data_code + architecture_methods)}
 {unit("14.2 Extração e ingestão: CSV, Excel, JSON, API e banco", "Ler dados de diferentes fontes preservando origem, formato e rastreabilidade.", "<p>A extração deve manter uma cópia bruta e registrar data, fonte, responsável e finalidade. Cada formato exige parâmetros e controles próprios.</p>" + ingestion_methods + "<h3>Visão integrada</h3>" + extract_code + "<div class=\"box warn\"><strong>LGPD:</strong> defina finalidade, base legal, minimização, acesso e retenção antes de coletar dados pessoais.</div>")}
@@ -954,7 +1302,7 @@ run()
 {unit("14.4 Transformação: limpeza, padronização, tipos e regras de negócio", "Transformar dados brutos em dados consistentes, tipados e interpretáveis.", "<p>Transformar é aplicar regras explícitas e reproduzíveis. Cada transformação precisa informar o que muda, por que muda e como um valor problemático será tratado. Os exemplos abaixo separam as técnicas para que cada decisão possa ser testada e auditada.</p>" + transformation_methods + "<h3>Exemplo integrado</h3><p>Depois de compreender cada técnica isoladamente, elas podem ser reunidas em uma função única. O exemplo mantém uma cópia de entrada, converte tipos, cria indicadores de validade, remove duplicidades e calcula uma regra de negócio.</p>" + transform_code)}
 {unit("14.5 Tratamento de ausências, duplicidades, normalização e outliers", "Aplicar técnicas de pré-processamento sem distorcer a realidade dos dados.", "<p>Nem todo valor ausente deve ser preenchido; nem todo registro repetido representa uma duplicata; e nem todo outlier é erro. A escolha depende da finalidade, do significado da coluna e do impacto sobre grupos e indicadores. Registre a técnica, os parâmetros calculados e quantas linhas foram afetadas.</p><div class=\"box warn\"><strong>Evite vazamento de dados:</strong> em projetos de IA, média, mediana, limites, escalas e categorias devem ser aprendidos somente no conjunto de treino e depois reaplicados aos conjuntos de validação e teste.</div>" + preprocessing_methods)}
 {unit("14.6 Integração de bases, merge, join, concat, groupby e indicadores", "Combinar fontes, criar indicadores e gerar produtos de dados.", "<p>A integração exige atenção às chaves, cardinalidade e granularidade. Um erro pode multiplicar linhas ou perder registros.</p>" + integration_methods + "<h3>Exemplo integrado</h3>" + merge_code)}
-{unit("14.7 Carga e armazenamento: CSV, Excel, Parquet, SQLite, DuckDB, data lake e warehouse", "Salvar dados tratados em formatos adequados ao consumo e à escala.", "<p>A escolha depende de volume, frequência, consumidores, custo e governança. Os métodos abaixo mostram opções locais e analíticas.</p>" + storage_methods + "<h3>Carga combinada</h3>" + load_code)}
+{unit("14.7 Carga e armazenamento: CSV, Excel, Parquet, SQLite, DuckDB, data lake e warehouse", "Projetar, implementar e avaliar armazenamento analítico adequado ao consumo, à escala e à governança.", "<p>No UnespDataLens-RM, armazenar não significa apenas salvar um arquivo. Significa transformar datasets validados em ativos analíticos persistidos, localizáveis, consultáveis, versionados, seguros e reprocessáveis.</p><div class=\"table-wrap\"><table class=\"table\"><tr><th>Decisão</th><th>Pergunta de projeto</th><th>Evidência esperada</th></tr><tr><td>Arquitetura</td><td>Arquivo, banco, warehouse, lake ou lakehouse?</td><td>Matriz de requisitos e justificativa.</td></tr><tr><td>Zonas</td><td>Quando um ativo avança de bruto para tratado e consumo?</td><td>Critérios de entrada, saída e retenção.</td></tr><tr><td>Modelo lógico</td><td>Qual é a granularidade e como fatos e dimensões se relacionam?</td><td>Schema e testes de cardinalidade.</td></tr><tr><td>Desempenho</td><td>Quais consultas precisam ser rápidas?</td><td>Benchmark reproduzível.</td></tr><tr><td>Reprocessamento</td><td>É possível reconstruir uma versão anterior?</td><td>Snapshot, hash, manifesto e linhagem.</td></tr><tr><td>Segurança</td><td>Quem acessa qual detalhe e para qual finalidade?</td><td>Matriz de acesso e dataset minimizado.</td></tr></table></div>" + storage_methods + "<h3>Carga combinada</h3>" + load_code)}
 {unit("14.8 Logs, auditoria, linhagem, catálogo e governança", "Registrar execuções, decisões, origem, transformações e responsáveis.", "<p>Um pipeline sem registros é uma caixa-preta. Logs operacionais, auditoria, linhagem e catálogo respondem perguntas diferentes e complementares.</p>" + governance_methods + "<h3>Configuração básica de logging</h3>" + log_code)}
 {unit("14.9 Mineração de dados, análise exploratória e preparação para IA", "Preparar dados para exploração, modelos e aplicações de IA com cautela.", "<p>Antes de modelar, verifique representatividade, vieses, vazamento de informação, equilíbrio das classes e finalidade legítima.</p>" + modeling_methods + "<div class=\"box warn\"><strong>Cuidado:</strong> o exemplo é didático; sistemas reais exigem métricas adequadas, explicabilidade, governança e autorização de uso.</div>")}
 {unit("14.10 Pipeline ETL completo em Python", "Integrar todas as etapas em uma função reprodutível e documentada.", "<p>O pipeline completo deve ser executável, versionado e explicado. O código abaixo resume extração, validação, transformação, carga e log em uma estrutura única.</p>" + full_pipeline_code + "<div class=\"box lab\"><strong>Entrega:</strong> pasta com dados fictícios, script ETL, arquivo de log, base curada, indicadores, dicionário de dados e relatório com limitações.</div>")}
@@ -987,6 +1335,17 @@ def update_css() -> None:
 """
     if "/* Blocos de técnicas do Módulo 14 */" not in text:
         text += technique_css
+    learning_css = """
+
+/* Contratos de aprendizagem do Módulo 14 */
+.unit-learning-contract{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin:16px 0}
+.unit-learning-contract>div,.assessment-grid>div{display:flex;flex-direction:column;gap:4px;padding:14px;border:1px solid var(--border);border-radius:12px;background:var(--module-soft)}
+.unit-learning-contract strong,.assessment-grid strong{color:var(--module-color);font-size:18px}
+.mastery-list{border-left:5px solid var(--module-color);padding:14px 14px 14px 34px;background:#F8FAFC;border-radius:12px}
+.assessment-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin:16px 0}
+"""
+    if "/* Contratos de aprendizagem do Módulo 14 */" not in text:
+        text += learning_css
     text = re.sub(r'20260713-m13-m14(?!-deep)', CSS_VERSION, text)
     write(path, text)
 

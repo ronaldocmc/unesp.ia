@@ -12,7 +12,7 @@ NAV_ROOT = (
     '<a href="modulos.html">Módulos</a><a href="trilhas.html">Trilhas</a>'
     '<a href="conceitos.html">Conceitos</a><a href="ferramentas.html">Ferramentas</a>'
     '<a href="laboratorios.html">Laboratórios</a><a href="materiais.html">Materiais</a>'
-    '<a href="personagens.html">Personagens</a><a href="equipe.html">Equipe</a><a href="mapa-conhecimento.html">Mapa</a>'
+    '<a href="personagens.html">Personagens</a><a href="equipe.html">Equipe</a><a href="mapa-conhecimento.html">Mapa</a><a href="login.html">Área do aluno</a>'
 )
 NAV_UP = NAV_ROOT.replace('href="', 'href="../')
 
@@ -430,7 +430,7 @@ def update_trilhas() -> None:
         '<p><b>Módulos:</b> <a class="pill" href="modulos/m1.html">M1</a><a class="pill" href="modulos/m4.html">M4</a><a class="pill" href="modulos/m13.html">M13</a></p><p><b>Carga horária:</b> 60h</p>'
         '<p>Trilha para aprender lógica, Python, notebooks, estruturas de dados, arquivos, DataFrames, gráficos e miniaplicações.</p></div>'
         '<div class="card"><h3>Engenharia de Dados para IA</h3><p><b>Público:</b> equipes técnicas, pesquisadores, gestores de dados e participantes avançados.</p>'
-        '<p><b>Módulos:</b> <a class="pill" href="modulos/m1.html">M1</a><a class="pill" href="modulos/m4.html">M4</a><a class="pill" href="modulos/m12.html">M12</a><a class="pill" href="modulos/m13.html">M13</a><a class="pill" href="modulos/m14.html">M14</a></p><p><b>Carga horária:</b> 108h</p>'
+        '<p><b>Módulos:</b> <a class="pill" href="modulos/m1.html">M1</a><a class="pill" href="modulos/m4.html">M4</a><a class="pill" href="modulos/m12.html">M12</a><a class="pill" href="modulos/m13.html">M13</a><a class="pill" href="modulos/m14.html">M14</a></p><p><b>Carga horária:</b> 136h</p>'
         '<p>Trilha avançada para criar pipelines, preparar dados, aplicar qualidade, governança, visualização e bases confiáveis para IA.</p></div>'
     )
     text = text.replace('</div></div></main>', cards + '</div></div></main>', 1)
