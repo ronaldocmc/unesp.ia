@@ -1,0 +1,911 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Módulo 12 – Automação Inteligente com n8n, Pipelines, Skills e LLMs • UNESP.IA</title>
+  <meta name="description" content="Módulo 12 do UNESP.IA: automação inteligente com n8n, pipelines, skills, LLMs, logs, guardrails, custos e governança.">
+  <style>
+    :root{
+      --azul:#003a70; --azul2:#0b5aa6; --azul3:#e8f1fb; --vermelho:#d71920;
+      --texto:#172033; --muted:#5f6b7a; --borda:#dce6f2; --bg:#f6f8fb; --card:#ffffff;
+      --ok:#0f766e; --warn:#b45309; --soft:#f8fafc;
+    }
+    *{box-sizing:border-box} html{scroll-behavior:smooth} body{margin:0;font-family:Arial,Helvetica,sans-serif;color:var(--texto);background:var(--bg);line-height:1.6}
+    a{color:var(--azul2);text-decoration:none} a:hover{text-decoration:underline}
+    .topbar{background:linear-gradient(90deg,var(--azul),var(--azul2));color:white;padding:14px 24px;position:sticky;top:0;z-index:10;box-shadow:0 2px 10px rgba(0,0,0,.12)}
+    .topbar .brand{font-weight:800;letter-spacing:.2px}.topbar nav{margin-top:8px;display:flex;flex-wrap:wrap;gap:10px}.topbar nav a{color:white;background:rgba(255,255,255,.12);padding:6px 10px;border-radius:999px;font-size:.92rem}
+    .container{max-width:1180px;margin:0 auto;padding:28px 20px 64px}.breadcrumb{color:var(--muted);font-size:.95rem;margin-bottom:14px}.hero{background:white;border:1px solid var(--borda);border-radius:24px;padding:34px;box-shadow:0 12px 30px rgba(0,0,0,.06);position:relative;overflow:hidden}.hero:before{content:"M12";position:absolute;right:22px;top:8px;font-size:6rem;font-weight:900;color:rgba(0,58,112,.08)}
+    .eyebrow{display:inline-block;background:var(--azul3);color:var(--azul);padding:6px 12px;border-radius:999px;font-weight:700}.hero h1{font-size:clamp(2rem,4vw,3.6rem);line-height:1.1;margin:18px 0 12px;color:var(--azul)}.subtitle{font-size:1.25rem;color:var(--muted);max-width:980px}.tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px}.tag{background:#f1f5f9;border:1px solid var(--borda);border-radius:999px;padding:7px 10px;font-size:.92rem}
+    .layout{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:22px;margin-top:22px}.toc{position:sticky;top:98px;align-self:start;background:white;border:1px solid var(--borda);border-radius:18px;padding:16px;max-height:calc(100vh - 120px);overflow:auto}.toc h2{font-size:1.05rem;margin:0 0 10px}.toc a{display:block;padding:7px 0;border-bottom:1px solid #edf2f7;font-size:.92rem}
+    main section{background:white;border:1px solid var(--borda);border-radius:20px;padding:26px;margin-bottom:18px;box-shadow:0 6px 18px rgba(0,0,0,.035)}
+    h2{color:var(--azul);font-size:1.85rem;margin:0 0 14px;border-bottom:3px solid var(--azul3);padding-bottom:8px}h3{color:#0f3d67;font-size:1.35rem;margin-top:24px}h4{color:#16324f;margin:0;font-size:1.1rem}.unit-title{display:flex;align-items:center;gap:12px}.unit-num{background:var(--azul);color:white;border-radius:12px;padding:8px 10px;font-weight:800}.note{background:var(--azul3);border-left:5px solid var(--azul2);padding:14px 16px;border-radius:12px}.warning{background:#fff7ed;border-left:5px solid var(--warn);padding:14px 16px;border-radius:12px}.success{background:#ecfdf5;border-left:5px solid var(--ok);padding:14px 16px;border-radius:12px}
+    table{width:100%;border-collapse:collapse;margin:14px 0;background:white}th,td{border:1px solid var(--borda);padding:10px;vertical-align:top}th{background:var(--azul3);color:var(--azul);text-align:left}tr:nth-child(even) td{background:#fbfdff}
+    pre{background:#0f172a;color:#e2e8f0;padding:16px;border-radius:14px;overflow:auto;white-space:pre-wrap}code{font-family:Consolas,Monaco,monospace}.pipeline{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0}.pipeline span{background:var(--soft);border:1px solid var(--borda);border-radius:999px;padding:7px 10px}.pipeline span:not(:last-child)::after{content:" →";color:var(--azul2);font-weight:700;margin-left:8px}.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}.card{background:#fbfdff;border:1px solid var(--borda);border-radius:16px;padding:16px}.badge{background:var(--azul3);color:var(--azul);border-radius:999px;padding:4px 8px;font-size:.78rem;font-weight:700;white-space:nowrap}.skills-grid{display:grid;grid-template-columns:1fr;gap:14px}.skill-card{border:1px solid var(--borda);border-radius:18px;padding:16px;background:#fff}.skill-card header{display:flex;align-items:center;gap:10px;margin-bottom:8px}.skill-index{background:var(--vermelho);color:white;border-radius:10px;padding:5px 8px;font-weight:800}.skill-card p{margin:8px 0}.footer{margin-top:26px;color:var(--muted);font-size:.95rem;text-align:center}
+    @media (max-width:920px){.layout{grid-template-columns:1fr}.toc{position:relative;top:auto}.hero{padding:24px}.hero:before{font-size:4rem}.topbar{position:relative}}
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">UNESP.IA – Inteligência Artificial para Todos</div>
+    <nav>
+      <a href="../index.html">Início</a><a href="../inscricoes.html">Inscrições</a><a href="../modulos.html">Módulos</a><a href="../trilhas.html">Trilhas</a><a href="../conceitos.html">Conceitos</a><a href="../ferramentas.html">Ferramentas</a><a href="../laboratorios.html">Laboratórios</a><a href="../materiais.html">Materiais</a>
+    </nav>
+  </header>
+  <div class="container">
+    <div class="breadcrumb"><a href="../index.html">Início</a> / <a href="../modulos.html">Módulos</a> / Módulo 12</div>
+    <section class="hero" id="topo">
+      <span class="eyebrow">Módulo 12</span>
+      <h1>Automação Inteligente com n8n, Pipelines, Skills e LLMs</h1>
+      <p class="subtitle">Construindo workflows, pipelines, skills e automações com IA para educação, comércio, varejo, serviços, indústria e grupos multiempresa.</p>
+      <div class="tags"><span class="tag">n8n</span><span class="tag">Pipelines</span><span class="tag">Skills</span><span class="tag">LLMs</span><span class="tag">Webhooks</span><span class="tag">APIs</span><span class="tag">LGPD</span><span class="tag">Guardrails</span></div>
+    </section>
+    <div class="layout">
+      <main>
+        <section id="ana">
+          <h2>Ana acompanha este módulo</h2>
+          <p>Ana já aprendeu que a Inteligência Artificial pode gerar textos, responder perguntas, resumir documentos, classificar mensagens e apoiar tarefas do cotidiano. No Módulo 11, ela conheceu os conceitos de agentes de IA, skills, tools, automação inteligente, guardrails, custos e supervisão humana.</p>
+          <p>Neste módulo, Ana passa a construir automações reais usando o <strong>n8n</strong>. Ela percebe que escrever um prompt não é o mesmo que criar uma automação. Um prompt é uma instrução enviada para uma IA; uma automação completa pode envolver entrada de dados, validação, transformação, consulta a sistemas, uso de IA, envio de mensagens, geração de documentos, registro em planilhas, logs, tratamento de erros, controle de custos, segurança, LGPD, guardrails e revisão humana.</p>
+          <p>Ao longo do módulo, Ana aprende que nem tudo deve ser resolvido com IA. Muitas tarefas podem ser resolvidas com regras simples, condições, planilhas, APIs, workflows e pipelines. A IA deve ser usada quando realmente agrega valor, especialmente em situações que envolvem linguagem natural, resumo, classificação, extração de informações ou geração de respostas personalizadas.</p>
+        </section>
+
+        <section id="apresentacao">
+          <h2>1. Apresentação do módulo</h2>
+          <p>O <strong>Módulo 12 — Automação Inteligente com n8n, Pipelines, Skills e LLMs</strong> é um módulo prático do UNESP.IA, voltado à criação de automações inteligentes utilizando o n8n como ambiente principal de orquestração.</p>
+          <p>A proposta do módulo é ensinar os participantes a construir workflows que integrem formulários, planilhas, e-mails, documentos, APIs, webhooks, modelos de linguagem, pipelines de dados, skills reutilizáveis, agentes simples, logs, guardrails e revisão humana.</p>
+          <p>O módulo não se limita ao uso operacional da ferramenta. O objetivo é desenvolver a capacidade de pensar processos, modelar fluxos, organizar dados, decidir quando usar IA, criar skills reutilizáveis, controlar custos, proteger informações e avaliar riscos antes de automatizar ações reais.</p>
+        </section>
+
+        <section id="identidade">
+          <h2>2. Identidade do módulo</h2>
+          <table>
+            <tr><th>Item</th><th>Descrição</th></tr>
+            <tr><td>Nome</td><td>Módulo 12 — Automação Inteligente com n8n, Pipelines, Skills e LLMs</td></tr>
+            <tr><td>Subtítulo</td><td>Construindo workflows, pipelines, skills e automações com IA</td></tr>
+            <tr><td>Carga horária recomendada</td><td>36 horas</td></tr>
+            <tr><td>Formato</td><td>Prático, progressivo e orientado a laboratórios</td></tr>
+            <tr><td>Ferramenta central</td><td>n8n</td></tr>
+            <tr><td>Produto final</td><td>Workflow funcional no n8n com pipeline estruturado, skill documentada e implementada, uso controlado de LLM, logs, tratamento de erro, estimativa de custo, guardrails e checklist de segurança.</td></tr>
+          </table>
+        </section>
+
+        <section id="ementa">
+          <h2>3. Ementa</h2>
+          <p>Introdução à automação inteligente com n8n. Conceitos de workflow, pipeline, prompt, skill, tool, LLM, agente, chatbot, trigger, node, credential, execution, webhook, API, HTTP Request, JSON, expressão, condição, decisão, log, tratamento de erro e sub-workflow. Diferença entre prompt e skill, workflow e pipeline, tool e skill, LLM e agente. Construção de workflows no n8n com entrada, validação, transformação, decisão, saída e registro. Modelagem de pipelines de dados para automações educacionais, comerciais, industriais e multiempresariais. Criação de prompts estruturados para classificação, resumo, extração e geração de respostas. Desenvolvimento de skills reutilizáveis com entradas, ações, ferramentas, saídas, validações, logs, riscos, custos e revisão humana. Uso de LLMs em workflows para interpretar mensagens, classificar solicitações, resumir documentos, extrair campos e gerar respostas personalizadas. Aplicações em inscrições, confirmações por e-mail, certificados, documentos, assistente didático, consulta de estoque, atendimento ao cliente, roteamento de leads, manutenção industrial, triagem de fornecedores, consolidação de indicadores e grupos multiempresa. Custos, segurança, LGPD, logs, guardrails, governança, versionamento e humano no loop. Projeto final integrado com n8n.</p>
+        </section>
+
+        <section id="objetivos">
+          <h2>4. Objetivo geral</h2>
+          <p>Capacitar os participantes a compreender, modelar, implementar e avaliar automações inteligentes utilizando o n8n, diferenciando workflow, pipeline, prompt, skill, tool, LLM, chatbot e agente, com aplicações práticas em educação, comércio, varejo, serviços, indústria e grupos multiempresa.</p>
+        </section>
+
+        <section id="competencias">
+          <h2>5. Competências desenvolvidas</h2>
+          <ul>
+            <li>compreender o papel do n8n como ambiente de orquestração;</li>
+            <li>diferenciar workflow, pipeline, prompt, skill, tool, LLM, chatbot e agente;</li>
+            <li>identificar quando usar regra simples, workflow, pipeline, prompt, skill ou agente;</li>
+            <li>criar workflows no n8n com gatilhos, nodes, condições, integrações, logs e tratamento de erros;</li>
+            <li>modelar pipelines de dados dentro de automações;</li>
+            <li>criar prompts estruturados para classificação, resumo, extração e geração de respostas;</li>
+            <li>transformar tarefas recorrentes em skills reutilizáveis;</li>
+            <li>implementar skills no n8n como workflows, sub-workflows ou tools acionáveis;</li>
+            <li>usar LLMs apenas quando houver necessidade real de interpretação, linguagem natural, classificação, resumo ou geração textual;</li>
+            <li>integrar formulários, planilhas, e-mails, documentos, APIs e webhooks;</li>
+            <li>criar automações para inscrição, confirmação, certificados, resumo de documentos e atendimento didático;</li>
+            <li>adaptar automações para comércio, varejo, serviços, indústria e grupos multiempresa;</li>
+            <li>estimar custos com execuções, tokens, APIs, infraestrutura e revisão humana;</li>
+            <li>aplicar boas práticas de segurança, LGPD, logs, auditoria, guardrails e governança;</li>
+            <li>construir e apresentar um projeto final funcional no n8n.</li>
+          </ul>
+        </section>
+
+        <section id="matriz">
+          <h2>6. Matriz de alinhamento entre competências, unidades e evidências</h2>
+          <table>
+            <tr><th>Competência</th><th>Unidade principal</th><th>Evidência prática</th></tr>
+            <tr><td>Compreender n8n como orquestrador</td><td>12.1, 12.3</td><td>Workflow com entrada, processamento, saída e log</td></tr>
+            <tr><td>Diferenciar workflow, pipeline, prompt, skill, tool, LLM e agente</td><td>12.2</td><td>Quadro comparativo preenchido</td></tr>
+            <tr><td>Identificar quando usar regra, pipeline, skill ou IA</td><td>12.2, 12.5, 12.6, 12.7</td><td>Diagnóstico de automação</td></tr>
+            <tr><td>Criar workflows no n8n</td><td>12.3, 12.4, 12.8, 12.9, 12.10</td><td>Workflows implementados</td></tr>
+            <tr><td>Modelar pipelines de dados</td><td>12.5</td><td>Pipeline de validação e transformação</td></tr>
+            <tr><td>Criar prompts estruturados</td><td>12.7</td><td>Prompt com saída JSON validada</td></tr>
+            <tr><td>Transformar tarefas em skills</td><td>12.6</td><td>Ficha completa de skill</td></tr>
+            <tr><td>Implementar skills no n8n</td><td>12.6, 12.8, 12.9, 12.10</td><td>Skill criada como workflow ou sub-workflow</td></tr>
+            <tr><td>Estimar custos e aplicar governança</td><td>12.11</td><td>Plano de custo, segurança e governança</td></tr>
+            <tr><td>Construir projeto final funcional</td><td>12.12</td><td>Protótipo no n8n apresentado</td></tr>
+          </table>
+        </section>
+
+        <section id="estrutura">
+          <h2>7. Estrutura geral do módulo</h2>
+          <table>
+            <tr><th>Unidade</th><th>Tema</th><th>Carga</th></tr>
+            <tr><td>12.1</td><td>Fundamentos de automação inteligente com n8n</td><td>2h</td></tr>
+            <tr><td>12.2</td><td>Conceitos essenciais: workflow, pipeline, prompt, skill, tool, LLM, chatbot e agente</td><td>3h</td></tr>
+            <tr><td>12.3</td><td>Introdução prática ao n8n: nodes, triggers, credentials, executions e webhooks</td><td>3h</td></tr>
+            <tr><td>12.4</td><td>Primeiro workflow com IA</td><td>2h</td></tr>
+            <tr><td>12.5</td><td>Pipelines no n8n: entrada, validação, transformação, decisão, saída e log</td><td>3h</td></tr>
+            <tr><td>12.6</td><td>Skills reutilizáveis no n8n</td><td>4h</td></tr>
+            <tr><td>12.7</td><td>LLMs, prompts e saídas estruturadas</td><td>3h</td></tr>
+            <tr><td>12.8</td><td>Aplicações no UNESP.IA</td><td>4h</td></tr>
+            <tr><td>12.9</td><td>Aplicações em comércio, varejo e serviços</td><td>3h</td></tr>
+            <tr><td>12.10</td><td>Aplicações em indústria, multiempresas e grupos gestores</td><td>3h</td></tr>
+            <tr><td>12.11</td><td>Custos, segurança, LGPD, logs, guardrails e governança</td><td>3h</td></tr>
+            <tr><td>12.12</td><td>Laboratório final: projeto integrado com n8n</td><td>3h</td></tr>
+            <tr><th colspan="2">Total</th><th>36h</th></tr>
+          </table>
+        </section>
+
+        <section id="progressao">
+          <h2>8. Progressão didática para implementação de skills no n8n</h2>
+          <p>A implementação de skills no n8n será desenvolvida de forma progressiva. O participante começa com workflows simples e evolui até a criação de skills reutilizáveis, sub-workflows e automações integradas.</p>
+          <div class="cards">
+            <div class="card"><h3>Nível 1 — Workflow simples</h3><pre>Manual Trigger → Edit Fields → Google Sheets</pre><p><strong>Objetivo:</strong> compreender entrada, processamento e saída.</p></div>
+            <div class="card"><h3>Nível 2 — Workflow com decisão</h3><pre>Manual Trigger → Edit Fields → IF → Google Sheets → Log</pre><p><strong>Objetivo:</strong> aplicar condições simples sem uso de IA.</p></div>
+            <div class="card"><h3>Nível 3 — Workflow com LLM</h3><pre>Mensagem → LLM classifica → Switch → Resultado</pre><p><strong>Objetivo:</strong> usar LLM para linguagem natural, classificação ou geração de texto.</p></div>
+            <div class="card"><h3>Nível 4 — Skill como workflow documentado</h3><pre>Skill: consultar_certificado
+Entrada → validação → consulta → resposta → log</pre><p><strong>Objetivo:</strong> documentar entradas, pipeline interno, tools, saída, logs e guardrails.</p></div>
+            <div class="card"><h3>Nível 5 — Skill como sub-workflow</h3><pre>Workflow principal → Skill consultar_certificado → Resposta</pre><p><strong>Objetivo:</strong> reutilizar uma skill em mais de uma automação.</p></div>
+            <div class="card"><h3>Nível 6 — Skill como tool acionável por agente</h3><pre>Mensagem → Agente → Skill adequada → Tool → Resposta → Log</pre><p><strong>Objetivo:</strong> compreender a relação entre agente, LLM, tools e skills.</p></div>
+          </div>
+        </section>
+
+        <section id="u121">
+          <h2><span class="unit-num">12.1</span> Fundamentos de automação inteligente com n8n</h2>
+          <h3>Carga horária</h3><p>2 horas.</p>
+          <h3>Objetivo da unidade</h3><p>Compreender o que é automação inteligente, qual é o papel do n8n e por que a construção de automações deve começar pelo entendimento do processo, e não pela escolha da ferramenta.</p>
+          <h3>Situação-problema</h3><p>A equipe do UNESP.IA recebe inscrições por formulário. Depois disso, precisa registrar participantes, enviar confirmações, organizar listas de presença, responder dúvidas, gerar certificados e criar relatórios. A primeira tarefa não é abrir o n8n e montar blocos. A primeira tarefa é entender o processo.</p>
+          <h3>Conceitos principais</h3>
+          <table><tr><th>Conceito</th><th>Explicação</th><th>Exemplo</th></tr><tr><td>Automação</td><td>Execução automática de tarefa repetitiva</td><td>Enviar confirmação</td></tr><tr><td>Automação inteligente</td><td>Automação que usa IA em uma ou mais etapas</td><td>Classificar mensagem livre</td></tr><tr><td>Workflow</td><td>Fluxo automatizado de etapas</td><td>Formulário → planilha → e-mail</td></tr><tr><td>Pipeline</td><td>Sequência de processamento de dados</td><td>Receber → validar → padronizar → salvar</td></tr><tr><td>Skill</td><td>Capacidade reutilizável</td><td>Consultar certificado</td></tr></table>
+          <h3>Diferença entre automação simples e automação inteligente</h3><pre>Automação simples:
+Se o campo e-mail estiver preenchido, salvar na planilha.
+Se o campo e-mail estiver vazio, registrar erro.
+
+Automação inteligente:
+Ler uma mensagem escrita livremente e classificar se ela é sobre inscrição, certificado, dúvida ou suporte técnico.</pre>
+          <h3>Exemplo aplicado ao UNESP.IA</h3><p><strong>Workflow:</strong></p><pre>Formulário → n8n → planilha → mensagem de confirmação → e-mail → log</pre><p><strong>Pipeline dentro do workflow:</strong></p><pre>Receber dados → validar campos obrigatórios → padronizar nome → normalizar módulo → classificar perfil → salvar dados</pre>
+          <div class="note"><strong>Uso possível de LLM:</strong> gerar uma mensagem personalizada de boas-vindas. <strong>Onde não usar LLM:</strong> verificar se o campo e-mail está vazio.</div>
+          <h3>Roteiro de implementação no n8n</h3><ol><li>Criar um workflow com Manual Trigger.</li><li>Criar dados fictícios com Edit Fields.</li><li>Inserir campos como nome, e-mail, módulo e perfil.</li><li>Criar uma validação simples com IF.</li><li>Registrar o resultado como válido ou pendente.</li><li>Identificar quais partes representam processo, workflow, pipeline, skill e possível uso de LLM.</li></ol>
+          <h3>Produto da unidade</h3><p>Mapa inicial de uma automação inteligente.</p><h3>Evidência da competência</h3><p>O participante demonstra que compreende a diferença entre processo, workflow, pipeline, skill e uso de IA.</p><h3>Para refletir</h3><p>A automação deve começar pela ferramenta ou pelo entendimento do processo?</p>
+        </section>
+
+        <section id="u122">
+          <h2><span class="unit-num">12.2</span> Conceitos essenciais: workflow, pipeline, prompt, skill, tool, LLM, chatbot e agente</h2>
+          <h3>Carga horária</h3><p>3 horas.</p>
+          <h3>Objetivo da unidade</h3><p>Diferenciar os conceitos centrais usados em automações inteligentes, evitando confusão entre prompt, skill, workflow, pipeline, tool, LLM, chatbot e agente.</p>
+          <h3>Situação-problema</h3><p>Ana deseja criar uma solução para responder participantes que perguntam sobre certificados. A solução envolve receber mensagem, identificar intenção, validar e-mail, consultar planilha, verificar frequência, verificar status, gerar resposta e registrar log. Essa solução não é apenas um prompt. Trata-se de uma skill, que pode usar um prompt em uma etapa específica.</p>
+          <h3>Conceitos principais</h3>
+          <table><tr><th>Conceito</th><th>O que é</th><th>Executa ação?</th><th>Pode usar IA?</th><th>Exemplo</th></tr><tr><td>Prompt</td><td>Instrução enviada para uma LLM</td><td>Não</td><td>Sim</td><td>“Classifique esta mensagem”</td></tr><tr><td>LLM</td><td>Modelo de linguagem</td><td>Não diretamente</td><td>Sim</td><td>GPT, Gemini, Claude</td></tr><tr><td>Tool</td><td>Ferramenta acionável</td><td>Sim</td><td>Pode ou não</td><td>Gmail, Sheets, API</td></tr><tr><td>Skill</td><td>Capacidade reutilizável</td><td>Sim</td><td>Pode ou não</td><td>Consultar certificado</td></tr><tr><td>Workflow</td><td>Fluxo completo</td><td>Sim</td><td>Pode ou não</td><td>Inscrição → planilha → e-mail</td></tr><tr><td>Pipeline</td><td>Sequência de processamento de dados</td><td>Sim</td><td>Pode ou não</td><td>Validar → limpar → salvar</td></tr><tr><td>Chatbot</td><td>Interface conversacional</td><td>Pode acionar ações</td><td>Pode ou não</td><td>Chat de atendimento</td></tr><tr><td>Agente</td><td>Sistema com LLM, tools, skills e regras</td><td>Sim, via tools/skills</td><td>Sim</td><td>Agente de atendimento</td></tr></table>
+          <h3>Diferenças principais</h3><pre>Prompt ≠ Skill
+Prompt orienta a IA. Skill é uma capacidade completa e reutilizável.
+
+Workflow ≠ Pipeline
+Workflow representa o fluxo completo. Pipeline representa o tratamento dos dados dentro do fluxo.
+
+Tool ≠ Skill
+Tool é a ferramenta acionável. Skill é a capacidade funcional que usa uma ou várias tools.
+
+Chatbot ≠ Agente
+Chatbot é interface de conversa. Agente interpreta, escolhe tools ou skills e executa ações dentro de limites.</pre>
+          <h3>Exemplo aplicado ao UNESP.IA</h3><table><tr><th>Parte</th><th>Conceito</th></tr><tr><td>Texto do participante</td><td>Entrada</td></tr><tr><td>Classificar como certificado</td><td>Prompt + LLM</td></tr><tr><td>Consultar situação do certificado</td><td>Skill</td></tr><tr><td>Buscar dados na planilha</td><td>Tool</td></tr><tr><td>Validar frequência e status</td><td>Pipeline</td></tr><tr><td>Receber, classificar, consultar e responder</td><td>Workflow</td></tr><tr><td>Escolher a skill correta</td><td>Agente</td></tr></table>
+          <h3>Roteiro de implementação no n8n</h3><ol><li>Criar um fluxo manual com uma mensagem de exemplo.</li><li>Criar um node de IA para classificar a mensagem.</li><li>Solicitar saída em JSON.</li><li>Usar Switch para separar categorias.</li><li>Registrar a categoria em planilha.</li><li>Documentar prompt, LLM, tool, skill, pipeline e workflow.</li></ol>
+          <h3>Produto da unidade</h3><p>Quadro comparativo e miniworkflow de classificação.</p><h3>Para refletir</h3><p>Quando chamamos tudo de IA, o que deixamos de enxergar no processo?</p>
+        </section>
+
+        <section id="u123"><h2><span class="unit-num">12.3</span> Introdução prática ao n8n: nodes, triggers, credentials, executions e webhooks</h2><h3>Carga horária</h3><p>3 horas.</p><h3>Objetivo da unidade</h3><p>Apresentar os componentes básicos do n8n necessários para construir workflows, pipelines e skills.</p><h3>Conceitos principais no n8n</h3><table><tr><th>Conceito</th><th>Função</th><th>Exemplo</th></tr><tr><td>Workflow</td><td>Fluxo completo</td><td>Inscrição automática</td></tr><tr><td>Node</td><td>Bloco de ação</td><td>Gmail, Google Sheets, IF</td></tr><tr><td>Trigger</td><td>Gatilho inicial</td><td>Manual Trigger, Webhook, Schedule</td></tr><tr><td>Credentials</td><td>Credenciais de acesso</td><td>Conta Google, API da LLM</td></tr><tr><td>Execution</td><td>Registro de cada execução</td><td>Uma inscrição processada</td></tr><tr><td>Webhook</td><td>URL para receber dados externos</td><td>Formulário envia dados ao n8n</td></tr><tr><td>HTTP Request</td><td>Chamada a APIs</td><td>Consultar CRM ou ERP</td></tr><tr><td>IF</td><td>Condição simples</td><td>Se e-mail está preenchido</td></tr><tr><td>Switch</td><td>Escolha entre vários caminhos</td><td>Certificado, inscrição, suporte</td></tr></table><div class="warning"><strong>Credenciais não são dados do usuário.</strong> Chaves de API, tokens e logins de integração devem ser configurados em credentials, nunca em prompts, planilhas abertas ou campos de texto.</div><h3>Roteiro de implementação no n8n</h3><pre>Workflow: m12_lab03_validacao_inscricao
+Manual Trigger → Edit Fields → IF → Google Sheets → Log</pre><ol><li>Criar dados fictícios: nome, e-mail e módulo.</li><li>Usar IF para verificar se o e-mail está preenchido.</li><li>Salvar o resultado em Google Sheets.</li><li>Registrar status: válido ou pendente.</li><li>Executar o workflow e analisar a execution.</li></ol><h3>Produto da unidade</h3><p>Primeiro workflow sem IA, com validação simples.</p><h3>Para refletir</h3><p>Por que é importante aprender automação sem IA antes de usar LLM?</p></section>
+
+        <section id="u124"><h2><span class="unit-num">12.4</span> Primeiro workflow com IA</h2><h3>Carga horária</h3><p>2 horas.</p><h3>Objetivo da unidade</h3><p>Criar o primeiro workflow com uso pontual de LLM para gerar uma resposta personalizada.</p><h3>Workflow implementado</h3><pre>Manual Trigger → Edit Fields → LLM → Resultado</pre><h3>Entrada</h3><pre>{
+  "nome": "Maria Oliveira",
+  "perfil": "Comunidade externa",
+  "modulo": "Fundamentos e Letramento em IA"
+}</pre><h3>Prompt utilizado</h3><pre>Você é um assistente educacional do projeto UNESP.IA.
+
+Gere uma mensagem curta, clara, acolhedora e institucional
+para uma pessoa que acabou de se inscrever no curso.
+
+Dados:
+Nome: {{nome}}
+Perfil: {{perfil}}
+Módulo: {{modulo}}
+
+A mensagem deve:
+1. cumprimentar a pessoa pelo nome;
+2. confirmar a inscrição;
+3. mencionar o módulo escolhido;
+4. usar linguagem simples;
+5. não prometer certificado automaticamente;
+6. finalizar com uma frase de boas-vindas.</pre><h3>Onde usar LLM</h3><ul><li>quando a mensagem precisa variar por perfil;</li><li>quando há diferentes públicos;</li><li>quando o texto precisa ser acolhedor;</li><li>quando há necessidade de adaptação de linguagem.</li></ul><h3>Onde não usar LLM</h3><ul><li>quando a mensagem pode ser fixa;</li><li>quando o volume é grande e o custo precisa ser reduzido;</li><li>quando há risco de prometer algo indevido.</li></ul><h3>Roteiro de implementação no n8n</h3><ol><li>Criar Manual Trigger.</li><li>Adicionar Edit Fields com nome, perfil e módulo.</li><li>Adicionar node de LLM.</li><li>Inserir o prompt.</li><li>Executar com três perfis diferentes.</li><li>Comparar resposta fixa versus resposta gerada por IA.</li><li>Registrar no log se o fluxo usou LLM.</li></ol><h3>Produto da unidade</h3><p>Workflow simples com geração de mensagem por LLM.</p></section>
+
+        <section id="u125"><h2><span class="unit-num">12.5</span> Pipelines no n8n: entrada, validação, transformação, decisão, saída e log</h2><h3>Carga horária</h3><p>3 horas.</p><h3>Objetivo da unidade</h3><p>Compreender o conceito de pipeline e implementar pipelines de dados dentro de workflows no n8n.</p><h3>Conceito principal</h3><pre>Entrada → validação → limpeza → padronização → enriquecimento → classificação → armazenamento → saída → log</pre><h3>Diferença entre workflow e pipeline</h3><table><tr><th>Aspecto</th><th>Workflow</th><th>Pipeline</th></tr><tr><td>Foco</td><td>Processo completo</td><td>Tratamento dos dados</td></tr><tr><td>Exemplo</td><td>inscrição → planilha → e-mail</td><td>validar → limpar → padronizar → salvar</td></tr><tr><td>Relação</td><td>Pode conter pipelines</td><td>Pode estar dentro de workflows</td></tr></table><h3>Pipeline implementado no n8n</h3><pre>Webhook → receber dados → validar campos obrigatórios → padronizar nome → normalizar módulo → classificar perfil → salvar planilha → registrar log</pre><h3>Onde usar LLM neste pipeline</h3><table><tr><th>Etapa</th><th>Usa LLM?</th><th>Justificativa</th></tr><tr><td>Verificar e-mail vazio</td><td>Não</td><td>Regra simples</td></tr><tr><td>Padronizar nome</td><td>Não</td><td>Regra simples</td></tr><tr><td>Normalizar módulo conhecido</td><td>Não</td><td>Tabela de equivalência</td></tr><tr><td>Classificar perfil livre</td><td>Pode usar</td><td>Há linguagem natural</td></tr><tr><td>Salvar em planilha</td><td>Não</td><td>Ação técnica</td></tr></table><h3>Roteiro de implementação no n8n</h3><ol><li>Receber dados via Manual Trigger ou Webhook.</li><li>Validar e-mail.</li><li>Padronizar nome.</li><li>Normalizar módulo.</li><li>Classificar perfil.</li><li>Salvar em Google Sheets.</li><li>Registrar log.</li><li>Testar com dados corretos, incompletos e inconsistentes.</li></ol><h3>Produto da unidade</h3><p>Pipeline de dados implementado no n8n.</p></section>
+
+        <section id="u126"><h2><span class="unit-num">12.6</span> Skills reutilizáveis no n8n</h2><h3>Carga horária</h3><p>4 horas.</p><h3>Objetivo da unidade</h3><p>Ensinar a transformar automações recorrentes em skills reutilizáveis, documentadas e controladas.</p><h3>Conceito principal</h3><p>Uma skill é uma capacidade reutilizável que o sistema sabe executar. Ela pode ser implementada como parte de um workflow, sub-workflow, workflow chamado por outro workflow, tool acionada por agente ou bloco documentado de automação.</p><h3>Modelo obrigatório de skill</h3><pre>Nome da skill:
+Área de aplicação:
+Problema que resolve:
+Entradas:
+Pipeline interno:
+Tools utilizadas:
+Uso de LLM:
+Onde a LLM não deve ser usada:
+Saída esperada:
+Logs registrados:
+Guardrails:
+Ponto de revisão humana:
+Custo estimado por execução:
+Versão da skill:
+Responsável:</pre><h3>Exemplo de skill — consultar_certificado</h3><pre>Nome da skill: consultar_certificado
+Problema que resolve: informar se o participante está apto, pendente ou não apto ao certificado.
+Entradas: e-mail, módulo, turma.
+Pipeline interno: receber e-mail → validar formato → consultar planilha → verificar frequência → verificar status → gerar resposta → registrar log.
+Tools: Google Sheets, IF, Switch, Gmail opcional.
+Uso de LLM: opcional, apenas para redigir resposta.
+Onde a LLM não deve ser usada: decidir aprovação, calcular frequência ou alterar status.
+Saída: apto, pendente, não apto ou não localizado.
+Guardrails: não informar dados de outro participante; não emitir certificado sem regra objetiva.</pre><h3>Formas de implementação da skill no n8n</h3><pre>Forma 1 — Skill como parte de um workflow:
+Mensagem → Classificação → Consultar planilha → Responder
+
+Forma 2 — Skill como sub-workflow:
+Workflow principal → Execute Workflow → consultar_certificado
+
+Forma 3 — Skill como tool de agente:
+Mensagem → Agente → Tool consultar_certificado → Resposta</pre><h3>Roteiro de implementação no n8n</h3><ol><li>Criar workflow skill_consultar_certificado.</li><li>Criar entrada com e-mail e módulo.</li><li>Validar se o e-mail está preenchido.</li><li>Consultar Google Sheets.</li><li>Aplicar regra de frequência.</li><li>Retornar status: apto, pendente, não apto ou não localizado.</li><li>Registrar log.</li><li>Criar outro workflow para chamar essa skill.</li></ol><h3>Produto da unidade</h3><p>Ficha completa de skill e skill implementada no n8n.</p></section>
+
+        <section id="u127"><h2><span class="unit-num">12.7</span> LLMs, prompts e saídas estruturadas</h2><h3>Carga horária</h3><p>3 horas.</p><h3>Objetivo da unidade</h3><p>Mostrar onde as LLMs devem ser usadas dentro de automações no n8n, onde devem ser evitadas e como criar prompts estruturados com saídas controladas.</p><h3>Usar LLM quando</h3><ul><li>houver texto livre;</li><li>houver ambiguidade;</li><li>for necessário classificar intenção;</li><li>for necessário resumir conteúdo;</li><li>for necessário extrair campos;</li><li>for necessário gerar resposta personalizada;</li><li>for necessário transformar texto em JSON.</li></ul><h3>Evitar LLM quando</h3><ul><li>houver regra simples;</li><li>houver cálculo objetivo;</li><li>houver decisão institucional;</li><li>houver dado oficial a consultar;</li><li>houver informação sensível;</li><li>bastar um template fixo.</li></ul><h3>Prompt estruturado</h3><pre>Classifique a mensagem abaixo em uma das categorias:
+inscricao, certificado, duvida_conteudo, suporte_tecnico, sugestao, estoque, pedido, manutencao, outro.
+
+Mensagem:
+{{mensagem}}
+
+Responda somente em JSON:
+{
+  "categoria": "",
+  "prioridade": "baixa|media|alta",
+  "justificativa": "",
+  "precisa_humano": true|false
+}</pre><h3>Workflow</h3><pre>Mensagem recebida → LLM classifica → validar JSON → Switch por categoria → executar skill adequada → registrar log</pre><h3>Roteiro de implementação no n8n</h3><ol><li>Criar entrada com mensagens variadas.</li><li>Enviar a mensagem para a LLM.</li><li>Solicitar saída em JSON.</li><li>Validar se os campos esperados foram retornados.</li><li>Usar Switch por categoria.</li><li>Registrar resultado em planilha.</li><li>Encaminhar para skills diferentes conforme a categoria.</li></ol><h3>Produto da unidade</h3><p>Workflow com LLM, saída JSON validada e roteamento por categoria.</p></section>
+
+        <section id="u128"><h2><span class="unit-num">12.8</span> Aplicações no UNESP.IA</h2><h3>Carga horária</h3><p>4 horas.</p><h3>Objetivo da unidade</h3><p>Construir exemplos práticos diretamente ligados ao UNESP.IA.</p><h3>Aplicação 1 — Inscrição automática</h3><pre>Google Forms → Webhook n8n → pipeline de validação → Google Sheets → LLM gera mensagem → Gmail envia confirmação → log</pre><p><strong>Skills envolvidas:</strong> registrar_inscricao, classificar_perfil_participante, enviar_confirmacao, registrar_log_execucao.</p><h3>Aplicação 2 — Certificados automáticos</h3><pre>Google Sheets → pipeline de validação de frequência → gerar documento → converter em PDF → enviar por Gmail → atualizar status → log</pre><div class="note">Regra objetiva: se frequência ≥ 75%, gerar certificado. Se frequência &lt; 75%, registrar como pendente. Essa decisão não deve ser delegada à LLM.</div><h3>Aplicação 3 — Resumo de documentos</h3><pre>Documento → extrair texto → pipeline de limpeza → LLM resume → salvar resumo → enviar por e-mail</pre><h3>Aplicação 4 — Assistente didático simples</h3><pre>Pergunta do participante → classificar tema → consultar FAQ ou material → LLM gera resposta → registrar dúvida → encaminhar para professor se necessário</pre><h3>Roteiro de implementação no n8n</h3><ol><li>Criar formulário de inscrição.</li><li>Receber dados por Webhook.</li><li>Criar pipeline de validação.</li><li>Registrar no Google Sheets.</li><li>Criar skill enviar_confirmacao.</li><li>Usar Gmail para envio.</li><li>Criar log.</li><li>Testar com dados válidos, inválidos e duplicados.</li></ol><h3>Produto da unidade</h3><p>Workflow funcional aplicado ao UNESP.IA.</p></section>
+
+        <section id="u129"><h2><span class="unit-num">12.9</span> Aplicações em comércio, varejo e serviços</h2><h3>Carga horária</h3><p>3 horas.</p><h3>Objetivo da unidade</h3><p>Aplicar n8n, pipelines, skills e LLMs em cenários de comércio, varejo e serviços.</p><h3>Consulta de estoque</h3><pre>WhatsApp ou formulário → Webhook → LLM extrai produto, cor e tamanho → skill consultar_estoque → sistema de estoque → gerar resposta → registrar atendimento</pre><div class="warning">Guardrail: não confirmar disponibilidade sem consultar o sistema oficial; não prometer preço sem consultar tabela; não oferecer desconto sem autorização.</div><h3>Orçamento preliminar</h3><pre>Formulário → validar dados → classificar tipo de serviço → consultar tabela de preços → gerar proposta preliminar → revisão humana → envio ao cliente</pre><h3>Pós-venda</h3><pre>Venda concluída → aguardar 3 dias → enviar mensagem de satisfação → LLM classifica resposta → registrar avaliação → abrir alerta se reclamação</pre><h3>Roteiro de implementação no n8n</h3><ol><li>Criar entrada com mensagem do cliente.</li><li>Usar LLM para extrair intenção, produto, cor e tamanho.</li><li>Consultar planilha de estoque.</li><li>Gerar resposta com base na fonte oficial.</li><li>Registrar atendimento.</li><li>Criar guardrail para impedir resposta sem consulta ao estoque.</li></ol><h3>Produto da unidade</h3><p>Workflow de comércio, varejo ou serviço com pelo menos uma skill documentada.</p></section>
+
+        <section id="u1210"><h2><span class="unit-num">12.10</span> Aplicações em indústria, multiempresas e grupos gestores</h2><h3>Carga horária</h3><p>3 horas.</p><h3>Objetivo da unidade</h3><p>Aplicar automações com n8n em cenários complexos envolvendo indústria, várias empresas, várias unidades, marcas, franquias ou grupos gestores.</p><h3>Conceito central: automação parametrizada</h3><table><tr><th>Campo</th><th>Função</th></tr><tr><td>grupo_id</td><td>identifica o grupo empresarial</td></tr><tr><td>empresa_id</td><td>identifica a empresa</td></tr><tr><td>unidade_id</td><td>identifica loja, filial ou planta</td></tr><tr><td>canal_id</td><td>identifica origem</td></tr><tr><td>skill_id</td><td>registra skill executada</td></tr><tr><td>versao_skill</td><td>controla versão</td></tr><tr><td>log_id</td><td>permite auditoria</td></tr></table><h3>Roteador de leads multiempresa</h3><pre>Lead recebido → identificar canal → identificar empresa/unidade → pipeline de validação → LLM classifica intenção → rotear para unidade correta → registrar no CRM → notificar responsável → registrar log corporativo</pre><h3>Grupo gestor de várias empresas</h3><pre>Coleta diária de dados → identificar empresa → pipeline de validação → consolidar indicadores → detectar anomalias → LLM gera resumo executivo → enviar relatório para gestor</pre><h3>Indústria: manutenção operacional</h3><pre>Formulário de ocorrência → validar setor e máquina → LLM classifica gravidade → abrir ordem de manutenção → notificar responsável → registrar SLA → gerar relatório semanal</pre><h3>Roteiro de implementação no n8n</h3><ol><li>Criar entrada com grupo_id, empresa_id e unidade_id.</li><li>Validar se esses campos existem.</li><li>Classificar solicitação com LLM, se for texto livre.</li><li>Aplicar regra da unidade.</li><li>Registrar no CRM ou planilha correta.</li><li>Criar log corporativo.</li><li>Bloquear execução se empresa_id estiver ausente.</li></ol><h3>Produto da unidade</h3><p>Workflow multiempresa ou industrial com separação por empresa, unidade, skill, permissão e log.</p></section>
+
+        <section id="u1211"><h2><span class="unit-num">12.11</span> Custos, segurança, LGPD, logs, guardrails e governança</h2><h3>Carga horária</h3><p>3 horas.</p><h3>Objetivo da unidade</h3><p>Compreender como planejar, controlar e monitorar automações inteligentes com n8n, considerando custos, segurança, privacidade, LGPD, logs, guardrails, revisão humana e governança.</p><h3>Conceitos principais</h3><table><tr><th>Conceito</th><th>Pergunta que responde</th><th>Exemplo</th></tr><tr><td>Custo</td><td>Quanto consome ou impacta?</td><td>Execução, LLM, API</td></tr><tr><td>Segurança</td><td>Como evitar acesso indevido?</td><td>Proteger credentials</td></tr><tr><td>LGPD</td><td>Como proteger dados pessoais?</td><td>Não enviar CPF à LLM sem necessidade</td></tr><tr><td>Logs</td><td>Como saber o que aconteceu?</td><td>Registrar execução</td></tr><tr><td>Guardrails</td><td>O que não pode acontecer?</td><td>Não prometer certificado</td></tr><tr><td>Governança</td><td>Quem controla e responde?</td><td>Responsável, versão e aprovação</td></tr></table><h3>Checklists</h3><pre>Checklist de custo
+[ ] O workflow usa LLM?
+[ ] Quantas chamadas de LLM ocorrem por execução?
+[ ] Há APIs externas pagas?
+[ ] Há armazenamento de arquivos?
+[ ] Há revisão humana?
+[ ] Existe estimativa de custo por execução?
+[ ] Existe limite mensal?
+
+Checklist de LGPD e segurança
+[ ] O fluxo coleta dados pessoais?
+[ ] Os dados coletados são necessários?
+[ ] Dados pessoais são enviados para LLM?
+[ ] As credenciais estão protegidas?
+[ ] O webhook tem proteção adequada?
+[ ] Há separação entre teste e produção?
+[ ] Há tratamento de erro?
+
+Checklist de guardrails
+[ ] A IA sabe o que não pode responder?
+[ ] Há limite para resposta automática?
+[ ] Há casos que exigem humano no loop?
+[ ] O prompt impede promessas indevidas?
+[ ] A automação consulta fonte oficial antes de responder?</pre><h3>Roteiro de implementação no n8n</h3><ol><li>Criar log em planilha.</li><li>Registrar workflow, skill, status, data/hora e erro.</li><li>Criar campo precisa_humano.</li><li>Criar fallback para erro da LLM.</li><li>Criar guardrail no prompt.</li><li>Criar checklist de revisão antes de ativar o fluxo.</li></ol><h3>Produto da unidade</h3><p>Plano de custo, segurança, logs e governança de uma automação.</p><h3>Para refletir</h3><p>Qual é o custo de uma automação barata que toma uma decisão errada?</p></section>
+
+        <section id="u1212"><h2><span class="unit-num">12.12</span> Laboratório final: projeto integrado com n8n</h2><h3>Carga horária</h3><p>3 horas.</p><h3>Objetivo da unidade</h3><p>Consolidar o aprendizado por meio da construção e apresentação de uma automação completa com n8n.</p><h3>Entregáveis obrigatórios</h3><ol><li>workflow funcional no n8n;</li><li>pipeline desenhado dentro do workflow;</li><li>pelo menos uma skill documentada e implementada;</li><li>pelo menos um prompt estruturado;</li><li>indicação clara de onde a LLM é usada;</li><li>indicação clara de onde a LLM não deve ser usada;</li><li>tools utilizadas;</li><li>logs de execução;</li><li>tratamento de erro;</li><li>estimativa de custo;</li><li>checklist de segurança e LGPD;</li><li>guardrails;</li><li>apresentação do projeto.</li></ol><h3>Opções de projeto</h3><pre>Projeto A — UNESP.IA
+Formulário de inscrição → Webhook → pipeline de validação → registrar em planilha → skill enviar confirmação → LLM gera mensagem → Gmail envia e-mail → registrar log → gerar relatório de inscritos
+
+Projeto B — Comércio/Varejo
+Mensagem do cliente → LLM identifica intenção → pipeline extrai dados → skill consultar estoque ou pedido → gerar resposta → encaminhar caso sensível → registrar atendimento
+
+Projeto C — Indústria
+Ocorrência operacional → pipeline valida setor/máquina → LLM classifica gravidade → skill abrir ordem de manutenção → notificar responsável → registrar SLA → gerar relatório
+
+Projeto D — Grupo multiempresa
+Lead ou solicitação → identificar grupo/empresa/unidade → pipeline de validação → LLM classifica intenção → skill rotear lead → registrar CRM correto → notificar responsável → consolidar indicadores</pre><h3>Produto final</h3><p>Protótipo funcional de automação inteligente com n8n.</p></section>
+
+        <section id="catalogo">
+          <h2>Catálogo de Skills Implementáveis do Módulo 12</h2>
+          <p>O catálogo de skills funciona como uma biblioteca de soluções reutilizáveis. Cada skill é apresentada como uma capacidade implementável no n8n, com problema, entradas, pipeline interno, tools, uso de LLM, saída, logs e guardrails.</p>
+<section class="catalog-category"><h3>Educação / UNESP.IA</h3><div class="skills-grid">
+    <article class="skill-card" id="skill-registrar_inscricao">
+      <header><span class="skill-index">1</span><h4>registrar_inscricao</h4><span class="badge">Básico</span></header>
+      <p><strong>Problema que resolve:</strong> Registrar automaticamente participantes inscritos em curso, módulo, oficina ou atividade, reduzindo retrabalho manual e erros de cadastro.</p>
+      <p><strong>Entradas:</strong> nome, e-mail, cidade, perfil, módulo, data da inscrição, autorização de uso dos dados no contexto do curso.</p>
+      <p><strong>Pipeline interno:</strong></p>
+      <div class="pipeline"><span>Receber dados do formulário</span><span>Validar campos obrigatórios</span><span>Padronizar nome</span><span>Validar formato do e-mail</span><span>Normalizar módulo escolhido</span><span>Verificar duplicidade</span><span>Classificar perfil do participante</span><span>Salvar na planilha</span><span>Registrar status da inscrição</span><span>Gerar log da execução</span></div>
+      <p><strong>Tools utilizadas:</strong> Webhook, Google Forms, Google Sheets, IF, Switch, Edit Fields e log em planilha.</p>
+      <p><strong>Uso de LLM:</strong> Opcional. Usar apenas para classificar perfil em texto livre, como “sou aposentada”, “dou aula na rede pública” ou “tenho uma loja”.</p>
+      <p><strong>Onde a LLM não deve ser usada:</strong> Não usar LLM para validar campos obrigatórios, verificar duplicidade ou confirmar vaga.</p>
+      <p><strong>Saída esperada:</strong> inscrição registrada com status: válida, pendente, duplicada ou inválida.</p>
+      <p><strong>Logs:</strong> data/hora, nome, e-mail, módulo, status da validação, duplicidade encontrada ou não, versão da skill.</p>
+      <p><strong>Guardrails:</strong> não confirmar vaga definitiva se houver validação posterior; não coletar dados desnecessários; não salvar informações sensíveis sem finalidade clara.</p>
+    </article>
+    
+
+    <article class="skill-card" id="skill-enviar_confirmacao">
+      <header><span class="skill-index">2</span><h4>enviar_confirmacao</h4><span class="badge">Básico</span></header>
+      <p><strong>Problema que resolve:</strong> Enviar automaticamente mensagem de confirmação ao participante após inscrição, cadastro, solicitação ou participação em atividade.</p>
+      <p><strong>Entradas:</strong> nome, e-mail, módulo, status da inscrição, data da atividade e canal de comunicação.</p>
+      <p><strong>Pipeline interno:</strong></p>
+      <div class="pipeline"><span>Receber dados do participante</span><span>Verificar se o e-mail está válido</span><span>Escolher template de mensagem</span><span>Personalizar mensagem</span><span>Enviar e-mail</span><span>Registrar envio</span><span>Tratar erro de envio</span></div>
+      <p><strong>Tools utilizadas:</strong> Gmail, Google Sheets, IF, LLM opcional e log em planilha.</p>
+      <p><strong>Uso de LLM:</strong> Opcional. Usar quando a mensagem precisar variar por perfil, público ou contexto.</p>
+      <p><strong>Onde a LLM não deve ser usada:</strong> Não usar LLM quando um template fixo resolver com menor custo e maior controle.</p>
+      <p><strong>Saída esperada:</strong> mensagem enviada e status registrado.</p>
+      <p><strong>Logs:</strong> destinatário, data/hora do envio, status, erro se houver, versão do template ou prompt.</p>
+      <p><strong>Guardrails:</strong> não prometer certificado automaticamente; não confirmar vaga se a inscrição estiver em análise; não incluir dados pessoais desnecessários.</p>
+    </article>
+    
+
+    <article class="skill-card" id="skill-classificar_perfil_participante">
+      <header><span class="skill-index">3</span><h4>classificar_perfil_participante</h4><span class="badge">Intermediário</span></header>
+      <p><strong>Problema que resolve:</strong> Padronizar perfis preenchidos livremente pelos participantes, facilitando relatórios, organização de turmas e comunicação segmentada.</p>
+      <p><strong>Entradas:</strong> texto informado no campo perfil, nome do participante e módulo de interesse.</p>
+      <p><strong>Pipeline interno:</strong></p>
+      <div class="pipeline"><span>Receber texto do perfil</span><span>Comparar com categorias conhecidas</span><span>Enviar para LLM se necessário</span><span>Classificar perfil</span><span>Validar categoria permitida</span><span>Salvar perfil padronizado</span><span>Registrar log</span></div>
+      <p><strong>Tools utilizadas:</strong> LLM, Google Sheets, Switch, IF e Edit Fields.</p>
+      <p><strong>Uso de LLM:</strong> Sim, quando o perfil vier em linguagem natural.</p>
+      <p><strong>Onde a LLM não deve ser usada:</strong> Não usar para inferir informações sensíveis ou não necessárias.</p>
+      <p><strong>Saída esperada:</strong> perfil padronizado: estudante, professor, servidor, comunidade externa, melhor idade, empresa, gestor público ou outro.</p>
+      <p><strong>Logs:</strong> texto original, categoria atribuída, uso ou não de LLM, justificativa e data/hora.</p>
+      <p><strong>Guardrails:</strong> não inferir características sensíveis como religião, saúde, orientação política ou outros dados sem finalidade legítima.</p>
+    </article>
+    
+
+    <article class="skill-card" id="skill-consultar_certificado">
+      <header><span class="skill-index">4</span><h4>consultar_certificado</h4><span class="badge">Intermediário</span></header>
+      <p><strong>Problema que resolve:</strong> Permitir consultar se um participante está apto, pendente, não apto ou não localizado para recebimento de certificado.</p>
+      <p><strong>Entradas:</strong> e-mail do participante, nome opcional, módulo ou turma.</p>
+      <p><strong>Pipeline interno:</strong></p>
+      <div class="pipeline"><span>Receber e-mail</span><span>Validar formato</span><span>Consultar planilha de frequência</span><span>Verificar participação mínima</span><span>Verificar situação do certificado</span><span>Gerar resposta</span><span>Registrar consulta</span></div>
+      <p><strong>Tools utilizadas:</strong> Google Sheets, IF, Switch, Gmail opcional e LLM opcional.</p>
+      <p><strong>Uso de LLM:</strong> Opcional, apenas para redigir uma resposta clara e educada.</p>
+      <p><strong>Onde a LLM não deve ser usada:</strong> Não usar LLM para calcular frequência, decidir aptidão ou alterar status.</p>
+      <p><strong>Saída esperada:</strong> status: apto, pendente, não apto ou participante não localizado.</p>
+      <p><strong>Logs:</strong> e-mail consultado, módulo, status retornado, data/hora e regra aplicada.</p>
+      <p><strong>Guardrails:</strong> não informar dados de outro participante; não alterar status automaticamente; não decidir aptidão por IA.</p>
+    </article>
+    
+
+    <article class="skill-card" id="skill-gerar_certificado">
+      <header><span class="skill-index">5</span><h4>gerar_certificado</h4><span class="badge">Intermediário</span></header>
+      <p><strong>Problema que resolve:</strong> Gerar certificados automaticamente para participantes aprovados conforme critérios objetivos definidos.</p>
+      <p><strong>Entradas:</strong> nome, e-mail, módulo, carga horária, período, frequência e situação final.</p>
+      <p><strong>Pipeline interno:</strong></p>
+      <div class="pipeline"><span>Consultar lista de participantes</span><span>Filtrar participantes aptos</span><span>Preencher template de certificado</span><span>Gerar arquivo PDF</span><span>Salvar no Drive</span><span>Enviar por e-mail</span><span>Atualizar status na planilha</span><span>Registrar log</span></div>
+      <p><strong>Tools utilizadas:</strong> Google Sheets, Google Docs, Google Drive, Gmail, gerador de PDF e IF.</p>
+      <p><strong>Uso de LLM:</strong> Opcional apenas para redigir o e-mail de envio.</p>
+      <p><strong>Onde a LLM não deve ser usada:</strong> Não usar LLM para decidir aprovação ou emitir certificado fora das regras.</p>
+      <p><strong>Saída esperada:</strong> certificado PDF gerado, salvo e enviado.</p>
+      <p><strong>Logs:</strong> nome, e-mail, módulo, arquivo gerado, link do PDF, status de envio e data/hora.</p>
+      <p><strong>Guardrails:</strong> gerar certificado somente para participantes aptos por regra objetiva; não emitir certificado se a frequência estiver ausente ou divergente.</p>
+    </article>
+    
+
+    <article class="skill-card" id="skill-resumir_documento">
+      <header><span class="skill-index">6</span><h4>resumir_documento</h4><span class="badge">Intermediário</span></header>
+      <p><strong>Problema que resolve:</strong> Gerar resumo estruturado de documentos, textos acadêmicos, materiais didáticos ou mensagens longas.</p>
+      <p><strong>Entradas:</strong> texto, PDF, documento, tema e finalidade do resumo.</p>
+      <p><strong>Pipeline interno:</strong></p>
+      <div class="pipeline"><span>Receber documento ou texto</span><span>Extrair conteúdo</span><span>Limpar texto</span><span>Dividir texto se for longo</span><span>Enviar para LLM</span><span>Gerar resumo estruturado</span><span>Salvar resultado</span><span>Enviar ou disponibilizar ao usuário</span></div>
+      <p><strong>Tools utilizadas:</strong> Google Drive, extrator de texto/PDF, LLM, Google Docs, Google Sheets e Gmail.</p>
+      <p><strong>Uso de LLM:</strong> Sim. Esta é uma aplicação adequada para LLM.</p>
+      <p><strong>Onde a LLM não deve ser usada:</strong> Não usar para documentos sensíveis sem autorização e não tratar o resumo como substituto da leitura completa.</p>
+      <p><strong>Saída esperada:</strong> resumo, palavras-chave, conceitos principais, dúvidas prováveis e sugestão de atividade.</p>
+      <p><strong>Logs:</strong> documento processado, data/hora, tamanho aproximado do texto, modelo usado e status.</p>
+      <p><strong>Guardrails:</strong> informar que o resumo não substitui leitura completa; não resumir documento sensível sem autorização.</p>
+    </article>
+    
+
+    <article class="skill-card" id="skill-responder_duvida_frequente">
+      <header><span class="skill-index">7</span><h4>responder_duvida_frequente</h4><span class="badge">Avançado</span></header>
+      <p><strong>Problema que resolve:</strong> Responder dúvidas recorrentes dos participantes sobre curso, módulos, materiais, atividades e funcionamento geral.</p>
+      <p><strong>Entradas:</strong> pergunta do participante, módulo relacionado e canal de origem.</p>
+      <p><strong>Pipeline interno:</strong></p>
+      <div class="pipeline"><span>Receber pergunta</span><span>Classificar tema</span><span>Consultar FAQ ou material oficial</span><span>Gerar resposta com LLM</span><span>Verificar se precisa de humano</span><span>Enviar resposta</span><span>Registrar pergunta e resposta</span></div>
+      <p><strong>Tools utilizadas:</strong> Formulário, chatbot, Google Sheets, Google Docs, LLM, Gmail ou WhatsApp API.</p>
+      <p><strong>Uso de LLM:</strong> Sim, para interpretar pergunta e gerar resposta em linguagem simples.</p>
+      <p><strong>Onde a LLM não deve ser usada:</strong> Não usar para responder sobre dados pessoais, notas, certificados ou decisões administrativas sem fonte oficial.</p>
+      <p><strong>Saída esperada:</strong> resposta didática curta e registro da dúvida.</p>
+      <p><strong>Logs:</strong> pergunta, tema, resposta gerada, fonte usada, necessidade de revisão humana e data/hora.</p>
+      <p><strong>Guardrails:</strong> não responder sobre dados pessoais, notas, certificados, frequência ou decisões administrativas sem fonte oficial.</p>
+    </article>
+    
+
+    <article class="skill-card" id="skill-registrar_sugestao">
+      <header><span class="skill-index">8</span><h4>registrar_sugestao</h4><span class="badge">Básico</span></header>
+      <p><strong>Problema que resolve:</strong> Registrar sugestões dos participantes para melhoria do curso, módulos, materiais ou atividades.</p>
+      <p><strong>Entradas:</strong> mensagem da sugestão, nome opcional, módulo relacionado e perfil opcional.</p>
+      <p><strong>Pipeline interno:</strong></p>
+      <div class="pipeline"><span>Receber sugestão</span><span>Classificar tema</span><span>Identificar prioridade</span><span>Salvar em planilha</span><span>Notificar equipe se necessário</span><span>Registrar status</span></div>
+      <p><strong>Tools utilizadas:</strong> Google Forms, Webhook, Google Sheets, LLM opcional e Gmail opcional.</p>
+      <p><strong>Uso de LLM:</strong> Opcional, para classificar sugestões por tema: conteúdo, didática, ferramenta, acessibilidade, infraestrutura ou comunicação.</p>
+      <p><strong>Onde a LLM não deve ser usada:</strong> Não usar para gerar respostas defensivas ou interpretações subjetivas sem revisão.</p>
+      <p><strong>Saída esperada:</strong> sugestão registrada e categorizada.</p>
+      <p><strong>Logs:</strong> mensagem, categoria, módulo relacionado, prioridade e data/hora.</p>
+      <p><strong>Guardrails:</strong> não expor publicamente sugestões com identificação pessoal.</p>
+    </article>
+    
+
+    <article class="skill-card" id="skill-encaminhar_suporte">
+      <header><span class="skill-index">9</span><h4>encaminhar_suporte</h4><span class="badge">Intermediário</span></header>
+      <p><strong>Problema que resolve:</strong> Encaminhar solicitações de suporte para a pessoa ou equipe responsável.</p>
+      <p><strong>Entradas:</strong> mensagem, nome, e-mail, categoria da solicitação e prioridade.</p>
+      <p><strong>Pipeline interno:</strong></p>
+      <div class="pipeline"><span>Receber solicitação</span><span>Classificar tipo</span><span>Identificar responsável</span><span>Enviar notificação</span><span>Registrar encaminhamento</span><span>Atualizar status</span></div>
+      <p><strong>Tools utilizadas:</strong> LLM opcional, Google Sheets, Gmail, Google Chat ou Slack, IF e Switch.</p>
+      <p><strong>Uso de LLM:</strong> Opcional, para classificar mensagens abertas.</p>
+      <p><strong>Onde a LLM não deve ser usada:</strong> Não usar para responder automaticamente a reclamações formais ou casos sensíveis.</p>
+      <p><strong>Saída esperada:</strong> solicitação encaminhada para o responsável adequado.</p>
+      <p><strong>Logs:</strong> solicitante, categoria, responsável, status e data/hora.</p>
+      <p><strong>Guardrails:</strong> casos sensíveis devem ser encaminhados para humano; não responder automaticamente quando envolver reclamação formal ou dados pessoais.</p>
+    </article>
+    
+
+    <article class="skill-card" id="skill-gerar_relatorio_turma">
+      <header><span class="skill-index">10</span><h4>gerar_relatorio_turma</h4><span class="badge">Intermediário</span></header>
+      <p><strong>Problema que resolve:</strong> Gerar visão consolidada de uma turma, módulo ou atividade do UNESP.IA.</p>
+      <p><strong>Entradas:</strong> dados de inscrição, frequência, participação, certificados, avaliações e sugestões.</p>
+      <p><strong>Pipeline interno:</strong></p>
+      <div class="pipeline"><span>Coletar dados da turma</span><span>Validar dados</span><span>Calcular indicadores</span><span>Gerar tabelas</span><span>Gerar gráficos ou resumo</span><span>Usar LLM opcionalmente para análise textual</span><span>Enviar relatório à equipe</span></div>
+      <p><strong>Tools utilizadas:</strong> Google Sheets, Google Drive, LLM opcional, Gmail e BI opcional.</p>
+      <p><strong>Uso de LLM:</strong> Opcional, apenas para redigir resumo executivo ou destacar tendências.</p>
+      <p><strong>Onde a LLM não deve ser usada:</strong> Não usar para calcular indicadores ou inventar explicações sem dados.</p>
+      <p><strong>Saída esperada:</strong> relatório de turma com inscritos, frequência, concluintes, pendências e observações.</p>
+      <p><strong>Logs:</strong> turma, período, número de registros processados, responsável e data/hora.</p>
+      <p><strong>Guardrails:</strong> não expor dados individuais desnecessários; não gerar conclusões sem base nos dados.</p>
+    </article>
+    </div></section>
+<section class="catalog-category"><h3>Comércio, varejo e serviços</h3><div class="skills-grid">
+    <article class="skill-card" id="skill-consultar_estoque">
+      <header><span class="skill-index">1</span><h4>consultar_estoque</h4><span class="badge">Intermediário</span></header>
+      <p><strong>Problema que resolve:</strong> Responder se determinado produto está disponível em estoque.</p>
+      <p><strong>Entradas:</strong> mensagem do cliente, produto, variação, cor, tamanho, unidade ou loja.</p>
+      <p><strong>Pipeline interno:</strong></p>
+      <div class="pipeline"><span>Receber mensagem</span><span>Extrair produto, cor e tamanho</span><span>Padronizar nome do produto</span><span>Consultar estoque oficial</span><span>Verificar disponibilidade</span><span>Gerar resposta</span><span>Registrar atendimento</span></div>
+      <p><strong>Tools utilizadas:</strong> Webhook, WhatsApp API, LLM, Google Sheets, ERP ou sistema de estoque.</p>
+      <p><strong>Uso de LLM:</strong> Sim, para interpretar mensagens livres.</p>
+      <p><strong>Onde a LLM não deve ser usada:</strong> Não usar LLM para inventar disponibilidade, preço ou prazo.</p>
+      <p><strong>Saída esperada:</strong> resposta com disponibilidade, unidade e orientação ao cliente.</p>
+      <p><strong>Logs:</strong> cliente, produto consultado, loja, status, data/hora e fonte consultada.</p>
+      <p><strong>Guardrails:</strong> não confirmar estoque sem consultar fonte oficial; não prometer reserva sem regra definida.</p>
+    </article>
+    
+
+    <article class="skill-card" id="skill-consultar_status_pedido">
+      <header><span class="skill-index">2</span><h4>consultar_status_pedido</h4><span class="badge">Intermediário</span></header>
+      <p><strong>Problema que resolve:</strong> Informar ao cliente a situação de um pedido.</p>
+      <p><strong>Entradas:</strong> número do pedido, e-mail, telefone ou CPF, conforme política da empresa.</p>
+      <p><strong>Pipeline interno:</strong></p>
+      <div class="pipeline"><span>Receber solicitação</span><span>Validar identificador do pedido</span><span>Consultar sistema de pedidos</span><span>Verificar status</span><span>Gerar resposta</span><span>Registrar atendimento</span></div>
+      <p><strong>Tools utilizadas:</strong> ERP, CRM, planilha, API de pedidos, LLM opcional, WhatsApp ou e-mail.</p>
+      <p><strong>Uso de LLM:</strong> Opcional, para interpretar mensagem livre.</p>
+      <p><strong>Onde a LLM não deve ser usada:</strong> Não usar para inventar status, prazo ou informação não consultada.</p>
+      <p><strong>Saída esperada:</strong> status: recebido, em separação, enviado, entregue, cancelado ou não localizado.</p>
+      <p><strong>Logs:</strong> pedido, canal, status retornado e data/hora.</p>
+      <p><strong>Guardrails:</strong> não informar dados de pedido sem confirmação mínima de identidade; não inventar prazo.</p>
+    </article>
+    
+
+    <article class="skill-card" id="skill-gerar_orcamento_preliminar">
+      <header><span class="skill-index">3</span><h4>gerar_orcamento_preliminar</h4><span class="badge">Avançado</span></header>
+      <p><strong>Problema que resolve:</strong> Criar orçamento inicial com base em solicitação do cliente.</p>
+      <p><strong>Entradas:</strong> itens desejados, quantidades, serviço solicitado, prazo, unidade e dados de contato.</p>
+      <p><strong>Pipeline interno:</strong></p>
+      <div class="pipeline"><span>Receber solicitação</span><span>Extrair itens ou serviços</span><span>Validar informações mínimas</span><span>Consultar tabela de preços</span><span>Montar orçamento preliminar</span><span>Enviar para revisão humana</span><span>Registrar status</span></div>
+      <p><strong>Tools utilizadas:</strong> Formulário, LLM, Google Sheets, CRM e Gmail.</p>
+      <p><strong>Uso de LLM:</strong> Sim, para interpretar solicitação e redigir proposta preliminar.</p>
+      <p><strong>Onde a LLM não deve ser usada:</strong> Não usar para aprovar desconto, contrato ou condição comercial final.</p>
+      <p><strong>Saída esperada:</strong> orçamento preliminar ou solicitação de informações complementares.</p>
+      <p><strong>Logs:</strong> cliente, itens, valor estimado, status de revisão e responsável.</p>
+      <p><strong>Guardrails:</strong> não enviar orçamento final sem revisão quando houver desconto, contrato, prazo especial ou valor elevado.</p>
+    </article>
+    
+
+    <article class="skill-card" id="skill-registrar_reclamacao">
+      <header><span class="skill-index">4</span><h4>registrar_reclamacao</h4><span class="badge">Intermediário</span></header>
+      <p><strong>Problema que resolve:</strong> Registrar reclamações de clientes e encaminhar para atendimento adequado.</p>
+      <p><strong>Entradas:</strong> mensagem do cliente, pedido, produto, canal, contato e anexos opcionais.</p>
+      <p><strong>Pipeline interno:</strong></p>
+      <div class="pipeline"><span>Receber reclamação</span><span>Classificar tema</span><span>Classificar gravidade</span><span>Registrar no CRM</span><span>Notificar responsável</span><span>Enviar confirmação de recebimento</span><span>Acompanhar status</span></div>
+      <p><strong>Tools utilizadas:</strong> LLM, CRM, Google Sheets, Gmail e WhatsApp API.</p>
+      <p><strong>Uso de LLM:</strong> Sim, para classificar gravidade, tema e sentimento.</p>
+      <p><strong>Onde a LLM não deve ser usada:</strong> Não usar para dar resposta final em casos sensíveis.</p>
+      <p><strong>Saída esperada:</strong> reclamação registrada e encaminhada.</p>
+      <p><strong>Logs:</strong> cliente, categoria, gravidade, responsável, status e data/hora.</p>
+      <p><strong>Guardrails:</strong> reclamações graves devem exigir humano no loop; não enviar resposta final automática em caso sensível.</p>
+    </article>
+    
+
+    <article class="skill-card" id="skill-classificar_atendimento">
+      <header><span class="skill-index">5</span><h4>classificar_atendimento</h4><span class="badge">Intermediário</span></header>
+      <p><strong>Problema que resolve:</strong> Separar mensagens recebidas por tipo de demanda.</p>
+      <p><strong>Entradas:</strong> mensagem do cliente, canal, data e identificação opcional.</p>
+      <p><strong>Pipeline interno:</strong></p>
+      <div class="pipeline"><span>Receber mensagem</span><span>Enviar para LLM</span><span>Classificar intenção</span><span>Validar categoria</span><span>Direcionar para skill adequada</span><span>Registrar classificação</span></div>
+      <p><strong>Tools utilizadas:</strong> LLM, Switch, CRM, Google Sheets e WhatsApp API.</p>
+      <p><strong>Uso de LLM:</strong> Sim, para classificar mensagens em linguagem natural.</p>
+      <p><strong>Onde a LLM não deve ser usada:</strong> Não usar para executar ações críticas automaticamente.</p>
+      <p><strong>Saída esperada:</strong> categoria: estoque, pedido, troca, reclamação, orçamento, suporte, elogio ou outro.</p>
+      <p><strong>Logs:</strong> mensagem, categoria, prioridade, canal e data/hora.</p>
+      <p><strong>Guardrails:</strong> não executar ação crítica apenas com base na classificação; usar humano no loop em reclamações e cancelamentos.</p>
+    </article>
+    
+
+    <article class="skill-card" id="skill-enviar_pos_venda">
+      <header><span class="skill-index">6</span><h4>enviar_pos_venda</h4><span class="badge">Básico</span></header>
+      <p><strong>Problema que resolve:</strong> Acompanhar satisfação do cliente após compra.</p>
+      <p><strong>Entradas:</strong> cliente, pedido, data da compra, produto e canal autorizado.</p>
+      <p><strong>Pipeline interno:</strong></p>
+      <div class="pipeline"><span>Identificar venda concluída</span><span>Aguardar período definido</span><span>Enviar mensagem de satisfação</span><span>Receber resposta</span><span>Classificar retorno</span><span>Registrar avaliação</span><span>Abrir alerta se necessário</span></div>
+      <p><strong>Tools utilizadas:</strong> CRM, Google Sheets, WhatsApp API, Gmail e LLM opcional.</p>
+      <p><strong>Uso de LLM:</strong> Opcional, para classificar respostas abertas.</p>
+      <p><strong>Onde a LLM não deve ser usada:</strong> Não usar para responder automaticamente reclamações complexas.</p>
+      <p><strong>Saída esperada:</strong> avaliação registrada e alerta gerado se houver insatisfação.</p>
+      <p><strong>Logs:</strong> cliente, pedido, mensagem enviada, resposta, sentimento e status.</p>
+      <p><strong>Guardrails:</strong> respeitar consentimento; evitar envio excessivo; reclamações devem ir para humano.</p>
+    </article>
+    
+
+    <article class="skill-card" id="skill-detectar_cliente_insatisfeito">
+      <header><span class="skill-index">7</span><h4>detectar_cliente_insatisfeito</h4><span class="badge">Avançado</span></header>
+      <p><strong>Problema que resolve:</strong> Identificar clientes com risco de reclamação, cancelamento ou abandono.</p>
+      <p><strong>Entradas:</strong> mensagem, avaliação, histórico de atendimento e pedido.</p>
+      <p><strong>Pipeline interno:</strong></p>
+      <div class="pipeline"><span>Receber resposta do cliente</span><span>Analisar sentimento</span><span>Identificar indícios de insatisfação</span><span>Classificar gravidade</span><span>Abrir alerta</span><span>Encaminhar para atendimento humano</span></div>
+      <p><strong>Tools utilizadas:</strong> LLM, CRM, Google Sheets, notificação por e-mail ou chat.</p>
+      <p><strong>Uso de LLM:</strong> Sim, para análise de sentimento e contexto.</p>
+      <p><strong>Onde a LLM não deve ser usada:</strong> Não usar para tomar decisão comercial sem responsável humano.</p>
+      <p><strong>Saída esperada:</strong> alerta de cliente insatisfeito.</p>
+      <p><strong>Logs:</strong> cliente, mensagem, sentimento, gravidade, responsável e status.</p>
+      <p><strong>Guardrails:</strong> não responder automaticamente casos delicados; não tomar decisão comercial sem responsável humano.</p>
+    </article>
+    
+
+    <article class="skill-card" id="skill-alertar_estoque_baixo">
+      <header><span class="skill-index">8</span><h4>alertar_estoque_baixo</h4><span class="badge">Básico</span></header>
+      <p><strong>Problema que resolve:</strong> Avisar a equipe quando um produto atingir nível mínimo de estoque.</p>
+      <p><strong>Entradas:</strong> produto, quantidade atual, estoque mínimo, unidade e data de atualização.</p>
+      <p><strong>Pipeline interno:</strong></p>
+      <div class="pipeline"><span>Executar rotina agendada</span><span>Consultar estoque</span><span>Comparar com limite mínimo</span><span>Identificar produtos críticos</span><span>Enviar alerta</span><span>Registrar status</span></div>
+      <p><strong>Tools utilizadas:</strong> Schedule Trigger, Google Sheets, ERP, Gmail e WhatsApp opcional.</p>
+      <p><strong>Uso de LLM:</strong> Não precisa. É regra objetiva.</p>
+      <p><strong>Onde a LLM não deve ser usada:</strong> Não usar LLM para decidir reposição se a regra objetiva for suficiente.</p>
+      <p><strong>Saída esperada:</strong> alerta de reposição.</p>
+      <p><strong>Logs:</strong> produto, unidade, quantidade atual, limite mínimo e data/hora.</p>
+      <p><strong>Guardrails:</strong> não gerar pedido de compra automaticamente sem aprovação.</p>
+    </article>
+    
+
+    <article class="skill-card" id="skill-gerar_resumo_vendas">
+      <header><span class="skill-index">9</span><h4>gerar_resumo_vendas</h4><span class="badge">Intermediário</span></header>
+      <p><strong>Problema que resolve:</strong> Gerar resumo periódico de vendas para gestores.</p>
+      <p><strong>Entradas:</strong> dados de vendas, período, unidade, vendedor e categoria de produto.</p>
+      <p><strong>Pipeline interno:</strong></p>
+      <div class="pipeline"><span>Coletar dados de vendas</span><span>Validar registros</span><span>Calcular indicadores</span><span>Gerar tabela</span><span>Identificar variações</span><span>LLM redige resumo executivo</span><span>Enviar relatório</span></div>
+      <p><strong>Tools utilizadas:</strong> ERP, Google Sheets, BI, LLM e Gmail.</p>
+      <p><strong>Uso de LLM:</strong> Sim, apenas para narrativa textual.</p>
+      <p><strong>Onde a LLM não deve ser usada:</strong> Não usar para calcular indicadores ou inventar causas para variações.</p>
+      <p><strong>Saída esperada:</strong> relatório de vendas com indicadores e resumo.</p>
+      <p><strong>Logs:</strong> período, unidade, registros processados, envio e versão do relatório.</p>
+      <p><strong>Guardrails:</strong> a LLM não deve inventar causas para variações sem evidência.</p>
+    </article>
+    
+
+    <article class="skill-card" id="skill-qualificar_lead">
+      <header><span class="skill-index">10</span><h4>qualificar_lead</h4><span class="badge">Intermediário</span></header>
+      <p><strong>Problema que resolve:</strong> Avaliar se um contato tem potencial comercial ou precisa de encaminhamento.</p>
+      <p><strong>Entradas:</strong> nome, contato, mensagem, serviço de interesse e origem do lead.</p>
+      <p><strong>Pipeline interno:</strong></p>
+      <div class="pipeline"><span>Receber lead</span><span>Extrair necessidade</span><span>Classificar interesse</span><span>Identificar urgência</span><span>Atribuir prioridade</span><span>Registrar no CRM</span><span>Notificar responsável</span></div>
+      <p><strong>Tools utilizadas:</strong> Formulário, Webhook, LLM, CRM e Google Sheets.</p>
+      <p><strong>Uso de LLM:</strong> Sim, para interpretar necessidade em texto livre.</p>
+      <p><strong>Onde a LLM não deve ser usada:</strong> Não usar para descartar lead importante sem revisão.</p>
+      <p><strong>Saída esperada:</strong> lead qualificado como baixo, médio ou alto potencial.</p>
+      <p><strong>Logs:</strong> lead, canal, categoria, prioridade, responsável e data/hora.</p>
+      <p><strong>Guardrails:</strong> não descartar lead automaticamente em casos ambíguos.</p>
+    </article>
+    
+
+    <article class="skill-card" id="skill-agendar_atendimento">
+      <header><span class="skill-index">11</span><h4>agendar_atendimento</h4><span class="badge">Intermediário</span></header>
+      <p><strong>Problema que resolve:</strong> Marcar atendimento com cliente, participante ou interessado.</p>
+      <p><strong>Entradas:</strong> nome, contato, serviço, disponibilidade desejada e duração estimada.</p>
+      <p><strong>Pipeline interno:</strong></p>
+      <div class="pipeline"><span>Receber solicitação</span><span>Interpretar preferência de horário</span><span>Consultar agenda oficial</span><span>Sugerir horários disponíveis</span><span>Confirmar escolha</span><span>Criar evento</span><span>Enviar confirmação</span></div>
+      <p><strong>Tools utilizadas:</strong> Google Calendar, Gmail, LLM opcional e Google Sheets.</p>
+      <p><strong>Uso de LLM:</strong> Opcional, para interpretar mensagens como “posso na quarta à tarde”.</p>
+      <p><strong>Onde a LLM não deve ser usada:</strong> Não usar para criar evento sem consultar agenda oficial.</p>
+      <p><strong>Saída esperada:</strong> atendimento agendado e confirmação enviada.</p>
+      <p><strong>Logs:</strong> nome, horário, serviço, status e data/hora.</p>
+      <p><strong>Guardrails:</strong> não marcar horário sem consultar agenda oficial; não criar evento duplicado.</p>
+    </article>
+    
+
+    <article class="skill-card" id="skill-abrir_ticket">
+      <header><span class="skill-index">12</span><h4>abrir_ticket</h4><span class="badge">Intermediário</span></header>
+      <p><strong>Problema que resolve:</strong> Registrar atendimento, suporte ou ocorrência em sistema organizado.</p>
+      <p><strong>Entradas:</strong> solicitante, descrição, categoria, prioridade e anexos opcionais.</p>
+      <p><strong>Pipeline interno:</strong></p>
+      <div class="pipeline"><span>Receber solicitação</span><span>Validar dados</span><span>Classificar prioridade</span><span>Criar ticket</span><span>Notificar responsável</span><span>Registrar SLA</span></div>
+      <p><strong>Tools utilizadas:</strong> CRM, sistema de tickets, Google Sheets, LLM opcional e Gmail.</p>
+      <p><strong>Uso de LLM:</strong> Opcional, para classificar prioridade e categoria.</p>
+      <p><strong>Onde a LLM não deve ser usada:</strong> Não usar para encerrar chamado sem validação.</p>
+      <p><strong>Saída esperada:</strong> ticket aberto com número de acompanhamento.</p>
+      <p><strong>Logs:</strong> ticket, solicitante, prioridade, responsável, SLA e status.</p>
+      <p><strong>Guardrails:</strong> prioridade alta deve notificar humano imediatamente.</p>
+    </article>
+    </div></section>
+<section class="catalog-category"><h3>Indústria</h3><div class="skills-grid">
+    <article class="skill-card" id="skill-abrir_ordem_manutencao">
+      <header><span class="skill-index">1</span><h4>abrir_ordem_manutencao</h4><span class="badge">Intermediário</span></header>
+      <p><strong>Problema que resolve:</strong> Registrar ocorrência operacional e abrir ordem de manutenção.</p>
+      <p><strong>Entradas:</strong> setor, máquina, descrição da ocorrência, urgência e solicitante.</p>
+      <p><strong>Pipeline interno:</strong></p>
+      <div class="pipeline"><span>Receber ocorrência</span><span>Validar setor</span><span>Validar máquina</span><span>Classificar gravidade</span><span>Abrir ordem de manutenção</span><span>Notificar responsável</span><span>Registrar SLA</span></div>
+      <p><strong>Tools utilizadas:</strong> Formulário, Google Sheets, ERP, sistema de manutenção, LLM opcional e Gmail.</p>
+      <p><strong>Uso de LLM:</strong> Sim, para interpretar descrição livre.</p>
+      <p><strong>Onde a LLM não deve ser usada:</strong> Não usar para liberar, parar ou alterar máquina automaticamente.</p>
+      <p><strong>Saída esperada:</strong> ordem de manutenção aberta.</p>
+      <p><strong>Logs:</strong> máquina, setor, ocorrência, gravidade, responsável, SLA e data/hora.</p>
+      <p><strong>Guardrails:</strong> não parar ou liberar máquina automaticamente sem regra institucional ou responsável técnico.</p>
+    </article>
+    
+
+    <article class="skill-card" id="skill-classificar_ocorrencia">
+      <header><span class="skill-index">2</span><h4>classificar_ocorrencia</h4><span class="badge">Intermediário</span></header>
+      <p><strong>Problema que resolve:</strong> Identificar tipo e gravidade de falhas operacionais.</p>
+      <p><strong>Entradas:</strong> descrição da ocorrência, máquina, setor e histórico opcional.</p>
+      <p><strong>Pipeline interno:</strong></p>
+      <div class="pipeline"><span>Receber descrição</span><span>Enviar para LLM</span><span>Classificar categoria</span><span>Atribuir gravidade</span><span>Indicar necessidade de humano</span><span>Registrar classificação</span></div>
+      <p><strong>Tools utilizadas:</strong> LLM, Google Sheets, Switch e sistema de manutenção.</p>
+      <p><strong>Uso de LLM:</strong> Sim, para interpretar linguagem natural.</p>
+      <p><strong>Onde a LLM não deve ser usada:</strong> Não usar para substituir avaliação técnica.</p>
+      <p><strong>Saída esperada:</strong> categoria, gravidade e indicação de revisão humana.</p>
+      <p><strong>Logs:</strong> descrição, categoria, gravidade, justificativa e data/hora.</p>
+      <p><strong>Guardrails:</strong> classificação da IA não substitui decisão técnica.</p>
+    </article>
+    
+
+    <article class="skill-card" id="skill-notificar_responsavel">
+      <header><span class="skill-index">3</span><h4>notificar_responsavel</h4><span class="badge">Básico</span></header>
+      <p><strong>Problema que resolve:</strong> Avisar a pessoa correta sobre uma ocorrência, alerta ou manutenção.</p>
+      <p><strong>Entradas:</strong> ocorrência, setor, máquina, gravidade e responsável mapeado.</p>
+      <p><strong>Pipeline interno:</strong></p>
+      <div class="pipeline"><span>Receber ocorrência classificada</span><span>Identificar responsável</span><span>Enviar notificação</span><span>Registrar envio</span><span>Confirmar recebimento se necessário</span></div>
+      <p><strong>Tools utilizadas:</strong> Google Sheets, Gmail, WhatsApp API, Slack ou Google Chat.</p>
+      <p><strong>Uso de LLM:</strong> Não precisa se a tabela de responsáveis estiver definida.</p>
+      <p><strong>Onde a LLM não deve ser usada:</strong> Não usar para inventar responsável sem cadastro oficial.</p>
+      <p><strong>Saída esperada:</strong> responsável notificado.</p>
+      <p><strong>Logs:</strong> responsável, ocorrência, canal, status de envio e data/hora.</p>
+      <p><strong>Guardrails:</strong> ocorrências críticas devem ter notificação redundante.</p>
+    </article>
+    
+
+    <article class="skill-card" id="skill-registrar_sla">
+      <header><span class="skill-index">4</span><h4>registrar_sla</h4><span class="badge">Intermediário</span></header>
+      <p><strong>Problema que resolve:</strong> Controlar prazo de atendimento de ocorrências.</p>
+      <p><strong>Entradas:</strong> ocorrência, gravidade, data de abertura e responsável.</p>
+      <p><strong>Pipeline interno:</strong></p>
+      <div class="pipeline"><span>Registrar abertura</span><span>Calcular prazo conforme gravidade</span><span>Monitorar tempo decorrido</span><span>Enviar alerta se prazo estiver próximo</span><span>Escalar se atrasado</span></div>
+      <p><strong>Tools utilizadas:</strong> Google Sheets, sistema de manutenção, Schedule Trigger e Gmail.</p>
+      <p><strong>Uso de LLM:</strong> Não precisa. É regra objetiva.</p>
+      <p><strong>Onde a LLM não deve ser usada:</strong> Não usar para alterar prazo ou gravidade sem regra.</p>
+      <p><strong>Saída esperada:</strong> SLA registrado e monitorado.</p>
+      <p><strong>Logs:</strong> ocorrência, prazo, responsável, alertas enviados e status.</p>
+      <p><strong>Guardrails:</strong> não alterar prazo sem permissão.</p>
+    </article>
+    
+
+    <article class="skill-card" id="skill-triagem_fornecedor">
+      <header><span class="skill-index">5</span><h4>triagem_fornecedor</h4><span class="badge">Avançado</span></header>
+      <p><strong>Problema que resolve:</strong> Organizar mensagens e documentos recebidos de fornecedores.</p>
+      <p><strong>Entradas:</strong> e-mail, anexos, fornecedor, pedido, prazo e valor.</p>
+      <p><strong>Pipeline interno:</strong></p>
+      <div class="pipeline"><span>Receber e-mail</span><span>Extrair dados principais</span><span>Classificar solicitação</span><span>Validar campos obrigatórios</span><span>Registrar em planilha ou ERP</span><span>Encaminhar para compras</span></div>
+      <p><strong>Tools utilizadas:</strong> Gmail, LLM, Google Sheets, ERP e Drive.</p>
+      <p><strong>Uso de LLM:</strong> Sim, para extrair dados de e-mails livres.</p>
+      <p><strong>Onde a LLM não deve ser usada:</strong> Não usar para aprovar fornecedor ou pagamento.</p>
+      <p><strong>Saída esperada:</strong> solicitação de fornecedor estruturada.</p>
+      <p><strong>Logs:</strong> fornecedor, tipo de solicitação, valor, prazo, responsável e status.</p>
+      <p><strong>Guardrails:</strong> não aprovar fornecedor automaticamente; não autorizar pagamento.</p>
+    </article>
+    
+
+    <article class="skill-card" id="skill-extrair_dados_nota">
+      <header><span class="skill-index">6</span><h4>extrair_dados_nota</h4><span class="badge">Avançado</span></header>
+      <p><strong>Problema que resolve:</strong> Extrair dados de notas fiscais, recibos ou documentos financeiros.</p>
+      <p><strong>Entradas:</strong> arquivo, texto extraído, fornecedor, data, valor e número do documento.</p>
+      <p><strong>Pipeline interno:</strong></p>
+      <div class="pipeline"><span>Receber arquivo</span><span>Extrair texto</span><span>Identificar campos</span><span>Validar valores</span><span>Comparar com pedido, se houver</span><span>Registrar dados</span><span>Encaminhar para revisão</span></div>
+      <p><strong>Tools utilizadas:</strong> OCR ou extrator de PDF, LLM opcional, Google Sheets, ERP e Drive.</p>
+      <p><strong>Uso de LLM:</strong> Pode ser usada quando o documento não estiver estruturado.</p>
+      <p><strong>Onde a LLM não deve ser usada:</strong> Não usar para validar valores críticos sem regra ou conferência.</p>
+      <p><strong>Saída esperada:</strong> dados estruturados do documento.</p>
+      <p><strong>Logs:</strong> documento, fornecedor, valor, status de validação e responsável.</p>
+      <p><strong>Guardrails:</strong> não efetuar pagamento automaticamente; não aceitar valor sem validação.</p>
+    </article>
+    
+
+    <article class="skill-card" id="skill-gerar_relatorio_operacional">
+      <header><span class="skill-index">7</span><h4>gerar_relatorio_operacional</h4><span class="badge">Intermediário</span></header>
+      <p><strong>Problema que resolve:</strong> Consolidar dados operacionais, de produção ou manutenção.</p>
+      <p><strong>Entradas:</strong> ocorrências, produção, paradas, manutenção e indicadores.</p>
+      <p><strong>Pipeline interno:</strong></p>
+      <div class="pipeline"><span>Coletar dados</span><span>Validar registros</span><span>Calcular indicadores</span><span>Gerar tabelas</span><span>Identificar variações</span><span>LLM redige resumo</span><span>Enviar relatório</span></div>
+      <p><strong>Tools utilizadas:</strong> Google Sheets, ERP, BI, LLM e Gmail.</p>
+      <p><strong>Uso de LLM:</strong> Sim, para narrativa. Não para cálculo.</p>
+      <p><strong>Onde a LLM não deve ser usada:</strong> Não usar para inventar causas ou calcular indicadores.</p>
+      <p><strong>Saída esperada:</strong> relatório operacional.</p>
+      <p><strong>Logs:</strong> período, dados processados, indicadores, envio e versão.</p>
+      <p><strong>Guardrails:</strong> indicar fonte dos dados; não inventar explicações sem evidência.</p>
+    </article>
+    
+
+    <article class="skill-card" id="skill-detectar_anomalia_indicador">
+      <header><span class="skill-index">8</span><h4>detectar_anomalia_indicador</h4><span class="badge">Intermediário</span></header>
+      <p><strong>Problema que resolve:</strong> Identificar variações incomuns em indicadores industriais ou operacionais.</p>
+      <p><strong>Entradas:</strong> indicador, valor atual, histórico, limite mínimo/máximo e unidade.</p>
+      <p><strong>Pipeline interno:</strong></p>
+      <div class="pipeline"><span>Coletar indicadores</span><span>Comparar com limites definidos</span><span>Detectar desvio</span><span>Classificar gravidade</span><span>Gerar alerta</span><span>Encaminhar para análise</span></div>
+      <p><strong>Tools utilizadas:</strong> Google Sheets, BI, ERP, IF, Schedule Trigger e LLM opcional.</p>
+      <p><strong>Uso de LLM:</strong> Não para detectar se houver regra estatística; opcional para explicar o alerta em linguagem simples.</p>
+      <p><strong>Onde a LLM não deve ser usada:</strong> Não usar para tomar decisão operacional automática.</p>
+      <p><strong>Saída esperada:</strong> alerta de anomalia.</p>
+      <p><strong>Logs:</strong> indicador, valor, limite, unidade, gravidade e data/hora.</p>
+      <p><strong>Guardrails:</strong> não tomar decisão operacional automática sem validação.</p>
+    </article>
+    </div></section>
+<section class="catalog-category"><h3>Grupo multiempresa</h3><div class="skills-grid">
+    <article class="skill-card" id="skill-identificar_empresa_unidade">
+      <header><span class="skill-index">1</span><h4>identificar_empresa_unidade</h4><span class="badge">Intermediário</span></header>
+      <p><strong>Problema que resolve:</strong> Identificar a qual empresa, unidade, loja, filial ou planta uma solicitação pertence.</p>
+      <p><strong>Entradas:</strong> canal, mensagem, origem, domínio, código da unidade e dados do lead ou cliente.</p>
+      <p><strong>Pipeline interno:</strong></p>
+      <div class="pipeline"><span>Receber solicitação</span><span>Identificar canal</span><span>Buscar grupo_id</span><span>Buscar empresa_id</span><span>Buscar unidade_id</span><span>Validar origem</span><span>Registrar contexto</span></div>
+      <p><strong>Tools utilizadas:</strong> Google Sheets, CRM, LLM opcional, IF e Switch.</p>
+      <p><strong>Uso de LLM:</strong> Opcional, para interpretar texto livre. A identificação deve ser validada por tabela ou regra.</p>
+      <p><strong>Onde a LLM não deve ser usada:</strong> Não usar para confirmar empresa/unidade sem validação em fonte oficial.</p>
+      <p><strong>Saída esperada:</strong> empresa e unidade identificadas.</p>
+      <p><strong>Logs:</strong> grupo, empresa, unidade, canal, status de validação e data/hora.</p>
+      <p><strong>Guardrails:</strong> não processar solicitação sem empresa_id ou unidade_id quando obrigatório.</p>
+    </article>
+    
+
+    <article class="skill-card" id="skill-rotear_lead_multiempresa">
+      <header><span class="skill-index">2</span><h4>rotear_lead_multiempresa</h4><span class="badge">Avançado</span></header>
+      <p><strong>Problema que resolve:</strong> Encaminhar leads para a empresa ou unidade correta dentro de um grupo.</p>
+      <p><strong>Entradas:</strong> lead, canal, interesse, cidade, produto/serviço, empresa/unidade.</p>
+      <p><strong>Pipeline interno:</strong></p>
+      <div class="pipeline"><span>Receber lead</span><span>Identificar empresa/unidade</span><span>Classificar intenção</span><span>Consultar responsável</span><span>Registrar no CRM correto</span><span>Notificar equipe local</span><span>Registrar log corporativo</span></div>
+      <p><strong>Tools utilizadas:</strong> LLM, CRM, Google Sheets, Gmail e WhatsApp API.</p>
+      <p><strong>Uso de LLM:</strong> Sim, para classificar intenção e interesse do lead.</p>
+      <p><strong>Onde a LLM não deve ser usada:</strong> Não usar para escolher CRM sem empresa_id validado.</p>
+      <p><strong>Saída esperada:</strong> lead roteado para a unidade correta.</p>
+      <p><strong>Logs:</strong> lead, empresa, unidade, responsável, CRM usado e status.</p>
+      <p><strong>Guardrails:</strong> não registrar lead da Empresa A no CRM da Empresa B.</p>
+    </article>
+    
+
+    <article class="skill-card" id="skill-aplicar_regra_unidade">
+      <header><span class="skill-index">3</span><h4>aplicar_regra_unidade</h4><span class="badge">Intermediário</span></header>
+      <p><strong>Problema que resolve:</strong> Aplicar regras específicas de cada empresa ou unidade.</p>
+      <p><strong>Entradas:</strong> empresa, unidade, tipo de solicitação e política aplicável.</p>
+      <p><strong>Pipeline interno:</strong></p>
+      <div class="pipeline"><span>Identificar unidade</span><span>Consultar tabela de regras</span><span>Verificar regra vigente</span><span>Aplicar política correta</span><span>Registrar regra usada</span></div>
+      <p><strong>Tools utilizadas:</strong> Google Sheets, banco de regras, IF e Switch.</p>
+      <p><strong>Uso de LLM:</strong> Não precisa. Regras devem vir de fonte oficial.</p>
+      <p><strong>Onde a LLM não deve ser usada:</strong> Não usar para decidir regra de negócio crítica.</p>
+      <p><strong>Saída esperada:</strong> regra aplicada conforme unidade.</p>
+      <p><strong>Logs:</strong> unidade, regra aplicada, versão da regra e data/hora.</p>
+      <p><strong>Guardrails:</strong> não usar regra genérica quando existir regra específica da unidade.</p>
+    </article>
+    
+
+    <article class="skill-card" id="skill-registrar_crm_correto">
+      <header><span class="skill-index">4</span><h4>registrar_crm_correto</h4><span class="badge">Intermediário</span></header>
+      <p><strong>Problema que resolve:</strong> Garantir que dados sejam salvos no CRM ou pipeline correto.</p>
+      <p><strong>Entradas:</strong> dados do lead, empresa_id, unidade_id, canal e responsável.</p>
+      <p><strong>Pipeline interno:</strong></p>
+      <div class="pipeline"><span>Receber dados validados</span><span>Verificar empresa_id</span><span>Selecionar CRM correto</span><span>Selecionar pipeline correto</span><span>Registrar lead ou atendimento</span><span>Salvar log</span></div>
+      <p><strong>Tools utilizadas:</strong> CRM, Google Sheets, API e HTTP Request.</p>
+      <p><strong>Uso de LLM:</strong> Não precisa.</p>
+      <p><strong>Onde a LLM não deve ser usada:</strong> Não usar para escolher CRM sem regra técnica.</p>
+      <p><strong>Saída esperada:</strong> registro criado no CRM correto.</p>
+      <p><strong>Logs:</strong> lead, empresa, unidade, CRM, pipeline e status.</p>
+      <p><strong>Guardrails:</strong> bloquear registro sem identificação da empresa.</p>
+    </article>
+    
+
+    <article class="skill-card" id="skill-consolidar_indicadores">
+      <header><span class="skill-index">5</span><h4>consolidar_indicadores</h4><span class="badge">Avançado</span></header>
+      <p><strong>Problema que resolve:</strong> Reunir indicadores de várias empresas ou unidades em visão gerencial.</p>
+      <p><strong>Entradas:</strong> vendas, leads, estoque, pedidos, produção, reclamações e inadimplência.</p>
+      <p><strong>Pipeline interno:</strong></p>
+      <div class="pipeline"><span>Coletar dados por empresa</span><span>Validar origem</span><span>Padronizar indicadores</span><span>Consolidar por unidade</span><span>Consolidar por grupo</span><span>Gerar tabela final</span></div>
+      <p><strong>Tools utilizadas:</strong> Google Sheets, ERP, CRM, BI e banco de dados.</p>
+      <p><strong>Uso de LLM:</strong> Não para cálculo; pode ser usada para resumo textual.</p>
+      <p><strong>Onde a LLM não deve ser usada:</strong> Não usar para calcular indicadores ou misturar bases sem identificação.</p>
+      <p><strong>Saída esperada:</strong> indicadores consolidados por empresa, unidade e grupo.</p>
+      <p><strong>Logs:</strong> período, empresas processadas, registros, status e data/hora.</p>
+      <p><strong>Guardrails:</strong> manter rastreabilidade por empresa e unidade; não misturar bases sem identificação.</p>
+    </article>
+    
+
+    <article class="skill-card" id="skill-gerar_resumo_executivo">
+      <header><span class="skill-index">6</span><h4>gerar_resumo_executivo</h4><span class="badge">Intermediário</span></header>
+      <p><strong>Problema que resolve:</strong> Transformar indicadores consolidados em texto gerencial compreensível.</p>
+      <p><strong>Entradas:</strong> indicadores consolidados, período, empresa, unidade e variações relevantes.</p>
+      <p><strong>Pipeline interno:</strong></p>
+      <div class="pipeline"><span>Receber indicadores</span><span>Selecionar principais variações</span><span>Preparar contexto</span><span>LLM gera resumo</span><span>Revisar se necessário</span><span>Enviar para gestores</span></div>
+      <p><strong>Tools utilizadas:</strong> LLM, Google Sheets, BI e Gmail.</p>
+      <p><strong>Uso de LLM:</strong> Sim, para redação e síntese.</p>
+      <p><strong>Onde a LLM não deve ser usada:</strong> Não usar para inventar causas ou recomendações sem dados.</p>
+      <p><strong>Saída esperada:</strong> resumo executivo com destaques e alertas.</p>
+      <p><strong>Logs:</strong> período, empresa, modelo usado, envio e versão do resumo.</p>
+      <p><strong>Guardrails:</strong> não inventar causas sem evidência nos dados; diferenciar fato, hipótese e recomendação.</p>
+    </article>
+    
+
+    <article class="skill-card" id="skill-comparar_unidades">
+      <header><span class="skill-index">7</span><h4>comparar_unidades</h4><span class="badge">Avançado</span></header>
+      <p><strong>Problema que resolve:</strong> Comparar desempenho entre lojas, unidades, empresas ou filiais.</p>
+      <p><strong>Entradas:</strong> indicadores por unidade, período, metas e histórico.</p>
+      <p><strong>Pipeline interno:</strong></p>
+      <div class="pipeline"><span>Coletar indicadores por unidade</span><span>Validar dados</span><span>Normalizar indicadores</span><span>Calcular comparativos</span><span>Destacar variações</span><span>Gerar relatório</span></div>
+      <p><strong>Tools utilizadas:</strong> Google Sheets, BI, ERP e LLM opcional.</p>
+      <p><strong>Uso de LLM:</strong> Opcional, para explicar resultados em linguagem executiva.</p>
+      <p><strong>Onde a LLM não deve ser usada:</strong> Não usar para criar ranking sem critério.</p>
+      <p><strong>Saída esperada:</strong> comparação estruturada entre unidades.</p>
+      <p><strong>Logs:</strong> unidades comparadas, indicadores, período e status.</p>
+      <p><strong>Guardrails:</strong> evitar ranking sem contexto, sem critério claro ou sem normalização adequada.</p>
+    </article>
+    
+
+    <article class="skill-card" id="skill-notificar_gestor_responsavel">
+      <header><span class="skill-index">8</span><h4>notificar_gestor_responsavel</h4><span class="badge">Intermediário</span></header>
+      <p><strong>Problema que resolve:</strong> Avisar o gestor correto conforme empresa, unidade, indicador ou alerta.</p>
+      <p><strong>Entradas:</strong> evento, empresa_id, unidade_id, tipo de alerta e prioridade.</p>
+      <p><strong>Pipeline interno:</strong></p>
+      <div class="pipeline"><span>Detectar evento</span><span>Identificar empresa/unidade</span><span>Consultar gestor responsável</span><span>Enviar notificação</span><span>Registrar envio</span></div>
+      <p><strong>Tools utilizadas:</strong> Google Sheets, CRM, Gmail, WhatsApp API, Slack ou Google Chat.</p>
+      <p><strong>Uso de LLM:</strong> Não precisa.</p>
+      <p><strong>Onde a LLM não deve ser usada:</strong> Não usar para decidir permissão de acesso.</p>
+      <p><strong>Saída esperada:</strong> gestor responsável notificado.</p>
+      <p><strong>Logs:</strong> gestor, empresa, unidade, evento, canal e status.</p>
+      <p><strong>Guardrails:</strong> não enviar dados de uma unidade para gestor sem permissão.</p>
+    </article>
+    
+
+    <article class="skill-card" id="skill-registrar_log_corporativo">
+      <header><span class="skill-index">9</span><h4>registrar_log_corporativo</h4><span class="badge">Intermediário</span></header>
+      <p><strong>Problema que resolve:</strong> Manter rastreabilidade de automações em ambiente multiempresa.</p>
+      <p><strong>Entradas:</strong> grupo, empresa, unidade, workflow, skill, usuário, canal, status e erro.</p>
+      <p><strong>Pipeline interno:</strong></p>
+      <div class="pipeline"><span>Receber dados da execução</span><span>Registrar grupo_id</span><span>Registrar empresa_id</span><span>Registrar unidade_id</span><span>Registrar skill executada</span><span>Registrar status</span><span>Registrar erro, se houver</span><span>Salvar log corporativo</span></div>
+      <p><strong>Tools utilizadas:</strong> Google Sheets, banco de dados, log interno e BI.</p>
+      <p><strong>Uso de LLM:</strong> Não.</p>
+      <p><strong>Onde a LLM não deve ser usada:</strong> Não usar LLM para modificar logs.</p>
+      <p><strong>Saída esperada:</strong> log corporativo auditável.</p>
+      <p><strong>Logs:</strong> a própria skill gera logs completos de execução.</p>
+      <p><strong>Guardrails:</strong> registrar o necessário sem expor dados sensíveis em excesso; não permitir execução sem identificação mínima de origem.</p>
+    </article>
+    </div></section>
+        </section>
+
+        <section id="avaliacao"><h2>Avaliação</h2><table><tr><th>Critério</th><th>Peso sugerido</th></tr><tr><td>Workflow funcional no n8n</td><td>20%</td></tr><tr><td>Pipeline corretamente modelado</td><td>15%</td></tr><tr><td>Skill implementada e documentada</td><td>20%</td></tr><tr><td>Uso adequado de prompt e LLM</td><td>15%</td></tr><tr><td>Integração com tools externas</td><td>10%</td></tr><tr><td>Logs, segurança, LGPD e guardrails</td><td>10%</td></tr><tr><td>Apresentação e justificativa técnica</td><td>10%</td></tr></table></section>
+
+        <section id="portal"><h2>Texto curto para o portal</h2><h3>Módulo 12 — Automação Inteligente com n8n, Pipelines, Skills e LLMs</h3><p>Neste módulo, os participantes aprendem a criar automações inteligentes utilizando o n8n, integrando formulários, planilhas, e-mails, documentos, APIs, webhooks, modelos de linguagem, pipelines de dados e skills reutilizáveis. O módulo diferencia conceitos essenciais como workflow, pipeline, prompt, skill, tool, LLM, chatbot e agente, mostrando quando usar IA e quando uma regra simples é suficiente.</p><p>Ao longo das atividades, são desenvolvidos exemplos aplicados ao UNESP.IA, como inscrição automática, confirmação por e-mail, geração de certificados, resumo de documentos e assistente didático. O módulo também inclui exemplos de comércio, varejo, serviços, indústria e grupos multiempresa, como consulta de estoque, roteamento de leads, atendimento ao cliente, consolidação de indicadores e abertura de ordens de manutenção.</p><p>Ao final, cada participante desenvolve um projeto funcional no n8n com pipeline estruturado, pelo menos uma skill documentada e uso controlado de LLM, logs, guardrails e checklist de segurança.</p><h3>Texto curto para card</h3><p><strong>Automação Inteligente com n8n, Pipelines, Skills e LLMs</strong><br>Aprenda a criar workflows inteligentes com n8n, diferenciando workflow, pipeline, prompt, skill, tool, LLM, chatbot e agente. Desenvolva automações para educação, comércio, varejo, serviços, indústria e grupos multiempresa, com segurança, logs, controle de custos e revisão humana.</p></section>
+
+      </main>
+      <aside class="toc"><h2>Navegação</h2><a href="#topo">Topo</a><a href="#ana">Ana acompanha</a><a href="#apresentacao">Apresentação</a><a href="#identidade">Identidade</a><a href="#ementa">Ementa</a><a href="#competencias">Competências</a><a href="#estrutura">Estrutura</a><a href="#progressao">Progressão didática</a><a href="#u121">Unidade 12.1</a><a href="#u122">Unidade 12.2</a><a href="#u123">Unidade 12.3</a><a href="#u124">Unidade 12.4</a><a href="#u125">Unidade 12.5</a><a href="#u126">Unidade 12.6</a><a href="#u127">Unidade 12.7</a><a href="#u128">Unidade 12.8</a><a href="#u129">Unidade 12.9</a><a href="#u1210">Unidade 12.10</a><a href="#u1211">Unidade 12.11</a><a href="#u1212">Unidade 12.12</a><a href="#catalogo">Catálogo de Skills</a><a href="#avaliacao">Avaliação</a><a href="#portal">Textos para portal</a></aside>
+    </div>
+    <div class="footer">UNESP.IA – Inteligência Artificial para Todos | Projeto de Extensão Universitária | FCT/UNESP</div>
+  </div>
+</body>
+</html>

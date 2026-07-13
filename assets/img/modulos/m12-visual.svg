@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 420" role="img" aria-labelledby="t d">
+<title id="t">Módulo 12: automação inteligente com n8n</title>
+<desc id="d">Fluxo visual com entrada, pipeline, LLM, skill, saída, logs e guardrails.</desc>
+<defs><linearGradient id="g" x1="0" x2="1"><stop stop-color="#eaf4ff"/><stop offset="1" stop-color="#f7fbff"/></linearGradient></defs>
+<rect width="1100" height="420" fill="url(#g)"/>
+<text x="56" y="72" font-family="Arial, sans-serif" font-size="34" font-weight="800" fill="#003a70">M12 · Automação Inteligente com n8n</text>
+<text x="56" y="110" font-family="Arial, sans-serif" font-size="18" fill="#334">Do processo real ao workflow com pipeline, skills, LLMs, logs e governança.</text>
+<g font-family="Arial, sans-serif" font-size="18" font-weight="700" text-anchor="middle">
+<g transform="translate(95 210)"><circle r="50" fill="#0b5aa6"/><text y="7" fill="#fff">Entrada</text></g>
+<g transform="translate(260 210)"><rect x="-70" y="-46" width="140" height="92" rx="18" fill="#fff" stroke="#0b5aa6" stroke-width="3"/><text y="-6" fill="#003a70">Pipeline</text><text y="24" font-size="14" fill="#334">validar · tratar</text></g>
+<g transform="translate(430 210)"><rect x="-70" y="-46" width="140" height="92" rx="18" fill="#fff" stroke="#009a9a" stroke-width="3"/><text y="-6" fill="#003a70">Skill</text><text y="24" font-size="14" fill="#334">reutilizável</text></g>
+<g transform="translate(600 210)"><rect x="-70" y="-46" width="140" height="92" rx="18" fill="#fff" stroke="#6046a6" stroke-width="3"/><text y="-6" fill="#003a70">LLM</text><text y="24" font-size="14" fill="#334">quando agrega</text></g>
+<g transform="translate(770 210)"><rect x="-70" y="-46" width="140" height="92" rx="18" fill="#fff" stroke="#3aa655" stroke-width="3"/><text y="-6" fill="#003a70">Saída</text><text y="24" font-size="14" fill="#334">resposta · ação</text></g>
+<g transform="translate(935 210)"><circle r="50" fill="#003a70"/><text y="7" fill="#fff">Logs</text></g>
+</g>
+<g stroke="#0b5aa6" stroke-width="5" fill="none" stroke-linecap="round"><path d="M150 210H188"/><path d="M330 210H358"/><path d="M500 210H528"/><path d="M670 210H698"/><path d="M840 210H882"/></g>
+<g font-family="Arial, sans-serif" font-size="16" fill="#003a70"><text x="220" y="330">Guardrails · custos · LGPD · revisão humana · versionamento · fallback</text></g>
+</svg>
