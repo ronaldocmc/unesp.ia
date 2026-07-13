@@ -55,7 +55,7 @@ def html_shell(num: int, title: str, subtitle: str, color: str, soft: str, body:
         + topbar()
         + f'<main><div class="container content module-full module-m{num}" id="top">'
         f'<div class="breadcrumbs"><a href="../index.html">Início</a> / <a href="../modulos.html">Módulos</a> / Módulo {num}</div>'
-        f'<div class="hero"><span class="badge">M{num}</span><h1>{esc(title)}</h1><p>{esc(subtitle)}</p></div>'
+        f'<div class="hero"><span class="badge">M{num}</span><h1>{esc(title)}</h1></div>'
         + body
         + '</div></main><a class="backtop" href="#top">Topo</a>'
         + FOOTER
@@ -81,23 +81,61 @@ def concept_grid(items: list[tuple[str, str, str]]) -> str:
 def unit(title: str, objective: str, content: str) -> str:
     number = title.split(" ", 1)[0].replace(".", "")
     anchor = f"u{number}"
-    learning = M14_LEARNING.get(title.split(" ", 1)[0])
-    framework = ""
+    unit_code = title.split(" ", 1)[0]
+    learning = {**M13_LEARNING, **M14_LEARNING}.get(unit_code)
+    framework_before = ""
+    framework_after = ""
     if learning:
-        framework = (
-            f'<div class="unit-learning-contract"><div><strong>Carga horária</strong><span>{learning["hours"]} horas</span></div>'
-            f'<div><strong>Nível de domínio esperado</strong><span>{esc(learning["level"])}</span></div></div>'
-            '<h3>Habilidades demonstráveis</h3><ul>'
+        alignment = RM_ALIGNMENT.get(unit_code)
+        rm = ""
+        if alignment:
+            module_links = ', '.join(
+                f'<a class="term" href="https://ronaldocmc.github.io/UnespDataLens-RM/modulos/{filename}.html" target="_blank" rel="noopener">{label}</a>'
+                for filename, label in alignment["modules"]
+            )
+            rm = (
+                '<h3>Aderência ao UnespDataLens-RM</h3>'
+                f'<p>Esta unidade operacionaliza {module_links} do modelo de referência.</p>'
+                '<div class="table-wrap"><table class="table">'
+                f'<tr><th>Problemas enfrentados</th><td>{alignment["problems"]}</td></tr>'
+                f'<tr><th>Métodos e técnicas</th><td>{alignment["methods"]}</td></tr>'
+                f'<tr><th>Métricas mínimas</th><td>{alignment["metrics"]}</td></tr>'
+                f'<tr><th>Artefatos de evidência</th><td>{alignment["artifacts"]}</td></tr>'
+                '</table></div>'
+            )
+        framework_before = (
+            '<h3>Carga horária</h3>'
+            f'<p>{learning["hours"]} horas.</p>'
+            '<h3>Objetivo da unidade</h3>'
+            f'<p>{objective}</p>'
+            '<h3>Situação de abertura</h3>'
+            f'<p>{learning["opening"]}</p>'
+            '<h3>Competências e conceitos principais</h3><ul class="list">'
             + ''.join(f'<li>{item}</li>' for item in learning["skills"])
-            + '</ul><h3>Laboratório orientado pelo UnespDataLens-RM</h3><p>'
-            + learning["lab"]
-            + '</p><h3>Entregáveis da unidade</h3><ul>'
-            + ''.join(f'<li>{item}</li>' for item in learning["deliverables"])
-            + '</ul><h3>Critérios de domínio</h3><ul class="mastery-list">'
-            + ''.join(f'<li>{item}</li>' for item in learning["criteria"])
-            + '</ul>'
+            + '</ul>' + rm
         )
-    return f'<section id="{anchor}"><h2 class="unit-title">{esc(title)}</h2><p class="unit-objective"><strong>Objetivo:</strong> {objective}</p>{framework}{content}</section>'
+        framework_after = (
+            '<div class="box practice"><strong>Na prática</strong></div>'
+            f'<p>{learning["lab"]}</p>'
+            '<div class="box warn"><strong>Atenção</strong></div>'
+            f'<p>{learning["warning"]}</p>'
+            '<div class="box tip"><strong>Teste agora</strong></div><ol class="steps">'
+            + ''.join(f'<li>{item}</li>' for item in learning["criteria"])
+            + '</ol><h3>Atividade guiada</h3><h4>Objetivo</h4>'
+            f'<p>{learning["lab"]}</p><h4>Passo a passo</h4><ol class="steps">'
+            '<li>Leia o cenário e identifique entradas, restrições e resultado esperado.</li>'
+            '<li>Execute o exemplo inicial sem alterações e registre a saída.</li>'
+            '<li>Modifique dados e parâmetros para incluir um caso válido, um caso-limite e uma falha.</li>'
+            '<li>Compare os resultados e explique tecnicamente cada diferença.</li>'
+            '<li>Organize código, decisões, métricas e limitações em um notebook reexecutável.</li>'
+            '</ol><h4>Produto da unidade</h4><ul class="list">'
+            + ''.join(f'<li>{item}</li>' for item in learning["deliverables"])
+            + '</ul><div class="box tip"><strong>Para refletir</strong></div>'
+            f'<p>{learning["reflection"]}</p>'
+        )
+    if not learning:
+        framework_before = f'<h3>Objetivo da unidade</h3><p>{objective}</p>'
+    return f'<section id="{anchor}"><h2 class="unit-title">{esc(title)}</h2>{framework_before}{content}{framework_after}</section>'
 
 
 def technique(title: str, explanation: str, example: str) -> str:
@@ -209,12 +247,87 @@ M14_LEARNING = {
 }
 
 
+M13_LEARNING = {
+    "13.1": {"hours": 3, "level": "Configurar e reproduzir", "opening": "João recebeu um notebook que só funciona no computador de quem o criou. Ele precisa descobrir dependências, ordem das células e arquivos de entrada.", "skills": ["distinguir script, notebook, kernel e ambiente;", "registrar versões e sementes;", "executar um notebook do início ao fim sem estado oculto."], "lab": "Configurar uma sessão Python, registrar versões, fixar uma semente e demonstrar que duas execuções limpas produzem o mesmo resultado.", "deliverables": ["notebook documentado;", "registro de ambiente e dependências;", "evidência de Restart & Run All."], "criteria": ["explique a diferença entre célula Markdown, código e saída;", "identifique uma dependência não declarada;", "reexecute o exemplo e compare os resultados."], "warning": "Um arquivo .ipynb não é automaticamente reprodutível: ordem incorreta, estado oculto, caminhos absolutos e versões não declaradas podem invalidar o resultado.", "reflection": "Outra pessoa conseguiria reproduzir seu notebook sem pedir informações adicionais?"},
+    "13.2": {"hours": 3, "level": "Aplicar fundamentos", "opening": "Um cadastro mistura textos, números, valores lógicos e campos ausentes; tipos incorretos geram cálculos e comparações equivocadas.", "skills": ["representar valores com tipos adequados;", "usar operadores aritméticos, lógicos e relacionais;", "inspecionar e converter tipos."], "lab": "Modelar um registro de participante, calcular valores derivados e validar tipos antes do processamento.", "deliverables": ["código executável;", "tabela de variáveis e tipos;", "testes de conversão."], "criteria": ["classifique cinco valores por tipo;", "converta uma entrada textual com tratamento de erro;", "explique o resultado de uma expressão lógica."], "warning": "Conversões silenciosas podem apagar significado, como zeros à esquerda em códigos e identificadores.", "reflection": "O tipo escolhido representa o significado do dado ou apenas permite que o código execute?"},
+    "13.3": {"hours": 3, "level": "Construir algoritmos", "opening": "A situação de um participante depende simultaneamente de frequência, nota e exceções; repetir decisões manualmente produz inconsistência.", "skills": ["usar if, elif e else;", "controlar repetições com while e for;", "construir compreensões legíveis."], "lab": "Implementar regras de aprovação e percorrer uma lista de registros, incluindo casos-limite.", "deliverables": ["algoritmo comentado;", "tabela de casos de teste;", "saídas verificadas."], "criteria": ["teste os três ramos da decisão;", "evite um laço infinito;", "reescreva uma repetição simples como compreensão."], "warning": "Uma regra programada sem casos-limite pode parecer correta e ainda falhar justamente nas exceções importantes.", "reflection": "Quais decisões deveriam permanecer sob revisão humana?"},
+    "13.4": {"hours": 3, "level": "Selecionar estruturas", "opening": "Listas, conjuntos, tuplas e dicionários podem guardar os mesmos valores, mas oferecem garantias e operações diferentes.", "skills": ["selecionar a estrutura adequada;", "percorrer e transformar coleções;", "usar chaves e eliminar duplicidades conscientemente."], "lab": "Representar participantes e módulos com diferentes coleções e comparar acesso, mutabilidade e unicidade.", "deliverables": ["exemplos comparativos;", "justificativa de estrutura;", "resultado de operações de conjunto."], "criteria": ["identifique quando usar lista, tupla, conjunto e dicionário;", "trate uma chave ausente;", "demonstre união e interseção."], "warning": "Converter uma lista em conjunto remove ordem e duplicidades; isso só é correto quando essas informações não têm significado.", "reflection": "Que propriedade do problema orientou a escolha da estrutura?"},
+    "13.5": {"hours": 5, "level": "Manipular dados tabulares", "opening": "Uma planilha com centenas de linhas exige filtros, tipos, índices e resumos que não são viáveis registro a registro.", "skills": ["criar Series e DataFrames;", "selecionar por rótulo e posição;", "inspecionar tipos, ausências e estatísticas."], "lab": "Construir um DataFrame educacional, diagnosticar sua estrutura e responder perguntas com filtros e agrupamentos.", "deliverables": ["DataFrame documentado;", "perfil descritivo;", "consultas reproduzíveis."], "criteria": ["diferencie loc e iloc;", "identifique ausências;", "produza um resumo por grupo."], "warning": "Índices duplicados, tipos inferidos incorretamente e filtros encadeados podem produzir resultados ambíguos.", "reflection": "Qual é a unidade de análise representada por cada linha?"},
+    "13.6": {"hours": 4, "level": "Modularizar e testar", "opening": "O mesmo cálculo aparece em várias células e começa a produzir resultados diferentes após pequenas alterações.", "skills": ["definir funções com entradas e retorno;", "reduzir repetição;", "escrever assertivas e funções puras quando possível."], "lab": "Transformar cálculos repetidos em funções pequenas, documentadas e testadas.", "deliverables": ["biblioteca de funções;", "docstrings;", "testes de casos válidos e inválidos."], "criteria": ["separe entrada, processamento e saída;", "teste divisão por zero;", "compare função nomeada e lambda."], "warning": "Funções com estado global e efeitos colaterais ocultos dificultam testes e reprodutibilidade.", "reflection": "Sua função faz uma tarefa clara e pode ser testada isoladamente?"},
+    "13.7": {"hours": 5, "level": "Ingerir e preservar", "opening": "A mesma base chega em CSV, TSV, JSON, Excel e SQL, com separadores, codificações e schemas diferentes.", "skills": ["ler e escrever formatos comuns;", "tratar caminhos e exceções;", "registrar hash, versão e proveniência."], "lab": "Importar formatos sintéticos, validar colunas, gravar um resultado e gerar manifesto de reprodução.", "deliverables": ["rotinas de importação;", "manifesto JSON;", "testes de arquivo ausente e schema inválido."], "criteria": ["informe encoding e separador;", "use caminho relativo;", "confirme integridade por hash."], "warning": "CPF, e-mail e endereço não devem ser incorporados a exemplos públicos sem base legal, minimização e proteção.", "reflection": "É possível provar qual arquivo gerou o resultado?"},
+    "13.8": {"hours": 3, "level": "Modelar objetos", "opening": "Participantes, turmas e módulos possuem dados e comportamentos relacionados; dicionários soltos começam a ficar difíceis de manter.", "skills": ["definir classes e objetos;", "aplicar encapsulamento e composição;", "representar regras como métodos testáveis."], "lab": "Modelar Participante e Turma, calcular frequência e impedir estados inválidos.", "deliverables": ["classes documentadas;", "objetos de teste;", "validações de invariantes."], "criteria": ["instancie dois objetos;", "teste um estado inválido;", "explique composição versus herança."], "warning": "Orientação a objetos não deve adicionar complexidade quando funções e estruturas simples resolvem o problema.", "reflection": "Quais regras pertencem ao objeto e quais pertencem ao serviço ou pipeline?"},
+    "13.9": {"hours": 5, "level": "Explorar e comunicar", "opening": "Médias semelhantes escondem distribuições, grupos e valores extremos diferentes; um gráfico inadequado pode reforçar uma conclusão falsa.", "skills": ["calcular tendência central e dispersão;", "selecionar gráficos compatíveis;", "interpretar correlação sem afirmar causalidade."], "lab": "Produzir uma EDA com resumo numérico, comparação por grupo, gráfico e interpretação limitada pelas evidências.", "deliverables": ["notebook de EDA;", "gráficos rotulados;", "texto de interpretação e limitações."], "criteria": ["compare média e mediana;", "verifique tamanho dos grupos;", "explique por que correlação não implica causalidade."], "warning": "Escalas truncadas, categorias sem contexto e grupos pequenos podem distorcer a leitura.", "reflection": "O gráfico revela o dado ou conduz o leitor a uma conclusão indevida?"},
+    "13.10": {"hours": 6, "level": "Integrar e entregar", "opening": "Um código isolado não demonstra competência se não houver objetivo, dados, testes, interpretação e instruções de reprodução.", "skills": ["integrar importação, transformação e análise;", "organizar projeto e documentação;", "entregar evidências reexecutáveis."], "lab": "Construir uma miniaplicação ou notebook completo com dados sintéticos, validação, análise, visualização e manifesto.", "deliverables": ["projeto executável;", "README;", "dados sintéticos;", "testes e relatório final."], "criteria": ["execute em ambiente limpo;", "provoque e trate uma falha;", "peça a outra pessoa para reproduzir."], "warning": "Não publique segredos, credenciais ou dados pessoais junto com o projeto.", "reflection": "Quais evidências demonstram que as habilidades do módulo foram realmente alcançadas?"},
+}
+
+
+RM_ALIGNMENT = {
+    "14.1": {"modules": [("m01", "M1 - Fontes e inventário"), ("m07", "M7 - Armazenamento analítico")], "problems": "silos de dados, ausência de metadados, baixa descobribilidade e arquitetura sem responsáveis", "methods": "inventário de fontes, data profiling preliminar, classificação de sensibilidade, mapa de dependências e decisão arquitetural", "metrics": "taxa de fontes documentadas, completude do inventário e cobertura de responsáveis", "artifacts": "inventário de fontes, mapa de bases e sistemas, dicionário preliminar e registro de decisões"},
+    "14.2": {"modules": [("m02", "M2 - Extração e ingestão"), ("m15", "M15 - Monitoramento")], "problems": "atraso de atualização, falhas silenciosas, registros rejeitados, mudança de schema e duplicação em reexecuções", "methods": "batch, ingestão incremental, CDC, streaming, paginação, retry, checksum, snapshot e schema validation", "metrics": "taxa de ingestão bem-sucedida, rejeição, conformidade de schema e cobertura de logs", "artifacts": "plano e configuração de ingestão, dataset bruto, snapshot, log e manifesto"},
+    "14.3": {"modules": [("m05", "M5 - Qualidade e validação"), ("m09", "M9 - Metadados e semântica")], "problems": "inconsistências, campos inválidos, duplicidade de chave, desatualização e falhas silenciosas", "methods": "data contracts, profiling, regras de qualidade, Pandera, Great Expectations, Deequ, quarentena e testes de regressão de schema", "metrics": "completude, validade, consistência, integridade, unicidade, atualidade e índice geral de qualidade", "artifacts": "contrato e plano de qualidade, catálogo de regras, quarentena, relatório e registro de exceções"},
+    "14.4": {"modules": [("m04", "M4 - Transformação e preparação"), ("m12", "M12 - Reprodutibilidade")], "problems": "ausências, ruído, formatos incompatíveis, duplicidades, outliers e transformações não rastreáveis", "methods": "limpeza textual, coerção tipada, imputação, deduplicação, padronização, normalização, encoding, enriquecimento e regras versionadas", "metrics": "ganho de completude, transformações rastreáveis, impacto da transformação e atributos derivados documentados", "artifacts": "plano de transformação, registro de regras, dataset tratado, relatório antes/depois e manifesto"},
+    "14.5": {"modules": [("m04", "M4 - Preparação"), ("m06", "M6 - Desbalanceamento e equidade"), ("m14", "M14 - Feature engineering")], "problems": "ausência não aleatória, extremos legítimos confundidos com erros, classes desbalanceadas e data leakage", "methods": "diagnóstico MCAR/MAR/MNAR, remoção justificada, imputação, IQR, winsorização, escalas, one-hot/ordinal encoding e ajuste apenas no treino", "metrics": "percentual imputado, linhas afetadas, razão de desbalanceamento, perda por grupo e taxa de features com vazamento", "artifacts": "notebook comparativo, baseline, parâmetros aprendidos, feature set e justificativa metodológica"},
+    "14.6": {"modules": [("m03", "M3 - Integração e harmonização"), ("m09", "M9 - Semântica")], "problems": "silos, chaves instáveis, baixa interoperabilidade semântica, granularidades e janelas temporais incompatíveis", "methods": "merge com cardinalidade, record linkage, entity resolution, tabela de correspondência, harmonização semântica e reconciliação", "metrics": "taxa de integração válida, não pareamento, multiplicação de linhas e coerência semântica", "artifacts": "plano de integração, mapa de chaves, equivalências, conflitos, dataset integrado e reconciliação de totais"},
+    "14.7": {"modules": [("m07", "M7 - Armazenamento analítico"), ("m08", "M8 - Disponibilização e consumo")], "problems": "ativos obsoletos, baixa reprocessabilidade, consultas lentas, acesso indevido e baixo reuso", "methods": "bronze/prata/ouro, Parquet, SQLite, DuckDB, warehouse, lake/lakehouse, esquema estrela, particionamento, índices e carga incremental", "metrics": "cobertura, ativos versionados, localização documentada, tempo de consulta, reprocessabilidade e adequação ao uso", "artifacts": "modelo de armazenamento, data mart, snapshot versionado, produto de dados, API/view e política de acesso"},
+    "14.8": {"modules": [("m09", "M9 - Catálogo"), ("m10", "M10 - Governança"), ("m11", "M11 - Linhagem"), ("m12", "M12 - Reprodutibilidade")], "problems": "baixa governança, ausência de metadados, baixa rastreabilidade, dados sensíveis sem classificação e análises irreproduzíveis", "methods": "catálogo, glossário, classificação, RBAC, logs estruturados, OpenLineage, grafo de linhagem, versionamento e ambiente fixado", "metrics": "completude de metadados, cobertura de catálogo/linhagem, ativos auditáveis, conformidade e execuções reproduzíveis", "artifacts": "catálogo, dicionário, glossário, matriz de permissões, grafo de linhagem, trilha de auditoria e pacote reprodutível"},
+    "14.9": {"modules": [("m13", "M13 - Representações analíticas"), ("m14", "M14 - Feature engineering"), ("m06", "M6 - Equidade")], "problems": "unidade de análise incorreta, leakage temporal, baixa qualidade de rótulos, vieses e features sem proveniência", "methods": "representação tabular/temporal, feature engineering, seleção e PCA, split temporal/estratificado, pipelines de treino, baseline e avaliação por grupo", "metrics": "features documentadas e com lineage, completude, vazamento, cobertura temporal e desempenho por grupo", "artifacts": "plano de representação, catálogo e regra de features, feature set/store, relatório de validação e limitações"},
+    "14.10": {"modules": [("m15", "M15 - Monitoramento e drift"), ("m12", "M12 - Reprodutibilidade"), ("m08", "M8 - Produto de dados")], "problems": "falhas silenciosas, dívida de dados, drift, reprocessamento manual e produtos sem responsável", "methods": "orquestração, testes por etapa, idempotência, baseline, observabilidade, detecção de drift, alerta, incidentes, rollback e runbook", "metrics": "ativos monitorados, atualização no prazo, schema/data/feature drift, MTTD, MTTR e sucesso ponta a ponta", "artifacts": "manifesto de execução, painel, alertas, registro de incidentes, runbook, pacote reprodutível e ficha de produto"},
+}
+
+
+M14_OPENINGS = {
+    "14.1": "Uma equipe possui planilhas, APIs e bancos, mas não sabe quais fontes existem, quem responde por elas nem como chegam ao produto analítico.",
+    "14.2": "A carga diária terminou sem erro aparente, porém recebeu somente parte das páginas da API e duplicou registros ao ser reexecutada.",
+    "14.3": "Um dashboard foi publicado com e-mails inválidos, chaves repetidas e datas futuras porque o pipeline verificava apenas se o arquivo existia.",
+    "14.4": "Duas equipes limpam a mesma base com regras diferentes e não conseguem explicar por que determinado valor foi alterado.",
+    "14.5": "A média preencheu ausências, a escala usou todo o dataset e outliers foram removidos automaticamente; o modelo parece ótimo, mas a avaliação está contaminada.",
+    "14.6": "Depois de um merge, mil inscrições viraram quatro mil linhas porque as chaves e a granularidade não foram verificadas.",
+    "14.7": "Arquivos chamados final, final2 e final_agora_vai circulam por e-mail; ninguém sabe qual versão alimentou o relatório.",
+    "14.8": "Um indicador divergente chega à gestão, mas não há catálogo, log, versão nem linhagem para reconstruir sua origem.",
+    "14.9": "Uma feature usa informação registrada depois do evento previsto e cria um resultado excelente que não pode existir em produção.",
+    "14.10": "O pipeline funciona no computador do autor, mas falha em ambiente limpo e ninguém recebe alerta quando a qualidade cai.",
+}
+M14_HOURS = {"14.1": 5, "14.2": 6, "14.3": 6, "14.4": 7, "14.5": 6,
+             "14.6": 6, "14.7": 7, "14.8": 5, "14.9": 5, "14.10": 7}
+for _code, _learning in M14_LEARNING.items():
+    _learning["hours"] = M14_HOURS[_code]
+    _learning["opening"] = M14_OPENINGS[_code]
+    _learning["warning"] = "Automatizar sem contrato, métrica, registro de decisão e tratamento de falha transforma erros de dados em resultados convincentes, porém não confiáveis."
+    _learning["reflection"] = "Quais evidências permitiriam a outra equipe auditar, reproduzir e contestar esta etapa do pipeline?"
+
+
 def m14_workload_table() -> str:
     rows = ''.join(
         f'<tr><td>{key}</td><td>{data["level"]}</td><td>{data["hours"]}h</td></tr>'
         for key, data in M14_LEARNING.items()
     )
-    return '<div class="table-wrap"><table class="table"><tr><th>Unidade</th><th>Domínio esperado</th><th>Carga</th></tr>' + rows + '<tr><th colspan="2">Carga horária total</th><th>40h</th></tr></table></div>'
+    return '<div class="table-wrap"><table class="table"><tr><th>Unidade</th><th>Domínio esperado</th><th>Carga</th></tr>' + rows + '<tr><th colspan="2">Carga horária total</th><th>60h</th></tr></table></div>'
+
+
+def rm_portal_map() -> str:
+    rows = [
+        ("m01", "Fontes e inventário", "Núcleo", "14.1"),
+        ("m02", "Extração, ingestão e armazenamento bruto", "Núcleo", "14.2"),
+        ("m03", "Integração e harmonização", "Núcleo", "14.6"),
+        ("m04", "Transformação, limpeza e preparação", "Núcleo", "14.4–14.5"),
+        ("m05", "Qualidade e validação", "Núcleo", "14.3"),
+        ("m06", "Desbalanceamento, vieses e equidade", "Aderente", "14.5 e 14.9"),
+        ("m07", "Armazenamento analítico", "Núcleo", "14.1 e 14.7"),
+        ("m08", "Disponibilização e consumo", "Núcleo", "14.7 e 14.10"),
+        ("m09", "Metadados, catálogo e semântica", "Transversal", "14.3, 14.6 e 14.8"),
+        ("m10", "Governança, segurança e privacidade", "Transversal", "14.8"),
+        ("m11", "Proveniência, linhagem e rastreabilidade", "Transversal", "14.8"),
+        ("m12", "Versionamento e reprodutibilidade", "Transversal", "todas; ênfase em 14.8 e 14.10"),
+        ("m13", "Representações analíticas", "Aderente", "14.9"),
+        ("m14", "Feature engineering e feature store", "Aderente", "14.5 e 14.9"),
+        ("m15", "Monitoramento, drift e evolução", "Núcleo operacional", "14.2 e 14.10"),
+        ("m16", "Agentes inteligentes de apoio", "Extensão", "projeto 14.10, sem delegar controles críticos"),
+    ]
+    body = ''.join(
+        f'<tr><td><a href="https://ronaldocmc.github.io/UnespDataLens-RM/modulos/{code}.html" target="_blank" rel="noopener">{code.upper()}</a></td><td>{title}</td><td>{relation}</td><td>{units}</td></tr>'
+        for code, title, relation, units in rows
+    )
+    return '<div class="table-wrap"><table class="table"><tr><th>UnespDataLens-RM</th><th>Conteúdo verificado</th><th>Aderência</th><th>Aplicação no M14</th></tr>' + body + '</table></div>'
 
 
 def build_m13() -> str:
@@ -492,12 +605,12 @@ print("Resumo por perfil:\\n", df_eda.groupby("perfil")["frequencia"].agg(["coun
 """)
 
     body = f"""
-<div class="module-actions"><a class="pill" href="../conceitos.html">Conceitos</a><a class="pill" href="../ferramentas.html">Ferramentas</a><a class="pill" href="../trilhas.html">Trilhas</a><a class="pill" href="../laboratorios.html">Laboratórios</a></div>
+<div class="module-actions"><a class="pill" href="../conceitos.html">Conceitos</a><a class="pill" href="../ferramentas.html">Ferramentas</a><a class="pill" href="../trilhas.html">Trilhas</a><a class="pill" href="../laboratorios.html">Laboratórios</a><a class="pill" href="../banco-visual.html">Banco visual</a></div>
 <section class="module-toolbox"><h3>Ferramentas relacionadas neste módulo</h3><div class="related-strip"><a class="pill" href="../ferramentas/python.html">Python</a><a class="pill" href="../ferramentas/anaconda.html">Anaconda</a><a class="pill" href="../ferramentas/jupyter.html">Jupyter Notebook/JupyterLab</a><a class="pill" href="../ferramentas/google-colab.html">Google Colab</a><a class="pill" href="../ferramentas/vscode.html">VS Code</a><a class="pill" href="../ferramentas/pycharm.html">PyCharm</a><a class="pill" href="../ferramentas/spyder.html">Spyder</a><a class="pill" href="../ferramentas/pandas.html">pandas</a><a class="pill" href="../ferramentas/numpy.html">NumPy</a><a class="pill" href="../ferramentas/matplotlib-seaborn-plotly.html">Matplotlib, Seaborn e Plotly</a></div></section>
 {mini_toc([("Apresentação e competências","apresentacao"),("Carga horária","carga-horaria"),("Glossário interno do módulo","glossario"),("13.1 Ambiente e instalação","u131"),("13.2 Variáveis, tipos e operadores","u132"),("13.3 Condições, loops e compreensão de listas","u133"),("13.4 Listas, tuplas, range, conjuntos e dicionários","u134"),("13.5 Series, DataFrames e índices","u135"),("13.6 Funções, lambda e organização de código","u136"),("13.7 Arquivos, CSV, JSON e exceções","u137"),("13.8 Programação orientada a objetos","u138"),("13.9 Visualização e análise exploratória","u139"),("13.10 Projeto aplicado","u1310")])}
 <section class="module-visual"><figure><img src="../assets/img/modulos/m13-visual.svg" alt="Mapa visual do Módulo 13"><figcaption>O módulo parte do ambiente Python e chega a aplicações com dados, visualização e projeto final.</figcaption></figure><aside class="character-guide"><img src="../assets/img/personagens/joao.png" alt="Personagem João"><h3>João transforma ideias em código</h3><p>O foco é aprender a pensar computacionalmente: representar dados, escrever regras, testar hipóteses, documentar resultados e revisar limites.</p></aside></section>
-<section id="carga-horaria"><h2 class="section-title">Carga horária e progressão</h2><div class="box practice"><strong>Carga horária total: 40 horas.</strong> A progressão combina explicação, prática guiada, desafios, evidências e projeto reprodutível.</div><div class="table-wrap"><table class="table"><tr><th>Unidade</th><th>Foco demonstrável</th><th>Carga</th></tr><tr><td>13.1</td><td>ambiente e notebook reproduzível</td><td>3h</td></tr><tr><td>13.2–13.4</td><td>fundamentos e estruturas da linguagem</td><td>9h</td></tr><tr><td>13.5</td><td>Series, DataFrames e índices</td><td>5h</td></tr><tr><td>13.6</td><td>funções, organização e testes</td><td>4h</td></tr><tr><td>13.7</td><td>arquivos, formatos, exceções e manifesto</td><td>5h</td></tr><tr><td>13.8</td><td>orientação a objetos</td><td>3h</td></tr><tr><td>13.9</td><td>EDA, estatística e visualização</td><td>5h</td></tr><tr><td>13.10</td><td>projeto aplicado</td><td>6h</td></tr><tr><th colspan="2">Total</th><th>40h</th></tr></table></div></section>
-<section id="apresentacao"><h2 class="section-title">Apresentação e competências</h2><p>Este módulo aprofunda a estrutura indicada nos anexos: ferramentas de desenvolvimento, instalação e uso inicial, sintaxe, comentários, variáveis, tipos de dados, operadores, estruturas de dados, condicionais, laços, funções, arquivos, tratamento de exceções, orientação a objetos, pandas, NumPy, visualização de dados e aplicações em mineração de dados.</p><div class="box practice"><strong>Ao final do módulo, espera-se que o participante seja capaz de:</strong><ul><li>instalar ou acessar um ambiente Python e gerenciar pacotes com PIP;</li><li>escrever códigos com variáveis, tipos, operadores, condicionais, laços e funções;</li><li>usar listas, tuplas, ranges, conjuntos, dicionários, Series e DataFrames;</li><li>ler, transformar e salvar arquivos CSV, Excel e JSON com tratamento de erros;</li><li>criar análises exploratórias, gráficos e relatórios simples com dados fictícios ou anonimizados;</li><li>organizar uma miniaplicação Python documentada e reprodutível.</li></ul></div></section>
+<section id="apresentacao"><h3>Apresentação</h3><p>Este módulo aprofunda a estrutura indicada nos anexos: ferramentas de desenvolvimento, instalação e uso inicial, sintaxe, comentários, variáveis, tipos de dados, operadores, estruturas de dados, condicionais, laços, funções, arquivos, tratamento de exceções, orientação a objetos, pandas, NumPy, visualização de dados e aplicações em mineração de dados.</p><div class="box practice"><strong>Ao final do módulo, espera-se que o participante seja capaz de:</strong><ul class="list"><li>instalar ou acessar um ambiente Python e gerenciar pacotes com PIP;</li><li>escrever códigos com variáveis, tipos, operadores, condicionais, laços e funções;</li><li>usar listas, tuplas, ranges, conjuntos, dicionários, Series e DataFrames;</li><li>ler, transformar e salvar arquivos CSV, Excel e JSON com tratamento de erros;</li><li>criar análises exploratórias, gráficos e relatórios simples com dados fictícios ou anonimizados;</li><li>organizar uma miniaplicação Python documentada e reprodutível.</li></ul></div></section>
+<section id="carga-horaria"><h2 class="section-title">1. Organização do módulo</h2><h3>Carga horária total</h3><p>40 horas.</p><p>A progressão combina explicação, prática guiada, desafios, evidências e projeto reprodutível.</p><div class="table-wrap"><table class="table"><tr><th>Unidade</th><th>Foco demonstrável</th><th>Carga</th></tr><tr><td>13.1</td><td>ambiente e notebook reproduzível</td><td>3h</td></tr><tr><td>13.2–13.4</td><td>fundamentos e estruturas da linguagem</td><td>9h</td></tr><tr><td>13.5</td><td>Series, DataFrames e índices</td><td>5h</td></tr><tr><td>13.6</td><td>funções, organização e testes</td><td>4h</td></tr><tr><td>13.7</td><td>arquivos, formatos, exceções e manifesto</td><td>5h</td></tr><tr><td>13.8</td><td>orientação a objetos</td><td>3h</td></tr><tr><td>13.9</td><td>EDA, estatística e visualização</td><td>5h</td></tr><tr><td>13.10</td><td>projeto aplicado</td><td>6h</td></tr><tr><th colspan="2">Total</th><th>40h</th></tr></table></div></section>
 <section id="glossario"><h2 class="section-title">Glossário interno do módulo</h2><p>Os conceitos abaixo aparecem no módulo e também possuem páginas próprias na enciclopédia. Eles ficam aqui para que o participante não precise sair da página para acompanhar a aula.</p>{concept_grid(PY_CONCEPTS)}</section>
 {unit("13.1 Ferramentas disponíveis, instalação e uso inicial", "Conhecer opções de ambiente local e em nuvem, instalar pacotes e importar bibliotecas.", "<p>Python pode ser usado de várias formas. Para iniciantes, o <strong>Google Colab</strong> reduz barreiras porque roda no navegador. Para cursos de dados em laboratório, <strong>Anaconda</strong> facilita a instalação de pacotes científicos e traz Jupyter e Spyder. Para desenvolvimento de projetos, <strong>VS Code</strong> e <strong>PyCharm</strong> ajudam a organizar arquivos, depurar e versionar código.</p><div class=\"table-wrap\"><table class=\"table\"><tr><th>Ferramenta</th><th>Quando usar</th><th>Cuidados</th></tr><tr><td>Anaconda</td><td>Ambiente completo para ciência de dados e aprendizado de máquina.</td><td>Verificar espaço em disco, atualizações e política institucional.</td></tr><tr><td>Spyder</td><td>Ambiente científico com exploração de variáveis e depuração.</td><td>Bom para análise; menos adequado para projetos web complexos.</td></tr><tr><td>Jupyter Notebook/Lab</td><td>Aulas, experimentos, textos narrativos, gráficos e código juntos.</td><td>Não compartilhar notebooks com dados pessoais.</td></tr><tr><td>PyCharm</td><td>Projetos maiores, testes, classes e depuração.</td><td>Pode ser pesado para computadores simples.</td></tr><tr><td>Google Colab</td><td>Uso rápido no navegador, sem instalação local.</td><td>Há limites de sessão, memória e recursos.</td></tr><tr><td>VS Code</td><td>Editor leve, extensível, com suporte a Python e notebooks.</td><td>Instalar extensões confiáveis.</td></tr></table></div><h3>Preparando o ambiente com PIP</h3>" + setup_code + "<h3>Notebook como documento computacional</h3><p>Um notebook combina células Markdown, código e resultados. Para ser reprodutível, deve declarar entradas, semente, dependências e ordem de execução; use <em>Restart &amp; Run All</em> antes da entrega.</p>" + notebook_code)}
 {unit("13.2 Variáveis, tipos de dados, constantes e operadores", "Compreender como Python representa valores e executa operações aritméticas, lógicas e de comparação.", "<p>Uma variável é um nome que referencia um valor. Em Python, os tipos são inferidos automaticamente. A convenção de nomes usa letras minúsculas e underscore, padrão conhecido como <em>snake_case</em>.</p>" + vars_code + "<h3>Operadores aritméticos e lógicos</h3><div class=\"table-wrap\"><table class=\"table\"><tr><th>Operação</th><th>Significado</th></tr><tr><td>a + b</td><td>adição</td></tr><tr><td>a - b</td><td>subtração</td></tr><tr><td>a * b</td><td>multiplicação</td></tr><tr><td>a / b</td><td>divisão</td></tr><tr><td>a // b</td><td>divisão inteira</td></tr><tr><td>a % b</td><td>resto da divisão</td></tr><tr><td>a ** b</td><td>exponenciação</td></tr><tr><td>==, !=, &lt;, &gt;, &lt;=, &gt;=</td><td>comparações</td></tr><tr><td>and, or, not</td><td>operações lógicas</td></tr></table></div>" + operators_code)}
@@ -514,6 +627,41 @@ print("Resumo por perfil:\\n", df_eda.groupby("perfil")["frequencia"].agg(["coun
 
 
 def build_m14() -> str:
+    jupyter_repro_code = code("""
+import hashlib, json, platform, random
+import numpy as np
+import pandas as pd
+
+SEMENTE = 42
+random.seed(SEMENTE); np.random.seed(SEMENTE)
+entrada = pd.DataFrame({"id": [1, 2, 3], "valor": [10.0, 12.5, 9.0]})
+saida = entrada.assign(valor_padronizado=lambda d: (d.valor-d.valor.mean())/d.valor.std(ddof=0))
+
+manifesto = {
+    "python": platform.python_version(), "pandas": pd.__version__,
+    "numpy": np.__version__, "semente": SEMENTE,
+    "entrada_sha256": hashlib.sha256(entrada.to_csv(index=False).encode()).hexdigest(),
+    "saida_sha256": hashlib.sha256(saida.to_csv(index=False).encode()).hexdigest(),
+    "linhas_entrada": len(entrada), "linhas_saida": len(saida)
+}
+assert entrada["id"].is_unique
+assert np.isclose(saida["valor_padronizado"].mean(), 0)
+print(saida.round(3))
+print(json.dumps(manifesto, indent=2, ensure_ascii=False))
+""")
+    jupyter_engineering = (
+        '<section id="jupyter-engenharia"><h2 class="section-title">Jupyter, preparação de dados e reprodutibilidade</h2>'
+        '<p>O anexo organiza a preparação em quatro categorias que se combinam conforme o problema: <strong>limpeza</strong>, <strong>integração</strong>, <strong>transformação</strong> e <strong>redução</strong>. Essa organização foi incorporada às unidades 14.3–14.6. O texto também reforça que notebook executável não é sinônimo de análise reprodutível.</p>'
+        '<div class="table-wrap"><table class="table"><tr><th>Recomendação do anexo</th><th>Aplicação de engenharia</th></tr>'
+        '<tr><td>nomes portáveis e títulos Markdown</td><td>organização do repositório e narrativa técnica</td></tr>'
+        '<tr><td>dependências e versões declaradas</td><td>ambiente reconstruível e menor risco de resultado divergente</td></tr>'
+        '<tr><td>importações no início</td><td>falha rápida quando o ambiente está incompleto</td></tr>'
+        '<tr><td>caminhos relativos</td><td>execução em outra máquina, CI ou contêiner</td></tr>'
+        '<tr><td>ambiente limpo e execução do início ao fim</td><td>detecção de estado oculto e dependência não declarada</td></tr>'
+        '<tr><td>dados e resultados versionados</td><td>proveniência, comparação e auditoria</td></tr></table></div>'
+        '<div class="box warn"><strong>Atenção</strong></div><p>Executar células fora de ordem pode usar variáveis antigas e produzir um resultado impossível de reconstruir. Antes da entrega, reinicie o kernel, execute tudo e compare hashes, volumes e métricas.</p>'
+        '<h3>Manifesto mínimo executável</h3>' + jupyter_repro_code + '</section>'
+    )
     imports_code = code("""
 from pathlib import Path
 from datetime import datetime
@@ -1290,11 +1438,13 @@ test_frequencia_limitada()
 """)
 
     body = f"""
-<div class="module-actions"><a class="pill" href="../conceitos.html">Conceitos</a><a class="pill" href="../ferramentas.html">Ferramentas</a><a class="pill" href="../trilhas.html">Trilhas</a><a class="pill" href="../laboratorios.html">Laboratórios</a></div>
+<div class="module-actions"><a class="pill" href="../conceitos.html">Conceitos</a><a class="pill" href="../ferramentas.html">Ferramentas</a><a class="pill" href="../trilhas.html">Trilhas</a><a class="pill" href="../laboratorios.html">Laboratórios</a><a class="pill" href="../banco-visual.html">Banco visual</a></div>
 <section class="module-toolbox"><h3>Ferramentas relacionadas neste módulo</h3><div class="related-strip"><a class="pill" href="../ferramentas/python.html">Python</a><a class="pill" href="../ferramentas/pandas.html">pandas</a><a class="pill" href="../ferramentas/numpy.html">NumPy</a><a class="pill" href="../ferramentas/jupyter.html">Jupyter</a><a class="pill" href="../ferramentas/google-colab.html">Google Colab</a><a class="pill" href="../ferramentas/excel-sheets.html">Excel e Google Sheets</a><a class="pill" href="../ferramentas/power-bi.html">Power BI</a><a class="pill" href="../ferramentas/looker-studio.html">Looker Studio</a><a class="pill" href="../ferramentas/scikit-learn.html">scikit-learn</a><a class="pill" href="../ferramentas/duckdb.html">DuckDB</a></div></section>
-{mini_toc([("Apresentação e competências","apresentacao"),("Glossário interno do módulo","glossario"),("14.1 Ciclo de vida e arquitetura","u141"),("14.2 Extração e ingestão","u142"),("14.3 Qualidade e validação","u143"),("14.4 Transformação e padronização","u144"),("14.5 Ausências, duplicidades e outliers","u145"),("14.6 Integração, joins e indicadores","u146"),("14.7 Carga, armazenamento e camadas","u147"),("14.8 Logs, auditoria e linhagem","u148"),("14.9 Mineração, modelos e preparação para IA","u149"),("14.10 Pipeline ETL completo","u1410")])}
+{mini_toc([("Apresentação e competências","apresentacao"),("Mapa UnespDataLens-RM","aderencia-rm"),("Jupyter e reprodutibilidade","jupyter-engenharia"),("Glossário interno do módulo","glossario"),("14.1 Ciclo de vida e arquitetura","u141"),("14.2 Extração e ingestão","u142"),("14.3 Qualidade e validação","u143"),("14.4 Transformação e padronização","u144"),("14.5 Ausências, duplicidades e outliers","u145"),("14.6 Integração, joins e indicadores","u146"),("14.7 Carga, armazenamento e camadas","u147"),("14.8 Logs, auditoria e linhagem","u148"),("14.9 Representações e features","u149"),("14.10 Pipeline ETL completo","u1410")])}
 <section class="module-visual"><figure><img src="../assets/img/modulos/m14-visual.svg" alt="Mapa visual do Módulo 14"><figcaption>Engenharia de dados conecta fontes, qualidade, transformação, armazenamento, governança e uso em IA.</figcaption></figure><aside class="character-guide"><img src="../assets/img/personagens/carlos.png" alt="Personagem Carlos"><h3>Carlos constrói dados confiáveis</h3><p>Sem dados organizados e rastreáveis, dashboards, automações e modelos de IA ficam frágeis. O módulo ensina a preparar dados com método.</p></aside></section>
-<section id="apresentacao"><h2 class="section-title">Apresentação, competências e carga horária</h2><div class="box practice"><strong>Carga horária total: 40 horas.</strong> O módulo foi estruturado para aprendizagem baseada em desempenho: estudar conceitos, implementar, testar, produzir artefatos e demonstrar domínio.</div><p>O percurso usa o <strong>UnespDataLens-RM</strong> como modelo de referência e estudo de caso transversal. Em vez de aprender comandos isolados, o participante constrói progressivamente um pipeline técnico-operacional reduzido: inventário, ingestão, integração, transformação, qualidade, armazenamento analítico, consumo, governança e preparação para IA.</p><p>Ao concluir, o participante deverá ser capaz de projetar e operar um produto de dados reprodutível, justificar decisões arquiteturais, medir qualidade e desempenho, preservar linhagem e entregar evidências verificáveis de que os dados estão aptos ao uso.</p>{m14_workload_table()}<h3>Estratégia de avaliação</h3><div class="assessment-grid"><div><strong>30%</strong><span>laboratórios e códigos executáveis</span></div><div><strong>25%</strong><span>artefatos técnicos e documentação</span></div><div><strong>20%</strong><span>testes, métricas e evidências</span></div><div><strong>25%</strong><span>projeto integrador UnespDataLens-RM</span></div></div><div class="box warn"><strong>Regra de aprovação por competência:</strong> a média não substitui habilidades essenciais. O projeto final deve executar de ponta a ponta, bloquear dados inválidos, produzir logs e permitir reprodução por outra pessoa.</div></section>
+<section id="apresentacao"><h3>Apresentação</h3><p>O percurso usa o <strong>UnespDataLens-RM</strong> como modelo de referência e estudo de caso transversal. Em vez de aprender comandos isolados, o participante constrói progressivamente um pipeline técnico-operacional: inventário, ingestão, integração, transformação, qualidade, armazenamento analítico, consumo, governança, reprodutibilidade, features e monitoramento.</p><p>Ao concluir, o participante deverá ser capaz de projetar e operar um produto de dados reproduzível, justificar decisões arquiteturais, medir qualidade e desempenho, preservar linhagem e entregar evidências verificáveis de adequação ao uso.</p><h2 class="section-title">1. Organização do módulo</h2><h3>Carga horária total</h3><p>60 horas.</p><p>O módulo foi estruturado para aprendizagem baseada em desempenho: estudar conceitos, implementar, testar, produzir artefatos e demonstrar domínio.</p>{m14_workload_table()}<h3>Estratégia de avaliação</h3><div class="assessment-grid"><div><strong>30%</strong><span>laboratórios e códigos executáveis</span></div><div><strong>25%</strong><span>artefatos técnicos e documentação</span></div><div><strong>20%</strong><span>testes, métricas e evidências</span></div><div><strong>25%</strong><span>projeto integrador UnespDataLens-RM</span></div></div><div class="box warn"><strong>Regra de aprovação por competência:</strong> a média não substitui habilidades essenciais. O projeto final deve executar de ponta a ponta, bloquear dados inválidos, produzir logs e permitir reprodução por outra pessoa.</div></section>
+<section id="aderencia-rm"><h2 class="section-title">Aderência ao portal UnespDataLens-RM</h2><p>Foram mapeados os 16 módulos do modelo de referência. Os oito primeiros formam o pipeline principal; metadados, governança, linhagem e reprodutibilidade atuam transversalmente; representações, features e monitoramento ampliam a preparação para IA. Agentes aparecem apenas como extensão e não substituem validações determinísticas.</p>{rm_portal_map()}</section>
+{jupyter_engineering}
 <section id="glossario"><h2 class="section-title">Glossário interno do módulo</h2>{concept_grid(DE_CONCEPTS)}</section>
 {unit("14.1 Fundamentos, ciclo de vida e arquitetura de dados", "Compreender o percurso do dado desde a origem até o uso em relatórios, automações e IA.", "<p>Engenharia de dados não é apenas programação: envolve arquitetura, qualidade, governança, segurança, documentação e operação. As camadas bronze, prata e ouro separam preservação, curadoria e consumo.</p>" + imports_code + sample_data_code + architecture_methods)}
 {unit("14.2 Extração e ingestão: CSV, Excel, JSON, API e banco", "Ler dados de diferentes fontes preservando origem, formato e rastreabilidade.", "<p>A extração deve manter uma cópia bruta e registrar data, fonte, responsável e finalidade. Cada formato exige parâmetros e controles próprios.</p>" + ingestion_methods + "<h3>Visão integrada</h3>" + extract_code + "<div class=\"box warn\"><strong>LGPD:</strong> defina finalidade, base legal, minimização, acesso e retenção antes de coletar dados pessoais.</div>")}
@@ -1304,7 +1454,7 @@ test_frequencia_limitada()
 {unit("14.6 Integração de bases, merge, join, concat, groupby e indicadores", "Combinar fontes, criar indicadores e gerar produtos de dados.", "<p>A integração exige atenção às chaves, cardinalidade e granularidade. Um erro pode multiplicar linhas ou perder registros.</p>" + integration_methods + "<h3>Exemplo integrado</h3>" + merge_code)}
 {unit("14.7 Carga e armazenamento: CSV, Excel, Parquet, SQLite, DuckDB, data lake e warehouse", "Projetar, implementar e avaliar armazenamento analítico adequado ao consumo, à escala e à governança.", "<p>No UnespDataLens-RM, armazenar não significa apenas salvar um arquivo. Significa transformar datasets validados em ativos analíticos persistidos, localizáveis, consultáveis, versionados, seguros e reprocessáveis.</p><div class=\"table-wrap\"><table class=\"table\"><tr><th>Decisão</th><th>Pergunta de projeto</th><th>Evidência esperada</th></tr><tr><td>Arquitetura</td><td>Arquivo, banco, warehouse, lake ou lakehouse?</td><td>Matriz de requisitos e justificativa.</td></tr><tr><td>Zonas</td><td>Quando um ativo avança de bruto para tratado e consumo?</td><td>Critérios de entrada, saída e retenção.</td></tr><tr><td>Modelo lógico</td><td>Qual é a granularidade e como fatos e dimensões se relacionam?</td><td>Schema e testes de cardinalidade.</td></tr><tr><td>Desempenho</td><td>Quais consultas precisam ser rápidas?</td><td>Benchmark reproduzível.</td></tr><tr><td>Reprocessamento</td><td>É possível reconstruir uma versão anterior?</td><td>Snapshot, hash, manifesto e linhagem.</td></tr><tr><td>Segurança</td><td>Quem acessa qual detalhe e para qual finalidade?</td><td>Matriz de acesso e dataset minimizado.</td></tr></table></div>" + storage_methods + "<h3>Carga combinada</h3>" + load_code)}
 {unit("14.8 Logs, auditoria, linhagem, catálogo e governança", "Registrar execuções, decisões, origem, transformações e responsáveis.", "<p>Um pipeline sem registros é uma caixa-preta. Logs operacionais, auditoria, linhagem e catálogo respondem perguntas diferentes e complementares.</p>" + governance_methods + "<h3>Configuração básica de logging</h3>" + log_code)}
-{unit("14.9 Mineração de dados, análise exploratória e preparação para IA", "Preparar dados para exploração, modelos e aplicações de IA com cautela.", "<p>Antes de modelar, verifique representatividade, vieses, vazamento de informação, equilíbrio das classes e finalidade legítima.</p>" + modeling_methods + "<div class=\"box warn\"><strong>Cuidado:</strong> o exemplo é didático; sistemas reais exigem métricas adequadas, explicabilidade, governança e autorização de uso.</div>")}
+{unit("14.9 Representações analíticas, feature engineering e preparação para IA", "Construir representações e atributos adequados à finalidade analítica, evitando vazamento e vieses.", "<p>A unidade de análise, a janela temporal e a disponibilidade real de cada atributo devem ser definidas antes da modelagem. Features precisam de fórmula, origem, versão, responsável e teste de qualidade. Somente depois são aplicadas técnicas de exploração, redução, treino e avaliação.</p>" + modeling_methods + "<div class=\"box warn\"><strong>Cuidado:</strong> o exemplo é didático; sistemas reais exigem métricas adequadas, explicabilidade, governança e autorização de uso.</div>")}
 {unit("14.10 Pipeline ETL completo em Python", "Integrar todas as etapas em uma função reprodutível e documentada.", "<p>O pipeline completo deve ser executável, versionado e explicado. O código abaixo resume extração, validação, transformação, carga e log em uma estrutura única.</p>" + full_pipeline_code + "<div class=\"box lab\"><strong>Entrega:</strong> pasta com dados fictícios, script ETL, arquivo de log, base curada, indicadores, dicionário de dados e relatório com limitações.</div>")}
 """
     return html_shell(14, "Engenharia de Dados para Inteligência Artificial", "Caderno aprofundado de engenharia de dados com ETL/ELT, qualidade, transformação, armazenamento, governança, mineração de dados e códigos Python aplicados.", "#00796B", "#E8F7F4", body)
