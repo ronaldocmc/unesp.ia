@@ -176,7 +176,10 @@ def unit(title: str, objective: str, content: str) -> str:
         )
     if not learning:
         framework_before = f'<h3>Objetivo da unidade</h3><p>{objective}</p>'
-    implementation = f'<div id="implementacao-{anchor}"><h3>Base teórica e implementação em Python</h3>{content}</div>'
+    implementation = (
+        f'<div id="implementacao-{anchor}"><h3>Base teórica e implementação em Python</h3>{content}</div>'
+        if unit_code.startswith("14.") else content
+    )
     return f'<section id="{anchor}"><h2 class="unit-title">{esc(title)}</h2>{framework_before}{implementation}{framework_after}</section>'
 
 
@@ -314,6 +317,276 @@ RM_ALIGNMENT = {
     "14.8": {"modules": [("m09", "M9 - Catálogo"), ("m10", "M10 - Governança"), ("m11", "M11 - Linhagem"), ("m12", "M12 - Reprodutibilidade")], "problems": "baixa governança, ausência de metadados, baixa rastreabilidade, dados sensíveis sem classificação e análises irreproduzíveis", "methods": "catálogo, glossário, classificação, RBAC, logs estruturados, OpenLineage, grafo de linhagem, versionamento e ambiente fixado", "metrics": "completude de metadados, cobertura de catálogo/linhagem, ativos auditáveis, conformidade e execuções reproduzíveis", "artifacts": "catálogo, dicionário, glossário, matriz de permissões, grafo de linhagem, trilha de auditoria e pacote reprodutível"},
     "14.9": {"modules": [("m13", "M13 - Representações analíticas"), ("m14", "M14 - Feature engineering"), ("m06", "M6 - Equidade")], "problems": "unidade de análise incorreta, leakage temporal, baixa qualidade de rótulos, vieses e features sem proveniência", "methods": "representação tabular/temporal, feature engineering, seleção e PCA, split temporal/estratificado, pipelines de treino, baseline e avaliação por grupo", "metrics": "features documentadas e com lineage, completude, vazamento, cobertura temporal e desempenho por grupo", "artifacts": "plano de representação, catálogo e regra de features, feature set/store, relatório de validação e limitações"},
     "14.10": {"modules": [("m15", "M15 - Monitoramento e drift"), ("m12", "M12 - Reprodutibilidade"), ("m08", "M8 - Produto de dados")], "problems": "falhas silenciosas, dívida de dados, drift, reprocessamento manual e produtos sem responsável", "methods": "orquestração, testes por etapa, idempotência, baseline, observabilidade, detecção de drift, alerta, incidentes, rollback e runbook", "metrics": "ativos monitorados, atualização no prazo, schema/data/feature drift, MTTD, MTTR e sucesso ponta a ponta", "artifacts": "manifesto de execução, painel, alertas, registro de incidentes, runbook, pacote reprodutível e ficha de produto"},
+}
+
+
+RM_GUIDANCE = {
+    "14.1": {
+        "problems": [
+            ("Silos de dados", "problemas/silos-de-dados.html", "Liste sistemas e responsáveis e procure dados equivalentes que não compartilham chave, definição ou acesso.", "Crie inventário comum, identifique entidades compartilhadas e estabeleça proprietário e canal de integração.", "Fontes possuem identificador, responsável, finalidade, localização e relações documentadas."),
+            ("Ausência de metadados", "problemas/ausencia-de-metadados.html", "Tente responder origem, significado, periodicidade e sensibilidade de cada campo; respostas vazias indicam lacuna.", "Capture metadados técnicos, operacionais e de negócio desde a origem e defina campos obrigatórios.", "Índice de completude de metadados e amostra aprovada pelo responsável do domínio."),
+            ("Baixa descobribilidade", "dimensoes/data-discoverability.html", "Peça a outra pessoa para localizar uma base adequada sem ajuda do autor e meça tempo e tentativas.", "Publique catálogo pesquisável com nomes, sinônimos, tags, descrição, responsável e restrições.", "Busca encontra o ativo e sua documentação dentro do tempo acordado."),
+            ("Arquitetura sem responsáveis", "conceitos/governanca-de-dados.html", "Verifique se incidentes, aprovação de acesso e alteração de schema possuem pessoa ou papel responsável.", "Defina owner, steward, produtor, consumidor e matriz RACI por ativo e etapa.", "Todas as decisões críticas possuem responsável e prazo de revisão."),
+        ],
+        "methods": [
+            ("Inventário de fontes", "conceitos/inventario-de-dados.html", "É o ponto de partida para saber o que existe antes de integrar ou copiar.", "Defina identificador; registre sistema, tabela/arquivo, responsável, periodicidade, volume, chave, sensibilidade e finalidade; revise com o domínio."),
+            ("Data profiling preliminar", "metodos/data-profiling.html", "Revela estrutura observada e riscos antes do desenho do pipeline.", "Calcule tipos, nulos, distintos, mínimos, máximos, padrões, duplicidades e datas extremas; compare com o declarado."),
+            ("Classificação de sensibilidade", "conceitos/sensibilidade-dos-dados.html", "Orienta minimização, acesso, armazenamento e retenção.", "Classifique cada campo como público, interno, confidencial ou sensível; associe finalidade, base legal e controles."),
+            ("Mapa de dependências e decisão arquitetural", "artefatos/mapa-de-dependencias.html", "Evita projetar componentes isolados sem conhecer produtores e consumidores.", "Desenhe fonte → ingestão → transformação → produto; registre volume, frequência, SLA, risco, alternativa e justificativa da tecnologia."),
+        ],
+        "metrics": [
+            ("Taxa de fontes documentadas", "metricas/taxa-de-fontes-documentadas.html", "fontes_com_campos_obrigatorios / total_fontes", "Analise também por domínio e criticidade; média alta pode esconder uma fonte crítica sem documentação.", "Bloqueie produção se fonte crítica não tiver responsável, finalidade ou localização."),
+            ("Grau de completude do inventário", "metricas/grau-de-completude-do-inventario.html", "campos_preenchidos / campos_obrigatorios", "Calcule por fonte e por atributo do inventário; investigue campos sistematicamente ausentes.", "Crie plano de correção para itens abaixo do limiar definido pelo risco."),
+            ("Cobertura de responsáveis", "metricas/indice-de-maturidade-do-inventario.html", "fontes_com_owner_valido / total_fontes", "Confirme se o contato está ativo e aceita a responsabilidade; apenas preencher um nome não basta.", "Escalone fontes órfãs e não autorize mudanças sem responsável."),
+        ],
+        "artifacts": [
+            ("Inventário de fontes", "artefatos/inventario-de-fontes.html", "id, nome, sistema, owner, periodicidade, volume, chave, sensibilidade, finalidade e status", "Implemente em tabela CSV/SQL versionada, com validação de campos obrigatórios e histórico.", "Amostre fontes, confronte com os sistemas reais e obtenha aceite dos responsáveis."),
+            ("Mapa de bases e sistemas", "artefatos/mapa-de-bases-e-sistemas.html", "sistemas, fluxos, interfaces, produtores, consumidores e dependências", "Use diagrama com IDs iguais aos do inventário; evite elementos sem legenda ou responsável.", "Cada seta corresponde a uma transferência real e cada nó está inventariado."),
+            ("Dicionário preliminar", "artefatos/dicionario-preliminar-de-dados.html", "campo, descrição, tipo observado/esperado, domínio, exemplo seguro e restrição", "Gere perfil automaticamente e complete significado com especialista do domínio.", "Tipos e domínios são testados em uma amostra e termos ambíguos são resolvidos."),
+            ("Registro de decisões", "artefatos/registro-de-versoes.html", "contexto, decisão, alternativas, justificativa, autor, data e consequência", "Mantenha ADRs numerados em Markdown junto ao código.", "Uma pessoa externa entende por que a arquitetura foi escolhida e quando deve ser revista."),
+        ],
+    },
+    "14.2": {
+        "problems": [
+            ("Atraso de atualização", "problemas/atraso-de-atualizacao.html", "Compare o horário esperado com o maior timestamp recebido e com o término da execução.", "Defina SLA, watermark, carga incremental e alerta de atraso.", "Atualidade permanece dentro do SLA e atrasos geram incidente rastreável."),
+            ("Falhas silenciosas", "problemas/falhas-silenciosas.html", "Reconcilie páginas, arquivos, linhas, bytes e chaves esperadas; sucesso técnico sem volume esperado é falha.", "Adote validações pós-extração, logs estruturados, limiares e estado explícito de execução.", "Execução incompleta termina como falha e não publica saída parcial."),
+            ("Mudança de schema", "problemas/mudanca-de-schema.html", "Compare colunas, tipos e nulabilidade observados com contrato e versão anterior.", "Classifique mudança como compatível ou incompatível, versione contrato e encaminhe incompatibilidades para quarentena.", "Toda mudança produz diff, responsável, decisão e teste."),
+            ("Duplicação em reexecução", "problemas/duplicidade.html", "Execute duas vezes a mesma janela e compare chaves e contagens.", "Use chave natural/técnica, upsert, checkpoint e idempotency key.", "A segunda execução não altera o resultado lógico nem duplica registros."),
+        ],
+        "methods": [
+            ("Processamento em lote", "metodos/batch-processing.html", "Adequado quando a fonte oferece snapshots ou janelas periódicas.", "Defina janela fechada, copie para área temporária, valide volume/hash e promova atomicamente."),
+            ("Ingestão incremental", "metodos/ingestao-incremental.html", "Reduz custo quando é possível identificar novos ou alterados.", "Persista watermark somente após sucesso; consulte intervalo aberto/fechado e trate registros atrasados."),
+            ("Change Data Capture", "metodos/change-data-capture.html", "Captura inserts, updates e deletes de sistemas transacionais com baixa latência.", "Leia log de mudanças, preserve operação e posição, ordene eventos e torne o consumidor idempotente."),
+            ("Streaming", "metodos/streaming.html", "Use quando latência contínua é requisito real.", "Defina evento, partição, offset, janela, atraso tolerado, política de duplicata e dead-letter queue."),
+            ("Schema validation, retry e checksum", "metodos/schema-validation.html", "Impede aceitar payload corrompido e diferencia falha transitória de estrutural.", "Valide contrato, aplique retry exponencial apenas a falhas transitórias e compare SHA-256/volume antes da promoção."),
+        ],
+        "metrics": [
+            ("Taxa de ingestão bem-sucedida", "metricas/taxa-de-ingestao-bem-sucedida.html", "execucoes_completas / execucoes_planejadas", "Segmente por fonte e causa; 100% com volume incorreto não representa sucesso.", "Investigue queda, reprocese janela e corrija causa antes de liberar consumidor."),
+            ("Taxa de registros rejeitados", "metricas/taxa-de-registros-rejeitados.html", "registros_rejeitados / registros_recebidos", "Analise motivo, campo, fonte e tendência; aumento pode indicar mudança de origem.", "Acione owner quando ultrapassar baseline/limiar e preserve rejeitados em quarentena."),
+            ("Conformidade de schema", "metricas/taxa-de-conformidade-de-schema.html", "campos_conformes / campos_verificados", "Diferencie coluna ausente, extra, tipo e nulabilidade; campos críticos têm peso maior.", "Bloqueie incompatibilidade crítica e registre evolução controlada."),
+            ("Cobertura de logs", "metricas/cobertura-de-logs-de-execucao.html", "etapas_com_inicio_fim_status / etapas_planejadas", "Verifique correlação por execution_id e ausência de dados pessoais nos logs.", "Não aceite pipeline sem rastrear todas as etapas críticas."),
+        ],
+        "artifacts": [
+            ("Plano de extração e ingestão", "artefatos/plano-de-extracao-e-ingestao.html", "fonte, método, janela, frequência, credencial, SLA, retry, responsável e fallback", "Versione YAML/JSON ou tabela e associe cada configuração ao pipeline.", "Simule sucesso, timeout, página ausente, schema novo e reexecução."),
+            ("Dataset bruto e snapshot", "artefatos/dataset-bruto.html", "conteúdo imutável, data lógica, origem, versão e hash", "Grave em caminho particionado e nunca sobrescreva silenciosamente; se necessário, crie nova versão.", "Recalcule hash e reconcilie volume com a fonte."),
+            ("Log de execução", "artefatos/log-de-execucao-da-ingestao.html", "execution_id, etapa, horário, status, volumes, duração e erro seguro", "Emita JSON estruturado e centralize consulta por execução.", "Reconstrua uma falha completa usando somente os logs."),
+            ("Manifesto de ingestão", "artefatos/manifesto-de-ingestao.html", "origem, janela, arquivos, schema, contagens, hashes, código, ambiente e status", "Gere JSON automaticamente ao final e associe ao snapshot bruto.", "Confira se manifesto e arquivo concordam e se outra pessoa consegue localizar a entrada."),
+        ],
+    },
+    "14.3": {
+        "problems": [
+            ("Inconsistências", "problemas/inconsistencias.html", "Teste domínios, relações entre campos, datas, totais e regras de negócio.", "Formalize regra com identificador, severidade, ação e responsável; separe correção automática de revisão humana.", "Relatório mostra regra, linhas afetadas, motivo e decisão."),
+            ("Duplicidade de chave", "problemas/duplicidade.html", "Calcule frequência por chave e investigue se é duplicata real ou granularidade diferente.", "Defina chave e sobrevivência, preserve correspondências e encaminhe conflito ambíguo.", "Unicidade atende ao contrato e remoções são auditáveis."),
+            ("Dados desatualizados", "metricas/atualidade.html", "Compare data de referência, última atualização e periodicidade acordada.", "Defina SLA por produto, bloqueie snapshot vencido e acione reingestão.", "Atualidade é publicada junto ao produto e respeita o uso pretendido."),
+            ("Falha silenciosa de qualidade", "problemas/falhas-silenciosas.html", "Compare métricas com baseline e procure valores constantes, volumes anormais e regras não executadas.", "Adote testes obrigatórios, quality gate e alerta por desvio.", "Produto só é promovido com relatório de qualidade aprovado."),
+        ],
+        "methods": [
+            ("Contrato de dados", "dimensoes/data-contracts.html", "Define expectativas entre produtor e consumidor antes da execução.", "Especifique schema, semântica, qualidade, SLA, owner, compatibilidade e política de mudança; versione e teste."),
+            ("Data profiling", "metodos/data-profiling.html", "Descobre distribuição observada e orienta regras realistas.", "Calcule nulos, distintos, quantis, padrões, extremos e dependências; compare entre versões."),
+            ("Regras de qualidade", "metodos/data-quality-rules.html", "Transformam expectativas em testes repetíveis.", "Implemente regra booleana por linha e agregada; associe severidade, limiar, mensagem e ação."),
+            ("Validação de contratos", "metodos/validacao-de-contratos.html", "Impede publicar dados incompatíveis.", "Execute schema primeiro, conteúdo depois; gere válidos, quarentena, métricas e status do gate."),
+        ],
+        "metrics": [
+            ("Completude", "metricas/completude.html", "valores_presentes / valores_esperados", "Avalie por campo e criticidade; ausência permitida não deve ser tratada como erro.", "Impute, recupere na fonte ou aceite formalmente com limitação."),
+            ("Validade", "metricas/validade.html", "valores_no_dominio / valores_verificados", "Analise por regra e severidade, não apenas média global.", "Quarentene inválidos críticos e corrija regras/fontes recorrentes."),
+            ("Consistência", "metricas/consistencia.html", "registros_sem_contradicao / registros_verificados", "Inclua coerência entre campos, tabelas e tempo.", "Reprocesse ou encaminhe conflito ao responsável do domínio."),
+            ("Unicidade e integridade", "metricas/unicidade.html", "chaves_unicas / chaves_nao_nulas", "Associe ao teste de chave estrangeira e à granularidade declarada.", "Bloqueie duplicação ou referência órfã quando comprometer o produto."),
+        ],
+        "artifacts": [
+            ("Contrato de qualidade", "artefatos/contrato-de-qualidade.html", "campos, regras, limiares, severidades, SLA, owner e versão", "Mantenha YAML/JSON legível por máquina e documentação humana vinculada.", "Execute testes automatizados contra exemplos válidos e inválidos."),
+            ("Regras de validação", "artefatos/regras-de-validacao.html", "id, descrição, coluna, expressão, severidade, ação e mensagem", "Armazene catálogo versionado e carregue-o no pipeline.", "Cada regra possui caso positivo, negativo e limite."),
+            ("Relatório de qualidade", "artefatos/relatorio-de-qualidade.html", "volumes, métricas, violações, tendência, impacto, decisão e responsável", "Gere tabela/HTML/JSON por execução e preserve histórico.", "Os números reconciliam com válidos e quarentena e sustentam a decisão de publicar."),
+            ("Registro de exceções", "artefatos/registro-de-excecoes.html", "registro/regra, motivo, severidade, decisão, autor e prazo", "Use tabela protegida, sem expor dados pessoais nos campos de log.", "Exceções expiram, são revisadas e não viram bypass permanente."),
+        ],
+    },
+    "14.4": {
+        "problems": [
+            ("Dados ausentes e ruído", "problemas/dados-ausentes.html", "Meça padrão de ausência, caracteres inválidos, espaços, formatos e valores impossíveis.", "Preserve original; aplique limpeza ou imputação declarada; crie indicador de alteração.", "Relatório antes/depois informa regra e quantidade afetada."),
+            ("Formatos incompatíveis", "problemas/inconsistencias.html", "Compare tipos, unidades, fuso, decimal, codificação e categorias entre fontes.", "Escolha padrão canônico e conversão determinística; rejeite conversão ambígua.", "Dados tratados passam no schema canônico sem perda não explicada."),
+            ("Duplicidades e outliers", "problemas/duplicidade.html", "Use chave, similaridade e distribuição, distinguindo repetição legítima de erro.", "Defina sobrevivência e tratamento de extremos conforme finalidade; mantenha trilha da decisão.", "Linhas removidas/limitadas podem ser reconstruídas e quantificadas."),
+            ("Transformação sem rastreabilidade", "problemas/baixa-rastreabilidade.html", "Tente relacionar cada coluna de saída à origem, regra, parâmetro e versão.", "Registre lineage de coluna, regra versionada, contagem afetada e hash de entrada/saída.", "Outro analista reproduz a mesma saída a partir da mesma entrada."),
+        ],
+        "methods": [
+            ("Limpeza e coerção tipada", "metodos/data-quality-rules.html", "Prepara texto, números e datas para comparação consistente.", "Normalize Unicode/espaços, converta com errors='coerce', marque falhas e valide domínio antes de substituir."),
+            ("Imputação", "metodos/imputacao.html", "Usada quando ausência pode ser estimada sem invalidar o uso.", "Diagnostique mecanismo; escolha constante/mediana/modelo; ajuste no treino; preserve flag e compare distribuição."),
+            ("Deduplicação e record linkage", "metodos/deduplicacao.html", "Resolve registros repetidos exatos ou aproximados.", "Normalize campos, gere candidatos, calcule similaridade, defina limiar, revise zona cinzenta e registre clusters."),
+            ("Normalização e encoding", "metodos/normalizacao.html", "Torna escalas/categorias compatíveis com análise e algoritmos.", "Escolha min-max ou z-score; one-hot/ordinal conforme semântica; ajuste parâmetros no treino e versione-os."),
+            ("Enriquecimento e regras versionadas", "artefatos/registro-de-regras-de-limpeza.html", "Cria campos derivados sem perder origem ou interpretação.", "Documente fórmula, entradas, janela, nulos, versão, owner e teste de cada atributo."),
+        ],
+        "metrics": [
+            ("Ganho de completude", "metricas/completude.html", "completude_depois - completude_antes", "Verifique se o ganho veio de recuperação confiável ou apenas preenchimento artificial.", "Rejeite ganho que distorça distribuição ou oculte ausência relevante."),
+            ("Transformações rastreáveis", "metricas/cobertura-de-logs-de-execucao.html", "regras_com_origem_versao_impacto / regras_executadas", "Analise lacunas por regra crítica e coluna sensível.", "Não promova transformação crítica sem versão e impacto."),
+            ("Impacto da transformação", "artefatos/relatorio-de-impacto-de-transformacoes.html", "linhas_ou_valores_alterados / total_verificado", "Compare também distribuição e grupos; percentual pequeno pode atingir grupo específico.", "Exija revisão quando ultrapassar baseline ou afetar grupo desproporcionalmente."),
+        ],
+        "artifacts": [
+            ("Plano de transformação", "artefatos/plano-de-transformacao.html", "ordem, regra, campo, parâmetro, pré/pós-condição, owner e rollback", "Implemente configuração versionada e funções pequenas, determinísticas e testáveis.", "Cada regra passa em casos válido, inválido, ausente e limite."),
+            ("Registro de regras de limpeza", "artefatos/registro-de-regras-de-limpeza.html", "id, versão, justificativa, código, parâmetros, impacto e aprovação", "Gere automaticamente durante execução e associe ao commit/pipeline.", "A regra explica todos os valores modificados em amostra auditada."),
+            ("Dataset tratado", "artefatos/dataset-tratado.html", "schema canônico, dados válidos, flags de tratamento, partição e versão", "Grave em zona prata somente após gate de qualidade e de forma atômica.", "Reconcilie volumes, chaves, schema e hash com relatório."),
+            ("Relatório de transformações", "artefatos/relatorio-de-transformacoes.html", "antes/depois, linhas afetadas, distribuição, grupos, erros e limitações", "Gere métricas e gráficos a partir do próprio pipeline.", "Resultados são reproduzíveis e coerentes com o registro de regras."),
+        ],
+    },
+    "14.5": {
+        "problems": [
+            ("Ausência não aleatória", "problemas/dados-ausentes.html", "Compare ausência com tempo, fonte, alvo e grupos; padrões diferentes sugerem MAR/MNAR.", "Não impute automaticamente; investigue coleta, modele mecanismo e relate incerteza.", "Decisão inclui diagnóstico, impacto por grupo e análise de sensibilidade."),
+            ("Extremos confundidos com erros", "problemas/inconsistencias.html", "Use regra de domínio, IQR/z-score e contexto; valor raro pode ser evento real.", "Corrija erro comprovado; caso legítimo, preserve, transforme ou use método robusto.", "Lista de extremos possui motivo e ação individual/agregada."),
+            ("Desbalanceamento de classes", "problemas/desbalanceamento-de-classes.html", "Calcule distribuição do alvo por split e grupo sensível.", "Use estratificação, pesos ou reamostragem apenas no treino e avalie métricas por classe.", "Relatório compara baseline e efeito da mitigação."),
+            ("Data leakage", "problemas/data-leakage.html", "Pergunte se a feature existia no instante da previsão e se parâmetros usaram teste/futuro.", "Separe antes do ajuste, use Pipeline e corte temporal; remova informação pós-evento.", "Teste de disponibilidade temporal e revisão de lineage aprovados."),
+        ],
+        "methods": [
+            ("Diagnóstico MCAR/MAR/MNAR", "metodos/imputacao.html", "Orienta se remover, imputar ou redesenhar coleta.", "Crie indicadores de ausência, compare grupos/tempo e registre hipótese; faça análise de sensibilidade."),
+            ("Imputação e remoção justificada", "metodos/imputacao.html", "Trata ausência quando o benefício supera viés e perda de informação.", "Quantifique perda; ajuste estatística no treino; preserve indicador e parâmetros; compare cenários."),
+            ("IQR e winsorização", "metodos/tratamento-de-outliers.html", "Limita influência de extremos quando há justificativa estatística e de negócio.", "Calcule limites no treino, marque outliers, use clip e compare quantis/métricas antes/depois."),
+            ("Escala e encoding", "metodos/normalizacao.html", "Atende algoritmos sensíveis a distância e categorias.", "Use ColumnTransformer/Pipeline, handle_unknown e parâmetros aprendidos somente no treino."),
+        ],
+        "metrics": [
+            ("Percentual imputado", "metricas/completude.html", "valores_imputados / total_valores", "Analise por coluna, tempo e grupo; crescimento sinaliza deterioração da fonte.", "Defina limite e acione origem quando excedido."),
+            ("Razão de desbalanceamento", "conceitos/desbalanceamento.html", "maior_classe / menor_classe", "Use junto com suporte absoluto e distribuição por split/grupo.", "Escolha métrica/modelo e mitigação compatíveis; não apague a realidade populacional."),
+            ("Taxa de features com vazamento", "artefatos/relatorio-de-validacao-de-features.html", "features_reprovadas_por_leakage / features_avaliadas", "Meta deve ser zero para features usadas; diferencie leakage de alvo, tempo e split.", "Remova feature, corrija janela e reexecute avaliação desde o início."),
+            ("Impacto por grupo", "artefatos/relatorio-de-distribuicao-de-grupos.html", "metrica_depois_grupo - metrica_antes_grupo", "Compare perda de linhas, imputação e extremos entre grupos.", "Reveja técnica quando o dano se concentra em grupo específico."),
+        ],
+        "artifacts": [
+            ("Notebook comparativo", "artefatos/pacote-de-reprodutibilidade.html", "cenários, parâmetros, distribuição, grupos, métricas, decisão e semente", "Execute cenários em funções/Pipeline e registre versões e hashes.", "Restart & Run All reproduz tabelas e decisão."),
+            ("Registro de baselines", "artefatos/registro-de-baselines.html", "período, população, métricas, quantis, classes e versão", "Persista JSON/Parquet antes da transformação e associe ao produto.", "Baseline usa período representativo e possui data de revisão."),
+            ("Feature set", "artefatos/feature-set.html", "features, tipos, fórmulas, janelas, parâmetros, disponibilidade e lineage", "Gere tabela validada a partir do treino e versione transformação.", "Teste schema, nulos, leakage, distribuição e consistência offline/online."),
+            ("Justificativa metodológica", "artefatos/registro-de-limitacoes-conhecidas.html", "alternativas, escolha, hipótese, impacto, grupos, limitação e responsável", "Registre junto ao experimento e ao relatório de avaliação.", "Conclusão não excede a evidência e explicita incerteza."),
+        ],
+    },
+    "14.6": {
+        "problems": [
+            ("Silos e chaves instáveis", "problemas/silos-de-dados.html", "Compare identificadores, cobertura e unicidade entre as fontes; procure a mesma entidade representada por códigos diferentes.", "Defina chave canônica, tabela de correspondência e responsável pela identidade; preserve a chave original para auditoria.", "A reconciliação informa pares encontrados, não pareados, ambíguos e regras usadas."),
+            ("Baixa interoperabilidade semântica", "problemas/baixa-interoperabilidade-semantica.html", "Compare nomes, definições, unidades, domínios e períodos de campos aparentemente equivalentes.", "Crie vocabulário canônico e mapa explícito de equivalências, conversões e exceções aprovado pelo domínio.", "Cada atributo integrado aponta para origem, significado, conversão e versão."),
+            ("Granularidades incompatíveis", "conceitos/granularidade.html", "Declare o que uma linha representa em cada base e teste cardinalidade antes do merge.", "Agregue ou desagregue somente com regra válida; escolha a unidade de análise antes da junção.", "Contagens e totais antes/depois fecham no nível esperado, sem multiplicação acidental."),
+            ("Janelas temporais incompatíveis", "problemas/lacunas-temporais.html", "Compare cobertura, frequência, fuso, data do evento e data de processamento.", "Normalize calendário/fuso, defina tolerância de pareamento e impeça uso de informação futura.", "Cobertura temporal e lacunas são publicadas, e testes reprovam correspondências fora da janela."),
+        ],
+        "methods": [
+            ("Merge com cardinalidade declarada", "conceitos/pipeline-de-dados.html", "Integra tabelas determinísticas sem esconder relações 1:1, 1:N ou N:N.", "Teste unicidade das chaves, use validate no pandas, indicator=True e reconcilie linhas e totais."),
+            ("Record linkage", "metodos/record-linkage.html", "Relaciona registros sem chave comum usando atributos aproximados.", "Normalize, bloqueie candidatos, calcule similaridade, calibre limiares e encaminhe zona ambígua à revisão."),
+            ("Entity resolution", "metodos/entity-resolution.html", "Agrupa registros que representam a mesma entidade e mantém histórico de identidade.", "Construa candidatos, evidências e clusters; defina regra de sobrevivência e identificador mestre versionado."),
+            ("Harmonização semântica", "dimensoes/interoperabilidade-semantica.html", "Evita unir colunas iguais no nome, mas diferentes no significado.", "Mapeie conceito, unidade, domínio, sinônimo, conversão e vigência para um modelo canônico."),
+            ("Reconciliação", "artefatos/relatorio-de-conflitos.html", "Demonstra que a integração não criou nem perdeu informação sem explicação.", "Compare contagens, somas de controle, chaves, órfãos e conflitos antes/depois por fonte e período."),
+        ],
+        "metrics": [
+            ("Taxa de integração válida", "metricas/taxa-de-integracao-valida.html", "registros_integrados_sem_conflito / registros_elegiveis", "Segmente por fonte, período e regra; uma média alta pode ocultar domínio com baixa cobertura.", "Reveja chave, janela ou regra quando cair abaixo do limiar acordado."),
+            ("Taxa de não pareamento", "artefatos/relatorio-de-conflitos.html", "registros_sem_par / registros_elegiveis", "Separe ausência legítima, chave suja, atraso e entidade nova; não force pareamento apenas para reduzir a taxa.", "Corrija origem ou mantenha órfão documentado conforme a causa."),
+            ("Fator de multiplicação", "artefatos/relatorio-de-conflitos.html", "linhas_apos_merge / linhas_base", "Interprete junto à cardinalidade esperada; valor maior que 1 pode ser correto em 1:N e erro em 1:1.", "Bloqueie relações não declaradas e investigue chaves duplicadas."),
+            ("Coerência semântica", "metricas/coerencia-semantica.html", "atributos_conformes_ao_vocabulario / atributos_integrados", "Verifique significado, unidade, domínio e vigência, não apenas tipo técnico.", "Atualize mapeamento ou rejeite atributos semanticamente incompatíveis."),
+        ],
+        "artifacts": [
+            ("Plano de integração", "artefatos/plano-de-integracao.html", "fontes, granularidade, chaves, cardinalidade, janela, regra, owner e fallback", "Versione o plano e converta pré/pós-condições em testes automáticos.", "Execute casos com par, sem par, duplicidade, conflito e atraso."),
+            ("Mapa de chaves", "artefatos/mapa-de-chaves.html", "chaves originais, canônica, tipo, unicidade, cobertura e regra de correspondência", "Implemente tabela versionada com vigência e proveniência.", "Amostra de pares é confirmada pelo domínio e conflitos permanecem rastreáveis."),
+            ("Mapa de equivalência semântica", "artefatos/mapa-de-equivalencia-semantica.html", "termo de origem, conceito canônico, unidade, conversão, vigência e exceção", "Mantenha tabela legível por máquina e revisão do especialista.", "Testes verificam domínio/unidade e o glossário não contém definições contraditórias."),
+            ("Relatório de conflitos e reconciliação", "artefatos/relatorio-de-conflitos.html", "órfãos, ambiguidades, duplicações, totais de controle, causa e decisão", "Gere automaticamente após cada integração e associe ao execution_id.", "Totais explicam toda diferença e exceções têm responsável e prazo."),
+        ],
+    },
+    "14.7": {
+        "problems": [
+            ("Ativos obsoletos", "problemas/obsolescencia-de-produtos.html", "Compare última atualização, SLA, consumidores e versões efetivamente consultadas.", "Implemente partições/versionamento, política de retenção e aviso de depreciação.", "Catálogo informa atualidade, versão vigente e ativos descontinuados."),
+            ("Baixa reprocessabilidade", "problemas/baixa-reprodutibilidade.html", "Tente reconstruir uma partição usando código, configuração e entrada preservados.", "Mantenha dados brutos imutáveis, transformação versionada, manifesto e carga idempotente.", "Reprocessamento gera o mesmo hash ou uma diferença explicada e aprovada."),
+            ("Consultas lentas", "artefatos/modelo-de-armazenamento-analitico.html", "Meça latência, bytes lidos, plano de consulta, filtros e concorrência com carga representativa.", "Escolha formato colunar, particionamento, índices, agregações e modelo adequado ao padrão de acesso.", "Benchmark atende ao SLA sem sacrificar correção e governança."),
+            ("Acesso indevido e baixo reuso", "conceitos/controle-de-acesso.html", "Revise permissões, sensibilidade, finalidade e tentativas de localizar/usar o produto.", "Aplique menor privilégio, views mascaradas, catálogo, contrato e interface estável.", "Acessos são auditáveis e consumidores autorizados encontram e entendem o produto."),
+        ],
+        "methods": [
+            ("Camadas bronze, prata e ouro", "conceitos/data-lake.html", "Separam preservação da origem, tratamento confiável e produto orientado ao consumo.", "Defina contrato e gate de promoção; bronze é imutável, prata validada e ouro aderente à finalidade."),
+            ("Parquet e DuckDB", "tecnicas/duckdb.html", "Formato colunar e motor analítico local reduzem leitura e simplificam laboratórios reproduzíveis.", "Grave tipos explícitos e partições úteis; consulte apenas colunas/filtros necessários e compare com CSV."),
+            ("Warehouse, lake e lakehouse", "conceitos/lakehouse.html", "A arquitetura depende de governança, latência, variedade, custo e padrão de consulta.", "Use matriz de decisão e registre por que o modelo atende produtores, controles e consumidores."),
+            ("Esquema estrela e data mart", "conceitos/data-mart.html", "Organiza fatos e dimensões para indicadores consistentes e consultas previsíveis.", "Declare grão da tabela fato, chaves substitutas, dimensões conformadas e regras de agregação."),
+            ("Carga incremental e otimização", "metodos/ingestao-incremental.html", "Atualiza somente partições alteradas sem perder consistência.", "Use watermark, upsert idempotente, particionamento e índices definidos a partir das consultas reais."),
+        ],
+        "metrics": [
+            ("Cobertura de armazenamento", "artefatos/modelo-de-armazenamento-analitico.html", "ativos_criticos_no_modelo_aprovado / ativos_criticos", "Analise por criticidade, camada e responsável; presença física sem contrato não conta como cobertura.", "Planeje migração ou bloqueie produto crítico fora do modelo governado."),
+            ("Ativos versionados", "metricas/indice-de-evolucao-controlada-dos-ativos.html", "ativos_com_versao_e_historico / ativos_publicados", "Verifique se a versão identifica schema, dado e transformação, não apenas nome de arquivo.", "Corrija publicação sem histórico ou política de compatibilidade."),
+            ("Tempo de consulta", "artefatos/modelo-de-armazenamento-analitico.html", "percentil da duração para conjunto fixo de consultas", "Use p50/p95, volume e cache controlado; uma única execução não representa desempenho.", "Ajuste formato/modelo/partição e repita benchmark contra baseline."),
+            ("Adequação ao uso", "metricas/adequacao-ao-uso.html", "requisitos_de_consumo_atendidos / requisitos_acordados", "Combine qualidade, atualidade, acesso, semântica e desempenho por caso de uso.", "Não publique como apto para finalidades cujos requisitos falharam."),
+        ],
+        "artifacts": [
+            ("Modelo de armazenamento analítico", "artefatos/modelo-de-armazenamento-analitico.html", "camadas, formatos, partições, retenção, owners, segurança e fluxo", "Documente diagrama e configuração versionada junto ao pipeline.", "Cada ativo real aparece no modelo e cumpre regra de promoção/retensão."),
+            ("Data mart e view analítica", "artefatos/view-analitica.html", "grão, fatos, dimensões, métricas, filtros, atualização e contrato", "Implemente SQL versionado e testes de chaves, totais e schema.", "Reconcilie indicadores com fonte e teste consultas dos consumidores."),
+            ("Snapshot versionado", "artefatos/snapshot-versionado.html", "data lógica, versão, partição, schema, hash, origem e retenção", "Grave de forma imutável e associe manifesto e código.", "Snapshot é localizável e reprocessável sem depender do estado atual da fonte."),
+            ("Produto e política de acesso", "artefatos/produto-de-dados.html", "finalidade, contrato, owner, SLA, interface, qualidade, acesso e suporte", "Publique no catálogo com view/API e regras de autorização.", "Consumidor autorizado reproduz exemplo; usuário não autorizado é bloqueado e auditado."),
+        ],
+    },
+    "14.8": {
+        "problems": [
+            ("Baixa governança", "problemas/baixa-governanca.html", "Procure decisões sem owner, política, aprovação, prazo ou fórum de resolução.", "Defina papéis, RACI, política, ciclo de revisão e processo de exceção baseado em risco.", "Decisões e exceções possuem autor, fundamento, vigência e responsável."),
+            ("Ausência de metadados", "problemas/ausencia-de-metadados.html", "Avalie campos técnicos, operacionais, de negócio e de segurança exigidos para entender e usar o ativo.", "Capture metadados automaticamente e complete significado/owner com stewardship.", "Completude é medida por criticidade e confirmada por amostragem."),
+            ("Baixa rastreabilidade", "problemas/baixa-rastreabilidade.html", "Escolha um indicador e tente percorrer saída, transformação, entrada e decisão.", "Propague execution_id, versões, hashes e lineage de dataset/coluna.", "Uma investigação reconstrói origem e impacto dentro do tempo acordado."),
+            ("Dados sensíveis e análises irreproduzíveis", "problemas/dados-sensiveis-sem-classificacao.html", "Classifique campos e tente reproduzir o produto em ambiente limpo sem credenciais implícitas.", "Aplique minimização/RBAC e empacote dependências, configuração, código, dados permitidos e manifesto.", "Acesso segue finalidade e a execução limpa produz resultado verificável."),
+        ],
+        "methods": [
+            ("Catálogo e glossário", "conceitos/catalogo-de-dados.html", "Tornam ativos localizáveis e termos comparáveis entre áreas.", "Defina metadados mínimos, busca, sinônimos, owner, SLA, classificação e fluxo de revisão."),
+            ("RBAC e classificação", "conceitos/controle-de-acesso.html", "Concedem acesso conforme papel e sensibilidade, com menor privilégio.", "Mapeie papel × recurso × ação, separe administração/uso e revise concessões periodicamente."),
+            ("Linhagem e OpenLineage", "tecnicas/openlineage.html", "Registram como entradas, jobs e saídas se relacionam ao longo das execuções.", "Emita eventos com namespace, dataset, job, run, schema e horários; visualize o grafo e teste impacto."),
+            ("Versionamento e reprodutibilidade", "conceitos/reprodutibilidade.html", "Permitem repetir ou explicar resultados históricos.", "Fixe ambiente, código, configuração, semente, entradas e hashes; execute do início ao fim em ambiente limpo."),
+        ],
+        "metrics": [
+            ("Completude de metadados", "metricas/indice-de-maturidade-do-inventario.html", "metadados_obrigatorios_preenchidos / metadados_obrigatorios", "Pondere criticidade e valide conteúdo; texto genérico não deve contar como preenchimento válido.", "Devolva ativo ao owner quando campos críticos estiverem ausentes ou inválidos."),
+            ("Cobertura de catálogo e linhagem", "artefatos/grafo-de-linhagem.html", "ativos_criticos_catalogados_e_com_linhagem / ativos_criticos", "Segmente por domínio e direção upstream/downstream; confirme que arestas representam execuções reais.", "Priorize lacunas de ativos com maior impacto e bloqueie publicação sem origem."),
+            ("Ativos auditáveis", "artefatos/trilha-de-auditoria.html", "ativos_com_logs_versao_owner_e_decisao / ativos_publicados", "Teste se evidências permitem responder quem, quando, o quê e por quê.", "Corrija ausência de correlação, retenção ou responsável."),
+            ("Execuções reproduzíveis", "artefatos/pacote-de-reprodutibilidade.html", "execucoes_reproduzidas_com_sucesso / execucoes_testadas", "Compare hashes e métricas em ambiente limpo; diferença aceitável deve ter tolerância e causa declaradas.", "Fixe dependência/entrada ou registre limitação antes de liberar."),
+        ],
+        "artifacts": [
+            ("Catálogo, dicionário e glossário", "artefatos/catalogo-de-dados.html", "ativo, descrição, campos, termos, owner, origem, SLA, qualidade e sensibilidade", "Integre coleta automática ao pipeline e revisão humana ao fluxo de publicação.", "Busca e teste de compreensão com consumidor confirmam utilidade e consistência."),
+            ("Matriz de permissões", "artefatos/matriz-de-permissoes.html", "papel, recurso, ação, finalidade, aprovador, vigência e restrição", "Implemente políticas no provedor/banco a partir da matriz versionada.", "Testes positivos e negativos confirmam menor privilégio e segregação."),
+            ("Grafo de linhagem", "artefatos/grafo-de-linhagem.html", "datasets, jobs, versões, colunas, execuções e relações", "Gere a partir dos eventos e associe IDs do catálogo.", "Análise de impacto encontra todos os consumidores de uma alteração conhecida."),
+            ("Trilha e pacote reprodutível", "artefatos/pacote-de-reprodutibilidade.html", "código, ambiente, configuração, dados permitidos, manifesto, logs e instruções", "Empacote sem segredos e automatize execução/testes.", "Terceiro autorizado reproduz resultado a partir do README em ambiente limpo."),
+        ],
+    },
+    "14.9": {
+        "problems": [
+            ("Unidade de análise incorreta", "conceitos/granularidade.html", "Declare sujeito, evento e instante de cada linha; procure mistura de pessoa, atendimento e período.", "Escolha grão aderente à pergunta e agregue antes de criar rótulos/features.", "Chave é única no grão declarado e métricas não contam a mesma entidade indevidamente."),
+            ("Leakage temporal", "problemas/data-leakage.html", "Compare timestamp de cada feature com instante de previsão e janela do rótulo.", "Use point-in-time join, corte temporal e ajuste transformadores somente no treino.", "Nenhuma feature usada contém informação futura ou derivada do conjunto de teste."),
+            ("Baixa qualidade de rótulos", "problemas/baixa-qualidade-de-rotulos.html", "Amostre casos, compare fontes/anotadores e meça ausências, conflito e atraso do rótulo.", "Defina protocolo, adjudicação, versão e população elegível; separe desconhecido de negativo.", "Concordância, cobertura e limitações do rótulo são publicadas."),
+            ("Vieses e features sem proveniência", "problemas/vies-de-cobertura.html", "Compare cobertura/distribuição por tempo e grupo e tente localizar origem/fórmula de cada feature.", "Reveja amostragem, avalie grupos e registre lineage, janela, owner e finalidade.", "Relatório por grupo e catálogo permitem contestar e reconstruir cada feature."),
+        ],
+        "methods": [
+            ("Representação tabular e temporal", "conceitos/dados-temporais.html", "Converte o fenômeno em unidade, chave e janela adequadas à análise.", "Defina tempo de evento/processamento, frequência, janela e política para atraso antes de pivotar/agregar."),
+            ("Feature engineering", "conceitos/feature-engineering.html", "Cria atributos úteis preservando semântica, disponibilidade e rastreabilidade.", "Especifique fórmula, entrada, janela, nulos, disponibilidade, versão e teste em função/pipeline."),
+            ("Seleção e redução", "modulos/m14.html", "Reduz redundância/custo sem usar informação do teste.", "Ajuste seleção ou PCA no treino, versione parâmetros e compare desempenho, estabilidade e interpretabilidade."),
+            ("Split temporal ou estratificado", "modulos/m13.html", "Simula uso futuro ou preserva classes sem contaminar avaliação.", "Separe primeiro; ajuste todo pré-processamento no treino; valide tempo, entidade e grupos entre splits."),
+            ("Baseline e avaliação por grupo", "artefatos/registro-de-baselines.html", "Mostram ganho real e impactos que a média global esconde.", "Compare regra simples/modelo, suporte e métricas por classe, período e grupo com intervalos."),
+        ],
+        "metrics": [
+            ("Features documentadas e com lineage", "artefatos/catalogo-de-features.html", "features_com_formula_janela_origem_versao / features_usadas", "Inspecione campos críticos e confirme que documentação corresponde ao código executado.", "Remova ou documente feature antes do treino/serving."),
+            ("Taxa de vazamento", "artefatos/relatorio-de-validacao-de-features.html", "features_ou_linhas_com_informacao_indisponivel / total_verificado", "Meta é zero; segmente leakage de tempo, alvo, entidade e pré-processamento.", "Corrija split/janela e refaça todas as métricas contaminadas."),
+            ("Cobertura temporal", "conceitos/cobertura-temporal.html", "intervalos_com_dados_validos / intervalos_esperados", "Analise lacunas, atraso e mudança de regime; média pode esconder meses ausentes.", "Restrinja período de validade ou corrija coleta antes de generalizar."),
+            ("Desempenho por grupo", "artefatos/relatorio-de-distribuicao-de-grupos.html", "metrica_grupo e diferenca_em_relacao_ao_referencial", "Sempre apresente suporte e incerteza; diferença pequena em grupo reduzido pode ser instável.", "Investigue dados, rótulos e decisão quando disparidade for material."),
+        ],
+        "artifacts": [
+            ("Plano de representação analítica", "artefatos/plano-de-representacao-analitica.html", "pergunta, população, grão, tempo, rótulo, splits, exclusões e riscos", "Versione antes da modelagem e transforme hipóteses em asserts.", "Amostra manual confirma que linhas e tempos representam o fenômeno pretendido."),
+            ("Catálogo e regras de features", "artefatos/catalogo-de-features.html", "nome, tipo, fórmula, janela, disponibilidade, origem, owner, versão e uso permitido", "Gere metadados junto com o código da transformação.", "Recalcule amostra e confronte catálogo, código e valores."),
+            ("Feature set/store", "artefatos/feature-set.html", "entidade, timestamp, features, schema, versão, parâmetros e lineage", "Materialize com point-in-time correctness e contrato offline/online.", "Testes comparam schema, valores, atualidade e consistência entre ambientes."),
+            ("Relatório de validação e limitações", "artefatos/relatorio-de-validacao-de-features.html", "qualidade, leakage, estabilidade, grupos, baseline, falhas e uso inadequado", "Gere durante pipeline e associe à versão do conjunto.", "Aprovação exige ausência de leakage e limitações explícitas para o consumidor."),
+        ],
+    },
+    "14.10": {
+        "problems": [
+            ("Falhas silenciosas", "problemas/falhas-silenciosas.html", "Procure execuções verdes com volume, atualidade ou qualidade fora do baseline.", "Defina health checks de entrada, etapa, saída e consumo com estado explícito e alerta acionável.", "Falha de dados reprova a execução e abre incidente correlacionado."),
+            ("Dívida de dados", "problemas/divida-de-dados.html", "Inventarie atalhos, exceções, dependências obsoletas e tarefas manuais; estime risco e custo recorrente.", "Mantenha backlog priorizado por impacto/probabilidade, owner, prazo e critério de quitação.", "Itens críticos diminuem e não são reabertos sem decisão registrada."),
+            ("Drift", "conceitos/data-drift.html", "Compare schema, distribuição, relações e desempenho com baseline por janela e grupo.", "Defina detectores, limiares, persistência, investigação e resposta diferenciada para schema/data/feature drift.", "Alerta inclui evidência, magnitude, campos, período e ação tomada."),
+            ("Reprocessamento manual e produto sem owner", "conceitos/dataops.html", "Simule falha/reexecução e verifique quem decide, executa, comunica e encerra.", "Orquestre etapas idempotentes e publique runbook, RACI, SLA, rollback e suporte.", "Outro operador restaura o serviço sem depender do autor e registra toda ação."),
+        ],
+        "methods": [
+            ("Orquestração e DataOps", "conceitos/dataops.html", "Automatizam dependências, agenda, estado, retry e observabilidade do ciclo de dados.", "Modele DAG, entradas/saídas, SLA, retry seletivo, timeout, backfill e parâmetros por ambiente."),
+            ("Testes por etapa e idempotência", "conceitos/reprodutibilidade.html", "Impedem que erro ou reexecução corrompam etapas posteriores.", "Defina pré/pós-condições, escrita temporária e promoção atômica; execute duas vezes a mesma janela."),
+            ("Observabilidade", "conceitos/data-observability.html", "Combina atualidade, volume, schema, qualidade, linhagem, logs e custo para detectar anomalias.", "Colete sinais com execution_id, baseline e severidade; conecte painel ao catálogo e ao alerta."),
+            ("Detecção de drift", "tecnicas/evidently-ai.html", "Sinaliza mudança relevante em dados/features antes que o produto perca adequação.", "Escolha teste e janela por variável, controle múltiplas comparações e exija persistência/impacto antes de agir."),
+            ("Incidente, rollback e runbook", "artefatos/plano-de-monitoramento.html", "Transformam alerta em resposta repetível e auditável.", "Defina triagem, owner, contenção, rollback, comunicação, reprocessamento e análise de causa raiz."),
+        ],
+        "metrics": [
+            ("Cobertura de monitoramento", "artefatos/painel-de-monitoramento.html", "ativos_criticos_com_sinais_e_alertas_testados / ativos_criticos", "Verifique qualidade dos sinais e teste do alerta; painel sem responsável não conta.", "Instrumente primeiro ativos de maior impacto e lacunas de linhagem."),
+            ("Atualização no prazo", "metricas/atualidade.html", "execucoes_publicadas_ate_o_SLA / execucoes_planejadas", "Segmente por produto/causa e considere dado realmente disponível ao consumidor.", "Acione backfill e causa raiz quando recorrente."),
+            ("Taxa/magnitude de drift", "metricas/taxa-de-data-drift.html", "variaveis_com_drift_confirmado / variaveis_monitoradas", "Leia junto a efeito, persistência, sazonalidade e grupos; significância isolada não exige retreino.", "Investigue origem e impacto antes de ajustar regra, baseline ou modelo."),
+            ("MTTD e MTTR", "metricas/tempo-medio-de-deteccao.html", "media(deteccao - inicio) e media(resolucao - deteccao)", "Use mediana/p95 e severidade, pois médias escondem incidentes longos.", "Melhore sinal ou runbook conforme o intervalo dominante."),
+            ("Sucesso ponta a ponta", "metricas/cobertura-de-logs-de-execucao.html", "execucoes_com_ingestao_qualidade_publicacao_consumo_validos / planejadas", "Exige sucesso de todas as etapas e contrato de consumo; não use apenas status do orquestrador.", "Bloqueie publicação e reprocese a partir da etapa segura."),
+        ],
+        "artifacts": [
+            ("Manifesto de execução", "conceitos/manifesto-de-execucao.html", "execution_id, tempo, código, ambiente, entradas, saídas, hashes, métricas e status", "Gere JSON automaticamente e armazene junto ao resultado sem segredos.", "Manifesto corresponde aos arquivos/logs e permite localizar toda a execução."),
+            ("Painel e alertas", "artefatos/painel-de-monitoramento.html", "SLA, atualidade, volume, qualidade, drift, falhas, owner e histórico", "Alimente com métricas do pipeline e associe alerta a severidade/runbook.", "Teste alerta sintético e confirme recebimento, triagem e encerramento."),
+            ("Registro de incidentes", "artefatos/registro-de-incidentes.html", "linha do tempo, impacto, evidência, causa, contenção, correção, owner e aprendizado", "Abra automaticamente pelo alerta e complete pós-incidente sem dados sensíveis.", "Ações corretivas têm prazo e recorrência é comparada à causa anterior."),
+            ("Runbook e pacote reprodutível", "artefatos/pacote-de-reprodutibilidade.html", "pré-requisitos, diagnóstico, comandos seguros, rollback, backfill, validação e contatos", "Versione com código/configuração e ensaie em ambiente controlado.", "Operador autorizado resolve cenário simulado seguindo apenas o documento."),
+            ("Ficha do produto", "artefatos/ficha-de-produto-analitico.html", "finalidade, owner, contrato, SLA, dependências, qualidade, acesso, suporte e limitações", "Publique no catálogo e atualize a cada versão relevante.", "Consumidor entende uso permitido e sabe detectar/reportar degradação."),
+        ],
+    },
 }
 
 
@@ -702,7 +975,13 @@ print(json.dumps(manifesto, indent=2, ensure_ascii=False))
         '<tr><td>ambiente limpo e execução do início ao fim</td><td>detecção de estado oculto e dependência não declarada</td></tr>'
         '<tr><td>dados e resultados versionados</td><td>proveniência, comparação e auditoria</td></tr></table></div>'
         '<div class="box warn"><strong>Atenção</strong></div><p>Executar células fora de ordem pode usar variáveis antigas e produzir um resultado impossível de reconstruir. Antes da entrega, reinicie o kernel, execute tudo e compare hashes, volumes e métricas.</p>'
-        '<h3>Manifesto mínimo executável</h3>' + jupyter_repro_code + '</section>'
+        '<h3>Conceito: o que é um manifesto?</h3>'
+        '<p>Neste módulo, <strong>manifesto</strong> não significa uma declaração de ideias. Em engenharia de dados, é um arquivo estruturado — normalmente JSON ou YAML — que funciona como a <strong>ficha de identidade de uma execução ou de uma ingestão</strong>. Ele registra quais entradas foram usadas, quando o processamento ocorreu, quais versões de código e ambiente participaram, quantas linhas entraram e saíram, quais hashes comprovam a integridade e qual foi o estado final.</p>'
+        '<div class="table-wrap"><table class="table"><tr><th>Tipo</th><th>O que documenta</th><th>Campos mínimos</th></tr>'
+        '<tr><td><a href="https://ronaldocmc.github.io/UnespDataLens-RM/artefatos/manifesto-de-ingestao.html" target="_blank" rel="noopener">Manifesto de ingestão</a></td><td>O recebimento de uma fonte bruta.</td><td>origem, janela, arquivos, schema, contagens, hashes, rejeições e status</td></tr>'
+        '<tr><td><a href="https://ronaldocmc.github.io/UnespDataLens-RM/conceitos/manifesto-de-execucao.html" target="_blank" rel="noopener">Manifesto de execução</a></td><td>A execução completa ou uma etapa do pipeline.</td><td>execution_id, horários, código, ambiente, entradas, saídas, métricas e status</td></tr></table></div>'
+        '<p>O manifesto não substitui o log: o <strong>log</strong> narra eventos durante a execução; o <strong>manifesto</strong> resume a evidência necessária para identificar, conferir e reproduzir aquela execução. Ele também não deve armazenar senhas, tokens ou dados pessoais.</p>'
+        '<h3>Exemplo: construindo um manifesto de execução</h3>' + jupyter_repro_code + '</section>'
     )
     imports_code = code("""
 from pathlib import Path
