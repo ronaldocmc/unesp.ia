@@ -410,3 +410,8 @@
 .module-m12 .m12-skill-card header{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:8px}
 .module-m12 .skill-index{background:var(--module-color);color:#fff;border-radius:10px;padding:5px 8px;font-weight:800}
 .module-m12 pre{background:#0F172A;color:#E2E8F0;padding:16px;border-radius:14px;overflow:auto;white-space:pre-wrap}
+
+.n8n-access-section .grid .card{border-top:4px solid var(--module-color)}
+.n8n-lab-guide{border:1px solid var(--border);border-left:6px solid var(--module-color);border-radius:16px;background:#fff;padding:16px 18px;margin:14px 0 18px;box-shadow:var(--shadow)}
+.n8n-lab-guide>p{margin-top:0}
+.module-m12 figure figcaption{font-size:14px;color:#556;margin-top:8px}

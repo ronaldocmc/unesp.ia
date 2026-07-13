@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 430">
+<rect width="1100" height="430" fill="#f4f9ff"/>
+<text x="50" y="62" font-family="Arial" font-size="34" font-weight="800" fill="#003a70">Como acessar o n8n no Módulo 12</text>
+<g font-family="Arial" font-size="18">
+<rect x="55" y="110" width="300" height="230" rx="24" fill="#fff" stroke="#0b5aa6" stroke-width="3"/>
+<text x="205" y="155" text-anchor="middle" font-size="26" font-weight="800" fill="#003a70">n8n Cloud</text>
+<text x="205" y="195" text-anchor="middle" fill="#334">Acesso pela web</text>
+<text x="205" y="225" text-anchor="middle" fill="#334">sem instalar localmente</text>
+<text x="205" y="270" text-anchor="middle" font-weight="700" fill="#0b5aa6">n8n.io</text>
+<rect x="400" y="110" width="300" height="230" rx="24" fill="#fff" stroke="#009a9a" stroke-width="3"/>
+<text x="550" y="155" text-anchor="middle" font-size="26" font-weight="800" fill="#003a70">Self-hosted</text>
+<text x="550" y="195" text-anchor="middle" fill="#334">Instalação própria</text>
+<text x="550" y="225" text-anchor="middle" fill="#334">Docker ou npm</text>
+<text x="550" y="270" text-anchor="middle" font-weight="700" fill="#009a9a">docs.n8n.io/hosting</text>
+<rect x="745" y="110" width="300" height="230" rx="24" fill="#fff" stroke="#6046a6" stroke-width="3"/>
+<text x="895" y="155" text-anchor="middle" font-size="26" font-weight="800" fill="#003a70">Laboratório</text>
+<text x="895" y="195" text-anchor="middle" fill="#334">usar dados fictícios</text>
+<text x="895" y="225" text-anchor="middle" fill="#334">testar antes de ativar</text>
+<text x="895" y="270" text-anchor="middle" font-weight="700" fill="#6046a6">logs + guardrails</text>
+</g>
+</svg>
