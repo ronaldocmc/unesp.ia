@@ -1,1 +1,238 @@
-<!doctype html><html lang="pt-br"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Módulo 14 – Engenharia de Dados para Inteligência Artificial • unesp.IA</title><link rel="stylesheet" href="../assets/css/style.css?v=20260713-m13-m14"><script src="../assets/js/search.js"></script><style>.module-full.module-m14{--module-color:#00796B;--module-soft:#E8F7F4}</style></head><body><div class="topbar"><a class="brand" href="../index.html"><img class="brand-logo" src="../assets/img/logo-unesp-ia-portal.jpg" alt="unesp.IA"><small>Coleção Editorial | Portal Didático dos Participantes</small></a><div class="nav"><a href="../index.html">Início</a><a href="../inscricoes.html">Inscrições</a><a href="../modulos.html">Módulos</a><a href="../trilhas.html">Trilhas</a><a href="../conceitos.html">Conceitos</a><a href="../ferramentas.html">Ferramentas</a><a href="../laboratorios.html">Laboratórios</a><a href="../materiais.html">Materiais</a><a href="../personagens.html">Personagens</a><a href="../equipe.html">Equipe</a><a href="../mapa-conhecimento.html">Mapa</a></div></div><main><div class="container content module-full module-m14" id="top"><div class="breadcrumbs"><a href="../index.html">Início</a> / <a href="../modulos.html">Módulos</a> / Módulo 14</div><div class="hero"><span class="badge">M14</span><h1>Engenharia de Dados para Inteligência Artificial</h1><p>Coleta, preparação, qualidade, pipelines, armazenamento, governança e disponibilização de dados para análises, automações e aplicações de IA.</p></div><div class="module-actions"><a class="pill" href="../conceitos.html">Conceitos</a><a class="pill" href="../ferramentas.html">Ferramentas</a><a class="pill" href="../trilhas.html">Trilhas</a><a class="pill" href="../laboratorios.html">Laboratórios</a></div><section class="module-toolbox"><h3>Ferramentas relacionadas neste módulo</h3><div class="related-strip"><a class="pill" href="../ferramentas/python.html">Python</a><a class="pill" href="../ferramentas/pandas.html">pandas</a><a class="pill" href="../ferramentas/numpy.html">NumPy</a><a class="pill" href="../ferramentas/jupyter.html">Jupyter</a><a class="pill" href="../ferramentas/google-colab.html">Google Colab</a><a class="pill" href="../ferramentas/excel-sheets.html">Excel e Google Sheets</a><a class="pill" href="../ferramentas/power-bi.html">Power BI</a><a class="pill" href="../ferramentas/looker-studio.html">Looker Studio</a><a class="pill" href="../ferramentas/scikit-learn.html">scikit-learn</a><a class="pill" href="../ferramentas/duckdb.html">DuckDB</a></div></section><div class="mini-toc"><strong>Unidades e seções deste módulo</strong><a href="#apresentacao">Apresentação</a><a href="#competencias">Competências</a><a href="#conceitos">Conceitos centrais</a><a href="#u141">Unidade 14.1</a><a href="#u142">Unidade 14.2</a><a href="#u143">Unidade 14.3</a><a href="#u144">Unidade 14.4</a><a href="#u145">Unidade 14.5</a><a href="#u146">Unidade 14.6</a><a href="#u147">Unidade 14.7</a><a href="#u148">Unidade 14.8</a><a href="#u149">Unidade 14.9</a><a href="#u1410">Unidade 14.10</a><a href="#projeto-final">Projeto integrador</a></div><section class="module-visual"><figure><img src="../assets/img/modulos/m14-visual.svg" alt="Mapa visual do Módulo 14: Engenharia de Dados para Inteligência Artificial"><figcaption>Visão geral do percurso: conceitos, ferramentas, práticas e produto final.</figcaption></figure><aside class="character-guide"><img src="../assets/img/personagens/joao.png" alt="Personagem João"><h3>Aprendizagem mão na massa</h3><p>O módulo combina explicação didática, exemplos guiados, laboratórios e um produto final que pode ser apresentado, revisado e reutilizado.</p></aside></section><section id="apresentacao"><h2 class="section-title">Apresentação do módulo</h2><p>Coleta, preparação, qualidade, pipelines, armazenamento, governança e disponibilização de dados para análises, automações e aplicações de IA. O percurso foi desenhado para participantes que desejam sair do uso pontual de ferramentas e construir competência técnica aplicada, com segurança, documentação e revisão humana.</p></section><section id="competencias"><h2 class="section-title">Competências desenvolvidas</h2><ul class="list"><li>explicar o ciclo de vida dos dados e o papel da engenharia de dados em projetos de IA;</li><li>inventariar fontes, formatos, responsáveis, periodicidade e restrições de uso;</li><li>criar dicionários de dados, metadados e documentação mínima de bases;</li><li>desenhar e implementar pipelines ETL/ELT com validação e registro de execução;</li><li>aplicar critérios de qualidade, limpeza, tratamento de ausências, duplicidades e outliers;</li><li>diferenciar data lake, data warehouse, lakehouse e camadas bronze, prata e ouro;</li><li>processar dados com Python, DataFrames e consultas para gerar indicadores;</li><li>aplicar LGPD, governança, catálogo, permissões e linhagem de dados;</li><li>realizar análise exploratória e mineração de dados com cautela metodológica;</li><li>entregar um pipeline de dados documentado, rastreável e preparado para análise ou IA.</li></ul></section><section id="conceitos"><h2 class="section-title">Conceitos centrais</h2><div class="related-strip"><a class="pill" href="../conceitos/engenharia-dados.html">Engenharia de Dados</a><a class="pill" href="../conceitos/etl-elt.html">ETL e ELT</a><a class="pill" href="../conceitos/pipeline-dados.html">Pipeline de dados</a><a class="pill" href="../conceitos/qualidade-dados.html">Qualidade de dados</a><a class="pill" href="../conceitos/data-lake.html">Data lake</a><a class="pill" href="../conceitos/data-warehouse.html">Data warehouse</a><a class="pill" href="../conceitos/catalogo-dados.html">Catálogo de dados</a><a class="pill" href="../conceitos/linhagem-dados.html">Linhagem de dados</a><a class="pill" href="../conceitos/mineracao-dados.html">Mineração de dados</a><a class="pill" href="../conceitos/pre-processamento-dados.html">Pré-processamento</a></div></section><section id="u141"><h2 class="unit-title"><span class="unit-num">14.1</span> Fundamentos de engenharia de dados e ciclo de vida</h2><h3>Objetivo da unidade</h3><p>Compreender o papel da engenharia de dados na coleta, organização, qualidade e disponibilização de dados para análise e IA.</p><h3>Conceitos trabalhados</h3><div class="related-strip"><a class="pill" href="../conceitos/engenharia-dados.html">Engenharia de Dados</a><a class="pill" href="../conceitos/etl-elt.html">ETL e ELT</a><a class="pill" href="../conceitos/pipeline-dados.html">Pipeline de dados</a></div><h3>Exemplo aplicado</h3><div class="box practice">Mapear o caminho de uma inscrição: formulário, planilha, validação, base curada, relatório e uso em análise.</div><h3>Roteiro de laboratório</h3><div class="n8n-lab-guide"><p><strong>Roteiro de prática:</strong> Desenhar o ciclo de vida de um dado</p><ol class="steps"><li>Escolha um processo simples.</li><li>Liste origem, formato, responsáveis e destino dos dados.</li><li>Identifique riscos de qualidade e privacidade.</li><li>Desenhe o fluxo de ponta a ponta.</li></ol></div><h3>Produto da unidade</h3><p>Mapa do ciclo de vida de dados.</p><h3>Evidência de aprendizagem</h3><p>O participante diferencia dado bruto, dado tratado e produto de dados.</p></section><section id="u142"><h2 class="unit-title"><span class="unit-num">14.2</span> Fontes de dados, coleta e ingestão</h2><h3>Objetivo da unidade</h3><p>Identificar fontes internas, externas, APIs e arquivos, definindo estratégias responsáveis de coleta.</p><h3>Conceitos trabalhados</h3><div class="related-strip"><a class="pill" href="../conceitos/api.html">API</a><a class="pill" href="../conceitos/dados.html">Dados</a><a class="pill" href="../conceitos/etl-elt.html">ETL e ELT</a></div><h3>Exemplo aplicado</h3><div class="box practice">Combinar um CSV fictício de inscrições com uma planilha de presença e um formulário de avaliação.</div><h3>Roteiro de laboratório</h3><div class="n8n-lab-guide"><p><strong>Roteiro de prática:</strong> Planejar a ingestão de dados</p><ol class="steps"><li>Liste fontes e formatos.</li><li>Defina periodicidade de atualização.</li><li>Registre permissões e finalidade.</li><li>Monte uma tabela de inventário de fontes.</li></ol></div><h3>Produto da unidade</h3><p>Inventário inicial de fontes.</p><h3>Evidência de aprendizagem</h3><p>O participante reconhece origem, formato, frequência e restrições de uso.</p></section><section id="u143"><h2 class="unit-title"><span class="unit-num">14.3</span> Formatos, modelagem e metadados</h2><h3>Objetivo da unidade</h3><p>Compreender CSV, JSON, planilhas, tabelas, chaves, dicionário de dados e metadados.</p><h3>Conceitos trabalhados</h3><div class="related-strip"><a class="pill" href="../conceitos/json.html">JSON</a><a class="pill" href="../conceitos/catalogo-dados.html">Catálogo de dados</a></div><h3>Exemplo aplicado</h3><div class="box practice">Criar um dicionário para campos como nome, e-mail, módulo, perfil, presença e status.</div><h3>Roteiro de laboratório</h3><div class="n8n-lab-guide"><p><strong>Roteiro de prática:</strong> Criar dicionário de dados</p><ol class="steps"><li>Liste campos de uma base fictícia.</li><li>Defina tipo, descrição, obrigatoriedade e exemplo.</li><li>Indique se há dado pessoal.</li><li>Revise nomes de colunas para ficarem consistentes.</li></ol></div><h3>Produto da unidade</h3><p>Dicionário de dados.</p><h3>Evidência de aprendizagem</h3><p>O participante documenta campos antes de processá-los.</p></section><section id="u144"><h2 class="unit-title"><span class="unit-num">14.4</span> ETL, ELT e pipelines de dados</h2><h3>Objetivo da unidade</h3><p>Construir uma sequência de extração, transformação, carga, validação e registro de execução.</p><h3>Conceitos trabalhados</h3><div class="related-strip"><a class="pill" href="../conceitos/etl-elt.html">ETL e ELT</a><a class="pill" href="../conceitos/pipeline-dados.html">Pipeline de dados</a></div><h3>Exemplo aplicado</h3><div class="box practice">Ler dados brutos, padronizar nomes, validar e-mails, remover duplicidades e salvar base tratada.</div><h3>Roteiro de laboratório</h3><div class="n8n-lab-guide"><p><strong>Roteiro de prática:</strong> Implementar um pipeline simples</p><ol class="steps"><li>Crie uma base bruta fictícia.</li><li>Defina regras de transformação.</li><li>Aplique validações e registre pendências.</li><li>Salve a base tratada e um log da execução.</li></ol></div><h3>Produto da unidade</h3><p>Pipeline ETL simples.</p><h3>Evidência de aprendizagem</h3><p>O participante explica cada etapa do pipeline e seus critérios.</p></section><section id="u145"><h2 class="unit-title"><span class="unit-num">14.5</span> Qualidade de dados, limpeza e outliers</h2><h3>Objetivo da unidade</h3><p>Aplicar critérios de completude, consistência, unicidade, validade e tratamento de valores discrepantes.</p><h3>Conceitos trabalhados</h3><div class="related-strip"><a class="pill" href="../conceitos/qualidade-dados.html">Qualidade de dados</a><a class="pill" href="../conceitos/pre-processamento-dados.html">Pré-processamento</a></div><h3>Exemplo aplicado</h3><div class="box practice">Detectar nomes vazios, e-mails inválidos, duplicidades e presenças fora de intervalo.</div><h3>Roteiro de laboratório</h3><div class="n8n-lab-guide"><p><strong>Roteiro de prática:</strong> Criar checklist de qualidade</p><ol class="steps"><li>Defina regras de qualidade.</li><li>Marque registros válidos e pendentes.</li><li>Trate valores ausentes e duplicados.</li><li>Documente o que foi corrigido e o que exige revisão humana.</li></ol></div><h3>Produto da unidade</h3><p>Relatório de qualidade de dados.</p><h3>Evidência de aprendizagem</h3><p>O participante identifica problemas de dados antes de gerar análise.</p></section><section id="u146"><h2 class="unit-title"><span class="unit-num">14.6</span> Armazenamento: data lake, data warehouse e lakehouse</h2><h3>Objetivo da unidade</h3><p>Diferenciar formas de armazenar dados brutos, tratados e analíticos.</p><h3>Conceitos trabalhados</h3><div class="related-strip"><a class="pill" href="../conceitos/data-lake.html">Data lake</a><a class="pill" href="../conceitos/data-warehouse.html">Data warehouse</a></div><h3>Exemplo aplicado</h3><div class="box practice">Separar arquivos brutos de presença, tabelas tratadas e indicadores prontos para relatório.</div><h3>Roteiro de laboratório</h3><div class="n8n-lab-guide"><p><strong>Roteiro de prática:</strong> Organizar camadas de dados</p><ol class="steps"><li>Crie uma estrutura conceitual bronze, prata e ouro.</li><li>Defina o que entra em cada camada.</li><li>Relacione com governança e acesso.</li><li>Explique quando usar planilha, banco, data lake ou warehouse.</li></ol></div><h3>Produto da unidade</h3><p>Mapa de camadas de dados.</p><h3>Evidência de aprendizagem</h3><p>O participante escolhe armazenamento conforme finalidade e maturidade.</p></section><section id="u147"><h2 class="unit-title"><span class="unit-num">14.7</span> Processamento com Python, SQL e DataFrames</h2><h3>Objetivo da unidade</h3><p>Usar pandas, consultas e operações tabulares para transformar dados em indicadores.</p><h3>Conceitos trabalhados</h3><div class="related-strip"><a class="pill" href="../conceitos/dataframe.html">DataFrame</a><a class="pill" href="../conceitos/python.html">Python</a></div><h3>Exemplo aplicado</h3><div class="box practice">Agrupar inscrições por perfil, calcular taxa de presença e gerar tabela de indicadores.</div><h3>Roteiro de laboratório</h3><div class="n8n-lab-guide"><p><strong>Roteiro de prática:</strong> Transformar dados em indicadores</p><ol class="steps"><li>Carregue uma base fictícia em pandas.</li><li>Selecione colunas necessárias.</li><li>Agrupe e calcule indicadores.</li><li>Exporte uma tabela final para CSV.</li></ol></div><h3>Produto da unidade</h3><p>Tabela de indicadores.</p><h3>Evidência de aprendizagem</h3><p>O participante transforma dados em informação verificável.</p></section><section id="u148"><h2 class="unit-title"><span class="unit-num">14.8</span> Governança, LGPD, catálogo e linhagem</h2><h3>Objetivo da unidade</h3><p>Aplicar princípios de finalidade, acesso, documentação, rastreabilidade e proteção de dados.</p><h3>Conceitos trabalhados</h3><div class="related-strip"><a class="pill" href="../conceitos/lgpd.html">LGPD</a><a class="pill" href="../conceitos/linhagem-dados.html">Linhagem de dados</a><a class="pill" href="../conceitos/governanca-ia.html">Governança de IA</a></div><h3>Exemplo aplicado</h3><div class="box practice">Documentar quem pode acessar uma base, por que ela existe e quais transformações foram realizadas.</div><h3>Roteiro de laboratório</h3><div class="n8n-lab-guide"><p><strong>Roteiro de prática:</strong> Criar registro de governança</p><ol class="steps"><li>Liste dados pessoais e sensíveis.</li><li>Defina finalidade e prazo de uso.</li><li>Crie um registro de linhagem simples.</li><li>Indique revisão humana e responsáveis.</li></ol></div><h3>Produto da unidade</h3><p>Ficha de governança de dados.</p><h3>Evidência de aprendizagem</h3><p>O participante conecta engenharia de dados a responsabilidade institucional.</p></section><section id="u149"><h2 class="unit-title"><span class="unit-num">14.9</span> Mineração de dados, análise exploratória e modelos</h2><h3>Objetivo da unidade</h3><p>Preparar dados para análise, mineração de dados, aprendizado de máquina e avaliação crítica.</p><h3>Conceitos trabalhados</h3><div class="related-strip"><a class="pill" href="../conceitos/mineracao-dados.html">Mineração de dados</a><a class="pill" href="../conceitos/machine-learning.html">Machine Learning</a><a class="pill" href="../conceitos/analise-exploratoria.html">Análise exploratória</a></div><h3>Exemplo aplicado</h3><div class="box practice">Investigar padrões fictícios de participação e levantar hipóteses sem concluir além do que os dados permitem.</div><h3>Roteiro de laboratório</h3><div class="n8n-lab-guide"><p><strong>Roteiro de prática:</strong> Explorar dados com cautela</p><ol class="steps"><li>Calcule estatísticas descritivas.</li><li>Crie gráficos exploratórios.</li><li>Levante hipóteses e limitações.</li><li>Indique quais dados adicionais seriam necessários.</li></ol></div><h3>Produto da unidade</h3><p>Relatório exploratório.</p><h3>Evidência de aprendizagem</h3><p>O participante diferencia exploração, hipótese e conclusão.</p></section><section id="u1410"><h2 class="unit-title"><span class="unit-num">14.10</span> Projeto final: pipeline de dados para IA</h2><h3>Objetivo da unidade</h3><p>Integrar ingestão, qualidade, transformação, armazenamento, visualização e documentação em um produto final.</p><h3>Conceitos trabalhados</h3><div class="related-strip"><a class="pill" href="../conceitos/engenharia-dados.html">Engenharia de Dados</a><a class="pill" href="../conceitos/etl-elt.html">ETL e ELT</a><a class="pill" href="../conceitos/pipeline-dados.html">Pipeline de dados</a><a class="pill" href="../conceitos/qualidade-dados.html">Qualidade de dados</a><a class="pill" href="../conceitos/data-lake.html">Data lake</a><a class="pill" href="../conceitos/data-warehouse.html">Data warehouse</a><a class="pill" href="../conceitos/catalogo-dados.html">Catálogo de dados</a><a class="pill" href="../conceitos/linhagem-dados.html">Linhagem de dados</a><a class="pill" href="../conceitos/mineracao-dados.html">Mineração de dados</a><a class="pill" href="../conceitos/pre-processamento-dados.html">Pré-processamento</a></div><h3>Exemplo aplicado</h3><div class="box practice">Criar uma base curada de inscrições fictícias pronta para dashboard, automação ou modelo de IA.</div><h3>Roteiro de laboratório</h3><div class="n8n-lab-guide"><p><strong>Roteiro de prática:</strong> Construir pipeline final documentado</p><ol class="steps"><li>Defina objetivo e fontes.</li><li>Implemente ou desenhe ingestão e transformação.</li><li>Aplique regras de qualidade.</li><li>Gere indicadores e visualização.</li><li>Documente governança, limitações e próximos passos.</li></ol></div><h3>Produto da unidade</h3><p>Pipeline de dados completo com relatório.</p><h3>Evidência de aprendizagem</h3><p>O participante apresenta uma solução de engenharia de dados com rastreabilidade.</p></section><section id="projeto-final"><h2 class="section-title">Projeto integrador do Módulo 14</h2><div class="box lab"><p><strong>Produto final:</strong> um artefato prático documentado, com dados fictícios ou anonimizados, evidências de execução, explicação das decisões tomadas e cuidados éticos.</p><p>O participante deve apresentar objetivo, dados usados, ferramentas escolhidas, etapas realizadas, validações, limitações, riscos e próximos passos.</p></div></section></div></main><a class="backtop" href="#top">Topo</a><footer class="footer"><span class="footer-primary">unesp.IA - Inteligência Artificial para Todos | Projeto de Extensão Universitária | Coleção Editorial</span><span class="footer-unit">Faculdade de Ciências e Tecnologia de Presidente Prudente - FCT/UNESP</span><span class="footer-institution">Departamento de Matemática e Computação</span></footer></body></html>
+<!doctype html><html lang="pt-br"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Módulo 14 – Engenharia de Dados para Inteligência Artificial • unesp.IA</title><link rel="stylesheet" href="../assets/css/style.css?v=20260713-m13-m14-deep"><script src="../assets/js/search.js"></script><style>.module-full.module-m14{--module-color:#00796B;--module-soft:#E8F7F4}</style></head><body><div class="topbar"><a class="brand" href="../index.html"><img class="brand-logo" src="../assets/img/logo-unesp-ia-portal.jpg" alt="unesp.IA"><small>Coleção Editorial | Portal Didático dos Participantes</small></a><div class="nav"><a href="../index.html">Início</a><a href="../inscricoes.html">Inscrições</a><a href="../modulos.html">Módulos</a><a href="../trilhas.html">Trilhas</a><a href="../conceitos.html">Conceitos</a><a href="../ferramentas.html">Ferramentas</a><a href="../laboratorios.html">Laboratórios</a><a href="../materiais.html">Materiais</a><a href="../personagens.html">Personagens</a><a href="../equipe.html">Equipe</a><a href="../mapa-conhecimento.html">Mapa</a></div></div><main><div class="container content module-full module-m14" id="top"><div class="breadcrumbs"><a href="../index.html">Início</a> / <a href="../modulos.html">Módulos</a> / Módulo 14</div><div class="hero"><span class="badge">M14</span><h1>Engenharia de Dados para Inteligência Artificial</h1><p>Caderno aprofundado de engenharia de dados com ETL/ELT, qualidade, transformação, armazenamento, governança, mineração de dados e códigos Python aplicados.</p></div>
+<div class="module-actions"><a class="pill" href="../conceitos.html">Conceitos</a><a class="pill" href="../ferramentas.html">Ferramentas</a><a class="pill" href="../trilhas.html">Trilhas</a><a class="pill" href="../laboratorios.html">Laboratórios</a></div>
+<section class="module-toolbox"><h3>Ferramentas relacionadas neste módulo</h3><div class="related-strip"><a class="pill" href="../ferramentas/python.html">Python</a><a class="pill" href="../ferramentas/pandas.html">pandas</a><a class="pill" href="../ferramentas/numpy.html">NumPy</a><a class="pill" href="../ferramentas/jupyter.html">Jupyter</a><a class="pill" href="../ferramentas/google-colab.html">Google Colab</a><a class="pill" href="../ferramentas/excel-sheets.html">Excel e Google Sheets</a><a class="pill" href="../ferramentas/power-bi.html">Power BI</a><a class="pill" href="../ferramentas/looker-studio.html">Looker Studio</a><a class="pill" href="../ferramentas/scikit-learn.html">scikit-learn</a><a class="pill" href="../ferramentas/duckdb.html">DuckDB</a></div></section>
+<div class="mini-toc"><strong>Unidades e seções deste módulo</strong><a href="#apresentacao">Apresentação e competências</a><a href="#glossario">Glossário interno do módulo</a><a href="#u141">14.1 Ciclo de vida e arquitetura</a><a href="#u142">14.2 Extração e ingestão</a><a href="#u143">14.3 Qualidade e validação</a><a href="#u144">14.4 Transformação e padronização</a><a href="#u145">14.5 Ausências, duplicidades e outliers</a><a href="#u146">14.6 Integração, joins e indicadores</a><a href="#u147">14.7 Carga, armazenamento e camadas</a><a href="#u148">14.8 Logs, auditoria e linhagem</a><a href="#u149">14.9 Mineração, modelos e preparação para IA</a><a href="#u1410">14.10 Pipeline ETL completo</a></div>
+<section class="module-visual"><figure><img src="../assets/img/modulos/m14-visual.svg" alt="Mapa visual do Módulo 14"><figcaption>Engenharia de dados conecta fontes, qualidade, transformação, armazenamento, governança e uso em IA.</figcaption></figure><aside class="character-guide"><img src="../assets/img/personagens/carlos.png" alt="Personagem Carlos"><h3>Carlos constrói dados confiáveis</h3><p>Sem dados organizados e rastreáveis, dashboards, automações e modelos de IA ficam frágeis. O módulo ensina a preparar dados com método.</p></aside></section>
+<section id="apresentacao"><h2 class="section-title">Apresentação e competências</h2><p>Este módulo aprofunda engenharia de dados aplicada ao unesp.IA. O foco é construir pipelines reprodutíveis com Python, da extração à carga, passando por validação, limpeza, transformação, integração, logs, governança e preparação para análise, mineração de dados e IA.</p><div class="box practice"><strong>Ao final do módulo, espera-se que o participante seja capaz de:</strong><ul><li>diferenciar dado bruto, tratado, curado e produto de dados;</li><li>desenhar pipelines ETL e ELT com entradas, regras, saídas e logs;</li><li>extrair dados de CSV, Excel, JSON, APIs e bancos;</li><li>aplicar validações de qualidade, schema, duplicidade, consistência e completude;</li><li>tratar ausências, outliers, tipos, categorias e formatos;</li><li>integrar bases por chaves, gerar indicadores e carregar resultados em arquivos ou bancos;</li><li>documentar catálogo, linhagem, LGPD, riscos e responsáveis.</li></ul></div></section>
+<section id="glossario"><h2 class="section-title">Glossário interno do módulo</h2><div class="concept-mini-grid"><article class="concept-mini-card"><h3><a href="../conceitos/engenharia-dados.html">Engenharia de Dados</a></h3><p>área que coleta, organiza, transforma, valida, armazena e disponibiliza dados para análise e IA.</p></article><article class="concept-mini-card"><h3><a href="../conceitos/etl-elt.html">ETL</a></h3><p>processo de extrair dados, transformar com regras de qualidade e carregar em um destino confiável.</p></article><article class="concept-mini-card"><h3><a href="../conceitos/etl-elt.html">ELT</a></h3><p>variação em que dados são carregados primeiro e transformados depois no ambiente analítico.</p></article><article class="concept-mini-card"><h3><a href="../conceitos/pipeline-dados.html">Pipeline de dados</a></h3><p>sequência reproduzível de etapas de ingestão, validação, transformação, carga, log e monitoramento.</p></article><article class="concept-mini-card"><h3><a href="../conceitos/qualidade-dados.html">Qualidade de dados</a></h3><p>critérios de completude, validade, consistência, unicidade, atualidade e conformidade.</p></article><article class="concept-mini-card"><h3><a href="../conceitos/data-lake.html">Data lake</a></h3><p>repositório de dados brutos ou semiestruturados, geralmente antes da curadoria analítica.</p></article><article class="concept-mini-card"><h3><a href="../conceitos/data-warehouse.html">Data warehouse</a></h3><p>base organizada, integrada e confiável para relatórios, indicadores e tomada de decisão.</p></article><article class="concept-mini-card"><h3><a href="../conceitos/catalogo-dados.html">Catálogo de dados</a></h3><p>inventário com descrição, origem, responsável, sensibilidade e regras de uso de cada base.</p></article><article class="concept-mini-card"><h3><a href="../conceitos/linhagem-dados.html">Linhagem de dados</a></h3><p>registro da origem, transformações e usos dos dados ao longo do pipeline.</p></article><article class="concept-mini-card"><h3><a href="../conceitos/pre-processamento-dados.html">Pré-processamento</a></h3><p>limpeza, transformação, normalização, tratamento de ausências, duplicidades e outliers.</p></article></div></section>
+<section id="u141"><h2 class="unit-title">14.1 Fundamentos, ciclo de vida e arquitetura de dados</h2><p class="unit-objective"><strong>Objetivo:</strong> Compreender o percurso do dado desde a origem até o uso em relatórios, automações e IA.</p><p>Engenharia de dados não é apenas programação: envolve arquitetura, qualidade, governança, segurança, documentação e operação. Um pipeline confiável precisa responder: de onde o dado veio, quem pode usar, o que foi transformado, quando foi atualizado e quais limites existem.</p><div class="table-wrap"><table class="table"><tr><th>Camada</th><th>Descrição</th><th>Exemplo</th></tr><tr><td>Bronze</td><td>Dado bruto, preservado como foi recebido.</td><td>CSV original de inscrições.</td></tr><tr><td>Prata</td><td>Dado limpo, validado e padronizado.</td><td>Inscrições com e-mail validado e duplicidades removidas.</td></tr><tr><td>Ouro</td><td>Dado agregado e pronto para consumo.</td><td>Indicadores por turma, perfil e situação.</td></tr></table></div><pre class="code-block"><code>from pathlib import Path
+from datetime import datetime
+import json
+import logging
+
+import numpy as np
+import pandas as pd</code></pre><pre class="code-block"><code>import pandas as pd
+import numpy as np
+
+inscricoes = pd.DataFrame({
+    &quot;id_inscricao&quot;: [1, 2, 3, 4, 4],
+    &quot;nome&quot;: [&quot; ana silva &quot;, &quot;Carlos Souza&quot;, &quot;MARIA LIMA&quot;, None, None],
+    &quot;email&quot;: [&quot;ana@email.com&quot;, &quot;carlos@&quot;, &quot;maria@email.com&quot;, &quot;idoso@email.com&quot;, &quot;idoso@email.com&quot;],
+    &quot;perfil&quot;: [&quot;melhor idade&quot;, &quot;comunidade&quot;, &quot;comunidade&quot;, &quot;melhor idade&quot;, &quot;melhor idade&quot;],
+    &quot;idade&quot;: [67, 35, 28, 72, 72],
+    &quot;modulo&quot;: [&quot;Python&quot;, &quot;Python&quot;, &quot;Dados&quot;, &quot;Python&quot;, &quot;Python&quot;],
+    &quot;data_inscricao&quot;: [&quot;2026-07-06&quot;, &quot;2026-07-07&quot;, &quot;2026-07-09&quot;, &quot;2026-07-10&quot;, &quot;2026-07-10&quot;]
+})
+
+presencas = pd.DataFrame({
+    &quot;email&quot;: [&quot;ana@email.com&quot;, &quot;maria@email.com&quot;, &quot;idoso@email.com&quot;],
+    &quot;presencas&quot;: [10, 9, 12],
+    &quot;total_aulas&quot;: [12, 12, 12]
+})</code></pre></section>
+<section id="u142"><h2 class="unit-title">14.2 Extração e ingestão: CSV, Excel, JSON, API e banco</h2><p class="unit-objective"><strong>Objetivo:</strong> Ler dados de diferentes fontes preservando origem, formato e rastreabilidade.</p><p>A extração deve manter uma cópia bruta dos dados e registrar data, fonte, responsável e finalidade. Nunca comece alterando o arquivo original: crie camadas.</p><pre class="code-block"><code>from pathlib import Path
+import pandas as pd
+
+RAW = Path(&quot;dados/raw&quot;)
+RAW.mkdir(parents=True, exist_ok=True)
+
+# CSV
+inscricoes_csv = pd.read_csv(RAW / &quot;inscricoes.csv&quot;, encoding=&quot;utf-8&quot;)
+
+# Excel
+presencas_xlsx = pd.read_excel(RAW / &quot;presencas.xlsx&quot;, engine=&quot;openpyxl&quot;)
+
+# JSON
+avaliacoes_json = pd.read_json(RAW / &quot;avaliacoes.json&quot;)
+
+# API pública ou institucional: exemplo conceitual
+import requests
+resposta = requests.get(&quot;https://api.exemplo.gov/dados&quot;, timeout=20)
+if resposta.status_code == 200:
+    dados_api = pd.DataFrame(resposta.json())</code></pre><div class="box warn"><strong>LGPD:</strong> se houver dados pessoais, defina finalidade, base legal, minimização, controle de acesso e prazo de retenção antes de coletar.</div></section>
+<section id="u143"><h2 class="unit-title">14.3 Validação, schema e qualidade de dados</h2><p class="unit-objective"><strong>Objetivo:</strong> Aplicar regras de completude, validade, consistência, unicidade e conformidade.</p><p>Validação é a alfândega do pipeline. Ela não corrige tudo automaticamente; ela classifica o que está válido, pendente ou bloqueado para revisão humana.</p><div class="table-wrap"><table class="table"><tr><th>Dimensão</th><th>Pergunta</th><th>Exemplo de regra</th></tr><tr><td>Completude</td><td>Campos obrigatórios estão preenchidos?</td><td>nome e e-mail não podem estar vazios.</td></tr><tr><td>Validade</td><td>O valor tem formato aceito?</td><td>e-mail deve seguir padrão válido.</td></tr><tr><td>Consistência</td><td>Campos combinam entre si?</td><td>melhor idade deve ter 60 anos ou mais quando for critério de público.</td></tr><tr><td>Unicidade</td><td>Há duplicidades?</td><td>id_inscricao não pode repetir.</td></tr><tr><td>Atualidade</td><td>O dado está no período esperado?</td><td>data de inscrição dentro do prazo.</td></tr></table></div><pre class="code-block"><code>def validar_qualidade(df):
+    relatorio = {}
+    relatorio[&quot;linhas&quot;] = len(df)
+    relatorio[&quot;duplicados_id&quot;] = int(df.duplicated(subset=[&quot;id_inscricao&quot;]).sum())
+    relatorio[&quot;nomes_ausentes&quot;] = int(df[&quot;nome&quot;].isna().sum())
+    relatorio[&quot;emails_invalidos&quot;] = int(~df[&quot;email&quot;].fillna(&quot;&quot;).str.contains(r&quot;^[^@\s]+@[^@\s]+\.[^@\s]+$&quot;, regex=True).sum())
+    relatorio[&quot;idades_fora_faixa&quot;] = int(((df[&quot;idade&quot;] &lt; 0) | (df[&quot;idade&quot;] &gt; 110)).sum())
+    return relatorio
+
+print(validar_qualidade(inscricoes))</code></pre></section>
+<section id="u144"><h2 class="unit-title">14.4 Transformação: limpeza, padronização, tipos e regras de negócio</h2><p class="unit-objective"><strong>Objetivo:</strong> Transformar dados brutos em dados consistentes, tipados e interpretáveis.</p><p>Transformar é aplicar regras explícitas: remover espaços, padronizar caixa, converter datas, normalizar categorias, validar chaves e criar campos derivados.</p><pre class="code-block"><code>def transformar_inscricoes(df):
+    dados = df.copy()
+
+    # Padronização textual
+    dados[&quot;nome&quot;] = dados[&quot;nome&quot;].fillna(&quot;não informado&quot;).str.strip().str.title()
+    dados[&quot;perfil&quot;] = dados[&quot;perfil&quot;].str.strip().str.lower()
+    dados[&quot;modulo&quot;] = dados[&quot;modulo&quot;].str.strip().str.title()
+
+    # Conversão de tipos
+    dados[&quot;idade&quot;] = pd.to_numeric(dados[&quot;idade&quot;], errors=&quot;coerce&quot;)
+    dados[&quot;data_inscricao&quot;] = pd.to_datetime(dados[&quot;data_inscricao&quot;], errors=&quot;coerce&quot;)
+
+    # Validação de e-mail
+    dados[&quot;email_valido&quot;] = dados[&quot;email&quot;].fillna(&quot;&quot;).str.contains(
+        r&quot;^[^@\s]+@[^@\s]+\.[^@\s]+$&quot;, regex=True
+    )
+
+    # Remoção de duplicidades por chave de negócio
+    dados = dados.sort_values(&quot;data_inscricao&quot;).drop_duplicates(subset=[&quot;id_inscricao&quot;], keep=&quot;last&quot;)
+
+    # Regras de perfil
+    dados[&quot;publico_prioritario&quot;] = np.where(
+        (dados[&quot;perfil&quot;] == &quot;melhor idade&quot;) &amp; (dados[&quot;idade&quot;] &gt;= 60),
+        True,
+        False
+    )
+
+    return dados
+
+inscricoes_tratadas = transformar_inscricoes(inscricoes)
+display(inscricoes_tratadas)</code></pre></section>
+<section id="u145"><h2 class="unit-title">14.5 Tratamento de ausências, duplicidades, normalização e outliers</h2><p class="unit-objective"><strong>Objetivo:</strong> Aplicar técnicas de pré-processamento sem distorcer a realidade dos dados.</p><p>Nem todo valor ausente deve ser preenchido; nem todo outlier deve ser removido. Cada decisão precisa ser justificada, registrada e, quando necessário, revisada por uma pessoa responsável.</p><h3>Ausências</h3><pre class="code-block"><code># Estratégias comuns para valores ausentes
+df = inscricoes_tratadas.copy()
+
+# Remover linhas quando o campo é indispensável
+df_sem_email_invalido = df[df[&quot;email_valido&quot;]].copy()
+
+# Preencher categorias ausentes
+df[&quot;perfil&quot;] = df[&quot;perfil&quot;].fillna(&quot;não informado&quot;)
+
+# Preencher números com mediana quando fizer sentido estatístico
+df[&quot;idade&quot;] = df[&quot;idade&quot;].fillna(df[&quot;idade&quot;].median())</code></pre><h3>Outliers pelo método IQR</h3><pre class="code-block"><code>def marcar_outliers_iqr(df, coluna):
+    q1 = df[coluna].quantile(0.25)
+    q3 = df[coluna].quantile(0.75)
+    iqr = q3 - q1
+    limite_inferior = q1 - 1.5 * iqr
+    limite_superior = q3 + 1.5 * iqr
+    return (df[coluna] &lt; limite_inferior) | (df[coluna] &gt; limite_superior)
+
+inscricoes_tratadas[&quot;idade_outlier&quot;] = marcar_outliers_iqr(inscricoes_tratadas, &quot;idade&quot;)</code></pre><h3>Técnicas e métodos usuais</h3><ul><li><strong>Remoção:</strong> quando o registro é inválido e sem possibilidade de correção;</li><li><strong>Imputação:</strong> média, mediana, moda ou valor “não informado”, quando justificável;</li><li><strong>Normalização:</strong> escalas comparáveis, como min-max;</li><li><strong>Padronização:</strong> média zero e desvio padrão um;</li><li><strong>Encoding:</strong> transformar categorias em variáveis numéricas;</li><li><strong>Deduplicação:</strong> por chave única ou combinação de campos;</li><li><strong>Winsorização:</strong> limitar extremos quando há justificativa estatística.</li></ul></section>
+<section id="u146"><h2 class="unit-title">14.6 Integração de bases, merge, join, concat, groupby e indicadores</h2><p class="unit-objective"><strong>Objetivo:</strong> Combinar fontes, criar indicadores e gerar produtos de dados.</p><p>A integração exige atenção às chaves. Um merge errado pode multiplicar linhas, perder registros ou produzir indicadores incorretos. Use <code>validate</code> quando possível.</p><pre class="code-block"><code>base_curada = inscricoes_tratadas.merge(
+    presencas,
+    on=&quot;email&quot;,
+    how=&quot;left&quot;,
+    validate=&quot;many_to_one&quot;
+)
+
+base_curada[&quot;presencas&quot;] = base_curada[&quot;presencas&quot;].fillna(0)
+base_curada[&quot;total_aulas&quot;] = base_curada[&quot;total_aulas&quot;].fillna(12)
+base_curada[&quot;frequencia&quot;] = base_curada[&quot;presencas&quot;] / base_curada[&quot;total_aulas&quot;]
+base_curada[&quot;situacao&quot;] = np.where(base_curada[&quot;frequencia&quot;] &gt;= 0.75, &quot;aprovado&quot;, &quot;pendente&quot;)
+
+indicadores = base_curada.groupby([&quot;modulo&quot;, &quot;perfil&quot;], dropna=False).agg(
+    participantes=(&quot;id_inscricao&quot;, &quot;count&quot;),
+    frequencia_media=(&quot;frequencia&quot;, &quot;mean&quot;),
+    idade_media=(&quot;idade&quot;, &quot;mean&quot;)
+).reset_index()
+
+display(indicadores)</code></pre></section>
+<section id="u147"><h2 class="unit-title">14.7 Carga e armazenamento: CSV, Excel, Parquet, SQLite, DuckDB, data lake e warehouse</h2><p class="unit-objective"><strong>Objetivo:</strong> Salvar dados tratados em formatos adequados ao consumo e à escala.</p><p>A carga fecha o ciclo do ETL. A escolha do destino depende do volume, frequência, público e finalidade. Para aula, CSV/Excel/SQLite bastam; para produção, avaliam-se bancos, data warehouses, lakehouses e governança de acesso.</p><pre class="code-block"><code>CURATED = Path(&quot;dados/curated&quot;)
+CURATED.mkdir(parents=True, exist_ok=True)
+
+base_curada.to_csv(CURATED / &quot;participantes_curado.csv&quot;, index=False, encoding=&quot;utf-8&quot;)
+indicadores.to_excel(CURATED / &quot;indicadores.xlsx&quot;, index=False)
+
+# Parquet é indicado para bases maiores; exige pyarrow ou fastparquet
+# base_curada.to_parquet(CURATED / &quot;participantes_curado.parquet&quot;, index=False)
+
+# Carga em banco local SQLite
+import sqlite3
+with sqlite3.connect(CURATED / &quot;portal_ia.db&quot;) as conn:
+    base_curada.to_sql(&quot;participantes&quot;, conn, if_exists=&quot;replace&quot;, index=False)
+    indicadores.to_sql(&quot;indicadores&quot;, conn, if_exists=&quot;replace&quot;, index=False)</code></pre></section>
+<section id="u148"><h2 class="unit-title">14.8 Logs, auditoria, linhagem, catálogo e governança</h2><p class="unit-objective"><strong>Objetivo:</strong> Registrar execuções, decisões, origem, transformações e responsáveis.</p><p>Um pipeline sem log é uma caixa-preta. Logs ajudam a responder o que aconteceu, quando aconteceu, quantas linhas foram processadas, quais erros surgiram e quem deve revisar.</p><pre class="code-block"><code>import logging
+from datetime import datetime
+
+LOGS = Path(&quot;logs&quot;)
+LOGS.mkdir(exist_ok=True)
+
+logging.basicConfig(
+    filename=LOGS / &quot;pipeline_etl.log&quot;,
+    level=logging.INFO,
+    format=&quot;%(asctime)s | %(levelname)s | %(message)s&quot;
+)
+
+inicio = datetime.now()
+logging.info(&quot;Pipeline iniciado&quot;)
+logging.info(&quot;Linhas extraídas: %s&quot;, len(inscricoes))
+logging.info(&quot;Linhas carregadas: %s&quot;, len(base_curada))
+logging.info(&quot;Indicadores gerados: %s&quot;, len(indicadores))
+logging.info(&quot;Pipeline finalizado em %s segundos&quot;, (datetime.now() - inicio).seconds)</code></pre><div class="box tip"><strong>Checklist mínimo:</strong> fonte, data/hora, versão do pipeline, total de linhas extraídas, total de linhas rejeitadas, regras aplicadas, destino, responsável e restrições de uso.</div></section>
+<section id="u149"><h2 class="unit-title">14.9 Mineração de dados, análise exploratória e preparação para IA</h2><p class="unit-objective"><strong>Objetivo:</strong> Preparar dados para exploração, modelos e aplicações de IA com cautela.</p><p>Depois do ETL, os dados podem alimentar visualizações, mineração de dados, modelos de classificação, regressão, agrupamento ou sistemas de recomendação. Antes disso, é preciso verificar representatividade, vieses, vazamentos de informação e finalidade.</p><pre class="code-block"><code>from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+from sklearn.pipeline import Pipeline
+from sklearn.linear_model import LogisticRegression
+
+features = base_curada[[&#x27;idade&#x27;, &#x27;frequencia&#x27;]].fillna(0)
+target = (base_curada[&#x27;situacao&#x27;] == &#x27;aprovado&#x27;).astype(int)
+
+X_train, X_test, y_train, y_test = train_test_split(features, target, test_size=0.3, random_state=42)
+
+modelo = Pipeline([
+    (&#x27;escala&#x27;, StandardScaler()),
+    (&#x27;classificador&#x27;, LogisticRegression())
+])
+
+modelo.fit(X_train, y_train)
+print(&#x27;Acurácia:&#x27;, modelo.score(X_test, y_test))</code></pre><div class="box warn"><strong>Cuidado:</strong> este exemplo é didático. Modelos reais exigem avaliação, validação, análise de viés, explicabilidade, governança e autorização de uso.</div></section>
+<section id="u1410"><h2 class="unit-title">14.10 Pipeline ETL completo em Python</h2><p class="unit-objective"><strong>Objetivo:</strong> Integrar todas as etapas em uma função reprodutível e documentada.</p><p>O pipeline completo deve ser executável, versionado e explicado. O código abaixo resume extração, validação, transformação, carga e log em uma estrutura única.</p><pre class="code-block"><code>from pathlib import Path
+from datetime import datetime
+import logging
+import numpy as np
+import pandas as pd
+
+RAW = Path(&quot;dados/raw&quot;)
+CURATED = Path(&quot;dados/curated&quot;)
+LOGS = Path(&quot;logs&quot;)
+for pasta in [RAW, CURATED, LOGS]:
+    pasta.mkdir(parents=True, exist_ok=True)
+
+logging.basicConfig(filename=LOGS / &quot;etl.log&quot;, level=logging.INFO)
+
+def extract():
+    inscricoes = pd.read_csv(RAW / &quot;inscricoes.csv&quot;, encoding=&quot;utf-8&quot;)
+    presencas = pd.read_excel(RAW / &quot;presencas.xlsx&quot;, engine=&quot;openpyxl&quot;)
+    return inscricoes, presencas
+
+def validate(df):
+    erros = {
+        &quot;duplicados&quot;: int(df.duplicated(subset=[&quot;id_inscricao&quot;]).sum()),
+        &quot;email_ausente&quot;: int(df[&quot;email&quot;].isna().sum()),
+        &quot;nome_ausente&quot;: int(df[&quot;nome&quot;].isna().sum())
+    }
+    return erros
+
+def transform(inscricoes, presencas):
+    dados = inscricoes.copy()
+    dados[&quot;nome&quot;] = dados[&quot;nome&quot;].fillna(&quot;não informado&quot;).str.strip().str.title()
+    dados[&quot;email&quot;] = dados[&quot;email&quot;].str.strip().str.lower()
+    dados[&quot;perfil&quot;] = dados[&quot;perfil&quot;].str.strip().str.lower()
+    dados[&quot;data_inscricao&quot;] = pd.to_datetime(dados[&quot;data_inscricao&quot;], errors=&quot;coerce&quot;)
+    dados = dados.drop_duplicates(subset=[&quot;id_inscricao&quot;], keep=&quot;last&quot;)
+    dados = dados.merge(presencas, on=&quot;email&quot;, how=&quot;left&quot;)
+    dados[&quot;presencas&quot;] = dados[&quot;presencas&quot;].fillna(0)
+    dados[&quot;total_aulas&quot;] = dados[&quot;total_aulas&quot;].fillna(12)
+    dados[&quot;frequencia&quot;] = dados[&quot;presencas&quot;] / dados[&quot;total_aulas&quot;]
+    dados[&quot;situacao&quot;] = np.where(dados[&quot;frequencia&quot;] &gt;= 0.75, &quot;aprovado&quot;, &quot;pendente&quot;)
+    return dados
+
+def load(base):
+    base.to_csv(CURATED / &quot;participantes_curado.csv&quot;, index=False, encoding=&quot;utf-8&quot;)
+    resumo = base.groupby([&quot;perfil&quot;, &quot;situacao&quot;]).size().reset_index(name=&quot;total&quot;)
+    resumo.to_excel(CURATED / &quot;indicadores.xlsx&quot;, index=False)
+    return resumo
+
+def run():
+    inicio = datetime.now()
+    logging.info(&quot;Início do pipeline&quot;)
+    inscricoes, presencas = extract()
+    logging.info(&quot;Validação: %s&quot;, validate(inscricoes))
+    base = transform(inscricoes, presencas)
+    resumo = load(base)
+    logging.info(&quot;Fim do pipeline: %s linhas, %s indicadores&quot;, len(base), len(resumo))
+    print(&quot;Pipeline concluído em&quot;, datetime.now() - inicio)
+
+run()</code></pre><div class="box lab"><strong>Entrega:</strong> pasta com dados fictícios, script ETL, arquivo de log, base curada, indicadores, dicionário de dados e relatório com limitações.</div></section>
+</div></main><a class="backtop" href="#top">Topo</a><footer class="footer"><span class="footer-primary">unesp.IA - Inteligência Artificial para Todos | Projeto de Extensão Universitária | Coleção Editorial</span><span class="footer-unit">Faculdade de Ciências e Tecnologia de Presidente Prudente - FCT/UNESP</span><span class="footer-institution">Departamento de Matemática e Computação</span></footer></body></html>

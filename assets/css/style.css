@@ -420,3 +420,13 @@
 
 .module-m13 pre,.module-m14 pre{background:#0F172A;color:#E2E8F0;padding:16px;border-radius:14px;overflow:auto;white-space:pre-wrap}
 .module-m13 .figure-grid figure,.module-m14 .figure-grid figure{margin:0}
+
+
+/* M13/M14 aprofundados */
+.concept-mini-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:14px;margin:18px 0}
+.concept-mini-card{border:1px solid var(--border);border-left:5px solid var(--module-color);border-radius:14px;background:#fff;padding:14px 16px;box-shadow:var(--shadow)}
+.concept-mini-card h3{margin:0 0 6px!important;font-size:18px!important}
+.concept-mini-card p{margin:0;font-size:15px!important;color:#425362}
+.unit-objective{padding:12px 14px;border-left:5px solid var(--module-color);background:var(--module-soft);border-radius:12px}
+.code-block{background:#0F172A;color:#E2E8F0;padding:16px;border-radius:14px;overflow:auto;white-space:pre-wrap;font-size:14px;line-height:1.5}
+.code-block code{font-family:Consolas,'Courier New',monospace}
