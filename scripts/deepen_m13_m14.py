@@ -78,6 +78,47 @@ def concept_grid(items: list[tuple[str, str, str]]) -> str:
     return '<div class="concept-mini-grid">' + ''.join(cards) + '</div>'
 
 
+def rm_link(path: str, label: str) -> str:
+    return f'<a class="term" href="https://ronaldocmc.github.io/UnespDataLens-RM/{path}" target="_blank" rel="noopener">{esc(label)}</a>'
+
+
+def rm_deep_dive(unit_code: str) -> str:
+    guide = RM_GUIDANCE.get(unit_code)
+    if not guide:
+        return ""
+    unit_anchor = f'implementacao-u{unit_code.replace(".", "")}'
+    problem_rows = ''.join(
+        f'<tr><td>{rm_link(path, name)}</td><td>{diagnosis}</td><td>{solution}</td><td>{evidence}</td></tr>'
+        for name, path, diagnosis, solution, evidence in guide["problems"]
+    )
+    method_rows = ''.join(
+        f'<tr><td>{rm_link(path, name)}</td><td>{purpose}</td><td>{steps}</td><td><a href="#{unit_anchor}">Exemplos e laboratório desta unidade</a></td></tr>'
+        for name, path, purpose, steps in guide["methods"]
+    )
+    metric_rows = ''.join(
+        f'<tr><td>{rm_link(path, name)}</td><td><code>{formula}</code></td><td>{analysis}</td><td>{action}</td></tr>'
+        for name, path, formula, analysis, action in guide["metrics"]
+    )
+    artifact_rows = ''.join(
+        f'<tr><td>{rm_link(path, name)}</td><td>{minimum}</td><td>{implementation}</td><td>{validation}</td></tr>'
+        for name, path, minimum, implementation, validation in guide["artifacts"]
+    )
+    return (
+        '<div class="rm-deep-dive"><h3>Como diagnosticar e resolver os problemas</h3>'
+        '<p>A tabela deixa explícito o caminho <strong>problema → diagnóstico → intervenção → evidência</strong>. '
+        'A correção somente é considerada concluída quando a evidência pode ser verificada por outra pessoa.</p>'
+        '<div class="table-wrap"><table class="table"><tr><th>Problema/conceito</th><th>Como diagnosticar</th><th>Como resolver</th><th>Como comprovar</th></tr>'
+        + problem_rows + '</table></div>'
+        '<h3>Como aplicar os métodos e técnicas</h3><div class="table-wrap"><table class="table"><tr><th>Método</th><th>Quando e por quê</th><th>Procedimento implementacional</th><th>Onde praticar</th></tr>'
+        + method_rows + '</table></div>'
+        '<h3>Como calcular, avaliar e interpretar as métricas</h3><p>A meta não deve ser escolhida apenas para “ficar verde”. Ela deriva da finalidade do produto, do risco, do histórico e do acordo entre produtor e consumidor.</p>'
+        '<div class="table-wrap"><table class="table"><tr><th>Métrica</th><th>Fórmula operacional</th><th>Leitura e análise</th><th>Ação decorrente</th></tr>'
+        + metric_rows + '</table></div>'
+        '<h3>Como implementar os artefatos de evidência</h3><div class="table-wrap"><table class="table"><tr><th>Artefato</th><th>Conteúdo mínimo</th><th>Como construir</th><th>Como validar</th></tr>'
+        + artifact_rows + '</table></div></div>'
+    )
+
+
 def unit(title: str, objective: str, content: str) -> str:
     number = title.split(" ", 1)[0].replace(".", "")
     anchor = f"u{number}"
@@ -101,7 +142,7 @@ def unit(title: str, objective: str, content: str) -> str:
                 f'<tr><th>Métodos e técnicas</th><td>{alignment["methods"]}</td></tr>'
                 f'<tr><th>Métricas mínimas</th><td>{alignment["metrics"]}</td></tr>'
                 f'<tr><th>Artefatos de evidência</th><td>{alignment["artifacts"]}</td></tr>'
-                '</table></div>'
+                '</table></div>' + rm_deep_dive(unit_code)
             )
         framework_before = (
             '<h3>Carga horária</h3>'
@@ -135,7 +176,8 @@ def unit(title: str, objective: str, content: str) -> str:
         )
     if not learning:
         framework_before = f'<h3>Objetivo da unidade</h3><p>{objective}</p>'
-    return f'<section id="{anchor}"><h2 class="unit-title">{esc(title)}</h2>{framework_before}{content}{framework_after}</section>'
+    implementation = f'<div id="implementacao-{anchor}"><h3>Base teórica e implementação em Python</h3>{content}</div>'
+    return f'<section id="{anchor}"><h2 class="unit-title">{esc(title)}</h2>{framework_before}{implementation}{framework_after}</section>'
 
 
 def technique(title: str, explanation: str, example: str) -> str:
