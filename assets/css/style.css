@@ -430,3 +430,9 @@
 .unit-objective{padding:12px 14px;border-left:5px solid var(--module-color);background:var(--module-soft);border-radius:12px}
 .code-block{background:#0F172A;color:#E2E8F0;padding:16px;border-radius:14px;overflow:auto;white-space:pre-wrap;font-size:14px;line-height:1.5}
 .code-block code{font-family:Consolas,'Courier New',monospace}
+
+
+/* Blocos de técnicas do Módulo 14 */
+.technique-card{margin:18px 0;padding:18px;border:1px solid var(--border);border-radius:14px;background:#fff;box-shadow:var(--shadow)}
+.technique-card h3{margin-top:0!important;color:var(--module-color)}
+.technique-card p{margin-bottom:12px}

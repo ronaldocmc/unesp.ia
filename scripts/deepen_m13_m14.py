@@ -84,6 +84,14 @@ def unit(title: str, objective: str, content: str) -> str:
     return f'<section id="{anchor}"><h2 class="unit-title">{esc(title)}</h2><p class="unit-objective"><strong>Objetivo:</strong> {objective}</p>{content}</section>'
 
 
+def technique(title: str, explanation: str, example: str) -> str:
+    """Bloco didático que mantém explicação e exemplo executável juntos."""
+    return (
+        f'<article class="technique-card"><h3>{esc(title)}</h3>'
+        f'<p>{explanation}</p>{code(example)}</article>'
+    )
+
+
 PY_CONCEPTS = [
     ("Python", "linguagem de programação usada para automação, dados, IA e desenvolvimento de soluções.", "../conceitos/python.html"),
     ("Ambiente Python", "conjunto de interpretador, bibliotecas, notebooks, editor e configurações do projeto.", "../conceitos/ambiente-python.html"),
@@ -393,18 +401,171 @@ presencas = pd.DataFrame({
     "total_aulas": [12, 12, 12]
 })
 """)
-    validate_code = code("""
-def validar_qualidade(df):
-    relatorio = {}
-    relatorio["linhas"] = len(df)
-    relatorio["duplicados_id"] = int(df.duplicated(subset=["id_inscricao"]).sum())
-    relatorio["nomes_ausentes"] = int(df["nome"].isna().sum())
-    relatorio["emails_invalidos"] = int(~df["email"].fillna("").str.contains(r"^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$", regex=True).sum())
-    relatorio["idades_fora_faixa"] = int(((df["idade"] < 0) | (df["idade"] > 110)).sum())
-    return relatorio
+    architecture_methods = "".join([
+        technique("Camada bronze: preservar o dado bruto", "Guarda uma cópia imutável da fonte, com data de ingestão e sem correções silenciosas. Ela permite reproduzir o processamento e investigar incidentes.", """BRONZE = Path("dados/bronze")
+BRONZE.mkdir(parents=True, exist_ok=True)
+carimbo = datetime.now().strftime("%Y%m%d_%H%M%S")
+inscricoes.to_csv(BRONZE / f"inscricoes_{carimbo}.csv", index=False)"""),
+        technique("Camada prata: limpar e validar", "Recebe dados tipados, padronizados e acompanhados por regras de qualidade. Registros rejeitados seguem para quarentena, não desaparecem.", """PRATA = Path("dados/prata")
+PRATA.mkdir(parents=True, exist_ok=True)
+prata = inscricoes.copy()
+prata["email"] = prata["email"].str.strip().str.lower()
+prata["data_inscricao"] = pd.to_datetime(prata["data_inscricao"], errors="coerce")
+prata = prata.drop_duplicates("id_inscricao", keep="last")
+prata.to_parquet(PRATA / "inscricoes.parquet", index=False)"""),
+        technique("Camada ouro: produzir indicadores", "Entrega tabelas estáveis e orientadas ao consumo. Cada indicador deve ter definição, granularidade e data de atualização conhecidas.", """OURO = Path("dados/ouro")
+OURO.mkdir(parents=True, exist_ok=True)
+ouro = prata.groupby("modulo", dropna=False).agg(
+    participantes=("id_inscricao", "nunique"),
+    idade_media=("idade", "mean")
+).reset_index()
+ouro["atualizado_em"] = pd.Timestamp.now()
+ouro.to_csv(OURO / "indicadores_modulo.csv", index=False)"""),
+    ])
+    ingestion_methods = "".join([
+        technique("Ingestão de CSV", "Informe encoding, separador e tipos quando necessário. Não dependa sempre da inferência automática, principalmente para códigos com zeros à esquerda.", """csv = pd.read_csv(
+    RAW / "inscricoes.csv", encoding="utf-8", sep=",",
+    dtype={"id_inscricao": "Int64", "cep": "string"}
+)
+print(csv.shape, csv.dtypes)"""),
+        technique("Ingestão de Excel", "Escolha explicitamente a planilha e o mecanismo de leitura. Verifique cabeçalhos mesclados, fórmulas e datas, pois planilhas podem misturar apresentação e dados.", """excel = pd.read_excel(
+    RAW / "presencas.xlsx", sheet_name="Dados",
+    engine="openpyxl", dtype={"email": "string"}
+)
+print(excel.head())"""),
+        technique("Ingestão de JSON", "JSON pode conter objetos aninhados. Use <code>json_normalize</code> para transformar estruturas hierárquicas em colunas tabulares.", """with open(RAW / "avaliacoes.json", encoding="utf-8") as arquivo:
+    bruto_json = json.load(arquivo)
+avaliacoes = pd.json_normalize(
+    bruto_json, record_path="respostas", meta=["turma"]
+)
+print(avaliacoes.columns.tolist())"""),
+        technique("Ingestão por API", "Defina timeout, autenticação segura, paginação e tratamento de status HTTP. Nunca grave tokens no código-fonte.", """import os, requests
+headers = {"Authorization": f"Bearer {os.environ['API_TOKEN']}"}
+resposta = requests.get(
+    "https://api.exemplo.gov/dados", headers=headers, timeout=20
+)
+resposta.raise_for_status()
+dados_api = pd.json_normalize(resposta.json()["resultados"])"""),
+        technique("Ingestão de banco SQL", "Selecione somente colunas e períodos necessários. Consultas parametrizadas evitam injeção e tornam o filtro explícito.", """import sqlite3
+with sqlite3.connect("dados/portal.db") as conexao:
+    consulta = "SELECT id, modulo, data_inscricao FROM inscricoes WHERE data_inscricao >= ?"
+    dados_sql = pd.read_sql_query(consulta, conexao, params=["2026-01-01"])
+print(dados_sql.shape)"""),
+    ])
+    validation_methods = "".join([
+        technique(
+            "Schema: colunas e tipos esperados",
+            "O schema funciona como um contrato: define quais colunas devem existir e qual tipo cada uma deve possuir. A checagem deve ocorrer antes das regras de conteúdo, pois uma coluna ausente torna outras validações impossíveis.",
+            """schema = {
+    "id_inscricao": "int64",
+    "nome": "object",
+    "email": "object",
+    "idade": "int64",
+    "data_inscricao": "object"
+}
 
-print(validar_qualidade(inscricoes))
-""")
+faltantes = set(schema) - set(inscricoes.columns)
+if faltantes:
+    raise ValueError(f"Colunas ausentes: {sorted(faltantes)}")
+
+tipos_incorretos = {
+    coluna: (str(inscricoes[coluna].dtype), tipo)
+    for coluna, tipo in schema.items()
+    if str(inscricoes[coluna].dtype) != tipo
+}
+print("Tipos divergentes:", tipos_incorretos)"""
+        ),
+        technique(
+            "Completude: campos obrigatórios",
+            "Mede se os campos indispensáveis estão preenchidos. Além de <code>NaN</code>, textos vazios e formados apenas por espaços devem ser tratados como ausentes. O resultado pode ser expresso em quantidade e percentual.",
+            """obrigatorias = ["id_inscricao", "nome", "email"]
+texto_vazio = inscricoes[obrigatorias].apply(
+    lambda coluna: coluna.isna() | coluna.astype("string").str.strip().eq("")
+)
+
+relatorio_completude = pd.DataFrame({
+    "ausentes": texto_vazio.sum(),
+    "completude_pct": (1 - texto_vazio.mean()).mul(100).round(2)
+})
+print(relatorio_completude)"""
+        ),
+        technique(
+            "Validade: formato e domínio",
+            "Verifica se cada valor pertence ao formato ou conjunto permitido. Expressões regulares ajudam com e-mails; <code>between</code> valida intervalos; <code>isin</code> restringe categorias conhecidas.",
+            """email_ok = inscricoes["email"].fillna("").str.fullmatch(
+    r"[^@\\s]+@[^@\\s]+\\.[^@\\s]+"
+)
+idade_ok = pd.to_numeric(inscricoes["idade"], errors="coerce").between(0, 110)
+perfil_ok = inscricoes["perfil"].str.strip().str.lower().isin(
+    ["estudante", "docente", "técnico", "melhor idade"]
+)
+
+invalidos = inscricoes.loc[~(email_ok & idade_ok & perfil_ok)]
+print(invalidos[["id_inscricao", "email", "idade", "perfil"]])"""
+        ),
+        technique(
+            "Consistência: regras entre campos",
+            "Uma linha pode ter valores individualmente válidos e ainda ser incoerente quando os campos são combinados. A regra abaixo confere a relação entre perfil e idade e registra o motivo da pendência.",
+            """idade_num = pd.to_numeric(inscricoes["idade"], errors="coerce")
+perfil = inscricoes["perfil"].fillna("").str.strip().str.lower()
+
+inconsistente = perfil.eq("melhor idade") & idade_num.lt(60)
+inscricoes["status_consistencia"] = np.where(
+    inconsistente,
+    "revisar: perfil melhor idade com idade inferior a 60",
+    "ok"
+)
+print(inscricoes.loc[inconsistente, ["id_inscricao", "perfil", "idade"]])"""
+        ),
+        technique(
+            "Unicidade: chaves sem repetição",
+            "Identifica chaves duplicadas antes que elas multipliquem linhas em integrações ou provoquem contagens erradas. Primeiro marque todos os envolvidos; só depois decida qual registro manter.",
+            """duplicados = inscricoes.duplicated(
+    subset=["id_inscricao"], keep=False
+)
+auditoria_duplicados = inscricoes.loc[duplicados].sort_values("id_inscricao")
+print(auditoria_duplicados)
+
+if duplicados.any():
+    print(f"Atenção: {duplicados.sum()} linhas compartilham uma chave")"""
+        ),
+        technique(
+            "Atualidade e conformidade temporal",
+            "Confere se datas são interpretáveis e pertencem à janela aceita pelo processo. Datas futuras ou anteriores ao início da campanha são separadas para revisão.",
+            """datas = pd.to_datetime(inscricoes["data_inscricao"], errors="coerce")
+inicio_campanha = pd.Timestamp("2026-01-01")
+fim_campanha = pd.Timestamp("2026-12-31")
+
+data_ok = datas.between(inicio_campanha, fim_campanha)
+problemas_data = inscricoes.loc[~data_ok, ["id_inscricao", "data_inscricao"]]
+print(problemas_data)"""
+        ),
+        technique(
+            "Relatório consolidado e quarentena",
+            "Em produção, a validação não deve apenas imprimir erros. Ela deve criar indicadores e separar registros válidos dos que precisam de correção, preservando o dado original e o motivo da rejeição.",
+            """def validar_qualidade(df):
+    email_ok = df["email"].fillna("").str.fullmatch(r"[^@\\s]+@[^@\\s]+\\.[^@\\s]+")
+    idade = pd.to_numeric(df["idade"], errors="coerce")
+    id_ok = df["id_inscricao"].notna() & ~df.duplicated("id_inscricao", keep=False)
+    nome_ok = df["nome"].fillna("").str.strip().ne("")
+
+    regras = pd.DataFrame({
+        "id_unico": id_ok,
+        "nome_preenchido": nome_ok,
+        "email_valido": email_ok,
+        "idade_valida": idade.between(0, 110)
+    }, index=df.index)
+    motivos = regras.apply(lambda linha: ", ".join(linha.index[~linha]), axis=1)
+    validos = df.loc[regras.all(axis=1)].copy()
+    quarentena = df.loc[~regras.all(axis=1)].assign(motivo=motivos)
+    relatorio = regras.mean().mul(100).round(2).rename("conformidade_pct")
+    return validos, quarentena, relatorio
+
+validos, quarentena, relatorio = validar_qualidade(inscricoes)
+print(relatorio)
+display(quarentena)"""
+        ),
+    ])
     transform_code = code("""
 def transformar_inscricoes(df):
     dados = df.copy()
@@ -438,30 +599,138 @@ def transformar_inscricoes(df):
 inscricoes_tratadas = transformar_inscricoes(inscricoes)
 display(inscricoes_tratadas)
 """)
-    missing_code = code("""
-# Estratégias comuns para valores ausentes
-df = inscricoes_tratadas.copy()
+    transformation_methods = "".join([
+        technique("Limpeza de textos", "Remove espaços externos, reduz espaços repetidos e elimina caracteres invisíveis. A limpeza deve preceder comparações, deduplicação e padronização de categorias.", """dados = inscricoes.copy()
+for coluna in ["nome", "email", "perfil", "modulo"]:
+    dados[coluna] = (
+        dados[coluna].astype("string")
+        .str.replace(r"[\\u200b\\ufeff]", "", regex=True)
+        .str.replace(r"\\s+", " ", regex=True)
+        .str.strip()
+    )"""),
+        technique("Padronização de caixa, acentos e categorias", "Converte diferentes grafias para uma representação canônica. Para exibição, preserve acentos; para comparação, pode-se criar uma chave auxiliar normalizada sem alterar o valor original.", """import unicodedata
 
-# Remover linhas quando o campo é indispensável
-df_sem_email_invalido = df[df["email_valido"]].copy()
+def chave_textual(valor):
+    if pd.isna(valor):
+        return pd.NA
+    texto = unicodedata.normalize("NFKD", str(valor))
+    texto = "".join(c for c in texto if not unicodedata.combining(c))
+    return texto.casefold().strip()
 
-# Preencher categorias ausentes
-df["perfil"] = df["perfil"].fillna("não informado")
+mapa_perfil = {
+    "professor": "docente", "docente": "docente",
+    "aluno": "estudante", "estudante": "estudante",
+    "tecnico": "técnico"
+}
+dados["perfil_chave"] = dados["perfil"].map(chave_textual)
+dados["perfil_padronizado"] = dados["perfil_chave"].map(mapa_perfil).fillna("não informado")
+dados["nome"] = dados["nome"].str.title()
+dados["email"] = dados["email"].str.lower()"""),
+        technique("Conversão segura de tipos", "Transforma texto em número, data, booleano ou categoria. Com <code>errors='coerce'</code>, valores impossíveis viram ausentes e podem ser auditados, sem interromper todo o pipeline.", """dados["idade"] = pd.to_numeric(dados["idade"], errors="coerce").astype("Int64")
+dados["data_inscricao"] = pd.to_datetime(
+    dados["data_inscricao"], errors="coerce", dayfirst=True
+)
+dados["aceita_contato"] = (
+    dados["aceita_contato"].astype("string").str.lower()
+    .map({"sim": True, "não": False, "nao": False})
+    .astype("boolean")
+)
+dados["perfil_padronizado"] = dados["perfil_padronizado"].astype("category")"""),
+        technique("Validação e composição de chaves", "Chaves técnicas identificam uma linha; chaves de negócio representam a entidade no domínio. Uma chave composta pode evitar colisões quando o mesmo e-mail participa de módulos diferentes.", """dados["chave_participacao"] = (
+    dados["email"].fillna("") + "|" + dados["modulo"].fillna("")
+)
+chave_invalida = dados["email"].isna() | dados["modulo"].isna()
+if chave_invalida.any():
+    print("Linhas sem chave completa:", chave_invalida.sum())
 
-# Preencher números com mediana quando fizer sentido estatístico
-df["idade"] = df["idade"].fillna(df["idade"].median())
-""")
-    outlier_code = code("""
-def marcar_outliers_iqr(df, coluna):
-    q1 = df[coluna].quantile(0.25)
-    q3 = df[coluna].quantile(0.75)
+assert dados.loc[~chave_invalida, "chave_participacao"].ne("").all()"""),
+        technique("Regras de negócio e campos derivados", "Traduz critérios institucionais explícitos em código rastreável. A regra deve registrar sua versão e distinguir dados observados de resultados calculados.", """REGRA_FREQUENCIA_VERSAO = "2026.1"
+dados["frequencia"] = dados["presencas"].div(dados["total_aulas"]).clip(0, 1)
+dados["situacao"] = np.select(
+    [dados["frequencia"].ge(0.75), dados["frequencia"].isna()],
+    ["aprovado", "revisar"],
+    default="pendente"
+)
+dados["regra_situacao_versao"] = REGRA_FREQUENCIA_VERSAO
+dados["dias_desde_inscricao"] = (
+    pd.Timestamp.today().normalize() - dados["data_inscricao"]
+).dt.days"""),
+        technique("Pipeline de transformação reutilizável", "Reúne operações determinísticas em uma função que recebe uma base e devolve uma nova cópia. Isso facilita testes, versionamento e repetição sem modificar os dados brutos.", """def transformar(df):
+    resultado = df.copy()
+    resultado["nome"] = resultado["nome"].astype("string").str.strip().str.title()
+    resultado["email"] = resultado["email"].astype("string").str.strip().str.lower()
+    resultado["idade"] = pd.to_numeric(resultado["idade"], errors="coerce").astype("Int64")
+    resultado["data_inscricao"] = pd.to_datetime(resultado["data_inscricao"], errors="coerce")
+    resultado["email_valido"] = resultado["email"].str.fullmatch(r"[^@\\s]+@[^@\\s]+\\.[^@\\s]+")
+    return resultado
+
+dados_transformados = transformar(inscricoes)
+display(dados_transformados.head())"""),
+    ])
+    preprocessing_methods = "".join([
+        technique("Remoção de registros", "É indicada quando a linha não pode ser utilizada nem corrigida, por exemplo, por ausência de uma chave obrigatória. Antes de remover, quantifique o impacto e mantenha uma quarentena para auditoria.", """sem_chave = dados_transformados["id_inscricao"].isna()
+quarentena_sem_chave = dados_transformados.loc[sem_chave].assign(
+    motivo="id_inscricao ausente"
+)
+dados_validos = dados_transformados.loc[~sem_chave].copy()
+print(f"Removidas: {sem_chave.sum()} de {len(dados_transformados)} linhas")"""),
+        technique("Imputação: média, mediana, moda e categoria explícita", "A média é sensível a extremos; a mediana é mais robusta; a moda atende categorias; e “não informado” evita inventar uma classe. Calcule parâmetros somente no conjunto de treino quando houver modelo de IA.", """df = dados_transformados.copy()
+df["idade_media"] = df["idade"].fillna(df["idade"].mean())
+df["idade_mediana"] = df["idade"].fillna(df["idade"].median())
+df["perfil_moda"] = df["perfil"].fillna(df["perfil"].mode().iloc[0])
+df["perfil_explicito"] = df["perfil"].fillna("não informado")
+
+# Indicador preserva a informação de que o valor original estava ausente
+df["idade_foi_imputada"] = df["idade"].isna()"""),
+        technique("Normalização min-max", "Reescala uma variável para o intervalo de 0 a 1. É útil quando atributos possuem escalas muito diferentes, mas é sensível a extremos e requer tratamento quando mínimo e máximo são iguais.", """def normalizar_minmax(serie):
+    minimo, maximo = serie.min(), serie.max()
+    if pd.isna(minimo) or minimo == maximo:
+        return pd.Series(0.0, index=serie.index)
+    return (serie - minimo) / (maximo - minimo)
+
+df["idade_minmax"] = normalizar_minmax(df["idade"].astype("float64"))
+print(df[["idade", "idade_minmax"]].head())"""),
+        technique("Padronização z-score", "Centraliza os valores em média zero e desvio padrão um. É frequente em regressões, agrupamentos e métodos baseados em distância; os parâmetros devem ser aprendidos no treino e reaplicados no teste.", """from sklearn.preprocessing import StandardScaler
+
+scaler = StandardScaler()
+df[["idade_z", "frequencia_z"]] = scaler.fit_transform(
+    df[["idade", "frequencia"]].fillna(0)
+)
+print("Médias aprendidas:", scaler.mean_)
+print("Escalas aprendidas:", scaler.scale_)"""),
+        technique("Encoding de categorias", "One-hot cria uma coluna binária por categoria e é adequado para classes sem ordem. Ordinal encoding só deve ser usado quando existe uma ordem real, como baixo, médio e alto.", """# Categorias sem ordem: one-hot encoding
+one_hot = pd.get_dummies(df["perfil"], prefix="perfil", dtype=int)
+df = pd.concat([df, one_hot], axis=1)
+
+# Categoria com ordem conhecida
+ordem_prioridade = {"baixa": 0, "média": 1, "alta": 2}
+df["prioridade_codigo"] = df["prioridade"].map(ordem_prioridade).astype("Int64")"""),
+        technique("Deduplicação por chave e combinação de campos", "Use uma chave estável quando existir. Sem chave técnica, combine campos normalizados. Ordene por data para explicitar se será mantida a ocorrência mais recente ou mais antiga.", """df = df.sort_values("data_inscricao")
+
+# Chave técnica: mantém a atualização mais recente
+df_por_id = df.drop_duplicates(subset=["id_inscricao"], keep="last")
+
+# Chave de negócio composta
+df_por_pessoa_modulo = df.drop_duplicates(
+    subset=["email", "modulo"], keep="last"
+)
+print("Duplicatas removidas por ID:", len(df) - len(df_por_id))"""),
+        technique("Detecção de outliers pelo IQR", "O intervalo interquartil é robusto e marca valores abaixo de Q1 − 1,5×IQR ou acima de Q3 + 1,5×IQR. Marcar não significa remover: primeiro investigue se o extremo é erro ou caso legítimo.", """def marcar_outliers_iqr(serie):
+    q1, q3 = serie.quantile([0.25, 0.75])
     iqr = q3 - q1
-    limite_inferior = q1 - 1.5 * iqr
-    limite_superior = q3 + 1.5 * iqr
-    return (df[coluna] < limite_inferior) | (df[coluna] > limite_superior)
+    inferior, superior = q1 - 1.5 * iqr, q3 + 1.5 * iqr
+    return ~serie.between(inferior, superior), inferior, superior
 
-inscricoes_tratadas["idade_outlier"] = marcar_outliers_iqr(inscricoes_tratadas, "idade")
-""")
+df["idade_outlier"], limite_inf, limite_sup = marcar_outliers_iqr(df["idade"])
+print(f"Limites IQR: {limite_inf:.1f} a {limite_sup:.1f}")"""),
+        technique("Winsorização de extremos", "Limita valores aos percentis escolhidos sem excluir linhas. Só deve ser aplicada com justificativa estatística e registro dos limites, porque altera a distribuição e pode esconder eventos importantes.", """inferior = df["idade"].quantile(0.01)
+superior = df["idade"].quantile(0.99)
+df["idade_winsorizada"] = df["idade"].clip(lower=inferior, upper=superior)
+df["idade_foi_limitada"] = df["idade"].ne(df["idade_winsorizada"])
+
+print({"p01": inferior, "p99": superior,
+       "valores_limitados": int(df["idade_foi_limitada"].sum())})"""),
+    ])
     merge_code = code("""
 base_curada = inscricoes_tratadas.merge(
     presencas,
@@ -483,6 +752,28 @@ indicadores = base_curada.groupby(["modulo", "perfil"], dropna=False).agg(
 
 display(indicadores)
 """)
+    integration_methods = "".join([
+        technique("merge por chave", "Combina colunas de tabelas relacionadas. O argumento <code>validate</code> documenta a cardinalidade esperada e impede multiplicações acidentais.", """integrada = inscricoes_tratadas.merge(
+    presencas, on="email", how="left",
+    validate="many_to_one", indicator=True
+)
+print(integrada["_merge"].value_counts())"""),
+        technique("join por índice", "É útil quando a chave já está no índice de ambas as tabelas. Confirme a unicidade antes de executar.", """a = inscricoes_tratadas.set_index("email")
+b = presencas.set_index("email")
+if not b.index.is_unique:
+    raise ValueError("A chave da tabela de presenças não é única")
+por_indice = a.join(b, how="left", rsuffix="_presenca")"""),
+        technique("concat de partições", "Empilha arquivos com o mesmo schema, como inscrições mensais. <code>ignore_index</code> recria o índice; a coluna de origem mantém rastreabilidade.", """janeiro = pd.read_csv("dados/janeiro.csv").assign(origem="janeiro")
+fevereiro = pd.read_csv("dados/fevereiro.csv").assign(origem="fevereiro")
+historico = pd.concat([janeiro, fevereiro], ignore_index=True, join="outer")
+print(historico.groupby("origem").size())"""),
+        technique("groupby e indicadores", "Agrupa pela granularidade desejada e usa agregações nomeadas. Sempre confira se contagem de linhas ou de entidades únicas responde à pergunta.", """indicadores = base_curada.groupby(["modulo", "perfil"], dropna=False).agg(
+    participantes=("id_inscricao", "nunique"),
+    frequencia_media=("frequencia", "mean"),
+    aprovados=("situacao", lambda s: s.eq("aprovado").sum())
+).reset_index()
+indicadores["frequencia_media"] = indicadores["frequencia_media"].round(3)"""),
+    ])
     load_code = code("""
 CURATED = Path("dados/curated")
 CURATED.mkdir(parents=True, exist_ok=True)
@@ -499,6 +790,32 @@ with sqlite3.connect(CURATED / "portal_ia.db") as conn:
     base_curada.to_sql("participantes", conn, if_exists="replace", index=False)
     indicadores.to_sql("indicadores", conn, if_exists="replace", index=False)
 """)
+    storage_methods = "".join([
+        technique("CSV e Excel", "CSV é interoperável e simples; Excel é conveniente para consumo humano. Ambos exigem atenção a encoding, tipos e limites de volume.", """base_curada.to_csv("dados/curated/base.csv", index=False, encoding="utf-8")
+with pd.ExcelWriter("dados/curated/relatorio.xlsx", engine="openpyxl") as writer:
+    base_curada.to_excel(writer, sheet_name="Base", index=False)
+    indicadores.to_excel(writer, sheet_name="Indicadores", index=False)"""),
+        technique("Parquet", "Formato colunar compacto que preserva tipos e lê apenas as colunas necessárias. É indicado para bases analíticas maiores.", """base_curada.to_parquet(
+    "dados/curated/base.parquet", index=False, compression="snappy"
+)
+amostra = pd.read_parquet(
+    "dados/curated/base.parquet", columns=["modulo", "situacao"]
+)"""),
+        technique("SQLite", "Banco local transacional adequado para aulas, protótipos e aplicações pequenas. Use contexto para garantir fechamento da conexão.", """import sqlite3
+with sqlite3.connect("dados/curated/portal.db") as conexao:
+    base_curada.to_sql("participantes", conexao, if_exists="replace", index=False)
+    total = pd.read_sql_query("SELECT COUNT(*) AS n FROM participantes", conexao)
+print(total)"""),
+        technique("DuckDB", "Executa SQL analítico diretamente sobre DataFrames e arquivos Parquet, sem exigir um servidor separado.", """import duckdb
+consulta = "SELECT modulo, COUNT(DISTINCT id_inscricao) AS participantes FROM base_curada GROUP BY modulo"
+resultado = duckdb.sql(consulta).df()
+print(resultado)"""),
+        technique("Carga incremental", "Em vez de substituir tudo, seleciona apenas registros posteriores ao último processamento. A chave e o carimbo de atualização precisam ser confiáveis.", """ultima_carga = pd.Timestamp("2026-07-01")
+incremento = base_curada.loc[
+    base_curada["atualizado_em"].gt(ultima_carga)
+].copy()
+print(f"Linhas para carga incremental: {len(incremento)}")"""),
+    ])
     log_code = code("""
 import logging
 from datetime import datetime
@@ -519,6 +836,50 @@ logging.info("Linhas carregadas: %s", len(base_curada))
 logging.info("Indicadores gerados: %s", len(indicadores))
 logging.info("Pipeline finalizado em %s segundos", (datetime.now() - inicio).seconds)
 """)
+    governance_methods = "".join([
+        technique("Logs estruturados", "Registram evento, nível, etapa e métricas sem expor dados pessoais. JSON facilita consulta automática.", """import json, logging
+logging.basicConfig(level=logging.INFO)
+evento = {"etapa": "validacao", "linhas": len(inscricoes), "rejeitadas": len(quarentena)}
+logging.info(json.dumps(evento, ensure_ascii=False))"""),
+        technique("Auditoria de regras", "Mantém versão, responsável, horário e quantidade afetada por cada regra, permitindo explicar uma decisão posterior.", """auditoria = pd.DataFrame([{
+    "regra": "frequencia_minima", "versao": "2026.1",
+    "executado_em": pd.Timestamp.now(), "responsavel": "equipe_dados",
+    "linhas_afetadas": int(base_curada["situacao"].eq("pendente").sum())
+}])"""),
+        technique("Linhagem", "Relaciona entrada, transformação e saída. Mesmo um registro simples ajuda a responder de onde veio um indicador.", """linhagem = {
+    "origem": "dados/bronze/inscricoes.csv",
+    "transformacoes": ["validar_schema", "padronizar_email", "deduplicar_id"],
+    "destino": "dados/ouro/indicadores_modulo.csv",
+    "pipeline_versao": "v1.3"
+}
+Path("logs/linhagem.json").write_text(json.dumps(linhagem, indent=2), encoding="utf-8")"""),
+        technique("Catálogo e classificação", "Documenta significado, tipo, sensibilidade, finalidade e responsável por cada campo. Isso orienta acesso e uso compatível com a LGPD.", """catalogo = pd.DataFrame([
+    {"campo": "id_inscricao", "tipo": "inteiro", "sensibilidade": "interno"},
+    {"campo": "email", "tipo": "texto", "sensibilidade": "dado pessoal"},
+    {"campo": "frequencia", "tipo": "decimal", "sensibilidade": "restrito"}
+])
+catalogo.to_csv("dados/catalogo.csv", index=False)"""),
+    ])
+    modeling_methods = "".join([
+        technique("Análise exploratória", "Antes de modelar, examine distribuição, ausências, equilíbrio do alvo e relações suspeitas.", """print(base_curada[["idade", "frequencia"]].describe())
+print(base_curada.isna().mean().sort_values(ascending=False))
+print(base_curada["situacao"].value_counts(normalize=True))"""),
+        technique("Separação treino e teste", "Reserva dados independentes para medir generalização. <code>stratify</code> preserva a proporção das classes.", """from sklearn.model_selection import train_test_split
+X = base_curada[["idade", "frequencia"]].fillna(0)
+y = base_curada["situacao"].eq("aprovado").astype(int)
+X_treino, X_teste, y_treino, y_teste = train_test_split(
+    X, y, test_size=0.3, random_state=42, stratify=y
+)"""),
+        technique("Pipeline sem vazamento", "Encapsula imputação, escala e modelo; cada parâmetro é aprendido apenas durante o ajuste do conjunto de treino.", """from sklearn.impute import SimpleImputer
+from sklearn.preprocessing import StandardScaler
+from sklearn.pipeline import Pipeline
+from sklearn.linear_model import LogisticRegression
+modelo = Pipeline([("imputar", SimpleImputer(strategy="median")),
+                   ("escalar", StandardScaler()),
+                   ("classificar", LogisticRegression())])
+modelo.fit(X_treino, y_treino)
+print("Acurácia:", modelo.score(X_teste, y_teste))"""),
+    ])
     full_pipeline_code = code("""
 from pathlib import Path
 from datetime import datetime
@@ -587,15 +948,15 @@ run()
 <section class="module-visual"><figure><img src="../assets/img/modulos/m14-visual.svg" alt="Mapa visual do Módulo 14"><figcaption>Engenharia de dados conecta fontes, qualidade, transformação, armazenamento, governança e uso em IA.</figcaption></figure><aside class="character-guide"><img src="../assets/img/personagens/carlos.png" alt="Personagem Carlos"><h3>Carlos constrói dados confiáveis</h3><p>Sem dados organizados e rastreáveis, dashboards, automações e modelos de IA ficam frágeis. O módulo ensina a preparar dados com método.</p></aside></section>
 <section id="apresentacao"><h2 class="section-title">Apresentação e competências</h2><p>Este módulo aprofunda engenharia de dados aplicada ao unesp.IA. O foco é construir pipelines reprodutíveis com Python, da extração à carga, passando por validação, limpeza, transformação, integração, logs, governança e preparação para análise, mineração de dados e IA.</p><div class="box practice"><strong>Ao final do módulo, espera-se que o participante seja capaz de:</strong><ul><li>diferenciar dado bruto, tratado, curado e produto de dados;</li><li>desenhar pipelines ETL e ELT com entradas, regras, saídas e logs;</li><li>extrair dados de CSV, Excel, JSON, APIs e bancos;</li><li>aplicar validações de qualidade, schema, duplicidade, consistência e completude;</li><li>tratar ausências, outliers, tipos, categorias e formatos;</li><li>integrar bases por chaves, gerar indicadores e carregar resultados em arquivos ou bancos;</li><li>documentar catálogo, linhagem, LGPD, riscos e responsáveis.</li></ul></div></section>
 <section id="glossario"><h2 class="section-title">Glossário interno do módulo</h2>{concept_grid(DE_CONCEPTS)}</section>
-{unit("14.1 Fundamentos, ciclo de vida e arquitetura de dados", "Compreender o percurso do dado desde a origem até o uso em relatórios, automações e IA.", "<p>Engenharia de dados não é apenas programação: envolve arquitetura, qualidade, governança, segurança, documentação e operação. Um pipeline confiável precisa responder: de onde o dado veio, quem pode usar, o que foi transformado, quando foi atualizado e quais limites existem.</p><div class=\"table-wrap\"><table class=\"table\"><tr><th>Camada</th><th>Descrição</th><th>Exemplo</th></tr><tr><td>Bronze</td><td>Dado bruto, preservado como foi recebido.</td><td>CSV original de inscrições.</td></tr><tr><td>Prata</td><td>Dado limpo, validado e padronizado.</td><td>Inscrições com e-mail validado e duplicidades removidas.</td></tr><tr><td>Ouro</td><td>Dado agregado e pronto para consumo.</td><td>Indicadores por turma, perfil e situação.</td></tr></table></div>" + imports_code + sample_data_code)}
-{unit("14.2 Extração e ingestão: CSV, Excel, JSON, API e banco", "Ler dados de diferentes fontes preservando origem, formato e rastreabilidade.", "<p>A extração deve manter uma cópia bruta dos dados e registrar data, fonte, responsável e finalidade. Nunca comece alterando o arquivo original: crie camadas.</p>" + extract_code + "<div class=\"box warn\"><strong>LGPD:</strong> se houver dados pessoais, defina finalidade, base legal, minimização, controle de acesso e prazo de retenção antes de coletar.</div>")}
-{unit("14.3 Validação, schema e qualidade de dados", "Aplicar regras de completude, validade, consistência, unicidade e conformidade.", "<p>Validação é a alfândega do pipeline. Ela não corrige tudo automaticamente; ela classifica o que está válido, pendente ou bloqueado para revisão humana.</p><div class=\"table-wrap\"><table class=\"table\"><tr><th>Dimensão</th><th>Pergunta</th><th>Exemplo de regra</th></tr><tr><td>Completude</td><td>Campos obrigatórios estão preenchidos?</td><td>nome e e-mail não podem estar vazios.</td></tr><tr><td>Validade</td><td>O valor tem formato aceito?</td><td>e-mail deve seguir padrão válido.</td></tr><tr><td>Consistência</td><td>Campos combinam entre si?</td><td>melhor idade deve ter 60 anos ou mais quando for critério de público.</td></tr><tr><td>Unicidade</td><td>Há duplicidades?</td><td>id_inscricao não pode repetir.</td></tr><tr><td>Atualidade</td><td>O dado está no período esperado?</td><td>data de inscrição dentro do prazo.</td></tr></table></div>" + validate_code)}
-{unit("14.4 Transformação: limpeza, padronização, tipos e regras de negócio", "Transformar dados brutos em dados consistentes, tipados e interpretáveis.", "<p>Transformar é aplicar regras explícitas: remover espaços, padronizar caixa, converter datas, normalizar categorias, validar chaves e criar campos derivados.</p>" + transform_code)}
-{unit("14.5 Tratamento de ausências, duplicidades, normalização e outliers", "Aplicar técnicas de pré-processamento sem distorcer a realidade dos dados.", "<p>Nem todo valor ausente deve ser preenchido; nem todo outlier deve ser removido. Cada decisão precisa ser justificada, registrada e, quando necessário, revisada por uma pessoa responsável.</p><h3>Ausências</h3>" + missing_code + "<h3>Outliers pelo método IQR</h3>" + outlier_code + "<h3>Técnicas e métodos usuais</h3><ul><li><strong>Remoção:</strong> quando o registro é inválido e sem possibilidade de correção;</li><li><strong>Imputação:</strong> média, mediana, moda ou valor “não informado”, quando justificável;</li><li><strong>Normalização:</strong> escalas comparáveis, como min-max;</li><li><strong>Padronização:</strong> média zero e desvio padrão um;</li><li><strong>Encoding:</strong> transformar categorias em variáveis numéricas;</li><li><strong>Deduplicação:</strong> por chave única ou combinação de campos;</li><li><strong>Winsorização:</strong> limitar extremos quando há justificativa estatística.</li></ul>")}
-{unit("14.6 Integração de bases, merge, join, concat, groupby e indicadores", "Combinar fontes, criar indicadores e gerar produtos de dados.", "<p>A integração exige atenção às chaves. Um merge errado pode multiplicar linhas, perder registros ou produzir indicadores incorretos. Use <code>validate</code> quando possível.</p>" + merge_code)}
-{unit("14.7 Carga e armazenamento: CSV, Excel, Parquet, SQLite, DuckDB, data lake e warehouse", "Salvar dados tratados em formatos adequados ao consumo e à escala.", "<p>A carga fecha o ciclo do ETL. A escolha do destino depende do volume, frequência, público e finalidade. Para aula, CSV/Excel/SQLite bastam; para produção, avaliam-se bancos, data warehouses, lakehouses e governança de acesso.</p>" + load_code)}
-{unit("14.8 Logs, auditoria, linhagem, catálogo e governança", "Registrar execuções, decisões, origem, transformações e responsáveis.", "<p>Um pipeline sem log é uma caixa-preta. Logs ajudam a responder o que aconteceu, quando aconteceu, quantas linhas foram processadas, quais erros surgiram e quem deve revisar.</p>" + log_code + "<div class=\"box tip\"><strong>Checklist mínimo:</strong> fonte, data/hora, versão do pipeline, total de linhas extraídas, total de linhas rejeitadas, regras aplicadas, destino, responsável e restrições de uso.</div>")}
-{unit("14.9 Mineração de dados, análise exploratória e preparação para IA", "Preparar dados para exploração, modelos e aplicações de IA com cautela.", "<p>Depois do ETL, os dados podem alimentar visualizações, mineração de dados, modelos de classificação, regressão, agrupamento ou sistemas de recomendação. Antes disso, é preciso verificar representatividade, vieses, vazamentos de informação e finalidade.</p>" + code("from sklearn.model_selection import train_test_split\nfrom sklearn.preprocessing import StandardScaler\nfrom sklearn.pipeline import Pipeline\nfrom sklearn.linear_model import LogisticRegression\n\nfeatures = base_curada[['idade', 'frequencia']].fillna(0)\ntarget = (base_curada['situacao'] == 'aprovado').astype(int)\n\nX_train, X_test, y_train, y_test = train_test_split(features, target, test_size=0.3, random_state=42)\n\nmodelo = Pipeline([\n    ('escala', StandardScaler()),\n    ('classificador', LogisticRegression())\n])\n\nmodelo.fit(X_train, y_train)\nprint('Acurácia:', modelo.score(X_test, y_test))") + "<div class=\"box warn\"><strong>Cuidado:</strong> este exemplo é didático. Modelos reais exigem avaliação, validação, análise de viés, explicabilidade, governança e autorização de uso.</div>")}
+{unit("14.1 Fundamentos, ciclo de vida e arquitetura de dados", "Compreender o percurso do dado desde a origem até o uso em relatórios, automações e IA.", "<p>Engenharia de dados não é apenas programação: envolve arquitetura, qualidade, governança, segurança, documentação e operação. As camadas bronze, prata e ouro separam preservação, curadoria e consumo.</p>" + imports_code + sample_data_code + architecture_methods)}
+{unit("14.2 Extração e ingestão: CSV, Excel, JSON, API e banco", "Ler dados de diferentes fontes preservando origem, formato e rastreabilidade.", "<p>A extração deve manter uma cópia bruta e registrar data, fonte, responsável e finalidade. Cada formato exige parâmetros e controles próprios.</p>" + ingestion_methods + "<h3>Visão integrada</h3>" + extract_code + "<div class=\"box warn\"><strong>LGPD:</strong> defina finalidade, base legal, minimização, acesso e retenção antes de coletar dados pessoais.</div>")}
+{unit("14.3 Validação, schema e qualidade de dados", "Aplicar regras de completude, validade, consistência, unicidade, atualidade e conformidade.", "<p>Validação é a alfândega do pipeline: compara os dados com contratos e regras explícitas antes que erros cheguem a relatórios, automações ou modelos de IA. Ela não corrige tudo automaticamente; produz evidências, classifica registros e encaminha exceções para uma área de quarentena ou revisão humana.</p><div class=\"box tip\"><strong>Ordem recomendada:</strong> conferir estrutura e tipos, avaliar cada dimensão de qualidade, consolidar os resultados e somente depois transformar ou descartar registros.</div>" + validation_methods)}
+{unit("14.4 Transformação: limpeza, padronização, tipos e regras de negócio", "Transformar dados brutos em dados consistentes, tipados e interpretáveis.", "<p>Transformar é aplicar regras explícitas e reproduzíveis. Cada transformação precisa informar o que muda, por que muda e como um valor problemático será tratado. Os exemplos abaixo separam as técnicas para que cada decisão possa ser testada e auditada.</p>" + transformation_methods + "<h3>Exemplo integrado</h3><p>Depois de compreender cada técnica isoladamente, elas podem ser reunidas em uma função única. O exemplo mantém uma cópia de entrada, converte tipos, cria indicadores de validade, remove duplicidades e calcula uma regra de negócio.</p>" + transform_code)}
+{unit("14.5 Tratamento de ausências, duplicidades, normalização e outliers", "Aplicar técnicas de pré-processamento sem distorcer a realidade dos dados.", "<p>Nem todo valor ausente deve ser preenchido; nem todo registro repetido representa uma duplicata; e nem todo outlier é erro. A escolha depende da finalidade, do significado da coluna e do impacto sobre grupos e indicadores. Registre a técnica, os parâmetros calculados e quantas linhas foram afetadas.</p><div class=\"box warn\"><strong>Evite vazamento de dados:</strong> em projetos de IA, média, mediana, limites, escalas e categorias devem ser aprendidos somente no conjunto de treino e depois reaplicados aos conjuntos de validação e teste.</div>" + preprocessing_methods)}
+{unit("14.6 Integração de bases, merge, join, concat, groupby e indicadores", "Combinar fontes, criar indicadores e gerar produtos de dados.", "<p>A integração exige atenção às chaves, cardinalidade e granularidade. Um erro pode multiplicar linhas ou perder registros.</p>" + integration_methods + "<h3>Exemplo integrado</h3>" + merge_code)}
+{unit("14.7 Carga e armazenamento: CSV, Excel, Parquet, SQLite, DuckDB, data lake e warehouse", "Salvar dados tratados em formatos adequados ao consumo e à escala.", "<p>A escolha depende de volume, frequência, consumidores, custo e governança. Os métodos abaixo mostram opções locais e analíticas.</p>" + storage_methods + "<h3>Carga combinada</h3>" + load_code)}
+{unit("14.8 Logs, auditoria, linhagem, catálogo e governança", "Registrar execuções, decisões, origem, transformações e responsáveis.", "<p>Um pipeline sem registros é uma caixa-preta. Logs operacionais, auditoria, linhagem e catálogo respondem perguntas diferentes e complementares.</p>" + governance_methods + "<h3>Configuração básica de logging</h3>" + log_code)}
+{unit("14.9 Mineração de dados, análise exploratória e preparação para IA", "Preparar dados para exploração, modelos e aplicações de IA com cautela.", "<p>Antes de modelar, verifique representatividade, vieses, vazamento de informação, equilíbrio das classes e finalidade legítima.</p>" + modeling_methods + "<div class=\"box warn\"><strong>Cuidado:</strong> o exemplo é didático; sistemas reais exigem métricas adequadas, explicabilidade, governança e autorização de uso.</div>")}
 {unit("14.10 Pipeline ETL completo em Python", "Integrar todas as etapas em uma função reprodutível e documentada.", "<p>O pipeline completo deve ser executável, versionado e explicado. O código abaixo resume extração, validação, transformação, carga e log em uma estrutura única.</p>" + full_pipeline_code + "<div class=\"box lab\"><strong>Entrega:</strong> pasta com dados fictícios, script ETL, arquivo de log, base curada, indicadores, dicionário de dados e relatório com limitações.</div>")}
 """
     return html_shell(14, "Engenharia de Dados para Inteligência Artificial", "Caderno aprofundado de engenharia de dados com ETL/ELT, qualidade, transformação, armazenamento, governança, mineração de dados e códigos Python aplicados.", "#00796B", "#E8F7F4", body)
@@ -617,6 +978,15 @@ def update_css() -> None:
 """
     if "/* M13/M14 aprofundados */" not in text:
         text += add
+    technique_css = """
+
+/* Blocos de técnicas do Módulo 14 */
+.technique-card{margin:18px 0;padding:18px;border:1px solid var(--border);border-radius:14px;background:#fff;box-shadow:var(--shadow)}
+.technique-card h3{margin-top:0!important;color:var(--module-color)}
+.technique-card p{margin-bottom:12px}
+"""
+    if "/* Blocos de técnicas do Módulo 14 */" not in text:
+        text += technique_css
     text = re.sub(r'20260713-m13-m14(?!-deep)', CSS_VERSION, text)
     write(path, text)
 
