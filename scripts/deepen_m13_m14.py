@@ -104,17 +104,17 @@ def rm_deep_dive(unit_code: str) -> str:
         for name, path, minimum, implementation, validation in guide["artifacts"]
     )
     return (
-        '<div class="rm-deep-dive"><h3>Como diagnosticar e resolver os problemas</h3>'
-        '<p>A tabela deixa explícito o caminho <strong>problema → diagnóstico → intervenção → evidência</strong>. '
-        'A correção somente é considerada concluída quando a evidência pode ser verificada por outra pessoa.</p>'
-        '<div class="table-wrap"><table class="table"><tr><th>Problema/conceito</th><th>Como diagnosticar</th><th>Como resolver</th><th>Como comprovar</th></tr>'
+        '<div class="rm-deep-dive"><h3>Guia de aplicação e evidências</h3>'
+        '<p>Este guia substitui a repetição de listas resumidas. Ele conecta diretamente cada problema ao diagnóstico, à intervenção, à métrica, ao artefato e ao código praticado na unidade.</p>'
+        '<h4>1. Problemas: diagnóstico, intervenção e comprovação</h4>'
+        '<div class="table-wrap"><table class="table"><tr><th>Problema/conceito</th><th>Diagnóstico</th><th>Intervenção</th><th>Evidência de conclusão</th></tr>'
         + problem_rows + '</table></div>'
-        '<h3>Como aplicar os métodos e técnicas</h3><div class="table-wrap"><table class="table"><tr><th>Método</th><th>Quando e por quê</th><th>Procedimento implementacional</th><th>Onde praticar</th></tr>'
+        '<h4>2. Métodos e implementação</h4><div class="table-wrap"><table class="table"><tr><th>Método</th><th>Quando e por quê</th><th>Procedimento implementacional</th><th>Onde praticar</th></tr>'
         + method_rows + '</table></div>'
-        '<h3>Como calcular, avaliar e interpretar as métricas</h3><p>A meta não deve ser escolhida apenas para “ficar verde”. Ela deriva da finalidade do produto, do risco, do histórico e do acordo entre produtor e consumidor.</p>'
+        '<h4>3. Métricas, interpretação e decisão</h4><p>A meta deriva da finalidade do produto, do risco, do histórico e do acordo entre produtor e consumidor; não deve ser escolhida apenas para “ficar verde”.</p>'
         '<div class="table-wrap"><table class="table"><tr><th>Métrica</th><th>Fórmula operacional</th><th>Leitura e análise</th><th>Ação decorrente</th></tr>'
         + metric_rows + '</table></div>'
-        '<h3>Como implementar os artefatos de evidência</h3><div class="table-wrap"><table class="table"><tr><th>Artefato</th><th>Conteúdo mínimo</th><th>Como construir</th><th>Como validar</th></tr>'
+        '<h4>4. Artefatos e critérios de aceite</h4><div class="table-wrap"><table class="table"><tr><th>Artefato</th><th>Conteúdo mínimo</th><th>Construção</th><th>Validação</th></tr>'
         + artifact_rows + '</table></div></div>'
     )
 
@@ -135,14 +135,9 @@ def unit(title: str, objective: str, content: str) -> str:
                 for filename, label in alignment["modules"]
             )
             rm = (
-                '<h3>Aderência ao UnespDataLens-RM</h3>'
-                f'<p>Esta unidade operacionaliza {module_links} do modelo de referência.</p>'
-                '<div class="table-wrap"><table class="table">'
-                f'<tr><th>Problemas enfrentados</th><td>{alignment["problems"]}</td></tr>'
-                f'<tr><th>Métodos e técnicas</th><td>{alignment["methods"]}</td></tr>'
-                f'<tr><th>Métricas mínimas</th><td>{alignment["metrics"]}</td></tr>'
-                f'<tr><th>Artefatos de evidência</th><td>{alignment["artifacts"]}</td></tr>'
-                '</table></div>' + rm_deep_dive(unit_code)
+                '<h3>Conexão com o UnespDataLens-RM</h3>'
+                f'<p>Esta unidade ensina e implementa conteúdos de {module_links}. Os links abaixo levam aos conceitos do modelo de referência; a coluna “Onde praticar” leva ao código desta unidade.</p>'
+                + rm_deep_dive(unit_code)
             )
         framework_before = (
             '<h3>Carga horária</h3>'
@@ -180,7 +175,11 @@ def unit(title: str, objective: str, content: str) -> str:
         f'<div id="implementacao-{anchor}"><h3>Base teórica e implementação em Python</h3>{content}</div>'
         if unit_code.startswith("14.") else content
     )
-    return f'<section id="{anchor}"><h2 class="unit-title">{esc(title)}</h2>{framework_before}{implementation}{framework_after}</section>'
+    display_title = (
+        f'Unidade {esc(unit_code)} – {esc(title.split(" ", 1)[1])}'
+        if unit_code.startswith("14.") else esc(title)
+    )
+    return f'<section id="{anchor}"><h2 class="unit-title">{display_title}</h2>{framework_before}{implementation}{framework_after}</section>'
 
 
 def technique(title: str, explanation: str, example: str) -> str:
@@ -215,6 +214,15 @@ DE_CONCEPTS = [
     ("Catálogo de dados", "inventário com descrição, origem, responsável, sensibilidade e regras de uso de cada base.", "../conceitos/catalogo-dados.html"),
     ("Linhagem de dados", "registro da origem, transformações e usos dos dados ao longo do pipeline.", "../conceitos/linhagem-dados.html"),
     ("Pré-processamento", "limpeza, transformação, normalização, tratamento de ausências, duplicidades e outliers.", "../conceitos/pre-processamento-dados.html"),
+    ("JSON", "formato textual estruturado, comum em APIs, manifestos, contratos, logs e configurações.", "../conceitos/json.html"),
+    ("YAML", "formato textual legível usado para configurações, contratos de dados e definição de pipelines.", "../conceitos/yaml.html"),
+    ("Manifesto de dados", "ficha estruturada que identifica uma ingestão ou execução por origem, versão, contagens, hashes, métricas e status.", "https://ronaldocmc.github.io/UnespDataLens-RM/conceitos/manifesto-de-execucao.html"),
+    ("Schema e contrato de dados", "estrutura esperada, tipos, obrigatoriedade, domínios, regras e política de evolução de um dataset.", "https://ronaldocmc.github.io/UnespDataLens-RM/conceitos/data-contract.html"),
+    ("Viés", "distorção sistemática introduzida pela coleta, cobertura, integração, limpeza, transformação, rotulagem ou modelagem.", "../conceitos/vies.html"),
+    ("Desbalanceamento", "distribuição muito desigual entre classes ou grupos, capaz de ocultar desempenho ruim nas categorias minoritárias.", "https://ronaldocmc.github.io/UnespDataLens-RM/conceitos/desbalanceamento.html"),
+    ("Equidade e fairness", "avaliação de diferenças de representação, qualidade, seleção, oportunidade e erro entre grupos relevantes.", "https://ronaldocmc.github.io/UnespDataLens-RM/conceitos/equidade.html"),
+    ("Reprodutibilidade", "capacidade de reconstruir uma execução com código, ambiente, configuração, entradas e parâmetros identificados.", "https://ronaldocmc.github.io/UnespDataLens-RM/conceitos/reprodutibilidade.html"),
+    ("Agente inteligente de apoio", "componente que pode auxiliar documentação, triagem e explicação, sem substituir regras determinísticas ou aprovação humana.", "https://ronaldocmc.github.io/UnespDataLens-RM/conceitos/agente-inteligente.html"),
 ]
 
 
@@ -965,7 +973,7 @@ print(saida.round(3))
 print(json.dumps(manifesto, indent=2, ensure_ascii=False))
 """)
     jupyter_engineering = (
-        '<section id="jupyter-engenharia"><h2 class="section-title">Jupyter, preparação de dados e reprodutibilidade</h2>'
+        '<h3>Jupyter e execução reprodutível</h3>'
         '<p>O anexo organiza a preparação em quatro categorias que se combinam conforme o problema: <strong>limpeza</strong>, <strong>integração</strong>, <strong>transformação</strong> e <strong>redução</strong>. Essa organização foi incorporada às unidades 14.3–14.6. O texto também reforça que notebook executável não é sinônimo de análise reprodutível.</p>'
         '<div class="table-wrap"><table class="table"><tr><th>Recomendação do anexo</th><th>Aplicação de engenharia</th></tr>'
         '<tr><td>nomes portáveis e títulos Markdown</td><td>organização do repositório e narrativa técnica</td></tr>'
@@ -975,13 +983,16 @@ print(json.dumps(manifesto, indent=2, ensure_ascii=False))
         '<tr><td>ambiente limpo e execução do início ao fim</td><td>detecção de estado oculto e dependência não declarada</td></tr>'
         '<tr><td>dados e resultados versionados</td><td>proveniência, comparação e auditoria</td></tr></table></div>'
         '<div class="box warn"><strong>Atenção</strong></div><p>Executar células fora de ordem pode usar variáveis antigas e produzir um resultado impossível de reconstruir. Antes da entrega, reinicie o kernel, execute tudo e compare hashes, volumes e métricas.</p>'
+    )
+    manifest_glossary = (
+        '<h3 id="conceito-manifesto">Manifesto, JSON e YAML</h3>'
         '<h3>Conceito: o que é um manifesto?</h3>'
-        '<p>Neste módulo, <strong>manifesto</strong> não significa uma declaração de ideias. Em engenharia de dados, é um arquivo estruturado — normalmente JSON ou YAML — que funciona como a <strong>ficha de identidade de uma execução ou de uma ingestão</strong>. Ele registra quais entradas foram usadas, quando o processamento ocorreu, quais versões de código e ambiente participaram, quantas linhas entraram e saíram, quais hashes comprovam a integridade e qual foi o estado final.</p>'
+        '<p>Neste módulo, <strong>manifesto</strong> não significa uma declaração de ideias. Em engenharia de dados, é um arquivo estruturado — normalmente <a class="term" href="../conceitos/json.html">JSON</a> ou <a class="term" href="../conceitos/yaml.html">YAML</a> — que funciona como a <strong>ficha de identidade de uma execução ou ingestão</strong>. Ele registra entradas, horários, versões, contagens, hashes, métricas e estado final.</p>'
         '<div class="table-wrap"><table class="table"><tr><th>Tipo</th><th>O que documenta</th><th>Campos mínimos</th></tr>'
         '<tr><td><a href="https://ronaldocmc.github.io/UnespDataLens-RM/artefatos/manifesto-de-ingestao.html" target="_blank" rel="noopener">Manifesto de ingestão</a></td><td>O recebimento de uma fonte bruta.</td><td>origem, janela, arquivos, schema, contagens, hashes, rejeições e status</td></tr>'
         '<tr><td><a href="https://ronaldocmc.github.io/UnespDataLens-RM/conceitos/manifesto-de-execucao.html" target="_blank" rel="noopener">Manifesto de execução</a></td><td>A execução completa ou uma etapa do pipeline.</td><td>execution_id, horários, código, ambiente, entradas, saídas, métricas e status</td></tr></table></div>'
         '<p>O manifesto não substitui o log: o <strong>log</strong> narra eventos durante a execução; o <strong>manifesto</strong> resume a evidência necessária para identificar, conferir e reproduzir aquela execução. Ele também não deve armazenar senhas, tokens ou dados pessoais.</p>'
-        '<h3>Exemplo: construindo um manifesto de execução</h3>' + jupyter_repro_code + '</section>'
+        '<h3>Exemplo: construindo um manifesto de execução em JSON</h3>' + jupyter_repro_code
     )
     imports_code = code("""
 from pathlib import Path
