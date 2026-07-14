@@ -150,9 +150,12 @@ def unit(title: str, objective: str, content: str) -> str:
             + ''.join(f'<li>{item}</li>' for item in learning["skills"])
             + '</ul>' + rm
         )
+        practice_lead = (
+            '' if unit_code.startswith("14.") else
+            '<div class="box practice"><strong>Na prática</strong></div>' + f'<p>{learning["lab"]}</p>'
+        )
         framework_after = (
-            '<div class="box practice"><strong>Na prática</strong></div>'
-            f'<p>{learning["lab"]}</p>'
+            practice_lead +
             '<div class="box warn"><strong>Atenção</strong></div>'
             f'<p>{learning["warning"]}</p>'
             '<div class="box tip"><strong>Teste agora</strong></div><ol class="steps">'
@@ -257,10 +260,10 @@ M14_LEARNING = {
     },
     "14.5": {
         "hours": 4, "level": "Selecionar técnica com justificativa estatística",
-        "skills": ["diagnosticar mecanismo e padrão de ausência;", "comparar estratégias de imputação;", "detectar duplicidades e outliers sem confundir exceções legítimas com erros;", "evitar vazamento entre treino e teste."],
-        "lab": "Comparar cenários de remoção, imputação, encoding, normalização e winsorização, medindo linhas afetadas e mudanças nas distribuições.",
-        "deliverables": ["notebook comparativo;", "registro de parâmetros aprendidos;", "base pré-processada;", "justificativa metodológica."],
-        "criteria": ["a técnica é compatível com o significado da variável;", "o impacto por grupo é avaliado;", "parâmetros não são aprendidos com dados de teste."],
+        "skills": ["diagnosticar mecanismo e padrão de ausência;", "comparar estratégias de imputação;", "detectar duplicidades e outliers sem confundir exceções legítimas com erros;", "medir perdas, completude e distribuição por grupo;", "identificar vieses introduzidos por remoção, imputação, filtros e reamostragem;", "evitar vazamento entre treino e teste."],
+        "lab": "Comparar remoção, imputação, encoding, normalização, winsorização e reamostragem, medindo distribuição, perda, completude e impacto por grupo antes/depois.",
+        "deliverables": ["notebook comparativo;", "registro de grupos e atributos sensíveis;", "registro de parâmetros aprendidos;", "base pré-processada ou sinalizada;", "relatório de vieses e justificativa metodológica."],
+        "criteria": ["a técnica é compatível com o significado da variável;", "perda e completude são comparadas por grupo;", "a mitigação não apaga a distribuição real sem justificativa;", "parâmetros não são aprendidos com dados de teste."],
     },
     "14.6": {
         "hours": 4, "level": "Integrar com controle de cardinalidade",
@@ -278,24 +281,24 @@ M14_LEARNING = {
     },
     "14.8": {
         "hours": 3, "level": "Operar com rastreabilidade e governança",
-        "skills": ["distinguir log, auditoria, linhagem, catálogo e observabilidade;", "instrumentar métricas operacionais;", "classificar sensibilidade, acesso e retenção."],
-        "lab": "Instrumentar o pipeline com logs estruturados, catálogo, lineage e indicadores de cobertura, falha e atualidade.",
-        "deliverables": ["log estruturado;", "catálogo de dados;", "grafo ou registro de linhagem;", "matriz de acesso e retenção."],
-        "criteria": ["incidentes podem ser reconstruídos pelos logs;", "dados pessoais não aparecem em mensagens operacionais;", "origem, transformação e consumo estão conectados."],
+        "skills": ["distinguir log, manifesto, auditoria, linhagem, catálogo e observabilidade;", "representar configurações e contratos em JSON ou YAML;", "instrumentar métricas operacionais;", "fixar ambiente, versões, sementes e hashes;", "classificar sensibilidade, acesso e retenção."],
+        "lab": "Instrumentar o pipeline com logs estruturados, manifesto, catálogo, lineage, pacote reprodutível e indicadores de cobertura, falha e atualidade.",
+        "deliverables": ["log e manifesto estruturados;", "catálogo de dados;", "grafo ou registro de linhagem;", "matriz de acesso e retenção;", "pacote de reprodutibilidade."],
+        "criteria": ["incidentes podem ser reconstruídos pelos logs;", "o manifesto identifica entradas, saídas, versões, contagens e hashes;", "dados pessoais não aparecem em mensagens operacionais;", "origem, transformação e consumo estão conectados;", "uma execução limpa reproduz o resultado."],
     },
     "14.9": {
         "hours": 3, "level": "Preparar e avaliar dados para IA",
-        "skills": ["formular alvo e atributos evitando leakage;", "separar treino, validação e teste;", "construir pipeline de pré-processamento;", "avaliar representatividade, desempenho e limitações."],
-        "lab": "Preparar um experimento de classificação didático a partir do data mart, documentando riscos, vieses, métricas e usos proibidos.",
-        "deliverables": ["notebook de análise exploratória;", "pipeline de preparação;", "relatório de avaliação;", "ficha de limitações."],
-        "criteria": ["o experimento é reproduzível;", "não há vazamento de alvo ou de tempo;", "a conclusão não excede a evidência disponível."],
+        "skills": ["formular alvo e atributos evitando leakage;", "separar treino, validação e teste;", "construir pipeline de pré-processamento;", "medir representatividade e desempenho por grupo;", "calcular paridade estatística, disparate impact, igualdade de oportunidade e diferenças de erro;", "registrar risco residual e usos proibidos."],
+        "lab": "Preparar um experimento de classificação didático, comparar baseline e modelo e produzir avaliação de desbalanceamento, vieses e equidade por grupo.",
+        "deliverables": ["notebook de análise exploratória;", "pipeline de preparação;", "relatório de fairness com suporte por grupo;", "plano de mitigação;", "ficha de limitações e risco residual."],
+        "criteria": ["o experimento é reproduzível;", "não há vazamento de alvo ou de tempo;", "métricas globais e por grupo são apresentadas com denominadores;", "mitigação e risco residual são documentados;", "a conclusão não excede a evidência disponível."],
     },
     "14.10": {
         "hours": 5, "level": "Entregar produto de dados operacional",
-        "skills": ["orquestrar extração, validação, transformação, carga e monitoramento;", "implementar testes e recuperação de falha;", "documentar execução, arquitetura e operação;", "apresentar evidências de qualidade e reprocessabilidade."],
-        "lab": "Construir e demonstrar um mini-UnespDataLens-RM executável de ponta a ponta, partindo de dados fictícios até um data mart consultável e governado.",
-        "deliverables": ["repositório executável;", "dados fictícios e contratos;", "pipeline, testes e logs;", "data mart e indicadores;", "documentação técnica e apresentação."],
-        "criteria": ["uma execução limpa produz todos os artefatos;", "testes impedem publicação de dados inválidos;", "o pipeline suporta reexecução e falha controlada;", "outro participante consegue reproduzir o resultado pela documentação."],
+        "skills": ["orquestrar extração, validação, transformação, carga e monitoramento;", "implementar testes, alertas e recuperação de falha;", "documentar execução, arquitetura e operação;", "avaliar drift, MTTD, MTTR e sucesso ponta a ponta;", "delimitar agentes de apoio com guardrails e aprovação humana;", "apresentar evidências de qualidade e reprocessabilidade."],
+        "lab": "Construir e demonstrar um mini-UnespDataLens-RM de ponta a ponta, incluindo monitoramento, runbook e uma recomendação de agente que não execute ação crítica sem aprovação.",
+        "deliverables": ["repositório executável;", "dados fictícios e contratos;", "pipeline, testes, logs e alertas;", "data mart e indicadores;", "runbook e registro de incidente;", "modelo de governança do agente;", "documentação técnica e apresentação."],
+        "criteria": ["uma execução limpa produz todos os artefatos;", "testes impedem publicação de dados inválidos;", "o pipeline suporta reexecução e falha controlada;", "alertas levam a um runbook testado;", "o agente não executa ação crítica sem aprovação;", "outro participante consegue reproduzir o resultado pela documentação."],
     },
 }
 
@@ -324,7 +327,7 @@ RM_ALIGNMENT = {
     "14.7": {"modules": [("m07", "M7 - Armazenamento analítico"), ("m08", "M8 - Disponibilização e consumo")], "problems": "ativos obsoletos, baixa reprocessabilidade, consultas lentas, acesso indevido e baixo reuso", "methods": "bronze/prata/ouro, Parquet, SQLite, DuckDB, warehouse, lake/lakehouse, esquema estrela, particionamento, índices e carga incremental", "metrics": "cobertura, ativos versionados, localização documentada, tempo de consulta, reprocessabilidade e adequação ao uso", "artifacts": "modelo de armazenamento, data mart, snapshot versionado, produto de dados, API/view e política de acesso"},
     "14.8": {"modules": [("m09", "M9 - Catálogo"), ("m10", "M10 - Governança"), ("m11", "M11 - Linhagem"), ("m12", "M12 - Reprodutibilidade")], "problems": "baixa governança, ausência de metadados, baixa rastreabilidade, dados sensíveis sem classificação e análises irreproduzíveis", "methods": "catálogo, glossário, classificação, RBAC, logs estruturados, OpenLineage, grafo de linhagem, versionamento e ambiente fixado", "metrics": "completude de metadados, cobertura de catálogo/linhagem, ativos auditáveis, conformidade e execuções reproduzíveis", "artifacts": "catálogo, dicionário, glossário, matriz de permissões, grafo de linhagem, trilha de auditoria e pacote reprodutível"},
     "14.9": {"modules": [("m13", "M13 - Representações analíticas"), ("m14", "M14 - Feature engineering"), ("m06", "M6 - Equidade")], "problems": "unidade de análise incorreta, leakage temporal, baixa qualidade de rótulos, vieses e features sem proveniência", "methods": "representação tabular/temporal, feature engineering, seleção e PCA, split temporal/estratificado, pipelines de treino, baseline e avaliação por grupo", "metrics": "features documentadas e com lineage, completude, vazamento, cobertura temporal e desempenho por grupo", "artifacts": "plano de representação, catálogo e regra de features, feature set/store, relatório de validação e limitações"},
-    "14.10": {"modules": [("m15", "M15 - Monitoramento e drift"), ("m12", "M12 - Reprodutibilidade"), ("m08", "M8 - Produto de dados")], "problems": "falhas silenciosas, dívida de dados, drift, reprocessamento manual e produtos sem responsável", "methods": "orquestração, testes por etapa, idempotência, baseline, observabilidade, detecção de drift, alerta, incidentes, rollback e runbook", "metrics": "ativos monitorados, atualização no prazo, schema/data/feature drift, MTTD, MTTR e sucesso ponta a ponta", "artifacts": "manifesto de execução, painel, alertas, registro de incidentes, runbook, pacote reprodutível e ficha de produto"},
+    "14.10": {"modules": [("m15", "M15 - Monitoramento e drift"), ("m12", "M12 - Reprodutibilidade"), ("m08", "M8 - Produto de dados"), ("m16", "M16 - Agentes inteligentes de apoio")], "problems": "falhas silenciosas, dívida de dados, drift, reprocessamento manual, produtos sem responsável e automação inteligente sem limites", "methods": "orquestração, testes por etapa, idempotência, baseline, observabilidade, detecção de drift, alerta, incidentes, rollback, runbook e agente de apoio supervisionado", "metrics": "ativos monitorados, atualização no prazo, schema/data/feature drift, MTTD, MTTR, sucesso ponta a ponta e recomendações humanas aprovadas", "artifacts": "manifesto de execução, painel, alertas, registro de incidentes, runbook, pacote reprodutível, ficha de produto e plano de governança do agente"},
 }
 
 
@@ -439,24 +442,32 @@ RM_GUIDANCE = {
             ("Extremos confundidos com erros", "problemas/inconsistencias.html", "Use regra de domínio, IQR/z-score e contexto; valor raro pode ser evento real.", "Corrija erro comprovado; caso legítimo, preserve, transforme ou use método robusto.", "Lista de extremos possui motivo e ação individual/agregada."),
             ("Desbalanceamento de classes", "problemas/desbalanceamento-de-classes.html", "Calcule distribuição do alvo por split e grupo sensível.", "Use estratificação, pesos ou reamostragem apenas no treino e avalie métricas por classe.", "Relatório compara baseline e efeito da mitigação."),
             ("Data leakage", "problemas/data-leakage.html", "Pergunte se a feature existia no instante da previsão e se parâmetros usaram teste/futuro.", "Separe antes do ajuste, use Pipeline e corte temporal; remova informação pós-evento.", "Teste de disponibilidade temporal e revisão de lineage aprovados."),
+            ("Viés introduzido pelo pré-processamento", "conceitos/vies.html", "Compare quem é removido, imputado, limitado ou reclassificado em cada etapa, segmentando por grupo relevante.", "Reveja regras com impacto desigual, preserve indicadores de alteração e adote mitigação proporcional ao risco e à finalidade.", "Relatório antes/depois mostra distribuição, completude, perdas e limitações por grupo."),
+            ("Sub-representação", "problemas/vies-de-cobertura.html", "Compare a participação observada de cada grupo com a população elegível ou com a referência justificável.", "Corrija cobertura na origem quando possível; quando não for, use ponderação/reamostragem apenas no treino ou restrinja o uso.", "Dataset é balanceado com parâmetros auditáveis ou explicitamente sinalizado para uso com ressalvas."),
         ],
         "methods": [
             ("Diagnóstico MCAR/MAR/MNAR", "metodos/imputacao.html", "Orienta se remover, imputar ou redesenhar coleta.", "Crie indicadores de ausência, compare grupos/tempo e registre hipótese; faça análise de sensibilidade."),
             ("Imputação e remoção justificada", "metodos/imputacao.html", "Trata ausência quando o benefício supera viés e perda de informação.", "Quantifique perda; ajuste estatística no treino; preserve indicador e parâmetros; compare cenários."),
             ("IQR e winsorização", "metodos/tratamento-de-outliers.html", "Limita influência de extremos quando há justificativa estatística e de negócio.", "Calcule limites no treino, marque outliers, use clip e compare quantis/métricas antes/depois."),
             ("Escala e encoding", "metodos/normalizacao.html", "Atende algoritmos sensíveis a distância e categorias.", "Use ColumnTransformer/Pipeline, handle_unknown e parâmetros aprendidos somente no treino."),
+            ("Análise de perdas e qualidade por grupo", "conceitos/equidade.html", "Revela se a própria preparação piorou cobertura ou qualidade para uma população.", "Registre grupo antes de cada regra; calcule retenção, completude, imputação e outliers por grupo; compare antes/depois."),
+            ("Reamostragem e ponderação", "conceitos/desbalanceamento.html", "Pode reduzir o domínio da classe majoritária no treinamento, sem alterar silenciosamente a população original.", "Separe treino/teste primeiro; aplique oversampling, undersampling ou pesos somente no treino; compare distribuição, desempenho e fairness."),
         ],
         "metrics": [
             ("Percentual imputado", "metricas/completude.html", "valores_imputados / total_valores", "Analise por coluna, tempo e grupo; crescimento sinaliza deterioração da fonte.", "Defina limite e acione origem quando excedido."),
             ("Razão de desbalanceamento", "conceitos/desbalanceamento.html", "maior_classe / menor_classe", "Use junto com suporte absoluto e distribuição por split/grupo.", "Escolha métrica/modelo e mitigação compatíveis; não apague a realidade populacional."),
             ("Taxa de features com vazamento", "artefatos/relatorio-de-validacao-de-features.html", "features_reprovadas_por_leakage / features_avaliadas", "Meta deve ser zero para features usadas; diferencie leakage de alvo, tempo e split.", "Remova feature, corrija janela e reexecute avaliação desde o início."),
             ("Impacto por grupo", "artefatos/relatorio-de-distribuicao-de-grupos.html", "metrica_depois_grupo - metrica_antes_grupo", "Compare perda de linhas, imputação e extremos entre grupos.", "Reveja técnica quando o dano se concentra em grupo específico."),
+            ("Taxa de perda por grupo", "artefatos/relatorio-de-distribuicao-de-grupos.html", "(linhas_antes_grupo - linhas_depois_grupo) / linhas_antes_grupo", "Compare grupos e etapas; uma taxa global baixa pode esconder exclusão concentrada.", "Reprojete a regra ou restrinja o uso quando a diferença não tiver justificativa defensável."),
+            ("Diferença de completude por grupo", "metricas/completude.html", "completude_grupo_a - completude_grupo_b", "Interprete sinal, magnitude, denominador e causa da ausência; paridade numérica não garante dados adequados.", "Atue na coleta ou na regra e registre o risco residual."),
         ],
         "artifacts": [
             ("Notebook comparativo", "artefatos/pacote-de-reprodutibilidade.html", "cenários, parâmetros, distribuição, grupos, métricas, decisão e semente", "Execute cenários em funções/Pipeline e registre versões e hashes.", "Restart & Run All reproduz tabelas e decisão."),
             ("Registro de baselines", "artefatos/registro-de-baselines.html", "período, população, métricas, quantis, classes e versão", "Persista JSON/Parquet antes da transformação e associe ao produto.", "Baseline usa período representativo e possui data de revisão."),
             ("Feature set", "artefatos/feature-set.html", "features, tipos, fórmulas, janelas, parâmetros, disponibilidade e lineage", "Gere tabela validada a partir do treino e versione transformação.", "Teste schema, nulos, leakage, distribuição e consistência offline/online."),
             ("Justificativa metodológica", "artefatos/registro-de-limitacoes-conhecidas.html", "alternativas, escolha, hipótese, impacto, grupos, limitação e responsável", "Registre junto ao experimento e ao relatório de avaliação.", "Conclusão não excede a evidência e explicita incerteza."),
+            ("Registro de grupos e perdas", "artefatos/relatorio-de-distribuicao-de-grupos.html", "grupos, atributos sensíveis/proxies, população de referência, contagens por etapa e motivo de perda", "Gere tabela longa por execution_id, etapa e grupo sem expor identificadores pessoais.", "Totais por grupo reconciliam com a base e categorias pequenas recebem proteção contra reidentificação."),
+            ("Relatório de vieses e plano de mitigação", "artefatos/relatorio-de-vieses.html", "tipo de viés, evidência, etapa de origem, grupo afetado, severidade, ação, impacto e risco residual", "Compare cenários em notebook reexecutável e vincule o plano de mitigação à versão do dataset.", "Revisor confirma métricas, justificativa, efeito antes/depois e limitações remanescentes."),
         ],
     },
     "14.6": {
@@ -545,6 +556,8 @@ RM_GUIDANCE = {
             ("Leakage temporal", "problemas/data-leakage.html", "Compare timestamp de cada feature com instante de previsão e janela do rótulo.", "Use point-in-time join, corte temporal e ajuste transformadores somente no treino.", "Nenhuma feature usada contém informação futura ou derivada do conjunto de teste."),
             ("Baixa qualidade de rótulos", "problemas/baixa-qualidade-de-rotulos.html", "Amostre casos, compare fontes/anotadores e meça ausências, conflito e atraso do rótulo.", "Defina protocolo, adjudicação, versão e população elegível; separe desconhecido de negativo.", "Concordância, cobertura e limitações do rótulo são publicadas."),
             ("Vieses e features sem proveniência", "problemas/vies-de-cobertura.html", "Compare cobertura/distribuição por tempo e grupo e tente localizar origem/fórmula de cada feature.", "Reveja amostragem, avalie grupos e registre lineage, janela, owner e finalidade.", "Relatório por grupo e catálogo permitem contestar e reconstruir cada feature."),
+            ("Desempenho global que oculta inequidade", "conceitos/fairness.html", "Calcule suporte, seleção, TPR, FPR, FNR, precisão e recall separadamente por grupo; compare com a métrica global.", "Defina a noção de equidade adequada ao dano e à finalidade, investigue dados/rótulos e aplique mitigação sem prometer eliminar todos os trade-offs.", "Relatório de fairness apresenta denominadores, intervalos, limiar, decisão, impacto e risco residual."),
+            ("Atributos sensíveis e proxies", "conceitos/equidade.html", "Revise correlações, semântica e lineage para identificar variáveis que codificam direta ou indiretamente grupos protegidos.", "Mantenha atributos sensíveis protegidos para auditoria, restrinja seu uso no modelo e teste proxies/efeitos com governança.", "Catálogo registra finalidade, acesso, uso permitido e decisão sobre cada atributo/proxy."),
         ],
         "methods": [
             ("Representação tabular e temporal", "conceitos/dados-temporais.html", "Converte o fenômeno em unidade, chave e janela adequadas à análise.", "Defina tempo de evento/processamento, frequência, janela e política para atraso antes de pivotar/agregar."),
@@ -552,18 +565,26 @@ RM_GUIDANCE = {
             ("Seleção e redução", "modulos/m14.html", "Reduz redundância/custo sem usar informação do teste.", "Ajuste seleção ou PCA no treino, versione parâmetros e compare desempenho, estabilidade e interpretabilidade."),
             ("Split temporal ou estratificado", "modulos/m13.html", "Simula uso futuro ou preserva classes sem contaminar avaliação.", "Separe primeiro; ajuste todo pré-processamento no treino; valide tempo, entidade e grupos entre splits."),
             ("Baseline e avaliação por grupo", "artefatos/registro-de-baselines.html", "Mostram ganho real e impactos que a média global esconde.", "Compare regra simples/modelo, suporte e métricas por classe, período e grupo com intervalos."),
+            ("Avaliação de fairness", "conceitos/fairness.html", "É necessária quando dados, indicadores, rankings ou modelos afetam grupos de maneira potencialmente desigual.", "Defina grupo de referência e resultado favorável; calcule SPD, DI, EOD, AOD e erros por grupo; interprete no contexto e documente incompatibilidades entre critérios."),
+            ("Mitigação e análise de impacto", "artefatos/plano-de-mitigacao-de-vieses.html", "Reduz risco identificado sem esconder custo, perda de informação ou novo desequilíbrio.", "Compare dados/modelo antes e depois; teste pesos, reamostragem, limiar ou melhoria de coleta; escolha com revisão humana e registre risco residual."),
         ],
         "metrics": [
             ("Features documentadas e com lineage", "artefatos/catalogo-de-features.html", "features_com_formula_janela_origem_versao / features_usadas", "Inspecione campos críticos e confirme que documentação corresponde ao código executado.", "Remova ou documente feature antes do treino/serving."),
             ("Taxa de vazamento", "artefatos/relatorio-de-validacao-de-features.html", "features_ou_linhas_com_informacao_indisponivel / total_verificado", "Meta é zero; segmente leakage de tempo, alvo, entidade e pré-processamento.", "Corrija split/janela e refaça todas as métricas contaminadas."),
             ("Cobertura temporal", "conceitos/cobertura-temporal.html", "intervalos_com_dados_validos / intervalos_esperados", "Analise lacunas, atraso e mudança de regime; média pode esconder meses ausentes.", "Restrinja período de validade ou corrija coleta antes de generalizar."),
             ("Desempenho por grupo", "artefatos/relatorio-de-distribuicao-de-grupos.html", "metrica_grupo e diferenca_em_relacao_ao_referencial", "Sempre apresente suporte e incerteza; diferença pequena em grupo reduzido pode ser instável.", "Investigue dados, rótulos e decisão quando disparidade for material."),
+            ("Statistical Parity Difference", "metricas/statistical-parity-difference.html", "P(resultado_positivo | grupo_a) - P(resultado_positivo | grupo_referencia)", "Zero indica paridade de seleção, mas pode ser inadequado quando necessidades ou prevalências diferem; publique as duas taxas e os denominadores.", "Investigue coleta, regra e limiar quando a diferença material não puder ser justificada."),
+            ("Disparate Impact", "metricas/disparate-impact.html", "P(resultado_positivo | grupo_a) / P(resultado_positivo | grupo_referencia)", "Valor 1 indica taxas iguais; razão isolada não prova discriminação nem segurança e deve ser lida com contexto e incerteza.", "Revise política, dados e limiar quando o impacto for desproporcional."),
+            ("Equal Opportunity Difference", "metricas/equal-opportunity-difference.html", "TPR_grupo_a - TPR_grupo_referencia", "Compara oportunidade de receber resultado positivo correto entre pessoas realmente positivas.", "Atue quando um grupo elegível acumular falsos negativos ou menor oportunidade sem justificativa."),
+            ("Average Odds Difference", "metricas/average-odds-difference.html", "0.5 * ((FPR_a - FPR_ref) + (TPR_a - TPR_ref))", "Resume diferenças de acertos positivos e falsos alarmes; complemente com FPR/FNR separados e suporte.", "Escolha mitigação considerando quem suporta cada tipo de erro."),
         ],
         "artifacts": [
             ("Plano de representação analítica", "artefatos/plano-de-representacao-analitica.html", "pergunta, população, grão, tempo, rótulo, splits, exclusões e riscos", "Versione antes da modelagem e transforme hipóteses em asserts.", "Amostra manual confirma que linhas e tempos representam o fenômeno pretendido."),
             ("Catálogo e regras de features", "artefatos/catalogo-de-features.html", "nome, tipo, fórmula, janela, disponibilidade, origem, owner, versão e uso permitido", "Gere metadados junto com o código da transformação.", "Recalcule amostra e confronte catálogo, código e valores."),
             ("Feature set/store", "artefatos/feature-set.html", "entidade, timestamp, features, schema, versão, parâmetros e lineage", "Materialize com point-in-time correctness e contrato offline/online.", "Testes comparam schema, valores, atualidade e consistência entre ambientes."),
             ("Relatório de validação e limitações", "artefatos/relatorio-de-validacao-de-features.html", "qualidade, leakage, estabilidade, grupos, baseline, falhas e uso inadequado", "Gere durante pipeline e associe à versão do conjunto.", "Aprovação exige ausência de leakage e limitações explícitas para o consumidor."),
+            ("Relatório de fairness", "artefatos/relatorio-de-fairness.html", "finalidade, grupos, resultado favorável, suporte, matriz de confusão por grupo, SPD, DI, EOD, AOD, decisão e limitações", "Gere a partir das previsões de teste preservadas e vincule à versão do modelo, dados e limiar.", "Recalcule métricas, confira denominadores e submeta interpretação ao responsável de domínio/governança."),
+            ("Plano de mitigação e risco residual", "artefatos/plano-de-mitigacao-de-vieses.html", "viés, causa provável, técnica, parâmetros, resultado antes/depois, trade-offs, owner, prazo e risco remanescente", "Versione cenários e mantenha dataset/modelo original para comparação.", "Aceite somente quando o ganho de equidade, a perda de desempenho e os usos proibidos estiverem explícitos."),
         ],
     },
     "14.10": {
@@ -572,6 +593,7 @@ RM_GUIDANCE = {
             ("Dívida de dados", "problemas/divida-de-dados.html", "Inventarie atalhos, exceções, dependências obsoletas e tarefas manuais; estime risco e custo recorrente.", "Mantenha backlog priorizado por impacto/probabilidade, owner, prazo e critério de quitação.", "Itens críticos diminuem e não são reabertos sem decisão registrada."),
             ("Drift", "conceitos/data-drift.html", "Compare schema, distribuição, relações e desempenho com baseline por janela e grupo.", "Defina detectores, limiares, persistência, investigação e resposta diferenciada para schema/data/feature drift.", "Alerta inclui evidência, magnitude, campos, período e ação tomada."),
             ("Reprocessamento manual e produto sem owner", "conceitos/dataops.html", "Simule falha/reexecução e verifique quem decide, executa, comunica e encerra.", "Orquestre etapas idempotentes e publique runbook, RACI, SLA, rollback e suporte.", "Outro operador restaura o serviço sem depender do autor e registra toda ação."),
+            ("Agente sem limites ou supervisão", "conceitos/agente-inteligente.html", "Verifique se o agente pode alterar dados, aprovar acessos, suprimir alertas ou executar correções sem regra e aprovação explícitas.", "Restrinja o agente a leitura, síntese, explicação e recomendação; aplique allowlist de ferramentas, validação determinística e humano no loop para ações de impacto.", "Logs registram contexto, recomendação, ferramenta, aprovação, resultado e versão; nenhuma ação crítica ocorre sem autorização."),
         ],
         "methods": [
             ("Orquestração e DataOps", "conceitos/dataops.html", "Automatizam dependências, agenda, estado, retry e observabilidade do ciclo de dados.", "Modele DAG, entradas/saídas, SLA, retry seletivo, timeout, backfill e parâmetros por ambiente."),
@@ -579,6 +601,7 @@ RM_GUIDANCE = {
             ("Observabilidade", "conceitos/data-observability.html", "Combina atualidade, volume, schema, qualidade, linhagem, logs e custo para detectar anomalias.", "Colete sinais com execution_id, baseline e severidade; conecte painel ao catálogo e ao alerta."),
             ("Detecção de drift", "tecnicas/evidently-ai.html", "Sinaliza mudança relevante em dados/features antes que o produto perca adequação.", "Escolha teste e janela por variável, controle múltiplas comparações e exija persistência/impacto antes de agir."),
             ("Incidente, rollback e runbook", "artefatos/plano-de-monitoramento.html", "Transformam alerta em resposta repetível e auditável.", "Defina triagem, owner, contenção, rollback, comunicação, reprocessamento e análise de causa raiz."),
+            ("Agente inteligente de apoio", "conceitos/agente-inteligente.html", "Pode resumir evidências, classificar incidentes e sugerir passos do runbook, sem substituir controles críticos.", "Forneça somente contexto minimizado; exija saída estruturada com evidências, incerteza e ação proposta; valide schema e solicite aprovação humana."),
         ],
         "metrics": [
             ("Cobertura de monitoramento", "artefatos/painel-de-monitoramento.html", "ativos_criticos_com_sinais_e_alertas_testados / ativos_criticos", "Verifique qualidade dos sinais e teste do alerta; painel sem responsável não conta.", "Instrumente primeiro ativos de maior impacto e lacunas de linhagem."),
@@ -586,6 +609,7 @@ RM_GUIDANCE = {
             ("Taxa/magnitude de drift", "metricas/taxa-de-data-drift.html", "variaveis_com_drift_confirmado / variaveis_monitoradas", "Leia junto a efeito, persistência, sazonalidade e grupos; significância isolada não exige retreino.", "Investigue origem e impacto antes de ajustar regra, baseline ou modelo."),
             ("MTTD e MTTR", "metricas/tempo-medio-de-deteccao.html", "media(deteccao - inicio) e media(resolucao - deteccao)", "Use mediana/p95 e severidade, pois médias escondem incidentes longos.", "Melhore sinal ou runbook conforme o intervalo dominante."),
             ("Sucesso ponta a ponta", "metricas/cobertura-de-logs-de-execucao.html", "execucoes_com_ingestao_qualidade_publicacao_consumo_validos / planejadas", "Exige sucesso de todas as etapas e contrato de consumo; não use apenas status do orquestrador.", "Bloqueie publicação e reprocese a partir da etapa segura."),
+            ("Taxa de recomendações aprovadas", "artefatos/modelo-de-agentes-inteligentes.html", "recomendacoes_aprovadas_e_executadas / recomendacoes_emitidas", "Taxa alta não prova qualidade: analise rejeições, falsos alertas, dano evitado e aderência ao runbook.", "Ajuste contexto/guardrails ou suspenda a automação quando recomendações não forem fundamentadas."),
         ],
         "artifacts": [
             ("Manifesto de execução", "conceitos/manifesto-de-execucao.html", "execution_id, tempo, código, ambiente, entradas, saídas, hashes, métricas e status", "Gere JSON automaticamente e armazene junto ao resultado sem segredos.", "Manifesto corresponde aos arquivos/logs e permite localizar toda a execução."),
@@ -593,6 +617,7 @@ RM_GUIDANCE = {
             ("Registro de incidentes", "artefatos/registro-de-incidentes.html", "linha do tempo, impacto, evidência, causa, contenção, correção, owner e aprendizado", "Abra automaticamente pelo alerta e complete pós-incidente sem dados sensíveis.", "Ações corretivas têm prazo e recorrência é comparada à causa anterior."),
             ("Runbook e pacote reprodutível", "artefatos/pacote-de-reprodutibilidade.html", "pré-requisitos, diagnóstico, comandos seguros, rollback, backfill, validação e contatos", "Versione com código/configuração e ensaie em ambiente controlado.", "Operador autorizado resolve cenário simulado seguindo apenas o documento."),
             ("Ficha do produto", "artefatos/ficha-de-produto-analitico.html", "finalidade, owner, contrato, SLA, dependências, qualidade, acesso, suporte e limitações", "Publique no catálogo e atualize a cada versão relevante.", "Consumidor entende uso permitido e sabe detectar/reportar degradação."),
+            ("Modelo e plano de governança do agente", "artefatos/plano-de-governanca-dos-agentes.html", "finalidade, dados permitidos, ferramentas, ações proibidas, aprovação, logging, avaliação, owner e desligamento", "Versione política e implemente guardrails antes de conectar ferramentas com efeito.", "Teste recomendações corretas, alucinação, dado sensível, prompt malicioso e tentativa de ação não autorizada."),
         ],
     },
 }
@@ -603,12 +628,12 @@ M14_OPENINGS = {
     "14.2": "A carga diária terminou sem erro aparente, porém recebeu somente parte das páginas da API e duplicou registros ao ser reexecutada.",
     "14.3": "Um dashboard foi publicado com e-mails inválidos, chaves repetidas e datas futuras porque o pipeline verificava apenas se o arquivo existia.",
     "14.4": "Duas equipes limpam a mesma base com regras diferentes e não conseguem explicar por que determinado valor foi alterado.",
-    "14.5": "A média preencheu ausências, a escala usou todo o dataset e outliers foram removidos automaticamente; o modelo parece ótimo, mas a avaliação está contaminada.",
+    "14.5": "A média preencheu ausências, a limpeza removeu proporcionalmente mais registros de um grupo e a escala usou todo o dataset; a base parece melhor, mas ficou enviesada e a avaliação está contaminada.",
     "14.6": "Depois de um merge, mil inscrições viraram quatro mil linhas porque as chaves e a granularidade não foram verificadas.",
     "14.7": "Arquivos chamados final, final2 e final_agora_vai circulam por e-mail; ninguém sabe qual versão alimentou o relatório.",
     "14.8": "Um indicador divergente chega à gestão, mas não há catálogo, log, versão nem linhagem para reconstruir sua origem.",
-    "14.9": "Uma feature usa informação registrada depois do evento previsto e cria um resultado excelente que não pode existir em produção.",
-    "14.10": "O pipeline funciona no computador do autor, mas falha em ambiente limpo e ninguém recebe alerta quando a qualidade cai.",
+    "14.9": "Uma feature usa informação futura e o modelo tem boa acurácia global, mas acumula falsos negativos em um grupo minoritário; o resultado não é adequado nem equitativo.",
+    "14.10": "O pipeline funciona no computador do autor, mas falha em ambiente limpo, ninguém recebe alerta e um agente sugere ações sem citar evidências ou exigir aprovação.",
 }
 M14_HOURS = {"14.1": 5, "14.2": 6, "14.3": 6, "14.4": 7, "14.5": 6,
              "14.6": 6, "14.7": 7, "14.8": 5, "14.9": 5, "14.10": 7}
@@ -629,28 +654,30 @@ def m14_workload_table() -> str:
 
 def rm_portal_map() -> str:
     rows = [
-        ("m01", "Fontes e inventário", "Núcleo", "14.1"),
-        ("m02", "Extração, ingestão e armazenamento bruto", "Núcleo", "14.2"),
-        ("m03", "Integração e harmonização", "Núcleo", "14.6"),
-        ("m04", "Transformação, limpeza e preparação", "Núcleo", "14.4–14.5"),
-        ("m05", "Qualidade e validação", "Núcleo", "14.3"),
-        ("m06", "Desbalanceamento, vieses e equidade", "Aderente", "14.5 e 14.9"),
-        ("m07", "Armazenamento analítico", "Núcleo", "14.1 e 14.7"),
-        ("m08", "Disponibilização e consumo", "Núcleo", "14.7 e 14.10"),
-        ("m09", "Metadados, catálogo e semântica", "Transversal", "14.3, 14.6 e 14.8"),
-        ("m10", "Governança, segurança e privacidade", "Transversal", "14.8"),
-        ("m11", "Proveniência, linhagem e rastreabilidade", "Transversal", "14.8"),
-        ("m12", "Versionamento e reprodutibilidade", "Transversal", "todas; ênfase em 14.8 e 14.10"),
-        ("m13", "Representações analíticas", "Aderente", "14.9"),
-        ("m14", "Feature engineering e feature store", "Aderente", "14.5 e 14.9"),
-        ("m15", "Monitoramento, drift e evolução", "Núcleo operacional", "14.2 e 14.10"),
-        ("m16", "Agentes inteligentes de apoio", "Extensão", "projeto 14.10, sem delegar controles críticos"),
+        ("m01", "Fontes e inventário", "Núcleo", [("14.1", "u141")], "inventário, profiling, sensibilidade, responsáveis e mapa de fontes"),
+        ("m02", "Extração, ingestão e armazenamento bruto", "Núcleo", [("14.2", "u142")], "CSV, Excel, JSON, API, banco, snapshot, hash, retry e idempotência"),
+        ("m03", "Integração e harmonização", "Núcleo", [("14.6", "u146")], "chaves, cardinalidade, record linkage, semântica, tempo e reconciliação"),
+        ("m04", "Transformação, limpeza e preparação", "Núcleo", [("14.4", "u144"), ("14.5", "u145")], "tipos, regras, imputação, deduplicação, escala, encoding e outliers"),
+        ("m05", "Qualidade e validação", "Núcleo", [("14.3", "u143")], "contratos, profiling, dimensões de qualidade, quarentena e testes"),
+        ("m06", "Desbalanceamento, vieses e equidade", "Aderente", [("14.5", "u145"), ("14.9", "u149")], "perdas por grupo, reamostragem, vieses, SPD, DI, EOD, AOD, mitigação e risco residual"),
+        ("m07", "Armazenamento analítico", "Núcleo", [("14.1", "u141"), ("14.7", "u147")], "arquitetura, bronze/prata/ouro, Parquet, DuckDB, data mart e benchmark"),
+        ("m08", "Disponibilização e consumo", "Núcleo", [("14.7", "u147"), ("14.10", "u1410")], "views, produtos de dados, acesso, SLA, pipeline e operação"),
+        ("m09", "Metadados, catálogo e semântica", "Transversal", [("14.3", "u143"), ("14.6", "u146"), ("14.8", "u148")], "schema, dicionário, equivalência semântica, catálogo e glossário"),
+        ("m10", "Governança, segurança e privacidade", "Transversal", [("14.8", "u148")], "papéis, sensibilidade, RBAC, retenção, auditoria e LGPD"),
+        ("m11", "Proveniência, linhagem e rastreabilidade", "Transversal", [("14.8", "u148")], "execution_id, logs, hashes, lineage de datasets/colunas e impacto"),
+        ("m12", "Versionamento e reprodutibilidade", "Transversal", [(f"14.{i}", f"u14{i}") for i in range(1, 11)], "código, regras, schemas, parâmetros, dados e manifestos versionados em todas as etapas"),
+        ("m13", "Representações analíticas", "Aderente", [("14.9", "u149")], "grão, população, janelas, rótulo, splits e representação temporal/tabular"),
+        ("m14", "Feature engineering e feature store", "Aderente", [("14.5", "u145"), ("14.9", "u149")], "transformadores sem leakage, catálogo, lineage, feature set e validação"),
+        ("m15", "Monitoramento, drift e evolução", "Núcleo operacional", [("14.2", "u142"), ("14.10", "u1410")], "SLA, logs, drift, alertas, MTTD, MTTR, incidentes e runbook"),
+        ("m16", "Agentes inteligentes de apoio", "Extensão supervisionada", [("14.10", "u1410")], "triagem e recomendação com evidências, guardrails, allowlist e aprovação humana"),
     ]
     body = ''.join(
-        f'<tr><td><a href="https://ronaldocmc.github.io/UnespDataLens-RM/modulos/{code}.html" target="_blank" rel="noopener">{code.upper()}</a></td><td>{title}</td><td>{relation}</td><td>{units}</td></tr>'
-        for code, title, relation, units in rows
+        f'<tr><td><a href="https://ronaldocmc.github.io/UnespDataLens-RM/modulos/{code}.html" target="_blank" rel="noopener">{code.upper()}</a></td><td>{title}</td><td>{relation}</td><td>'
+        + ', '.join(f'<a href="#{anchor}">{label}</a>' for label, anchor in units)
+        + f'</td><td>{evidence}</td></tr>'
+        for code, title, relation, units, evidence in rows
     )
-    return '<div class="table-wrap"><table class="table"><tr><th>UnespDataLens-RM</th><th>Conteúdo verificado</th><th>Aderência</th><th>Aplicação no M14</th></tr>' + body + '</table></div>'
+    return '<div class="table-wrap"><table class="table"><tr><th>UnespDataLens-RM</th><th>Conteúdo verificado</th><th>Aderência</th><th>Aplicação no M14</th><th>O que é ensinado e evidenciado</th></tr>' + body + '</table></div>'
 
 
 def build_m13() -> str:
@@ -1374,6 +1401,35 @@ df["idade_foi_limitada"] = df["idade"].ne(df["idade_winsorizada"])
 
 print({"p01": inferior, "p99": superior,
        "valores_limitados": int(df["idade_foi_limitada"].sum())})"""),
+        technique("Perdas e imputações por grupo", "Uma transformação pode parecer aceitável no total e excluir ou alterar desproporcionalmente um grupo. Compare sempre denominadores e percentuais antes/depois.", """auditoria_grupos = (
+    df.assign(
+        foi_removida=df["id_inscricao"].isna(),
+        idade_ausente=df["idade"].isna(),
+        idade_imputada=df["idade_foi_imputada"]
+    )
+    .groupby("perfil", dropna=False)
+    .agg(
+        linhas=("id_inscricao", "size"),
+        removidas=("foi_removida", "sum"),
+        ausencias=("idade_ausente", "mean"),
+        imputadas=("idade_imputada", "mean")
+    )
+)
+auditoria_grupos["taxa_perda"] = auditoria_grupos["removidas"] / auditoria_grupos["linhas"]
+print(auditoria_grupos.round(3))"""),
+        technique("Reamostragem somente no treino", "Oversampling e undersampling mudam a distribuição do conjunto de treinamento. Preserve o teste original e registre índices, semente e efeito por classe/grupo.", """from sklearn.model_selection import train_test_split
+from sklearn.utils import resample
+
+treino, teste = train_test_split(df, test_size=0.3, random_state=42,
+                                  stratify=df["situacao"])
+maior = treino[treino["situacao"] == treino["situacao"].mode()[0]]
+menor = treino[treino["situacao"] != treino["situacao"].mode()[0]]
+menor_ampliada = resample(menor, replace=True, n_samples=len(maior), random_state=42)
+treino_balanceado = pd.concat([maior, menor_ampliada]).sample(frac=1, random_state=42)
+
+print("Treino original:", treino["situacao"].value_counts().to_dict())
+print("Treino balanceado:", treino_balanceado["situacao"].value_counts().to_dict())
+print("Teste preservado:", teste["situacao"].value_counts().to_dict())"""),
     ])
     merge_code = code("""
 base_curada = inscricoes_tratadas.merge(
@@ -1667,7 +1723,120 @@ modelo = make_pipeline(StandardScaler(), LogisticRegression(max_iter=1000))
 f1 = cross_val_score(modelo, X, y, cv=cv, scoring="f1")
 print("Baseline acurácia:", baseline.mean().round(3))
 print("F1 por dobra:", f1.round(3), "| média:", f1.mean().round(3))"""),
+        technique("Matriz de confusão e erros por grupo", "Acurácia global pode ocultar falsos negativos concentrados. Calcule as mesmas métricas para cada grupo e publique o suporte usado em cada denominador.", """import pandas as pd
+
+avaliacao = pd.DataFrame({
+    "grupo": ["A", "A", "A", "A", "B", "B", "B", "B"],
+    "real":  [1, 1, 0, 0, 1, 1, 0, 0],
+    "previsto": [1, 0, 0, 0, 0, 0, 1, 0]
+})
+
+def metricas_grupo(parte):
+    tp = ((parte["real"] == 1) & (parte["previsto"] == 1)).sum()
+    tn = ((parte["real"] == 0) & (parte["previsto"] == 0)).sum()
+    fp = ((parte["real"] == 0) & (parte["previsto"] == 1)).sum()
+    fn = ((parte["real"] == 1) & (parte["previsto"] == 0)).sum()
+    return pd.Series({
+        "n": len(parte), "tpr": tp / (tp + fn) if tp + fn else 0,
+        "fpr": fp / (fp + tn) if fp + tn else 0,
+        "fnr": fn / (fn + tp) if fn + tp else 0,
+        "selecao": parte["previsto"].mean()
+    })
+
+por_grupo = avaliacao.groupby("grupo")[["real", "previsto"]].apply(metricas_grupo)
+print(por_grupo.round(3))"""),
+        technique("Métricas de equidade: SPD, DI, EOD e AOD", "As métricas respondem a noções diferentes de equidade. Nenhuma deve ser usada como selo automático; escolha conforme finalidade, dano e decisão.", """referencia, avaliado = "A", "B"
+a, b = por_grupo.loc[referencia], por_grupo.loc[avaliado]
+
+spd = b["selecao"] - a["selecao"]
+di = b["selecao"] / a["selecao"] if a["selecao"] else float("nan")
+eod = b["tpr"] - a["tpr"]
+aod = 0.5 * ((b["fpr"] - a["fpr"]) + (b["tpr"] - a["tpr"]))
+
+fairness = pd.Series({"SPD": spd, "DI": di, "EOD": eod, "AOD": aod})
+print(fairness.round(3))
+assert por_grupo["n"].gt(0).all()  # denominadores precisam ser informados"""),
+        technique("Comparação antes/depois da mitigação", "Uma mitigação só é defensável quando registra ganho, perda de desempenho, grupos afetados e risco residual. Preserve os dois cenários.", """import pandas as pd
+
+comparacao = pd.DataFrame([
+    {"cenario": "antes", "macro_f1": 0.71, "spd": -0.30, "eod": -0.40},
+    {"cenario": "depois", "macro_f1": 0.69, "spd": -0.12, "eod": -0.15}
+]).set_index("cenario")
+
+impacto = comparacao.loc["depois"] - comparacao.loc["antes"]
+print("Cenários:\\n", comparacao)
+print("Variação:\\n", impacto)
+
+risco_residual = {
+    "limitacao": "diferenças por grupo ainda permanecem",
+    "uso_proibido": "decisão automática individual sem revisão humana",
+    "revisao": "trimestral"
+}
+print(risco_residual)"""),
     ])
+    bias_preprocessing_theory = (
+        '<h3>Vieses e equidade durante o pré-processamento</h3>'
+        '<p><a class="term" href="https://ronaldocmc.github.io/UnespDataLens-RM/conceitos/vies.html" target="_blank" rel="noopener">Viés</a> não surge apenas no modelo. A ingestão pode omitir uma população; o merge pode perder quem não possui chave; a limpeza pode remover mais registros de um grupo; a imputação pode aproximar todos de uma média que não representa ninguém; e o tratamento de extremos pode apagar casos legítimos.</p>'
+        '<div class="table-wrap"><table class="table"><tr><th>Etapa</th><th>Risco de viés</th><th>Controle mínimo</th></tr>'
+        '<tr><td>remoção</td><td>exclusão desproporcional de grupos com mais campos ausentes</td><td>taxa de perda por grupo e quarentena</td></tr>'
+        '<tr><td>imputação</td><td>redução artificial de diferenças ou distorção de subpopulações</td><td>completude e distribuição antes/depois por grupo</td></tr>'
+        '<tr><td>deduplicação</td><td>regra de sobrevivência favorece fontes ou cadastros específicos</td><td>pares removidos, fonte e grupo do registro sobrevivente</td></tr>'
+        '<tr><td>outliers/winsorização</td><td>casos raros legítimos são tratados como erro</td><td>extremos marcados por grupo e revisão de domínio</td></tr>'
+        '<tr><td>reamostragem</td><td>dataset tratado deixa de representar a prevalência real</td><td>aplicar só no treino e manter distribuição original documentada</td></tr></table></div>'
+        '<p>O objetivo não é forçar números iguais. É verificar se uma regra técnica causa perda ou qualidade desigual, justificar a decisão e registrar o <strong>risco residual</strong> quando a limitação não puder ser eliminada.</p>'
+    )
+    fairness_theory = (
+        '<h3>Desbalanceamento, viés e equidade na preparação para IA</h3>'
+        '<p><a class="term" href="https://ronaldocmc.github.io/UnespDataLens-RM/conceitos/desbalanceamento.html" target="_blank" rel="noopener">Desbalanceamento</a> descreve distribuição desigual; <a class="term" href="https://ronaldocmc.github.io/UnespDataLens-RM/conceitos/vies.html" target="_blank" rel="noopener">viés</a> descreve distorção sistemática; <a class="term" href="https://ronaldocmc.github.io/UnespDataLens-RM/conceitos/equidade.html" target="_blank" rel="noopener">equidade</a> avalia se dados e resultados afetam grupos de maneira justificável. Os conceitos são relacionados, mas não equivalentes.</p>'
+        '<div class="table-wrap"><table class="table"><tr><th>Métrica</th><th>Pergunta respondida</th><th>Limite de interpretação</th></tr>'
+        '<tr><td>IR e proporção minoritária</td><td>as classes ou grupos estão representados de forma muito desigual?</td><td>não informa sozinho se o resultado é injusto</td></tr>'
+        '<tr><td>SPD</td><td>as taxas de resultado positivo diferem?</td><td>paridade de seleção pode conflitar com prevalências legítimas</td></tr>'
+        '<tr><td>Disparate Impact</td><td>qual é a razão entre taxas de resultado positivo?</td><td>uma razão não prova causa nem elimina análise jurídica/de domínio</td></tr>'
+        '<tr><td>EOD</td><td>grupos elegíveis recebem oportunidade positiva correta semelhante?</td><td>considera TPR, mas não resolve diferenças de falsos positivos</td></tr>'
+        '<tr><td>AOD, FPR e FNR</td><td>os padrões de erro diferem entre grupos?</td><td>é necessário declarar qual erro produz maior dano</td></tr></table></div>'
+        '<div class="box warn"><strong>Atributos sensíveis:</strong> gênero, raça/cor, idade, deficiência e outros atributos relevantes exigem finalidade, proteção e acesso controlado. Eles podem ser necessários para auditoria de equidade, mas isso não autoriza seu uso indiscriminado como feature.</div>'
+    )
+    agent_support = (
+        '<h3>Extensão M16: agentes inteligentes como apoio operacional</h3>'
+        '<p>Um <a class="term" href="https://ronaldocmc.github.io/UnespDataLens-RM/conceitos/agente-inteligente.html" target="_blank" rel="noopener">agente inteligente</a> pode organizar evidências, explicar um alerta e sugerir passos de um runbook. Ele não deve substituir validação de schema, cálculo de métricas, controle de acesso, aprovação de incidente ou decisão sobre dados sensíveis.</p>'
+        '<div class="table-wrap"><table class="table"><tr><th>Pode apoiar</th><th>Não pode decidir sozinho</th><th>Controle</th></tr>'
+        '<tr><td>resumir logs e métricas</td><td>declarar pipeline saudável contra testes determinísticos</td><td>saída estruturada e evidências citadas</td></tr>'
+        '<tr><td>sugerir causa e passo do runbook</td><td>apagar dados, alterar permissão ou executar rollback</td><td>allowlist e aprovação humana</td></tr>'
+        '<tr><td>redigir relatório de incidente</td><td>ocultar incerteza ou dado ausente</td><td>registro de prompt, versão, resposta e revisão</td></tr></table></div>'
+        + code("""# Exemplo local: contrato e guardrail para uma recomendação de agente
+from dataclasses import dataclass, asdict
+import json
+
+@dataclass
+class Recomendacao:
+    incidente: str
+    evidencia: list[str]
+    acao_proposta: str
+    confianca: float
+    exige_aprovacao: bool = True
+
+ACOES_PERMITIDAS = {"investigar_fonte", "abrir_incidente", "consultar_runbook"}
+
+def validar_recomendacao(rec: Recomendacao) -> None:
+    assert rec.acao_proposta in ACOES_PERMITIDAS
+    assert rec.evidencia, "A recomendação precisa citar evidências"
+    assert 0 <= rec.confianca <= 1
+    assert rec.exige_aprovacao is True
+
+recomendacao = Recomendacao(
+    incidente="queda_de_completude",
+    evidencia=["completude: 0.91 -> 0.72", "fonte: inscricoes_api"],
+    acao_proposta="abrir_incidente",
+    confianca=0.84
+)
+validar_recomendacao(recomendacao)
+aprovado_por_humano = False
+if aprovado_por_humano:
+    print("Ação autorizada:", recomendacao.acao_proposta)
+else:
+    print("Somente recomendação; nenhuma ação executada")
+print(json.dumps(asdict(recomendacao), ensure_ascii=False, indent=2))""")
+    )
     full_pipeline_code = code("""
 from pathlib import Path
 from datetime import datetime
@@ -1772,22 +1941,25 @@ test_frequencia_limitada()
     body = f"""
 <div class="module-actions"><a class="pill" href="../conceitos.html">Conceitos</a><a class="pill" href="../ferramentas.html">Ferramentas</a><a class="pill" href="../trilhas.html">Trilhas</a><a class="pill" href="../laboratorios.html">Laboratórios</a><a class="pill" href="../banco-visual.html">Banco visual</a></div>
 <section class="module-toolbox"><h3>Ferramentas relacionadas neste módulo</h3><div class="related-strip"><a class="pill" href="../ferramentas/python.html">Python</a><a class="pill" href="../ferramentas/pandas.html">pandas</a><a class="pill" href="../ferramentas/numpy.html">NumPy</a><a class="pill" href="../ferramentas/jupyter.html">Jupyter</a><a class="pill" href="../ferramentas/google-colab.html">Google Colab</a><a class="pill" href="../ferramentas/excel-sheets.html">Excel e Google Sheets</a><a class="pill" href="../ferramentas/power-bi.html">Power BI</a><a class="pill" href="../ferramentas/looker-studio.html">Looker Studio</a><a class="pill" href="../ferramentas/scikit-learn.html">scikit-learn</a><a class="pill" href="../ferramentas/duckdb.html">DuckDB</a></div></section>
-{mini_toc([("Apresentação e competências","apresentacao"),("Mapa UnespDataLens-RM","aderencia-rm"),("Jupyter e reprodutibilidade","jupyter-engenharia"),("Glossário interno do módulo","glossario"),("14.1 Ciclo de vida e arquitetura","u141"),("14.2 Extração e ingestão","u142"),("14.3 Qualidade e validação","u143"),("14.4 Transformação e padronização","u144"),("14.5 Ausências, duplicidades e outliers","u145"),("14.6 Integração, joins e indicadores","u146"),("14.7 Carga, armazenamento e camadas","u147"),("14.8 Logs, auditoria e linhagem","u148"),("14.9 Representações e features","u149"),("14.10 Pipeline ETL completo","u1410")])}
+{mini_toc([("Apresentação e competências","apresentacao"),("Mapa UnespDataLens-RM","aderencia-rm"),("Glossário interno do módulo","glossario"),("14.1 Ciclo de vida e arquitetura","u141"),("14.2 Extração e ingestão","u142"),("14.3 Qualidade e validação","u143"),("14.4 Transformação e padronização","u144"),("14.5 Ausências, vieses e pré-processamento","u145"),("14.6 Integração, joins e indicadores","u146"),("14.7 Carga, armazenamento e camadas","u147"),("14.8 Governança e reprodutibilidade","u148"),("14.9 Features, vieses e equidade","u149"),("14.10 Pipeline, monitoramento e agentes","u1410"),("Avaliação do módulo","avaliacao-m14"),("Produto final e resultado","produto-final-m14"),("Materiais relacionados","materiais-m14")])}
 <section class="module-visual"><figure><img src="../assets/img/modulos/m14-visual.svg" alt="Mapa visual do Módulo 14"><figcaption>Engenharia de dados conecta fontes, qualidade, transformação, armazenamento, governança e uso em IA.</figcaption></figure><aside class="character-guide"><img src="../assets/img/personagens/carlos.png" alt="Personagem Carlos"><h3>Carlos constrói dados confiáveis</h3><p>Sem dados organizados e rastreáveis, dashboards, automações e modelos de IA ficam frágeis. O módulo ensina a preparar dados com método.</p></aside></section>
-<section id="apresentacao"><h3>Apresentação</h3><p>O percurso usa o <strong>UnespDataLens-RM</strong> como modelo de referência e estudo de caso transversal. Em vez de aprender comandos isolados, o participante constrói progressivamente um pipeline técnico-operacional: inventário, ingestão, integração, transformação, qualidade, armazenamento analítico, consumo, governança, reprodutibilidade, features e monitoramento.</p><p>Ao concluir, o participante deverá ser capaz de projetar e operar um produto de dados reproduzível, justificar decisões arquiteturais, medir qualidade e desempenho, preservar linhagem e entregar evidências verificáveis de adequação ao uso.</p><h2 class="section-title">1. Organização do módulo</h2><h3>Carga horária total</h3><p>60 horas.</p><p>O módulo foi estruturado para aprendizagem baseada em desempenho: estudar conceitos, implementar, testar, produzir artefatos e demonstrar domínio.</p>{m14_workload_table()}<h3>Estratégia de avaliação</h3><div class="assessment-grid"><div><strong>30%</strong><span>laboratórios e códigos executáveis</span></div><div><strong>25%</strong><span>artefatos técnicos e documentação</span></div><div><strong>20%</strong><span>testes, métricas e evidências</span></div><div><strong>25%</strong><span>projeto integrador UnespDataLens-RM</span></div></div><div class="box warn"><strong>Regra de aprovação por competência:</strong> a média não substitui habilidades essenciais. O projeto final deve executar de ponta a ponta, bloquear dados inválidos, produzir logs e permitir reprodução por outra pessoa.</div></section>
+<section id="apresentacao"><h3>Apresentação</h3><p>O percurso usa o <strong>UnespDataLens-RM</strong> como modelo de referência e estudo de caso transversal. Em vez de aprender comandos isolados, o participante constrói progressivamente um pipeline técnico-operacional: inventário, ingestão, integração, transformação, qualidade, armazenamento analítico, consumo, governança, reprodutibilidade, features, equidade e monitoramento.</p><h2 class="section-title">1. Organização do Módulo</h2><h3>Carga horária total</h3><p>60 horas.</p><p>O módulo foi estruturado para aprendizagem baseada em desempenho: estudar conceitos, implementar, testar, produzir artefatos e demonstrar domínio.</p>{m14_workload_table()}<h3>Público recomendado</h3><p>Participantes que concluíram os fundamentos de Python e desejam projetar pipelines, preparar dados para análise e IA e entregar produtos de dados confiáveis. Os exemplos começam de forma guiada e avançam para decisões arquiteturais, qualidade, governança e operação.</p><h3>Objetivo geral</h3><p>Projetar, implementar, avaliar e operar um produto de dados reproduzível, justificando decisões arquiteturais, medindo qualidade, desempenho e equidade, preservando linhagem e produzindo evidências verificáveis de adequação ao uso.</p><h3>Competências desenvolvidas</h3><ul class="list"><li>inventariar fontes e desenhar arquiteturas de dados;</li><li>ingerir, validar, transformar, integrar e armazenar dados com Python;</li><li>selecionar técnicas de limpeza e pré-processamento com justificativa;</li><li>avaliar desbalanceamento, vieses, equidade e risco residual;</li><li>documentar metadados, contratos, manifestos, linhagem e decisões;</li><li>operar pipelines com testes, monitoramento, incidentes e reprocessamento;</li><li>usar agentes apenas como apoio supervisionado, com guardrails e aprovação humana.</li></ul></section>
 <section id="aderencia-rm"><h2 class="section-title">Aderência ao portal UnespDataLens-RM</h2><p>Foram mapeados os 16 módulos do modelo de referência. Os oito primeiros formam o pipeline principal; metadados, governança, linhagem e reprodutibilidade atuam transversalmente; representações, features e monitoramento ampliam a preparação para IA. Agentes aparecem apenas como extensão e não substituem validações determinísticas.</p>{rm_portal_map()}</section>
-{jupyter_engineering}
-<section id="glossario"><h2 class="section-title">Glossário interno do módulo</h2>{concept_grid(DE_CONCEPTS)}</section>
+<section id="glossario"><h2 class="section-title">Glossário interno do módulo</h2><p>Os conceitos essenciais ficam reunidos aqui e reaparecem com aplicação dentro das unidades. Os links levam às páginas conceituais do portal ou do UnespDataLens-RM.</p>{concept_grid(DE_CONCEPTS)}{manifest_glossary}</section>
+<h2 class="section-title" id="estrutura-unidades">2. Estrutura das Unidades</h2>
 {unit("14.1 Fundamentos, ciclo de vida e arquitetura de dados", "Compreender o percurso do dado desde a origem até o uso em relatórios, automações e IA.", "<p>Engenharia de dados não é apenas programação: envolve arquitetura, qualidade, governança, segurança, documentação e operação. As camadas bronze, prata e ouro separam preservação, curadoria e consumo.</p>" + imports_code + sample_data_code + architecture_methods)}
-{unit("14.2 Extração e ingestão: CSV, Excel, JSON, API e banco", "Ler dados de diferentes fontes preservando origem, formato e rastreabilidade.", "<p>A extração deve manter uma cópia bruta e registrar data, fonte, responsável e finalidade. Cada formato exige parâmetros e controles próprios.</p>" + ingestion_methods + "<h3>Visão integrada</h3>" + extract_code + "<div class=\"box warn\"><strong>LGPD:</strong> defina finalidade, base legal, minimização, acesso e retenção antes de coletar dados pessoais.</div>")}
+{unit("14.2 Extração e ingestão: CSV, Excel, JSON, API e banco", "Ler dados de diferentes fontes preservando origem, formato e rastreabilidade.", "<p>A extração deve manter uma cópia bruta e registrar data, fonte, responsável e finalidade. Cada formato exige parâmetros e controles próprios. <a class=\"term\" href=\"../conceitos/json.html\">JSON</a> aparece em APIs, logs e manifestos; <a class=\"term\" href=\"../conceitos/yaml.html\">YAML</a> é comum em configurações e contratos legíveis por máquina.</p>" + ingestion_methods + "<h3>Visão integrada</h3>" + extract_code + "<div class=\"box warn\"><strong>LGPD:</strong> defina finalidade, base legal, minimização, acesso e retenção antes de coletar dados pessoais.</div>")}
 {unit("14.3 Validação, schema e qualidade de dados", "Aplicar regras de completude, validade, consistência, unicidade, atualidade e conformidade.", "<p>Validação é a alfândega do pipeline: compara os dados com contratos e regras explícitas antes que erros cheguem a relatórios, automações ou modelos de IA. Ela não corrige tudo automaticamente; produz evidências, classifica registros e encaminha exceções para uma área de quarentena ou revisão humana.</p><div class=\"box tip\"><strong>Ordem recomendada:</strong> conferir estrutura e tipos, avaliar cada dimensão de qualidade, consolidar os resultados e somente depois transformar ou descartar registros.</div>" + validation_methods)}
 {unit("14.4 Transformação: limpeza, padronização, tipos e regras de negócio", "Transformar dados brutos em dados consistentes, tipados e interpretáveis.", "<p>Transformar é aplicar regras explícitas e reproduzíveis. Cada transformação precisa informar o que muda, por que muda e como um valor problemático será tratado. Os exemplos abaixo separam as técnicas para que cada decisão possa ser testada e auditada.</p>" + transformation_methods + "<h3>Exemplo integrado</h3><p>Depois de compreender cada técnica isoladamente, elas podem ser reunidas em uma função única. O exemplo mantém uma cópia de entrada, converte tipos, cria indicadores de validade, remove duplicidades e calcula uma regra de negócio.</p>" + transform_code)}
-{unit("14.5 Tratamento de ausências, duplicidades, normalização e outliers", "Aplicar técnicas de pré-processamento sem distorcer a realidade dos dados.", "<p>Nem todo valor ausente deve ser preenchido; nem todo registro repetido representa uma duplicata; e nem todo outlier é erro. A escolha depende da finalidade, do significado da coluna e do impacto sobre grupos e indicadores. Registre a técnica, os parâmetros calculados e quantas linhas foram afetadas.</p><div class=\"box warn\"><strong>Evite vazamento de dados:</strong> em projetos de IA, média, mediana, limites, escalas e categorias devem ser aprendidos somente no conjunto de treino e depois reaplicados aos conjuntos de validação e teste.</div>" + preprocessing_methods)}
+{unit("14.5 Tratamento de ausências, duplicidades, normalização, outliers e vieses", "Aplicar técnicas de pré-processamento sem distorcer a realidade dos dados nem ampliar desigualdades entre grupos.", "<p>Nem todo valor ausente deve ser preenchido; nem todo registro repetido representa uma duplicata; e nem todo outlier é erro. A escolha depende da finalidade, do significado da coluna e do impacto sobre grupos e indicadores. Registre a técnica, os parâmetros calculados e quantas linhas foram afetadas.</p><div class=\"box warn\"><strong>Evite vazamento de dados:</strong> em projetos de IA, média, mediana, limites, escalas e categorias devem ser aprendidos somente no conjunto de treino e depois reaplicados aos conjuntos de validação e teste.</div>" + bias_preprocessing_theory + preprocessing_methods)}
 {unit("14.6 Integração de bases, merge, join, concat, groupby e indicadores", "Combinar fontes, criar indicadores e gerar produtos de dados.", "<p>A integração exige atenção às chaves, cardinalidade e granularidade. Um erro pode multiplicar linhas ou perder registros.</p>" + integration_methods + "<h3>Exemplo integrado</h3>" + merge_code)}
 {unit("14.7 Carga e armazenamento: CSV, Excel, Parquet, SQLite, DuckDB, data lake e warehouse", "Projetar, implementar e avaliar armazenamento analítico adequado ao consumo, à escala e à governança.", "<p>No UnespDataLens-RM, armazenar não significa apenas salvar um arquivo. Significa transformar datasets validados em ativos analíticos persistidos, localizáveis, consultáveis, versionados, seguros e reprocessáveis.</p><div class=\"table-wrap\"><table class=\"table\"><tr><th>Decisão</th><th>Pergunta de projeto</th><th>Evidência esperada</th></tr><tr><td>Arquitetura</td><td>Arquivo, banco, warehouse, lake ou lakehouse?</td><td>Matriz de requisitos e justificativa.</td></tr><tr><td>Zonas</td><td>Quando um ativo avança de bruto para tratado e consumo?</td><td>Critérios de entrada, saída e retenção.</td></tr><tr><td>Modelo lógico</td><td>Qual é a granularidade e como fatos e dimensões se relacionam?</td><td>Schema e testes de cardinalidade.</td></tr><tr><td>Desempenho</td><td>Quais consultas precisam ser rápidas?</td><td>Benchmark reproduzível.</td></tr><tr><td>Reprocessamento</td><td>É possível reconstruir uma versão anterior?</td><td>Snapshot, hash, manifesto e linhagem.</td></tr><tr><td>Segurança</td><td>Quem acessa qual detalhe e para qual finalidade?</td><td>Matriz de acesso e dataset minimizado.</td></tr></table></div>" + storage_methods + "<h3>Carga combinada</h3>" + load_code)}
-{unit("14.8 Logs, auditoria, linhagem, catálogo e governança", "Registrar execuções, decisões, origem, transformações e responsáveis.", "<p>Um pipeline sem registros é uma caixa-preta. Logs operacionais, auditoria, linhagem e catálogo respondem perguntas diferentes e complementares.</p>" + governance_methods + "<h3>Configuração básica de logging</h3>" + log_code)}
-{unit("14.9 Representações analíticas, feature engineering e preparação para IA", "Construir representações e atributos adequados à finalidade analítica, evitando vazamento e vieses.", "<p>A unidade de análise, a janela temporal e a disponibilidade real de cada atributo devem ser definidas antes da modelagem. Features precisam de fórmula, origem, versão, responsável e teste de qualidade. Somente depois são aplicadas técnicas de exploração, redução, treino e avaliação.</p>" + modeling_methods + "<div class=\"box warn\"><strong>Cuidado:</strong> o exemplo é didático; sistemas reais exigem métricas adequadas, explicabilidade, governança e autorização de uso.</div>")}
-{unit("14.10 Pipeline ETL completo em Python", "Integrar todas as etapas em uma função reprodutível e documentada.", "<p>O pipeline completo deve ser executável, versionado e explicado. O código abaixo resume extração, validação, transformação, carga e log em uma estrutura única.</p>" + full_pipeline_code + "<div class=\"box lab\"><strong>Entrega:</strong> pasta com dados fictícios, script ETL, arquivo de log, base curada, indicadores, dicionário de dados e relatório com limitações.</div>")}
+{unit("14.8 Logs, auditoria, linhagem, catálogo, governança e reprodutibilidade", "Registrar execuções, decisões, origem, transformações, ambiente e responsáveis.", "<p>Um pipeline sem registros é uma caixa-preta. Logs operacionais, auditoria, linhagem, catálogo, manifestos e pacotes reprodutíveis respondem perguntas diferentes e complementares.</p>" + jupyter_engineering + governance_methods + "<h3>Configuração básica de logging</h3>" + log_code)}
+{unit("14.9 Representações analíticas, feature engineering, vieses e equidade", "Construir representações e atributos adequados à finalidade analítica, evitando vazamento e avaliando impactos entre grupos.", "<p>A unidade de análise, a janela temporal e a disponibilidade real de cada atributo devem ser definidas antes da modelagem. Features precisam de fórmula, origem, versão, responsável e teste de qualidade. Somente depois são aplicadas técnicas de exploração, redução, treino e avaliação.</p>" + fairness_theory + modeling_methods + "<div class=\"box warn\"><strong>Cuidado:</strong> fairness não é um selo automático. Sistemas reais exigem interpretação de domínio, explicabilidade, governança, proteção de atributos sensíveis e autorização de uso.</div>")}
+{unit("14.10 Pipeline ETL completo, monitoramento e agentes de apoio", "Integrar todas as etapas em uma função reprodutível, monitorada, documentada e operável com supervisão.", "<p>O pipeline completo deve ser executável, versionado e explicado. O código abaixo resume extração, validação, transformação, carga e log em uma estrutura única.</p>" + full_pipeline_code + agent_support + "<div class=\"box lab\"><strong>Entrega:</strong> pasta com dados fictícios, script ETL, arquivo de log, base curada, indicadores, dicionário de dados, relatório com limitações e plano de operação.</div>")}
+<section id="avaliacao-m14"><h2 class="section-title">Avaliação do Módulo 14</h2><div class="assessment-grid"><div><strong>30%</strong><span>laboratórios e códigos executáveis</span></div><div><strong>25%</strong><span>artefatos técnicos e documentação</span></div><div><strong>20%</strong><span>testes, métricas e evidências</span></div><div><strong>25%</strong><span>projeto integrador UnespDataLens-RM</span></div></div><h3>Critérios</h3><ul class="list"><li>correção e reexecução dos códigos;</li><li>coerência entre problema, método, métrica, decisão e artefato;</li><li>controle de qualidade, cardinalidade, vazamento e impacto por grupo;</li><li>rastreabilidade de entradas, regras, versões, parâmetros e saídas;</li><li>interpretação crítica das limitações e do risco residual;</li><li>capacidade de outra pessoa reproduzir e operar a entrega.</li></ul><div class="box warn"><strong>Regra de aprovação por competência:</strong> a média não substitui habilidades essenciais. O projeto final deve executar de ponta a ponta, bloquear dados inválidos, produzir logs, avaliar vieses/equidade quando aplicável e permitir reprodução por outra pessoa.</div></section>
+<section id="produto-final-m14"><h2 class="section-title">Produto final do módulo</h2><p>Mini-UnespDataLens-RM executável, composto por dados fictícios, inventário, contratos, ingestão, validação, transformação, integração, armazenamento analítico, catálogo, linhagem, manifesto, métricas de qualidade e equidade, monitoramento, runbook e documentação de reprodução.</p><h2 class="section-title">Resultado esperado</h2><p>Ao final, o participante não apenas conhece técnicas: consegue escolher, implementar, testar, medir, documentar e defender um pipeline de dados adequado à finalidade, incluindo riscos, limitações e controles operacionais.</p></section>
+<section id="materiais-m14"><h2 class="section-title">Materiais relacionados</h2><div class="two-col"><div><h3>Conceitos</h3><p><a class="pill" href="../conceitos/engenharia-dados.html">Engenharia de Dados</a><a class="pill" href="../conceitos/qualidade-dados.html">Qualidade de dados</a><a class="pill" href="../conceitos/vies.html">Viés</a><a class="pill" href="../conceitos/json.html">JSON</a><a class="pill" href="../conceitos/yaml.html">YAML</a></p></div><div><h3>Laboratórios e referências</h3><p><a class="pill" href="../laboratorios.html">Laboratórios</a><a class="pill" href="../banco-visual.html">Banco visual</a><a class="pill" href="https://ronaldocmc.github.io/UnespDataLens-RM/" target="_blank" rel="noopener">UnespDataLens-RM</a></p></div></div></section>
 """
     return html_shell(14, "Engenharia de Dados para Inteligência Artificial", "Caderno aprofundado de engenharia de dados com ETL/ELT, qualidade, transformação, armazenamento, governança, mineração de dados e códigos Python aplicados.", "#00796B", "#E8F7F4", body)
 

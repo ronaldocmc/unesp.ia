@@ -1,0 +1,26 @@
+<!doctype html><html lang="pt-br"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>YAML | unesp.IA</title><link rel="stylesheet" href="../assets/css/style.css?v=20260712-m14"><script src="../assets/js/search.js"></script></head><body>
+<div class="topbar"><a class="brand" href="../index.html"><img class="brand-logo" src="../assets/img/logo-unesp-ia-portal.jpg" alt="unesp.IA"><small>Coleção Editorial | Portal Didático dos Participantes</small></a><div class="nav"><a href="../index.html">Início</a><a href="../inscricoes.html">Inscrições</a><a href="../modulos.html">Módulos</a><a href="../trilhas.html">Trilhas</a><a href="../conceitos.html">Conceitos</a><a href="../ferramentas.html">Ferramentas</a><a href="../laboratorios.html">Laboratórios</a><a href="../materiais.html">Materiais</a><a href="../login.html">Área do aluno</a></div></div><main><div class="container content" id="top">
+<div class="breadcrumbs"><a href="../index.html">Início</a> / <a href="../conceitos.html">Conceitos</a> / YAML</div><h1>YAML</h1>
+<div class="callout"><b>Definição simples:</b> formato textual estruturado e legível, usado para representar configurações, contratos, pipelines e metadados.</div>
+<h2>Como interpretar</h2><p>YAML organiza dados por indentação. Chaves e valores descrevem propriedades; listas usam hífen. Diferentemente de JSON, não exige chaves e aspas em todos os elementos. A indentação possui significado e deve usar espaços de forma consistente.</p>
+<pre class="code-block"><code>pipeline:
+  nome: ingestao_inscricoes
+  versao: 1.0
+  fontes:
+    - tipo: csv
+      caminho: dados/raw/inscricoes.csv
+  validacoes:
+    - campo: id_inscricao
+      regra: obrigatorio
+      severidade: erro</code></pre>
+<h2>YAML, JSON e Python</h2><p>YAML e JSON podem representar a mesma estrutura. JSON é nativo na biblioteca padrão do Python; YAML normalmente requer uma biblioteca como <code>PyYAML</code>. Ao carregar arquivos recebidos de terceiros, use <code>yaml.safe_load</code>, nunca construtores inseguros.</p>
+<pre class="code-block"><code># Em ambiente local: python -m pip install pyyaml
+import yaml
+
+with open("pipeline.yaml", encoding="utf-8") as arquivo:
+    configuracao = yaml.safe_load(arquivo)
+
+assert configuracao["pipeline"]["versao"] == 1.0</code></pre>
+<div class="two-col"><div class="callout practice"><h3>Quando usar</h3><p>Configuração de pipelines, contratos de dados, regras de qualidade, infraestrutura como código e parâmetros de execução que precisam ser revisados por pessoas e programas.</p></div><div class="callout warn"><h3>Cuidados</h3><p>Não armazene senhas ou tokens no arquivo. Valide o schema após carregar, controle versões e teste valores ausentes, tipos inesperados e indentação incorreta.</p></div></div>
+<h2>Relações</h2><p><b>Módulo relacionado:</b> <a class="pill" href="../modulos/m14.html">M14</a></p><p><b>Conceitos associados:</b> <a class="pill" href="json.html">JSON</a><a class="pill" href="pipeline-dados.html">Pipeline de dados</a><a class="pill" href="qualidade-dados.html">Qualidade de dados</a></p>
+</div></main><a class="backtop" href="#top">Topo</a><footer class="footer"><span class="footer-primary">unesp.IA - Inteligência Artificial para Todos | Projeto de Extensão Universitária | Coleção Editorial</span><span class="footer-unit">Faculdade de Ciências e Tecnologia de Presidente Prudente - FCT/UNESP</span><span class="footer-institution">Departamento de Matemática e Computação</span></footer></body></html>
