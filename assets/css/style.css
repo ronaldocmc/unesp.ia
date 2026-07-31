@@ -187,11 +187,6 @@
 .character-content p{max-width:31ch;margin:15px 0 20px;color:#3D4B59;font-size:16px;line-height:1.55;text-wrap:pretty}
 .character-link{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;margin-top:auto;padding:11px 16px;border-radius:12px;background:var(--blue);color:#fff;font-weight:800}
 .character-link:hover{background:var(--blue2);text-decoration:none}
-.character-card-artwork{display:block;min-height:0;border:0;background:transparent;box-shadow:none}
-.character-card-artwork:hover{box-shadow:0 14px 34px rgba(0,59,113,.14)}
-.character-artwork-link{display:block;aspect-ratio:775/1228;overflow:hidden;border-radius:18px;background:#fff}
-.character-artwork-link img{display:block;width:145.81%;max-width:none;height:auto;transform:translate(-15.22%,-6.53%)}
-.character-artwork-link:focus-visible{outline:4px solid var(--cyan);outline-offset:4px}
 .characters-page .nav a[aria-current="page"]{background:var(--blue);border-color:var(--blue);color:#fff}
 .characters-page .footer{margin-top:0}
 

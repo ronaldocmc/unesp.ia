@@ -427,31 +427,26 @@ def create_characters_index() -> None:
         ),
         (
             "ronaldo",
-            "Ronaldo Correia",
+            "Ronaldo",
             "Professor e coordenador",
-            "Coordena e leciona no projeto unesp.IA, aproximando a Inteligência Artificial da comunidade.",
+            "Coordenador e professor do projeto UNESP.IA, utiliza a Inteligência Artificial para ensinar, orientar e aproximar a tecnologia da comunidade.",
             "https://br.linkedin.com/in/ronaldocorreia",
         ),
     ]
     cards = []
     for character in characters:
         slug, name, profile, description, *external_url = character
-        if external_url and external_url[0]:
-            cards.append(
-                f'<article class="character-card character-card-artwork" id="{slug}">'
-                f'<a class="character-artwork-link" href="{external_url[0]}" target="_blank" '
-                f'rel="noopener noreferrer" aria-label="Conhecer {name} no LinkedIn (abre em nova aba)">'
-                f'<img src="../assets/img/personagens/{slug}.png" '
-                f'alt="{name}, {profile.lower()} do projeto unesp.IA"></a></article>'
-            )
-            continue
+        image_name = "ronaldo-portrait.png" if slug == "ronaldo" else f"{slug}.png"
+        has_external_url = bool(external_url and external_url[0])
+        link = external_url[0] if has_external_url else f"{slug}.html"
+        link_attrs = ' target="_blank" rel="noopener noreferrer"' if has_external_url else ""
         cards.append(
             f'<article class="card character-card" id="{slug}">'
             '<figure class="character-portrait">'
-            f'<img src="../assets/img/personagens/{slug}.png" alt="Ilustração de {name}">'
+            f'<img src="../assets/img/personagens/{image_name}" alt="Ilustração de {name}">'
             '</figure><div class="character-content">'
             f'<h2>{name}</h2><span class="character-role">{profile}</span>'
-            f'<p>{description}</p><a class="character-link" href="{slug}.html">'
+            f'<p>{description}</p><a class="character-link" href="{link}"{link_attrs}>'
             f'Conhecer {name} <span aria-hidden="true">→</span></a></div></article>'
         )
     page = (
