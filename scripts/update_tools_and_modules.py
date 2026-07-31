@@ -111,8 +111,9 @@ TOOLS = [
     },
     {
         "slug": "notebooklm",
-        "name": "NotebookLM",
-        "initials": "NL",
+        "name": "Gemini Notebook",
+        "aliases": "NotebookLM",
+        "initials": "GN",
         "color": "#7B61FF",
         "type": "Pesquisa/Literatura",
         "summary": "Ferramenta para trabalhar com fontes selecionadas pelo usuário, com perguntas, resumos e guias de estudo.",
@@ -986,7 +987,7 @@ def tool_cards(prefix: str) -> str:
         official = str(tool.get("official_url") or "")
         official_link = f'<a class="pill" href="{e(official)}" target="_blank" rel="noopener">Site oficial</a>' if official else ""
         cards.append(
-            f'<article class="card tool-card" data-search="{e(tool["name"] + " " + tool["type"] + " " + tool["summary"])}">'
+            f'<article class="card tool-card" data-search="{e(tool["name"] + " " + str(tool.get("aliases") or "") + " " + tool["type"] + " " + tool["summary"])}">'
             '<div class="tool-head">'
             f'<img class="tool-logo" src="{prefix}assets/img/ferramentas/{tool["slug"]}.svg" alt="Logo {e(tool["name"])}">'
             f'<div><span class="tool-type">{e(tool["type"])}</span><h3><a href="{prefix}ferramentas/{tool["slug"]}.html">{e(tool["name"])}</a></h3></div>'

@@ -122,7 +122,7 @@
   {
     "tipo": "infografico",
     "arquivo": "assets/figuras/infograficos/infografico-025.svg",
-    "titulo": "NotebookLM"
+    "titulo": "Gemini Notebook"
   },
   {
     "tipo": "infografico",
@@ -242,7 +242,7 @@
   {
     "tipo": "infografico",
     "arquivo": "assets/figuras/infograficos/infografico-049.svg",
-    "titulo": "NotebookLM"
+    "titulo": "Gemini Notebook"
   },
   {
     "tipo": "infografico",
@@ -412,7 +412,7 @@
   {
     "tipo": "infografico",
     "arquivo": "assets/figuras/infograficos/infografico-083.svg",
-    "titulo": "NotebookLM"
+    "titulo": "Gemini Notebook"
   },
   {
     "tipo": "infografico",
@@ -532,7 +532,7 @@
   {
     "tipo": "infografico",
     "arquivo": "assets/figuras/infograficos/infografico-107.svg",
-    "titulo": "NotebookLM"
+    "titulo": "Gemini Notebook"
   },
   {
     "tipo": "infografico",
@@ -702,7 +702,7 @@
   {
     "tipo": "infografico",
     "arquivo": "assets/figuras/infograficos/infografico-141.svg",
-    "titulo": "NotebookLM"
+    "titulo": "Gemini Notebook"
   },
   {
     "tipo": "infografico",
@@ -822,7 +822,7 @@
   {
     "tipo": "infografico",
     "arquivo": "assets/figuras/infograficos/infografico-165.svg",
-    "titulo": "NotebookLM"
+    "titulo": "Gemini Notebook"
   },
   {
     "tipo": "infografico",
@@ -992,7 +992,7 @@
   {
     "tipo": "infografico",
     "arquivo": "assets/figuras/infograficos/infografico-199.svg",
-    "titulo": "NotebookLM"
+    "titulo": "Gemini Notebook"
   },
   {
     "tipo": "infografico",
@@ -1112,7 +1112,7 @@
   {
     "tipo": "infografico",
     "arquivo": "assets/figuras/infograficos/infografico-223.svg",
-    "titulo": "NotebookLM"
+    "titulo": "Gemini Notebook"
   },
   {
     "tipo": "infografico",
@@ -1282,7 +1282,7 @@
   {
     "tipo": "infografico",
     "arquivo": "assets/figuras/infograficos/infografico-257.svg",
-    "titulo": "NotebookLM"
+    "titulo": "Gemini Notebook"
   },
   {
     "tipo": "infografico",
@@ -1402,7 +1402,7 @@
   {
     "tipo": "infografico",
     "arquivo": "assets/figuras/infograficos/infografico-281.svg",
-    "titulo": "NotebookLM"
+    "titulo": "Gemini Notebook"
   },
   {
     "tipo": "infografico",
@@ -1622,7 +1622,7 @@
   {
     "tipo": "fluxograma",
     "arquivo": "assets/figuras/fluxogramas/fluxograma-025.svg",
-    "titulo": "NotebookLM"
+    "titulo": "Gemini Notebook"
   },
   {
     "tipo": "fluxograma",
@@ -1742,7 +1742,7 @@
   {
     "tipo": "fluxograma",
     "arquivo": "assets/figuras/fluxogramas/fluxograma-049.svg",
-    "titulo": "NotebookLM"
+    "titulo": "Gemini Notebook"
   },
   {
     "tipo": "fluxograma",
@@ -1912,7 +1912,7 @@
   {
     "tipo": "fluxograma",
     "arquivo": "assets/figuras/fluxogramas/fluxograma-083.svg",
-    "titulo": "NotebookLM"
+    "titulo": "Gemini Notebook"
   },
   {
     "tipo": "fluxograma",
@@ -2032,7 +2032,7 @@
   {
     "tipo": "fluxograma",
     "arquivo": "assets/figuras/fluxogramas/fluxograma-107.svg",
-    "titulo": "NotebookLM"
+    "titulo": "Gemini Notebook"
   },
   {
     "tipo": "fluxograma",
@@ -2202,7 +2202,7 @@
   {
     "tipo": "fluxograma",
     "arquivo": "assets/figuras/fluxogramas/fluxograma-141.svg",
-    "titulo": "NotebookLM"
+    "titulo": "Gemini Notebook"
   },
   {
     "tipo": "fluxograma",
@@ -2322,7 +2322,7 @@
   {
     "tipo": "fluxograma",
     "arquivo": "assets/figuras/fluxogramas/fluxograma-165.svg",
-    "titulo": "NotebookLM"
+    "titulo": "Gemini Notebook"
   },
   {
     "tipo": "fluxograma",
@@ -2492,7 +2492,7 @@
   {
     "tipo": "fluxograma",
     "arquivo": "assets/figuras/fluxogramas/fluxograma-199.svg",
-    "titulo": "NotebookLM"
+    "titulo": "Gemini Notebook"
   },
   {
     "tipo": "fluxograma",
@@ -2622,7 +2622,7 @@
   {
     "tipo": "mapa",
     "arquivo": "assets/figuras/mapas-mentais/mapa-mental-025.svg",
-    "titulo": "NotebookLM"
+    "titulo": "Gemini Notebook"
   },
   {
     "tipo": "mapa",
@@ -2742,7 +2742,7 @@
   {
     "tipo": "mapa",
     "arquivo": "assets/figuras/mapas-mentais/mapa-mental-049.svg",
-    "titulo": "NotebookLM"
+    "titulo": "Gemini Notebook"
   },
   {
     "tipo": "mapa",
@@ -2912,7 +2912,7 @@
   {
     "tipo": "mapa",
     "arquivo": "assets/figuras/mapas-mentais/mapa-mental-083.svg",
-    "titulo": "NotebookLM"
+    "titulo": "Gemini Notebook"
   },
   {
     "tipo": "mapa",
@@ -3032,7 +3032,7 @@
   {
     "tipo": "mapa",
     "arquivo": "assets/figuras/mapas-mentais/mapa-mental-107.svg",
-    "titulo": "NotebookLM"
+    "titulo": "Gemini Notebook"
   },
   {
     "tipo": "mapa",
@@ -3202,7 +3202,7 @@
   {
     "tipo": "mapa",
     "arquivo": "assets/figuras/mapas-mentais/mapa-mental-141.svg",
-    "titulo": "NotebookLM"
+    "titulo": "Gemini Notebook"
   },
   {
     "tipo": "mapa",
@@ -3372,7 +3372,7 @@
   {
     "tipo": "ilustracao",
     "arquivo": "assets/figuras/ilustracoes/ilustracao-025.svg",
-    "titulo": "NotebookLM"
+    "titulo": "Gemini Notebook"
   },
   {
     "tipo": "ilustracao",
@@ -3492,7 +3492,7 @@
   {
     "tipo": "ilustracao",
     "arquivo": "assets/figuras/ilustracoes/ilustracao-049.svg",
-    "titulo": "NotebookLM"
+    "titulo": "Gemini Notebook"
   },
   {
     "tipo": "ilustracao",
@@ -3662,7 +3662,7 @@
   {
     "tipo": "ilustracao",
     "arquivo": "assets/figuras/ilustracoes/ilustracao-083.svg",
-    "titulo": "NotebookLM"
+    "titulo": "Gemini Notebook"
   },
   {
     "tipo": "ilustracao",
@@ -3782,7 +3782,7 @@
   {
     "tipo": "ilustracao",
     "arquivo": "assets/figuras/ilustracoes/ilustracao-107.svg",
-    "titulo": "NotebookLM"
+    "titulo": "Gemini Notebook"
   },
   {
     "tipo": "ilustracao",
@@ -3952,7 +3952,7 @@
   {
     "tipo": "ilustracao",
     "arquivo": "assets/figuras/ilustracoes/ilustracao-141.svg",
-    "titulo": "NotebookLM"
+    "titulo": "Gemini Notebook"
   },
   {
     "tipo": "ilustracao",
@@ -4072,7 +4072,7 @@
   {
     "tipo": "ilustracao",
     "arquivo": "assets/figuras/ilustracoes/ilustracao-165.svg",
-    "titulo": "NotebookLM"
+    "titulo": "Gemini Notebook"
   },
   {
     "tipo": "ilustracao",
@@ -4242,7 +4242,7 @@
   {
     "tipo": "ilustracao",
     "arquivo": "assets/figuras/ilustracoes/ilustracao-199.svg",
-    "titulo": "NotebookLM"
+    "titulo": "Gemini Notebook"
   },
   {
     "tipo": "ilustracao",
@@ -4362,7 +4362,7 @@
   {
     "tipo": "ilustracao",
     "arquivo": "assets/figuras/ilustracoes/ilustracao-223.svg",
-    "titulo": "NotebookLM"
+    "titulo": "Gemini Notebook"
   },
   {
     "tipo": "ilustracao",
@@ -4532,7 +4532,7 @@
   {
     "tipo": "ilustracao",
     "arquivo": "assets/figuras/ilustracoes/ilustracao-257.svg",
-    "titulo": "NotebookLM"
+    "titulo": "Gemini Notebook"
   },
   {
     "tipo": "ilustracao",
@@ -4652,7 +4652,7 @@
   {
     "tipo": "ilustracao",
     "arquivo": "assets/figuras/ilustracoes/ilustracao-281.svg",
-    "titulo": "NotebookLM"
+    "titulo": "Gemini Notebook"
   },
   {
     "tipo": "ilustracao",
@@ -4822,7 +4822,7 @@
   {
     "tipo": "ilustracao",
     "arquivo": "assets/figuras/ilustracoes/ilustracao-315.svg",
-    "titulo": "NotebookLM"
+    "titulo": "Gemini Notebook"
   },
   {
     "tipo": "ilustracao",
@@ -4942,7 +4942,7 @@
   {
     "tipo": "ilustracao",
     "arquivo": "assets/figuras/ilustracoes/ilustracao-339.svg",
-    "titulo": "NotebookLM"
+    "titulo": "Gemini Notebook"
   },
   {
     "tipo": "ilustracao",
@@ -5112,7 +5112,7 @@
   {
     "tipo": "ilustracao",
     "arquivo": "assets/figuras/ilustracoes/ilustracao-373.svg",
-    "titulo": "NotebookLM"
+    "titulo": "Gemini Notebook"
   },
   {
     "tipo": "ilustracao",
@@ -5232,7 +5232,7 @@
   {
     "tipo": "ilustracao",
     "arquivo": "assets/figuras/ilustracoes/ilustracao-397.svg",
-    "titulo": "NotebookLM"
+    "titulo": "Gemini Notebook"
   },
   {
     "tipo": "ilustracao",
