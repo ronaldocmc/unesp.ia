@@ -423,10 +423,28 @@ def create_characters_index() -> None:
             "Pedro",
             "Pesquisador",
             "Recorre à IA para pesquisar referências, analisar dados e comunicar resultados acadêmicos com clareza.",
+            None,
+        ),
+        (
+            "ronaldo",
+            "Ronaldo Correia",
+            "Professor e coordenador",
+            "Coordena e leciona no projeto unesp.IA, aproximando a Inteligência Artificial da comunidade.",
+            "https://br.linkedin.com/in/ronaldocorreia",
         ),
     ]
     cards = []
-    for slug, name, profile, description in characters:
+    for character in characters:
+        slug, name, profile, description, *external_url = character
+        if external_url and external_url[0]:
+            cards.append(
+                f'<article class="character-card character-card-artwork" id="{slug}">'
+                f'<a class="character-artwork-link" href="{external_url[0]}" target="_blank" '
+                f'rel="noopener noreferrer" aria-label="Conhecer {name} no LinkedIn (abre em nova aba)">'
+                f'<img src="../assets/img/personagens/{slug}.png" '
+                f'alt="{name}, {profile.lower()} do projeto unesp.IA"></a></article>'
+            )
+            continue
         cards.append(
             f'<article class="card character-card" id="{slug}">'
             '<figure class="character-portrait">'
