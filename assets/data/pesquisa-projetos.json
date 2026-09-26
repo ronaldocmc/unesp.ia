@@ -1,0 +1,167 @@
+{
+  "topicos": [
+    {
+      "id": "dados",
+      "nome": "Dados",
+      "itens": ["Engenharia de Dados", "Ciência de Dados", "Mineração de Dados", "Bancos de Dados", "Bancos de Dados Vetoriais", "Qualidade de Dados", "Proveniência e Data Lineage", "Séries temporais", "Dados tabulares"]
+    },
+    {
+      "id": "ia-aprendizado",
+      "nome": "IA e Aprendizado",
+      "itens": ["Aprendizado de Máquina", "Inteligência Artificial", "Inteligência Artificial Generativa", "Large Language Models — LLMs", "Visão Computacional", "Automação Inteligente"]
+    },
+    {
+      "id": "agentes-llms",
+      "nome": "Agentes e LLMs",
+      "itens": ["Agentes Inteligentes", "Sistemas Multiagentes", "RAG", "GraphRAG", "MCP e integração de agentes com ferramentas e dados"]
+    },
+    {
+      "id": "ia-confiavel",
+      "nome": "IA Confiável e Explicável",
+      "itens": ["Explainable AI — XAI", "Inteligência Artificial Confiável", "Fairness e vieses algorítmicos"]
+    },
+    {
+      "id": "grafos-conhecimento",
+      "nome": "Grafos e Conhecimento",
+      "itens": ["Grafos", "Redes Neurais em Grafos — GNNs", "Grafos de Conhecimento", "Engenharia de Conhecimento"]
+    },
+    {
+      "id": "educacao",
+      "nome": "Educação",
+      "itens": ["Mineração de Dados Educacionais", "Learning Analytics", "IA aplicada à Educação", "IA aplicada à tomada de decisão"]
+    },
+    {
+      "id": "geoia-visao",
+      "nome": "GeoIA e Visão Computacional",
+      "itens": ["GeoAI", "Geodados", "Visão Computacional", "Dados multiespectrais"]
+    }
+  ],
+  "projetosEstruturantes": [
+    {
+      "id": "unespdatalens",
+      "nome": "UnespDataLens",
+      "acronimo": "Engenharia de Dados Analíticos",
+      "descricao": "Modelo de referência para transformar dados heterogêneos em ativos analíticos confiáveis, rastreáveis e reutilizáveis, apoiando análises, modelos de Inteligência Artificial e tomada de decisão baseada em evidências.",
+      "topicos": ["Engenharia de dados", "Qualidade", "Governança", "Proveniência", "Reprodutibilidade", "Representações analíticas", "Feature engineering", "Monitoramento", "Bancos de dados", "Pipelines de dados"],
+      "nivel": "Projeto estruturante",
+      "status": "Em desenvolvimento",
+      "links": [{"rotulo": "Referência técnica", "href": "https://ronaldocmc.github.io/UnespDataLens-RM/", "externo": true}]
+    },
+    {
+      "id": "edmlens",
+      "nome": "EdmLens DataFlow",
+      "acronimo": "EdmLens",
+      "descricao": "Framework técnico-metodológico para Engenharia e Mineração de Dados Educacionais, estruturando o fluxo entre aquisição, preparação, representação, análise, modelagem, explicação e uso dos resultados.",
+      "topicos": ["Dados educacionais", "EDM", "Learning Analytics", "Pipelines", "Qualidade", "Explicabilidade", "Agentes inteligentes por módulo", "Tomada de decisão educacional"],
+      "pesquisador": "Douglas Francisquini Toledo",
+      "nivel": "Doutorado",
+      "status": "Em desenvolvimento"
+    },
+    {
+      "id": "mil-e-du",
+      "nome": "MIL@-eDU",
+      "descricao": "Metodologia analítica orientada à decisão para transformar dados educacionais em diagnóstico, predição, explicação, decisão, intervenção e retroalimentação institucional.",
+      "topicos": ["Evasão", "Permanência estudantil", "Desempenho acadêmico", "Modelos preditivos", "Explicabilidade", "Priorização", "Intervenções", "Decisão baseada em evidências", "Bandits", "Métodos causais"],
+      "pesquisador": "Camila Tolin Santos Da Silva",
+      "nivel": "Doutorado",
+      "status": "Em desenvolvimento"
+    }
+  ],
+  "posGraduacao": [
+    {
+      "id": "edmfair",
+      "nome": "EDMFair",
+      "descricao": "Investigação de métodos para identificar, explicar e mitigar vieses em pipelines, dados e modelos de Inteligência Artificial aplicados ao contexto educacional.",
+      "topicos": ["Fairness", "Vieses", "Equidade", "Transparência", "Confiabilidade", "Explicabilidade", "Dados educacionais"],
+      "pesquisador": "Aline Andreaca dos Santos",
+      "nivel": "Pós-graduação",
+      "status": "Em desenvolvimento"
+    },
+    {
+      "id": "higor-representacoes",
+      "nome": "Dados Tabulares, Temporais e Grafos",
+      "descricao": "Projeto de análise comparativa de diferentes formas de representação e modelagem dos dados.",
+      "topicos": ["Dados tabulares", "Séries temporais", "Grafos", "GCN", "GraphSAGE", "GAT", "LSTM", "GRU", "Temporal Fusion Transformer", "Avaliação comparativa"],
+      "pesquisador": "Higor",
+      "nivel": "Pós-graduação",
+      "status": "Em desenvolvimento"
+    },
+    {
+      "id": "georexai",
+      "nome": "GeoReXAI",
+      "descricao": "Pesquisa em GeoAI orientada à análise de geodados e imagens multiespectrais com métodos explicáveis.",
+      "topicos": ["GeoAI", "Geodados", "Imagens multiespectrais", "Visão computacional", "Aprendizado de máquina", "Explicabilidade"],
+      "pesquisador": "Lucas Voltera",
+      "nivel": "Pós-graduação",
+      "status": "Em desenvolvimento"
+    },
+    {
+      "id": "semed-llm",
+      "nome": "SemED-LLM",
+      "descricao": "Pesquisa sobre diagnóstico semântico de dados educacionais em ambientes virtuais de aprendizagem com modelos de linguagem.",
+      "topicos": ["LLMs", "Diagnóstico semântico", "Dados educacionais", "AVA/LMS", "Processamento de Linguagem Natural", "RAG"],
+      "pesquisador": "Wagner Luiz Pense",
+      "nivel": "Pós-graduação",
+      "status": "Em desenvolvimento"
+    },
+    {
+      "id": "semantica-etl",
+      "nome": "Semântica aplicada a processos de ETL",
+      "descricao": "Trabalho relacionado à semântica em processos de ETL. Título definitivo, objetivo, métodos, tecnologias, resultados e publicações serão adicionados após consolidação do projeto.",
+      "topicos": ["ETL", "Semântica"],
+      "pesquisador": "Willian",
+      "nivel": "Pós-graduação",
+      "status": "Informações em atualização"
+    }
+  ],
+  "iniciacaoCientifica": [
+    {
+      "id": "ic-alvaro",
+      "nome": "Qualidade e Explicabilidade de Pipelines de Dados Educacionais",
+      "descricao": "Projeto de Iniciação Científica sobre qualidade, explicabilidade e confiabilidade em pipelines de dados educacionais.",
+      "topicos": ["Qualidade de dados", "Pipelines", "Explicabilidade", "Dados educacionais", "Confiabilidade"],
+      "pesquisador": "Álvaro de Freitas Grotto",
+      "nivel": "Iniciação Científica",
+      "status": "Em desenvolvimento"
+    },
+    {
+      "id": "ic-guilherme",
+      "nome": "Enriquecimento de Dados Tabulares com Atributos Relacionais Derivados de Grafos para Modelagem Supervisionada",
+      "descricao": "Projeto de Iniciação Científica dedicado ao enriquecimento de dados tabulares com atributos relacionais derivados de grafos.",
+      "topicos": ["Grafos", "Feature engineering", "Atributos relacionais", "Dados tabulares", "Aprendizado supervisionado"],
+      "pesquisador": "Guilherme Rodrigues Vieira",
+      "nivel": "Iniciação Científica",
+      "status": "Em desenvolvimento"
+    },
+    {
+      "id": "ic-kaique",
+      "nome": "Projeto de Iniciação Científica",
+      "descricao": "Informações em atualização.",
+      "topicos": [],
+      "pesquisador": "Kaique",
+      "nivel": "Iniciação Científica",
+      "status": "Informações em atualização"
+    },
+    {
+      "id": "ic-kauan",
+      "nome": "Projeto de Iniciação Científica",
+      "descricao": "Informações em atualização.",
+      "topicos": [],
+      "pesquisador": "Kauan",
+      "nivel": "Iniciação Científica",
+      "status": "Informações em atualização"
+    }
+  ],
+  "tcc": [
+    {
+      "id": "tcc-isabella",
+      "nome": "Análise de Sentimentos",
+      "descricao": "Trabalho de Conclusão de Curso em definição, relacionado à análise de sentimentos e de opinião.",
+      "topicos": ["NLP", "Mineração de textos", "Classificação", "LLMs", "Análise de opinião"],
+      "pesquisador": "Isabella",
+      "nivel": "Trabalho de Conclusão de Curso",
+      "status": "Título em definição"
+    }
+  ],
+  "publicacoes": []
+}

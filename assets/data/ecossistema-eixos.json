@@ -1,0 +1,58 @@
+[
+  {
+    "id": "aprender",
+    "ordem": "01",
+    "nome": "Aprender.IA",
+    "rotulo": "Formação",
+    "descricao": "Formação em Ciência de Dados e Inteligência Artificial para diferentes públicos, combinando compreensão, experimentação, aplicação e criação.",
+    "destaques": ["Cursos e oficinas", "Trilhas de aprendizagem", "Materiais educacionais", "Extensão universitária"],
+    "iniciativas": [
+      {"nome": "Curso unesp.IA", "descricao": "Formação modular, aberta e progressiva.", "href": "modulos.html"},
+      {"nome": "unesp.IA Melhor Idade", "descricao": "Formação acessível para pessoas idosas.", "href": "inscricoes.html"},
+      {"nome": "Capacitações profissionais", "descricao": "Espaço preparado para novas ofertas e públicos.", "href": "inscricoes.html"}
+    ],
+    "acao": {"rotulo": "Conhecer as formações", "href": "modulos.html"}
+  },
+  {
+    "id": "experimentar",
+    "ordem": "02",
+    "nome": "Experimentar.IA",
+    "rotulo": "Aprender fazendo",
+    "descricao": "Ambientes interativos para experimentar Inteligência Artificial, compreender seu funcionamento e desenvolver competências por meio da prática.",
+    "destaques": ["Aprende.IA", "Conversa.IA", "Enxerga.IA", "Escuta.IA", "Decide.IA", "Explica.IA", "Agente.IA"],
+    "iniciativas": [
+      {"nome": "Ambientes interativos", "descricao": "Experimentos orientados para diferentes capacidades da IA."},
+      {"nome": "Agente.IA", "descricao": "Criação, teste e uso supervisionado de agentes inteligentes."},
+      {"nome": "unesp.IA Lab", "descricao": "Aplicações educativas, jogos e desafios práticos.", "href": "https://unesp-ia-laboratorio-ml.ronaldocorreia.chatgpt.site/?lab=aplicacoes", "externo": true}
+    ],
+    "acao": {"rotulo": "Experimentar no laboratório", "href": "https://unesp-ia-laboratorio-ml.ronaldocorreia.chatgpt.site/?lab=aplicacoes", "externo": true}
+  },
+  {
+    "id": "pesquisa",
+    "ordem": "03",
+    "nome": "Pesquisa.IA",
+    "rotulo": "Research & Innovation Lab",
+    "descricao": "Pesquisa, desenvolvimento e inovação científica em Ciência de Dados e Inteligência Artificial.",
+    "destaques": ["Linhas de pesquisa", "Projetos estruturantes", "Pós-graduação e IC", "Produção científica"],
+    "iniciativas": [
+      {"nome": "UnespDataLens", "descricao": "Engenharia de Dados Analíticos confiável e rastreável."},
+      {"nome": "EdmLens DataFlow", "descricao": "Engenharia e Mineração de Dados Educacionais."},
+      {"nome": "MIL@-eDU", "descricao": "Análise orientada à decisão em contextos educacionais."}
+    ],
+    "acao": {"rotulo": "Acessar Pesquisa.IA", "href": "pesquisa.html"}
+  },
+  {
+    "id": "inovacao",
+    "ordem": "04",
+    "nome": "Inovação.IA",
+    "rotulo": "Da pesquisa à aplicação",
+    "descricao": "Ciência de Dados e Inteligência Artificial transformadas em produtos, processos e serviços para a sociedade e para as organizações.",
+    "destaques": ["Pescar.IA", "pet.IA", "paranapanema.IA", "Metodologia APLICAR.IA"],
+    "iniciativas": [
+      {"nome": "Aplicações", "descricao": "Pescar.IA, pet.IA, paranapanema.IA e novas soluções."},
+      {"nome": "Metodologia APLICAR.IA", "descricao": "Adoção estruturada de IA por empresas, prefeituras e organizações."},
+      {"nome": "Escada de maturidade", "descricao": "Manual → Prompt → Copiloto → Processo → Automação → Agente."}
+    ],
+    "acao": {"rotulo": "Conhecer as iniciativas", "href": "#inovacao-iniciativas"}
+  }
+]
