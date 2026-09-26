@@ -7,7 +7,7 @@
     "descricao": "Formação em Ciência de Dados e Inteligência Artificial para diferentes públicos, combinando compreensão, experimentação, aplicação e criação.",
     "destaques": ["Cursos e oficinas", "Trilhas de aprendizagem", "Materiais educacionais", "Extensão universitária"],
     "iniciativas": [
-      {"nome": "Curso unesp.IA", "descricao": "Formação modular, aberta e progressiva.", "href": "modulos.html"},
+      {"nome": "unesp.IA - Inteligência Artificial para Todos", "descricao": "Formação modular, aberta e progressiva.", "href": "modulos.html"},
       {"nome": "unesp.IA Melhor Idade", "descricao": "Formação acessível para pessoas idosas.", "href": "inscricoes.html"},
       {"nome": "Capacitações profissionais", "descricao": "Espaço preparado para novas ofertas e públicos.", "href": "inscricoes.html"}
     ],

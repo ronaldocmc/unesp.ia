@@ -1,0 +1,58 @@
+{
+  "atualizadoEm": "2026-09-26T12:00:00-03:00",
+  "politicaEditorial": "Conteúdos publicados possuem fonte identificada e revisão humana. Itens coletados automaticamente permanecem em uma fila de curadoria.",
+  "itens": [
+    {
+      "id": "observatorio-apresentacao",
+      "tipo": "Análise",
+      "categoria": "Ecossistema unesp.IA",
+      "titulo": "Observatório unesp.IA transforma monitoramento em conhecimento compartilhado",
+      "resumo": "A plataforma acompanha notícias, tecnologias e produção científica para organizar evidências úteis às atividades de formação, pesquisa e inovação.",
+      "data": "2026-09-26",
+      "fonte": "Equipe unesp.IA",
+      "href": "observatorio.html#como-funciona",
+      "tags": ["observatório", "evidências", "inteligência"],
+      "revisao": "Revisão humana concluída",
+      "coletadoPor": "Publicação institucional"
+    },
+    {
+      "id": "pesquisa-portal",
+      "tipo": "Pesquisa",
+      "categoria": "Ciência e pesquisa",
+      "titulo": "Pesquisa.IA organiza linhas de investigação e projetos do laboratório",
+      "resumo": "O portal reúne projetos estruturantes, pós-graduação, iniciação científica, TCCs e a futura produção científica do unesp.IA Research & Innovation Lab.",
+      "data": "2026-09-26",
+      "fonte": "unesp.IA Research & Innovation Lab",
+      "href": "pesquisa.html",
+      "tags": ["pesquisa", "projetos", "ciência de dados"],
+      "revisao": "Revisão humana concluída",
+      "coletadoPor": "Publicação institucional"
+    },
+    {
+      "id": "quatro-eixos",
+      "tipo": "Notícia",
+      "categoria": "Ecossistema unesp.IA",
+      "titulo": "Quatro eixos conectam formação, experimentação, pesquisa e inovação",
+      "resumo": "Aprender.IA, Experimentar.IA, Pesquisa.IA e Inovação.IA funcionam como portas de entrada integradas para pessoas, organizações e parceiros.",
+      "data": "2026-09-26",
+      "fonte": "Equipe unesp.IA",
+      "href": "index.html#eixos",
+      "tags": ["ecossistema", "formação", "inovação"],
+      "revisao": "Revisão humana concluída",
+      "coletadoPor": "Publicação institucional"
+    },
+    {
+      "id": "aplicar-ia",
+      "tipo": "Tecnologia",
+      "categoria": "Aplicações e inovação",
+      "titulo": "APLICAR.IA estrutura a adoção responsável de Inteligência Artificial",
+      "resumo": "A metodologia organiza diagnóstico, priorização, implantação e evolução da IA em empresas, prefeituras e organizações.",
+      "data": "2026-09-26",
+      "fonte": "Equipe unesp.IA",
+      "href": "index.html#inovacao-iniciativas",
+      "tags": ["adoção", "organizações", "automação"],
+      "revisao": "Revisão humana concluída",
+      "coletadoPor": "Publicação institucional"
+    }
+  ]
+}

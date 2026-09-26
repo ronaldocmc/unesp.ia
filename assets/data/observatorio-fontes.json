@@ -1,0 +1,43 @@
+{
+  "versao": 1,
+  "criterios": [
+    "priorizar fontes institucionais, científicas e identificáveis",
+    "preservar o link para a publicação original",
+    "não publicar automaticamente sem revisão humana",
+    "registrar data de coleta e procedência"
+  ],
+  "fontes": [
+    {
+      "id": "mit-news-ai",
+      "nome": "MIT News — Artificial Intelligence",
+      "tipo": "rss",
+      "categoria": "Notícias e atualidades",
+      "url": "https://news.mit.edu/topic/mitartificial-intelligence2-rss.xml",
+      "ativa": true
+    },
+    {
+      "id": "arxiv-ai",
+      "nome": "arXiv — Artificial Intelligence",
+      "tipo": "rss",
+      "categoria": "Artigos científicos",
+      "url": "https://export.arxiv.org/api/query?search_query=cat%3Acs.AI&sortBy=submittedDate&sortOrder=descending&max_results=20",
+      "ativa": true
+    },
+    {
+      "id": "crossref-ai",
+      "nome": "Crossref — produção científica sobre IA",
+      "tipo": "crossref",
+      "categoria": "Artigos científicos",
+      "url": "https://api.crossref.org/works?query.title=artificial%20intelligence&sort=published&order=desc&rows=20&select=DOI,title,URL,published,author,publisher,abstract,type",
+      "ativa": true
+    },
+    {
+      "id": "openalex-ai",
+      "nome": "OpenAlex — estado da arte em IA",
+      "tipo": "openalex",
+      "categoria": "Estado da arte",
+      "url": "https://api.openalex.org/works?search=artificial%20intelligence&sort=publication_date%3Adesc&per-page=20&select=id,display_name,publication_date,primary_location,authorships,abstract_inverted_index,type",
+      "ativa": true
+    }
+  ]
+}

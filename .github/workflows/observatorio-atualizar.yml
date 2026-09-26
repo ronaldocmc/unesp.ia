@@ -1,0 +1,37 @@
+name: Atualizar candidatos do Observatório unesp.IA
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "17 10 * * 1-5"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: observatorio-atualizar
+  cancel-in-progress: false
+
+jobs:
+  coletar:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Obter repositório
+        uses: actions/checkout@v4
+      - name: Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Coletar fontes configuradas
+        run: python scripts/update_observatorio.py
+      - name: Registrar fila de curadoria
+        run: |
+          if git diff --quiet -- assets/data/observatorio-candidatos.json; then
+            echo "Nenhuma atualização encontrada."
+            exit 0
+          fi
+          git config user.name "unesp.IA Observatório"
+          git config user.email "actions@users.noreply.github.com"
+          git add assets/data/observatorio-candidatos.json
+          git commit -m "chore: atualizar candidatos do Observatório"
+          git push
