@@ -214,7 +214,7 @@
 .ecosystem-page .ecosystem-topbar .nav a:hover,.ecosystem-page .ecosystem-topbar .nav a[aria-current="page"]{background:#e9f5fa}
 .ecosystem-page .ecosystem-topbar .nav .nav-highlight{background:var(--eco-navy);color:#fff}
 .ecosystem-page .ecosystem-topbar .nav .nav-highlight:hover{background:var(--eco-blue)}
-.ecosystem-hero{display:grid;grid-template-columns:minmax(520px,1.08fr) minmax(480px,.92fr);min-height:620px;align-items:center;background:linear-gradient(120deg,#f8fcfe 0,#e7f5fa 58%,#d8eef6 100%)}
+.ecosystem-hero{display:grid;grid-template-columns:minmax(520px,1.04fr) minmax(500px,.96fr);min-height:620px;align-items:center;background:linear-gradient(120deg,#f8fcfe 0,#e7f5fa 58%,#d8eef6 100%)}
 .ecosystem-hero-copy{display:flex;flex-direction:column;justify-content:center;padding:52px clamp(28px,4.5vw,72px)}
 .ecosystem-eyebrow,.section-kicker{margin:0 0 12px;color:#08789f;font-size:12px;font-weight:900;letter-spacing:.13em;text-transform:uppercase}
 .ecosystem-hero h1{max-width:860px;margin:0;color:var(--eco-navy);font-size:clamp(38px,3.35vw,54px);line-height:1.06;letter-spacing:-.035em;text-wrap:balance}
@@ -226,7 +226,7 @@
 .ecosystem-button.secondary{background:#fff;color:var(--eco-navy)}.ecosystem-button.secondary:hover{background:#edf7fb}
 .ecosystem-principles{display:flex;gap:8px;flex-wrap:wrap;margin:24px 0 0;padding:0;list-style:none}
 .ecosystem-principles li{padding:6px 10px;border:1px solid #bfd7e3;border-radius:999px;background:rgba(255,255,255,.72);color:#355364;font-size:12px;font-weight:800}
-.ecosystem-hero-media{position:relative;justify-self:center;width:94%;min-height:0;aspect-ratio:1672/941;margin:0;overflow:hidden}
+.ecosystem-hero-media{position:relative;justify-self:center;width:100%;min-height:0;aspect-ratio:1672/941;margin:0;overflow:hidden}
 .ecosystem-hero-media picture{display:block;width:100%;height:100%}.ecosystem-hero-media img{display:block;width:100%;height:100%;object-fit:contain;object-position:center}
 .ecosystem-intro{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:end;padding-top:78px;padding-bottom:78px}
 .ecosystem-intro h2,.ecosystem-section-heading h2,.ecosystem-cta h2,.editorial-policy h2{margin:0;color:var(--eco-navy);font-size:clamp(30px,3vw,44px);line-height:1.12;letter-spacing:-.025em;text-wrap:balance}
