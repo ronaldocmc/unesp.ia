@@ -7,7 +7,8 @@ function observatoryCard(item) {
   article.className = 'observatory-card';
   article.dataset.type = item.tipo;
   article.dataset.category = item.categoria;
-  article.dataset.search = [item.titulo, item.resumo, item.fonte, ...(item.tags || [])].join(' ').toLocaleLowerCase('pt-BR');
+  article.dataset.collection = item.colecao || 'Conteúdo monitorado';
+  article.dataset.search = [item.titulo, item.resumo, item.fonte, item.veiculo, item.projeto, ...(item.tags || [])].filter(Boolean).join(' ').toLocaleLowerCase('pt-BR');
 
   const meta = document.createElement('div');
   meta.className = 'observatory-card-meta';
@@ -20,7 +21,7 @@ function observatoryCard(item) {
 
   const category = document.createElement('p');
   category.className = 'observatory-category';
-  category.textContent = item.categoria;
+  category.textContent = item.colecao === 'unesp.IA na mídia' ? `unesp.IA na mídia • ${item.categoria}` : item.categoria;
   const title = document.createElement('h3');
   const link = document.createElement('a');
   link.href = item.href;
@@ -62,7 +63,7 @@ function applyObservatoryFilters() {
   const query = (document.getElementById('observatory-search')?.value || '').trim().toLocaleLowerCase('pt-BR');
   let visible = 0;
   grid.querySelectorAll('.observatory-card').forEach(card => {
-    const matchesType = filter === 'Todos' || card.dataset.type === filter;
+    const matchesType = filter === 'Todos' || (filter === 'Mídia' ? card.dataset.collection === 'unesp.IA na mídia' : card.dataset.type === filter);
     const matchesSearch = !query || card.dataset.search.includes(query);
     card.hidden = !(matchesType && matchesSearch);
     if (!card.hidden) visible += 1;
@@ -78,7 +79,9 @@ async function loadObservatory() {
     const response = await fetch('assets/data/observatorio-conteudos.json');
     if (!response.ok) throw new Error('Conteúdo indisponível');
     const data = await response.json();
-    const items = [...data.itens].sort((a, b) => b.data.localeCompare(a.data));
+    const databaseItems = await loadDatabaseItems();
+    const byIdentity = new Map([...data.itens, ...databaseItems].map(item => [item.id || item.href, item]));
+    const items = [...byIdentity.values()].sort((a, b) => b.data.localeCompare(a.data));
     grid.replaceChildren(...items.map(observatoryCard));
     const count = document.getElementById('observatory-count');
     if (count) count.textContent = items.length;
@@ -90,6 +93,36 @@ async function loadObservatory() {
     message.className = 'observatory-message';
     message.textContent = 'Os conteúdos serão exibidos quando o portal estiver disponível pelo servidor web.';
     grid.replaceChildren(message);
+  }
+}
+
+async function loadDatabaseItems() {
+  try {
+    const config = await import('./portal/config.js');
+    if (!config.configReady()) return [];
+    const endpoint = `${config.SUPABASE_URL}/rest/v1/observatorio_conteudos?select=*&status=eq.publicado&revisao_humana=eq.true&order=destaque.desc,data_publicacao.desc`;
+    const response = await fetch(endpoint, { headers: {
+      apikey: config.SUPABASE_PUBLISHABLE_KEY,
+      Authorization: `Bearer ${config.SUPABASE_PUBLISHABLE_KEY}`
+    }});
+    if (!response.ok) return [];
+    return (await response.json()).map(row => ({
+      id: `supabase-${row.id}`,
+      colecao: row.colecao,
+      tipo: row.tipo,
+      categoria: row.categoria,
+      titulo: row.titulo,
+      resumo: row.resumo,
+      data: row.data_publicacao,
+      fonte: row.veiculo ? `${row.veiculo} • ${row.fonte}` : row.fonte,
+      veiculo: row.veiculo,
+      projeto: row.projeto_relacionado,
+      href: row.url,
+      tags: String(row.palavras_chave || '').split(',').map(value => value.trim()).filter(Boolean),
+      revisao: 'Revisão humana concluída'
+    }));
+  } catch (error) {
+    return [];
   }
 }
 

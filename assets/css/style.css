@@ -572,6 +572,15 @@ a.axis-initiative:hover{background:color-mix(in srgb,var(--axis) 6%,white);text-
 .python-cell-actions{display:flex;gap:8px;margin:8px 0}.python-output{min-height:38px;padding:12px;border-radius:10px;background:#F1F5F9;white-space:pre-wrap;font:13px/1.5 Consolas,monospace}.python-output.error{background:#FDECEC;color:#8B1E1E}.python-output pre{margin:0;white-space:pre-wrap;background:transparent;color:inherit;border:0;padding:0;font:inherit}.python-figure{display:block;max-width:100%;height:auto;margin:12px auto 0;border-radius:10px;background:#fff}
 @media(max-width:800px){.admin-shell{grid-template-columns:1fr}.admin-nav{position:static;grid-template-columns:repeat(2,1fr)}.admin-table{font-size:13px}}
 
+.admin-nav-label{margin:14px 2px 2px;color:#607789;font-size:11px;font-weight:900;letter-spacing:.1em;text-transform:uppercase}
+.admin-nav-label:first-child{margin-top:0}
+.portal-dialog{width:min(920px,calc(100% - 24px))}
+.portal-dialog-inner{max-height:min(88vh,900px);overflow:auto}
+.portal-form [data-dialog-fields]{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.portal-form [data-dialog-fields] label:has(textarea){grid-column:1/-1}
+.admin-table-actions .btn-small{padding:6px 8px;font-size:13px}
+@media(max-width:800px){.admin-nav-label{grid-column:1/-1}.portal-form [data-dialog-fields]{grid-template-columns:1fr}.portal-form [data-dialog-fields] label:has(textarea){grid-column:auto}}
+
 /* Observar.IA — Observatório transversal do ecossistema */
 .ecosystem-page .ecosystem-topbar .nav a[aria-current="page"]{background:#073b68;color:#fff}
 .home-observatory-strip{display:grid;grid-template-columns:minmax(380px,.9fr) minmax(320px,1.1fr);gap:28px;align-items:center;margin:0 0 30px;padding:24px 28px;border:1px solid #c9deec;border-radius:20px;background:linear-gradient(120deg,#eff9fd,#f4f1ff)}

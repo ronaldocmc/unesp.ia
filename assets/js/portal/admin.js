@@ -22,6 +22,21 @@ const definitions = {
   conteudos_modulo: { title: 'Conteúdos protegidos', description: 'HTML ou caminho no bucket privado, liberado por matrícula.', pk: ['id'], fields: [
     ['modulo_id','Módulo','select',true,'modulos'], ['titulo','Título','text',true], ['ordem','Ordem','number',true], ['html','HTML do conteúdo','textarea',false], ['storage_path','Caminho no Storage','text',false], ['publicado','Publicado','checkbox',false]
   ]},
+  observatorio_conteudos: { title: 'Observatório e unesp.IA na mídia', description: 'Cadastre conteúdos monitorados e matérias de TV, jornais, rádio, podcasts e portais sobre os projetos.', pk: ['id'], columns: ['id','colecao','tipo','titulo','veiculo','projeto_relacionado','data_publicacao','status','destaque'], fields: [
+    ['colecao','Coleção','select-static',true,['Conteúdo monitorado','unesp.IA na mídia']],
+    ['tipo','Tipo de conteúdo ou mídia','select-static',true,['Notícia','Pesquisa','Tecnologia','Análise','Artigo científico','Tese ou dissertação','TV','Jornal','Revista','Rádio','Podcast','Portal','Vídeo']],
+    ['categoria','Categoria','text',true], ['titulo','Título','text',true], ['resumo','Resumo','textarea',true],
+    ['projeto_relacionado','Projeto relacionado','text',false], ['veiculo','Veículo de comunicação','text',false],
+    ['data_publicacao','Data de publicação','date',true], ['url','Link da matéria ou fonte','url',true],
+    ['video_url','Link do vídeo','url',false], ['imagem_url','Link da imagem de capa','url',false],
+    ['participantes','Entrevistados ou participantes','textarea',false], ['cidade','Cidade','text',false],
+    ['abrangencia','Abrangência','select-static',false,['Local','Regional','Estadual','Nacional','Internacional']],
+    ['palavras_chave','Palavras-chave, separadas por vírgulas','text',false], ['fonte','Fonte ou autoria','text',true],
+    ['origem','Origem do cadastro','select-static',true,['Cadastro manual','Agente de IA','Importação']],
+    ['status','Situação editorial','select-static',true,['rascunho','revisao','publicado','arquivado']],
+    ['destaque','Destacar no Observatório','checkbox',false,false], ['revisao_humana','Revisão humana concluída','checkbox',false,false]
+  ]},
+  candidatos_observatorio: { title: 'Sugestões do agente', description: 'Itens coletados automaticamente. Revise a fonte e use uma sugestão para iniciar um cadastro; nenhuma sugestão é publicada automaticamente.', virtual: true, pk: ['id'], fields: [] },
 }
 
 const state = { table: 'modulos', rows: [], editing: null, lookups: {} }
@@ -73,11 +88,13 @@ async function renderTable() {
   $('[data-admin-title]').textContent = def.title
   $('[data-admin-description]').textContent = def.description
   $('[data-import-button]').hidden = !def.import
+  $('[data-new-record]').hidden = Boolean(def.virtual)
+  if (def.virtual) return renderCandidateQueue()
   showMessage(message, 'Carregando registros...', 'info')
   const { data, error } = await supabase.from(state.table).select('*').limit(1000)
   if (error) return showMessage(message, error.message, 'error')
   state.rows = data ?? []
-  const columns = [...new Set([...def.pk, ...def.fields.map(f => f[0])])]
+  const columns = def.columns || [...new Set([...def.pk, ...def.fields.map(f => f[0])])]
   $('[data-admin-head]').innerHTML = `<tr>${columns.map(c => `<th>${escapeHtml(c)}</th>`).join('')}<th>Ações</th></tr>`
   $('[data-admin-body]').innerHTML = state.rows.map(row => `<tr>${columns.map(c => `<td>${escapeHtml(formatValue(row[c]))}</td>`).join('')}<td><div class="admin-table-actions"><button data-edit="${escapeHtml(keyOf(row))}">Editar</button><button data-delete="${escapeHtml(keyOf(row))}">Excluir</button></div></td></tr>`).join('') || `<tr><td colspan="${columns.length + 1}">Nenhum registro.</td></tr>`
   $('[data-admin-body]').querySelectorAll('[data-edit]').forEach(b => b.addEventListener('click', () => openDialog(findRow(b.dataset.edit))))
@@ -88,10 +105,10 @@ async function renderTable() {
 const formatValue = value => typeof value === 'boolean' ? (value ? 'Sim' : 'Não') : (value ?? '')
 const findRow = key => state.rows.find(row => keyOf(row) === key)
 
-async function openDialog(row = null) {
-  state.editing = row
+async function openDialog(row = null, options = {}) {
+  state.editing = options.asNew ? null : row
   const def = definitions[state.table]
-  $('[data-dialog-title]').textContent = `${row ? 'Editar' : 'Cadastrar'} ${def.title.toLowerCase()}`
+  $('[data-dialog-title]').textContent = `${state.editing ? 'Editar' : 'Cadastrar'} ${def.title.toLowerCase()}`
   const container = $('[data-dialog-fields]')
   container.innerHTML = ''
   for (const [name, label, type, required, source] of def.fields) {
@@ -99,8 +116,8 @@ async function openDialog(row = null) {
     const disabled = Boolean(row && def.pk.includes(name))
     let control
     if (type === 'textarea') control = `<textarea name="${name}" ${required ? 'required' : ''}>${escapeHtml(value)}</textarea>`
-    else if (type === 'checkbox') control = `<input type="checkbox" name="${name}" ${value !== false ? 'checked' : ''}>`
-    else if (type === 'select-static') control = `<select name="${name}" ${required ? 'required' : ''}>${source.map(v => `<option value="${v}" ${value === v ? 'selected' : ''}>${v}</option>`).join('')}</select>`
+    else if (type === 'checkbox') control = `<input type="checkbox" name="${name}" ${(row ? value !== false : source !== false) ? 'checked' : ''}>`
+    else if (type === 'select-static') control = `<select name="${name}" ${required ? 'required' : ''}>${required ? '' : '<option value="">Selecione</option>'}${source.map(v => `<option value="${v}" ${value === v ? 'selected' : ''}>${v}</option>`).join('')}</select>`
     else if (type === 'select') {
       const options = await loadLookup(source)
       control = `<select name="${name}" ${required ? 'required' : ''} ${disabled ? 'disabled' : ''}><option value="">Selecione</option>${options.map(o => `<option value="${o.id}" ${Number(value) === Number(o.id) ? 'selected' : ''}>${escapeHtml(lookupLabel(source, o))}</option>`).join('')}</select>${disabled ? `<input type="hidden" name="${name}" value="${value}">` : ''}`
@@ -109,6 +126,35 @@ async function openDialog(row = null) {
   }
   $('[data-dialog-message]').hidden = true
   dialog.showModal()
+}
+
+async function renderCandidateQueue() {
+  showMessage(message, 'Carregando sugestões coletadas pelo agente...', 'info')
+  try {
+    const response = await fetch('assets/data/observatorio-candidatos.json', { cache: 'no-store' })
+    if (!response.ok) throw new Error('Não foi possível carregar a fila de sugestões.')
+    const payload = await response.json()
+    state.rows = payload.itens || []
+    const columns = ['fonte','tipo','titulo','dataPublicacao','revisao']
+    $('[data-admin-head]').innerHTML = `<tr>${columns.map(c => `<th>${escapeHtml(c)}</th>`).join('')}<th>Ações</th></tr>`
+    $('[data-admin-body]').innerHTML = state.rows.map((row, index) => `<tr>${columns.map(c => `<td>${escapeHtml(formatValue(row[c]))}</td>`).join('')}<td><div class="admin-table-actions"><button data-use-candidate="${index}">Usar no cadastro</button><a class="btn-small secondary" href="${escapeHtml(row.href)}" target="_blank" rel="noopener noreferrer">Ver fonte</a></div></td></tr>`).join('') || '<tr><td colspan="6">Nenhuma sugestão pendente. A fila será preenchida na próxima execução do agente.</td></tr>'
+    $('[data-admin-body]').querySelectorAll('[data-use-candidate]').forEach(button => button.addEventListener('click', () => useCandidate(state.rows[Number(button.dataset.useCandidate)])))
+    const errorCount = (payload.erros || []).length
+    showMessage(message, `${state.rows.length} sugestão(ões) disponível(is).${errorCount ? ` ${errorCount} fonte(s) apresentou(aram) falha na última coleta.` : ''}`, errorCount ? 'info' : 'success')
+  } catch (error) { showMessage(message, error.message, 'error') }
+}
+
+function useCandidate(candidate) {
+  const isoDate = /^\d{4}-\d{2}-\d{2}/.test(candidate.dataPublicacao || '') ? candidate.dataPublicacao.slice(0, 10) : ''
+  const draft = {
+    colecao: 'Conteúdo monitorado', tipo: candidate.tipo === 'Artigos científicos' ? 'Artigo científico' : 'Notícia',
+    categoria: candidate.tipo || 'Atualidades', titulo: candidate.titulo, resumo: candidate.resumoOriginal,
+    data_publicacao: isoDate, url: candidate.href, fonte: candidate.fonte, origem: 'Agente de IA',
+    status: 'revisao', destaque: false, revisao_humana: false
+  }
+  state.table = 'observatorio_conteudos'
+  document.querySelectorAll('[data-admin-tab]').forEach(button => button.classList.toggle('active', button.dataset.adminTab === state.table))
+  openDialog(draft, { asNew: true })
 }
 
 function formPayload(def) {
