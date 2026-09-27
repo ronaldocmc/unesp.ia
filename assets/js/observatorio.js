@@ -7,7 +7,7 @@ function observatoryCard(item) {
   article.className = 'observatory-card';
   article.dataset.type = item.tipo;
   article.dataset.category = item.categoria;
-  article.dataset.collection = item.colecao || 'Conteúdo monitorado';
+  article.dataset.collection = item.colecao || 'Observatório';
   article.dataset.search = [item.titulo, item.resumo, item.fonte, item.veiculo, item.projeto, ...(item.tags || [])].filter(Boolean).join(' ').toLocaleLowerCase('pt-BR');
 
   const meta = document.createElement('div');
@@ -127,11 +127,14 @@ async function loadDatabaseItems() {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
+  const requestedSearch = new URLSearchParams(location.search).get('busca');
+  const searchInput = document.getElementById('observatory-search');
+  if (requestedSearch && searchInput) searchInput.value = requestedSearch;
   loadObservatory();
   document.querySelectorAll('[data-observatory-filter]').forEach(button => button.addEventListener('click', () => {
     document.querySelectorAll('[data-observatory-filter]').forEach(item => item.classList.remove('active'));
     button.classList.add('active');
     applyObservatoryFilters();
   }));
-  document.getElementById('observatory-search')?.addEventListener('input', applyObservatoryFilters);
+  searchInput?.addEventListener('input', applyObservatoryFilters);
 });

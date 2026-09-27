@@ -23,8 +23,8 @@ const definitions = {
     ['modulo_id','Módulo','select',true,'modulos'], ['titulo','Título','text',true], ['ordem','Ordem','number',true], ['html','HTML do conteúdo','textarea',false], ['storage_path','Caminho no Storage','text',false], ['publicado','Publicado','checkbox',false]
   ]},
   observatorio_conteudos: { title: 'Observatório e unesp.IA na mídia', description: 'Cadastre conteúdos monitorados e matérias de TV, jornais, rádio, podcasts e portais sobre os projetos.', pk: ['id'], columns: ['id','colecao','tipo','titulo','veiculo','projeto_relacionado','data_publicacao','status','destaque'], fields: [
-    ['colecao','Coleção','select-static',true,['Conteúdo monitorado','unesp.IA na mídia']],
-    ['tipo','Tipo de conteúdo ou mídia','select-static',true,['Notícia','Pesquisa','Tecnologia','Análise','Artigo científico','Tese ou dissertação','TV','Jornal','Revista','Rádio','Podcast','Portal','Vídeo']],
+    ['colecao','Coleção','select-static',true,['Observatório','unesp.IA na mídia']],
+    ['tipo','Tipo de conteúdo ou mídia','select-static',true,['Notícia institucional','Notícia monitorada','Pesquisa','Tecnologia','Análise','Artigo científico','Tese ou dissertação','TV','Jornal','Revista','Rádio','Podcast','Portal','Vídeo','Política ou regulação','Evento ou oportunidade','Indicador']],
     ['categoria','Categoria','text',true], ['titulo','Título','text',true], ['resumo','Resumo','textarea',true],
     ['projeto_relacionado','Projeto relacionado','text',false], ['veiculo','Veículo de comunicação','text',false],
     ['data_publicacao','Data de publicação','date',true], ['url','Link da matéria ou fonte','url',true],
@@ -147,7 +147,7 @@ async function renderCandidateQueue() {
 function useCandidate(candidate) {
   const isoDate = /^\d{4}-\d{2}-\d{2}/.test(candidate.dataPublicacao || '') ? candidate.dataPublicacao.slice(0, 10) : ''
   const draft = {
-    colecao: 'Conteúdo monitorado', tipo: candidate.tipo === 'Artigos científicos' ? 'Artigo científico' : 'Notícia',
+    colecao: 'Observatório', tipo: candidate.tipo === 'Artigos científicos' ? 'Artigo científico' : 'Notícia monitorada',
     categoria: candidate.tipo || 'Atualidades', titulo: candidate.titulo, resumo: candidate.resumoOriginal,
     data_publicacao: isoDate, url: candidate.href, fonte: candidate.fonte, origem: 'Agente de IA',
     status: 'revisao', destaque: false, revisao_humana: false

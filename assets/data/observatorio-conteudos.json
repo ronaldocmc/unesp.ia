@@ -1,9 +1,10 @@
 {
-  "atualizadoEm": "2026-09-26T12:00:00-03:00",
+  "atualizadoEm": "2026-09-27T09:00:00-03:00",
   "politicaEditorial": "Conteúdos publicados possuem fonte identificada e revisão humana. Itens coletados automaticamente permanecem em uma fila de curadoria.",
   "itens": [
     {
       "id": "observatorio-apresentacao",
+      "colecao": "Observatório",
       "tipo": "Análise",
       "categoria": "Ecossistema unesp.IA",
       "titulo": "Observatório unesp.IA transforma monitoramento em conhecimento compartilhado",
@@ -17,6 +18,7 @@
     },
     {
       "id": "pesquisa-portal",
+      "colecao": "Observatório",
       "tipo": "Pesquisa",
       "categoria": "Ciência e pesquisa",
       "titulo": "Pesquisa.IA organiza linhas de investigação e projetos do laboratório",
@@ -30,7 +32,8 @@
     },
     {
       "id": "quatro-eixos",
-      "tipo": "Notícia",
+      "colecao": "Observatório",
+      "tipo": "Notícia institucional",
       "categoria": "Ecossistema unesp.IA",
       "titulo": "Quatro eixos conectam formação, experimentação, pesquisa e inovação",
       "resumo": "Aprender.IA, Experimentar.IA, Pesquisa.IA e Inovação.IA funcionam como portas de entrada integradas para pessoas, organizações e parceiros.",
@@ -43,6 +46,7 @@
     },
     {
       "id": "aplicar-ia",
+      "colecao": "Observatório",
       "tipo": "Tecnologia",
       "categoria": "Aplicações e inovação",
       "titulo": "APLICAR.IA estrutura a adoção responsável de Inteligência Artificial",
@@ -51,6 +55,66 @@
       "fonte": "Equipe unesp.IA",
       "href": "index.html#inovacao-iniciativas",
       "tags": ["adoção", "organizações", "automação"],
+      "revisao": "Revisão humana concluída",
+      "coletadoPor": "Publicação institucional"
+    },
+    {
+      "id": "agente-ia-experimentacao",
+      "colecao": "Observatório",
+      "tipo": "Notícia institucional",
+      "categoria": "Experimentar.IA",
+      "titulo": "Agente.IA integra os ambientes de experimentação",
+      "resumo": "A ferramenta apoia a criação, o teste e o uso supervisionado de agentes inteligentes como parte do eixo Experimentar.IA.",
+      "data": "2026-09-26",
+      "fonte": "Equipe unesp.IA",
+      "href": "index.html#experimentar",
+      "projeto": "Agente.IA",
+      "tags": ["agentes inteligentes", "experimentação", "automação"],
+      "revisao": "Revisão humana concluída",
+      "coletadoPor": "Publicação institucional"
+    },
+    {
+      "id": "pet-ia-cuidado",
+      "colecao": "Observatório",
+      "tipo": "Notícia institucional",
+      "categoria": "Projetos e aplicações",
+      "titulo": "pet.IA: tecnologia a serviço do cuidado responsável",
+      "resumo": "A proposta organiza informações úteis para tutores e apoia o cuidado responsável sem substituir a orientação profissional.",
+      "data": "2026-09-24",
+      "fonte": "Equipe unesp.IA",
+      "href": "index.html#inovacao-iniciativas",
+      "projeto": "pet.IA",
+      "tags": ["pet.IA", "animais", "cuidado responsável"],
+      "revisao": "Revisão humana concluída",
+      "coletadoPor": "Publicação institucional"
+    },
+    {
+      "id": "pescar-ia-ciencia-cidada",
+      "colecao": "Observatório",
+      "tipo": "Notícia institucional",
+      "categoria": "Projetos e aplicações",
+      "titulo": "Pescar.IA conecta dados, ambiente e ciência cidadã",
+      "resumo": "A iniciativa investiga como dados e Inteligência Artificial podem apoiar conhecimento e sustentabilidade em ambientes aquáticos.",
+      "data": "2026-09-24",
+      "fonte": "Equipe unesp.IA",
+      "href": "index.html#inovacao-iniciativas",
+      "projeto": "Pescar.IA",
+      "tags": ["Pescar.IA", "dados ambientais", "sustentabilidade"],
+      "revisao": "Revisão humana concluída",
+      "coletadoPor": "Publicação institucional"
+    },
+    {
+      "id": "paranapanema-ia-desenvolvimento",
+      "colecao": "Observatório",
+      "tipo": "Notícia institucional",
+      "categoria": "Projetos e aplicações",
+      "titulo": "paranapanema.IA aproxima inovação e desenvolvimento regional",
+      "resumo": "A iniciativa articula dados, parceiros e desafios locais em projetos de Ciência de Dados e Inteligência Artificial voltados ao desenvolvimento regional.",
+      "data": "2026-09-24",
+      "fonte": "Equipe unesp.IA",
+      "href": "index.html#inovacao-iniciativas",
+      "projeto": "paranapanema.IA",
+      "tags": ["paranapanema.IA", "desenvolvimento regional", "dados"],
       "revisao": "Revisão humana concluída",
       "coletadoPor": "Publicação institucional"
     }

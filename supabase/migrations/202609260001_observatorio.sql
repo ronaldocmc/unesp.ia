@@ -1,7 +1,7 @@
 -- Conteúdos públicos do Observar.IA e matérias do unesp.IA na mídia.
 create table if not exists public.observatorio_conteudos (
   id bigint generated always as identity primary key,
-  colecao text not null check (colecao in ('Conteúdo monitorado','unesp.IA na mídia')),
+  colecao text not null check (colecao in ('Observatório','unesp.IA na mídia')),
   tipo text not null,
   categoria text not null,
   titulo text not null,
