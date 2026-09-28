@@ -403,7 +403,8 @@
 .ecosystem-axes{padding:78px 0 88px;background:var(--eco-soft)}
 .ecosystem-axes-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px}
 .ecosystem-data-message{grid-column:1/-1;padding:28px;border:1px dashed #afc9d7;border-radius:16px;background:#fff;color:#58707e;text-align:center}
-.ecosystem-axis-card{--axis:#075fa8;display:flex;min-height:570px;flex-direction:column;overflow:hidden;border:1px solid #d3e2e9;border-top:6px solid var(--axis);border-radius:20px;background:#fff;box-shadow:0 14px 34px rgba(5,47,87,.07)}
+.ecosystem-axis-card{--axis:#075fa8;display:flex;min-height:570px;scroll-margin-top:125px;flex-direction:column;overflow:hidden;border:1px solid #d3e2e9;border-top:6px solid var(--axis);border-radius:20px;background:#fff;box-shadow:0 14px 34px rgba(5,47,87,.07)}
+.ecosystem-innovation{scroll-margin-top:125px}
 .axis-aprender{--axis:#075fa8}.axis-experimentar{--axis:#008b91}.axis-pesquisa{--axis:#6046a6}.axis-inovacao{--axis:#b96a00}
 .axis-card-head{display:flex;gap:17px;align-items:center;padding:25px 26px 17px}
 .axis-icon{display:grid;width:58px;height:58px;flex:0 0 58px;place-items:center;border-radius:16px;background:color-mix(in srgb,var(--axis) 10%,white);color:var(--axis)}
@@ -671,3 +672,4 @@ a.axis-initiative:hover{background:color-mix(in srgb,var(--axis) 6%,white);text-
 .redirect-page p:not(.section-kicker){margin:0 0 26px;color:#49697c;font-size:18px;line-height:1.65}
 .portal-management-link{align-self:center;margin-top:12px;color:#6c7f89;font-size:12px;text-decoration:underline;text-underline-offset:3px}.portal-management-link:hover{color:#062f57}
 .portal-fixed-value{display:block;padding:11px 12px;border:1px solid #cbd8e1;border-radius:9px;background:#f1f5f8;color:#365267;font-weight:700}
+[hidden]{display:none!important}

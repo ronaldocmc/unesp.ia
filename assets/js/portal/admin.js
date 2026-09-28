@@ -6,7 +6,7 @@ const initiativeDefinition = (title, eixo) => ({
   sourceTable: 'ecossistema_iniciativas', filter: { eixo }, order: 'ordem', pk: ['id'],
   columns: ['id','tipo','nome','descricao','url','ordem','status','revisao_humana'], fields: [
     ['eixo','Eixo','fixed',true,eixo], ['tipo','Tipo','text',true], ['nome','Nome','text',true],
-    ['descricao','Descrição','textarea',true], ['url','Link','url',false], ['externo','Abrir em nova aba','checkbox',false,false],
+    ['descricao','Descrição','textarea',true], ['url','Link interno ou URL externa','text',false], ['externo','Abrir em nova aba','checkbox',false,false],
     ['ordem','Ordem','number',true], ['destaque','Destaque','checkbox',false,false],
     ['status','Situação editorial','select-static',true,['rascunho','revisao','publicado','arquivado']],
     ['revisao_humana','Revisão humana concluída','checkbox',false,false]

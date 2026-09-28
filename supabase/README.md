@@ -4,7 +4,7 @@ Esta pasta contém o banco, as regras de acesso e a função administrativa do p
 
 ## Implantação
 
-1. Crie um projeto Supabase e aplique `migrations/202607130001_portal_academico.sql` pelo CLI ou SQL Editor.
+1. Crie um projeto Supabase e aplique, em ordem, todos os arquivos de `migrations/` pelo CLI ou SQL Editor. Eles configuram o portal acadêmico, o Observar.IA e os cadastros dinâmicos dos quatro eixos.
 2. Em `assets/js/portal/config.js`, informe a URL do projeto e a chave publicável (`anon`/publishable). Nunca use `service_role` no navegador.
 3. Publique a função: `supabase functions deploy admin-users`.
 4. Configure `SITE_URL` e as Redirect URLs de autenticação, incluindo `/redefinir-senha.html`.
@@ -17,6 +17,12 @@ select id, 'administrador' from auth.users where email = 'administrador@exemplo.
 
 6. Entre em `/administracao.html`, cadastre módulos e turmas, importe/cadastre participantes e faça as matrículas.
 7. Cadastre cada material em `conteudos_modulo`. Texto HTML curto pode ficar na coluna `html`; arquivos maiores devem ir ao bucket privado `conteudos-modulos`, no caminho `<id_modulo>/arquivo.html`, com esse caminho em `storage_path`.
+
+## Gestão do ecossistema
+
+O link discreto **Gestão do portal**, no rodapé da página inicial, abre `/administracao.html`. A seção “Gestão do ecossistema” permite editar a apresentação dos quatro eixos e cadastrar suas iniciativas. O Observar.IA mantém conteúdos editoriais e matérias na mídia na mesma administração.
+
+Somente registros com situação `publicado` e com `revisao_humana` marcada aparecem nas páginas públicas. Enquanto o Supabase não estiver configurado, a página inicial usa `assets/data/ecossistema-eixos.json` como conteúdo de contingência.
 
 ## Regra crítica de publicação
 
