@@ -1,6 +1,1417 @@
 {
-  "geradoEm": null,
-  "total": 0,
+  "geradoEm": "2026-09-28T18:09:45+00:00",
+  "total": 85,
   "erros": [],
-  "itens": []
+  "itens": [
+    {
+      "id": "6fb8d323a6644752",
+      "status": "pendente",
+      "tipo": "Notícias e atualidades",
+      "titulo": "New formulation helps RNA vaccines withstand high temperatures",
+      "resumoOriginal": "MIT engineers have found a way to stabilize the lipid nanoparticles used to deliver RNA vaccines, which could allow the vaccines to be more widely distributed.",
+      "dataPublicacao": "Mon, 28 Sep 2026 05:00:00 -0400",
+      "fonte": "MIT News — Artificial Intelligence",
+      "fonteId": "mit-news-ai",
+      "href": "https://news.mit.edu/2026/new-formulation-helps-rna-vaccines-withstand-high-temperatures-0928",
+      "autores": [],
+      "coletadoEm": "2026-09-28T18:09:44+00:00",
+      "revisao": "Pendente de curadoria humana"
+    },
+    {
+      "id": "b127abe2bbeb4911",
+      "status": "pendente",
+      "tipo": "Notícias e atualidades",
+      "titulo": "MIT students gain a humanist lens on technical innovation in Tulsa, Oklahoma",
+      "resumoOriginal": "The PKG Center for Social Impact expands Code.Tulsa experiential learning program.",
+      "dataPublicacao": "Fri, 25 Sep 2026 16:15:00 -0400",
+      "fonte": "MIT News — Artificial Intelligence",
+      "fonteId": "mit-news-ai",
+      "href": "https://news.mit.edu/2026/mit-students-gain-humanist-lens-technical-innovation-tulsa-oklahoma-0925",
+      "autores": [],
+      "coletadoEm": "2026-09-28T18:09:44+00:00",
+      "revisao": "Pendente de curadoria humana"
+    },
+    {
+      "id": "972cdcddc42f338f",
+      "status": "pendente",
+      "tipo": "Notícias e atualidades",
+      "titulo": "Estimating suicide risk from text",
+      "resumoOriginal": "A new language-processing tool could help identify the highest-risk individuals from natural language, enabling swifter interventions.",
+      "dataPublicacao": "Thu, 24 Sep 2026 17:00:00 -0400",
+      "fonte": "MIT News — Artificial Intelligence",
+      "fonteId": "mit-news-ai",
+      "href": "https://news.mit.edu/2026/estimating-suicide-risk-from-text-0924",
+      "autores": [],
+      "coletadoEm": "2026-09-28T18:09:44+00:00",
+      "revisao": "Pendente de curadoria humana"
+    },
+    {
+      "id": "94b5ec063f5cafc2",
+      "status": "pendente",
+      "tipo": "Notícias e atualidades",
+      "titulo": "The promise and peril of using visual AI to study cities",
+      "resumoOriginal": "In their new book, “How AI Sees the City,” the leaders of MIT’s Senseable City Lab examine the technology’s implications for researching urban life.",
+      "dataPublicacao": "Thu, 24 Sep 2026 00:00:00 -0400",
+      "fonte": "MIT News — Artificial Intelligence",
+      "fonteId": "mit-news-ai",
+      "href": "https://news.mit.edu/2026/studying-cities-using-visual-ai-fabio-duarte-martina-mazzarello-carlo-ratti-fan-zhang-book-0924",
+      "autores": [],
+      "coletadoEm": "2026-09-28T18:09:44+00:00",
+      "revisao": "Pendente de curadoria humana"
+    },
+    {
+      "id": "8348f8f60db16b79",
+      "status": "pendente",
+      "tipo": "Notícias e atualidades",
+      "titulo": "MIT welcomes David Siegel SM ’86, PhD ’91 as its next Innovation Fellow",
+      "resumoOriginal": "Computer scientist, entrepreneur, and philanthropist will collaborate with the MIT Schwarzman College of Computing to advance AI and scientific discovery.",
+      "dataPublicacao": "Wed, 23 Sep 2026 11:30:00 -0400",
+      "fonte": "MIT News — Artificial Intelligence",
+      "fonteId": "mit-news-ai",
+      "href": "https://news.mit.edu/2026/mit-welcomes-david-siegel-innovation-fellow-0923",
+      "autores": [],
+      "coletadoEm": "2026-09-28T18:09:44+00:00",
+      "revisao": "Pendente de curadoria humana"
+    },
+    {
+      "id": "04e315ebdd57f0b1",
+      "status": "pendente",
+      "tipo": "Notícias e atualidades",
+      "titulo": "Poitras Center to fuel early careers of 50 young scientists dedicated to psychiatric disorders research",
+      "resumoOriginal": "Patricia and James Poitras ’63 provide fellowships for graduate students and postdocs who will shape the future of mental health research.",
+      "dataPublicacao": "Tue, 22 Sep 2026 15:00:00 -0400",
+      "fonte": "MIT News — Artificial Intelligence",
+      "fonteId": "mit-news-ai",
+      "href": "https://news.mit.edu/2026/poitras-center-to-fuel-early-careers-50-young-scientists-psychiatric-disorders-research-0922",
+      "autores": [],
+      "coletadoEm": "2026-09-28T18:09:44+00:00",
+      "revisao": "Pendente de curadoria humana"
+    },
+    {
+      "id": "a2f038ddf6ba57e0",
+      "status": "pendente",
+      "tipo": "Notícias e atualidades",
+      "titulo": "A new chapter for MIT Reads",
+      "resumoOriginal": "A new focus on fiction and memoir aims to help the MIT community celebrate the power of storytelling and strengthen social connection.",
+      "dataPublicacao": "Fri, 18 Sep 2026 12:30:00 -0400",
+      "fonte": "MIT News — Artificial Intelligence",
+      "fonteId": "mit-news-ai",
+      "href": "https://news.mit.edu/2026/new-chapter-mit-reads-0918",
+      "autores": [],
+      "coletadoEm": "2026-09-28T18:09:44+00:00",
+      "revisao": "Pendente de curadoria humana"
+    },
+    {
+      "id": "48b18568b4dcf1a9",
+      "status": "pendente",
+      "tipo": "Notícias e atualidades",
+      "titulo": "New AI technique could make minimally invasive surgeries safer and more precise",
+      "resumoOriginal": "This patient-specific method, called xvr, helps doctors use X-rays for surgical navigation in fields such as orthopedics and neurosurgery.",
+      "dataPublicacao": "Wed, 16 Sep 2026 11:00:00 -0400",
+      "fonte": "MIT News — Artificial Intelligence",
+      "fonteId": "mit-news-ai",
+      "href": "https://news.mit.edu/2026/new-ai-technique-could-make-minimally-invasive-surgeries-safer-more-precise-0916",
+      "autores": [],
+      "coletadoEm": "2026-09-28T18:09:44+00:00",
+      "revisao": "Pendente de curadoria humana"
+    },
+    {
+      "id": "0fd4d9111d18e287",
+      "status": "pendente",
+      "tipo": "Notícias e atualidades",
+      "titulo": "Measure by measure, studying society accurately",
+      "resumoOriginal": "Naoki Egami has become a standout in political methodology, helping refine tools that give scholars durable results.",
+      "dataPublicacao": "Wed, 16 Sep 2026 00:00:00 -0400",
+      "fonte": "MIT News — Artificial Intelligence",
+      "fonteId": "mit-news-ai",
+      "href": "https://news.mit.edu/2026/studying-society-accurately-naoki-egami-0916",
+      "autores": [],
+      "coletadoEm": "2026-09-28T18:09:44+00:00",
+      "revisao": "Pendente de curadoria humana"
+    },
+    {
+      "id": "2898a53d04394efa",
+      "status": "pendente",
+      "tipo": "Notícias e atualidades",
+      "titulo": "New method enables AI for safety-critical situations",
+      "resumoOriginal": "The “HardFlow” algorithm could help generative AI models produce high-quality outputs that obey strict requirements when “pretty close” doesn’t cut it.",
+      "dataPublicacao": "Mon, 14 Sep 2026 00:00:00 -0400",
+      "fonte": "MIT News — Artificial Intelligence",
+      "fonteId": "mit-news-ai",
+      "href": "https://news.mit.edu/2026/new-method-enables-ai-safety-critical-situations-0914",
+      "autores": [],
+      "coletadoEm": "2026-09-28T18:09:44+00:00",
+      "revisao": "Pendente de curadoria humana"
+    },
+    {
+      "id": "dd371037d70c737f",
+      "status": "pendente",
+      "tipo": "Notícias e atualidades",
+      "titulo": "MIT spinout turns plastic waste into resilient building materials",
+      "resumoOriginal": "Atlas Building Composites is commercializing MIT research to turn plastic waste into parts for buildings and other infrastructure.",
+      "dataPublicacao": "Mon, 14 Sep 2026 00:00:00 -0400",
+      "fonte": "MIT News — Artificial Intelligence",
+      "fonteId": "mit-news-ai",
+      "href": "https://news.mit.edu/2026/mit-spinout-turns-plastic-waste-into-resilient-building-materials-0914",
+      "autores": [],
+      "coletadoEm": "2026-09-28T18:09:44+00:00",
+      "revisao": "Pendente de curadoria humana"
+    },
+    {
+      "id": "2d0dbb5662da80a4",
+      "status": "pendente",
+      "tipo": "Notícias e atualidades",
+      "titulo": "Lifesaving Lincoln Laboratory device wins 2026 Excellence in Technology Transfer Award",
+      "resumoOriginal": "The handheld catheterization device AI-GUIDE, created by Lincoln Laboratory and Massachusetts General Hospital, promises improved health outcomes for injured service members and civilians.",
+      "dataPublicacao": "Fri, 11 Sep 2026 09:45:00 -0400",
+      "fonte": "MIT News — Artificial Intelligence",
+      "fonteId": "mit-news-ai",
+      "href": "https://news.mit.edu/2026/lifesaving-lincoln-laboratory-technology-wins-tech-transfer-award-0911",
+      "autores": [],
+      "coletadoEm": "2026-09-28T18:09:44+00:00",
+      "revisao": "Pendente de curadoria humana"
+    },
+    {
+      "id": "5a44a55390429460",
+      "status": "pendente",
+      "tipo": "Notícias e atualidades",
+      "titulo": "MIT Schwarzman College of Computing launches pilot to help educators teach AI across disciplines",
+      "resumoOriginal": "A weeklong summer workshop brought higher education faculty to campus to explore how AI and machine learning materials can be adapted for their classrooms.",
+      "dataPublicacao": "Wed, 09 Sep 2026 16:40:00 -0400",
+      "fonte": "MIT News — Artificial Intelligence",
+      "fonteId": "mit-news-ai",
+      "href": "https://news.mit.edu/2026/mit-schwarzman-college-computing-launches-pilot-help-educators-teach-ai-across-disciplines-0909",
+      "autores": [],
+      "coletadoEm": "2026-09-28T18:09:44+00:00",
+      "revisao": "Pendente de curadoria humana"
+    },
+    {
+      "id": "4546ba65600cacfe",
+      "status": "pendente",
+      "tipo": "Notícias e atualidades",
+      "titulo": "From MIT to IBM, expediting AI and quantum deployment",
+      "resumoOriginal": "MIT affiliates engage with the MIT-IBM Computing Research Lab to bring rigorous theory to production systems.",
+      "dataPublicacao": "Wed, 02 Sep 2026 16:25:00 -0400",
+      "fonte": "MIT News — Artificial Intelligence",
+      "fonteId": "mit-news-ai",
+      "href": "https://news.mit.edu/2026/from-mit-to-ibm-expediting-ai-and-quantum-deployment-0902",
+      "autores": [],
+      "coletadoEm": "2026-09-28T18:09:44+00:00",
+      "revisao": "Pendente de curadoria humana"
+    },
+    {
+      "id": "cde6039f103f885c",
+      "status": "pendente",
+      "tipo": "Notícias e atualidades",
+      "titulo": "System helps humans predict when self-driving cars will make mistakes",
+      "resumoOriginal": "A new method, called CW-Net, translates the reasoning process of an autonomous vehicle’s AI system into understandable concepts that explain its behavior.",
+      "dataPublicacao": "Wed, 02 Sep 2026 11:00:00 -0400",
+      "fonte": "MIT News — Artificial Intelligence",
+      "fonteId": "mit-news-ai",
+      "href": "https://news.mit.edu/2026/system-helps-humans-predict-when-self-driving-cars-will-make-mistakes-0902",
+      "autores": [],
+      "coletadoEm": "2026-09-28T18:09:44+00:00",
+      "revisao": "Pendente de curadoria humana"
+    },
+    {
+      "id": "437ffb23ae2ef611",
+      "status": "pendente",
+      "tipo": "Notícias e atualidades",
+      "titulo": "Walter Torous named executive director of MIT Center for Real Estate",
+      "resumoOriginal": "The senior lecturer, already director of the degree program, will now oversee all aspects of the center’s activities and operations.",
+      "dataPublicacao": "Tue, 01 Sep 2026 17:25:00 -0400",
+      "fonte": "MIT News — Artificial Intelligence",
+      "fonteId": "mit-news-ai",
+      "href": "https://news.mit.edu/2026/walter-torous-named-executive-director-mit-center-real-estate-0901",
+      "autores": [],
+      "coletadoEm": "2026-09-28T18:09:44+00:00",
+      "revisao": "Pendente de curadoria humana"
+    },
+    {
+      "id": "7121e737b53f5c8f",
+      "status": "pendente",
+      "tipo": "Notícias e atualidades",
+      "titulo": "Ila Kumar: Innovating with communities",
+      "resumoOriginal": "The PhD student works to give young people an active role in shaping digital technologies that can support their own well-being.",
+      "dataPublicacao": "Tue, 01 Sep 2026 00:00:00 -0400",
+      "fonte": "MIT News — Artificial Intelligence",
+      "fonteId": "mit-news-ai",
+      "href": "https://news.mit.edu/2026/ila-kumar-innovates-with-communities-0901",
+      "autores": [],
+      "coletadoEm": "2026-09-28T18:09:44+00:00",
+      "revisao": "Pendente de curadoria humana"
+    },
+    {
+      "id": "2454552264b02567",
+      "status": "pendente",
+      "tipo": "Notícias e atualidades",
+      "titulo": "MIT Quantum Initiative launches postdoctoral fellowship program",
+      "resumoOriginal": "The Institute welcomes its first cohort of QMIT Fellows this fall to advance interdisciplinary quantum research.",
+      "dataPublicacao": "Mon, 31 Aug 2026 15:30:00 -0400",
+      "fonte": "MIT News — Artificial Intelligence",
+      "fonteId": "mit-news-ai",
+      "href": "https://news.mit.edu/2026/mit-quantum-initiative-launches-postdoctoral-fellowship-0831",
+      "autores": [],
+      "coletadoEm": "2026-09-28T18:09:44+00:00",
+      "revisao": "Pendente de curadoria humana"
+    },
+    {
+      "id": "97eaaf36b3550f03",
+      "status": "pendente",
+      "tipo": "Notícias e atualidades",
+      "titulo": "How an MIT research project became a global programming language",
+      "resumoOriginal": "With millions of users across the world, Julia has been used to conduct cutting-edge research and to design new drugs, jet engines, heat pumps, and more.",
+      "dataPublicacao": "Mon, 31 Aug 2026 00:00:00 -0400",
+      "fonte": "MIT News — Artificial Intelligence",
+      "fonteId": "mit-news-ai",
+      "href": "https://news.mit.edu/2026/how-mit-research-project-became-global-programming-language-0831",
+      "autores": [],
+      "coletadoEm": "2026-09-28T18:09:44+00:00",
+      "revisao": "Pendente de curadoria humana"
+    },
+    {
+      "id": "6116da9c839ce217",
+      "status": "pendente",
+      "tipo": "Notícias e atualidades",
+      "titulo": "Looking beyond natural sequences",
+      "resumoOriginal": "A new machine-learning framework aims to improve the success rate of computational protein design while moving away from results that reproduce sequences found in nature.",
+      "dataPublicacao": "Thu, 27 Aug 2026 15:20:00 -0400",
+      "fonte": "MIT News — Artificial Intelligence",
+      "fonteId": "mit-news-ai",
+      "href": "https://news.mit.edu/2026/looking-beyond-natural-sequences-0827",
+      "autores": [],
+      "coletadoEm": "2026-09-28T18:09:44+00:00",
+      "revisao": "Pendente de curadoria humana"
+    },
+    {
+      "id": "29facfa5780b28e7",
+      "status": "pendente",
+      "tipo": "Notícias e atualidades",
+      "titulo": "AI helps design new materials that work in the real world",
+      "resumoOriginal": "The “CrysVCD” tool developed at MIT could cut the huge amounts of time and money spent on screening out chemically unstable designs.",
+      "dataPublicacao": "Wed, 26 Aug 2026 05:00:00 -0400",
+      "fonte": "MIT News — Artificial Intelligence",
+      "fonteId": "mit-news-ai",
+      "href": "https://news.mit.edu/2026/ai-helps-design-new-materials-that-work-in-real-world-0826",
+      "autores": [],
+      "coletadoEm": "2026-09-28T18:09:44+00:00",
+      "revisao": "Pendente de curadoria humana"
+    },
+    {
+      "id": "d9b6e80ff3477f59",
+      "status": "pendente",
+      "tipo": "Notícias e atualidades",
+      "titulo": "Generating scenarios for extreme events, without extreme data",
+      "resumoOriginal": "A new algorithm learns to anticipate the unprecedented scenarios that critical infrastructure and global supply chains are least prepared for.",
+      "dataPublicacao": "Mon, 24 Aug 2026 14:00:00 -0400",
+      "fonte": "MIT News — Artificial Intelligence",
+      "fonteId": "mit-news-ai",
+      "href": "https://news.mit.edu/2026/generating-scenarios-extreme-events-without-extreme-data-0824",
+      "autores": [],
+      "coletadoEm": "2026-09-28T18:09:44+00:00",
+      "revisao": "Pendente de curadoria humana"
+    },
+    {
+      "id": "c40fae91a3af5c3c",
+      "status": "pendente",
+      "tipo": "Notícias e atualidades",
+      "titulo": "Paving the way for greener ammonia production",
+      "resumoOriginal": "New MIT research could lead to better materials for a fossil-fuel-free process for making the chemical that's essential to fertilizer and other products.",
+      "dataPublicacao": "Thu, 20 Aug 2026 14:45:00 -0400",
+      "fonte": "MIT News — Artificial Intelligence",
+      "fonteId": "mit-news-ai",
+      "href": "https://news.mit.edu/2026/paving-way-for-greener-ammonia-production-0820",
+      "autores": [],
+      "coletadoEm": "2026-09-28T18:09:44+00:00",
+      "revisao": "Pendente de curadoria humana"
+    },
+    {
+      "id": "47e5fa4d38e94338",
+      "status": "pendente",
+      "tipo": "Notícias e atualidades",
+      "titulo": "When AI art has no author: Study finds generated images often can’t be traced to training data",
+      "resumoOriginal": "A new method for surgically removing training examples from a model reveals that as datasets grow, the link between what a model learns and what it produces dissolves.",
+      "dataPublicacao": "Tue, 18 Aug 2026 12:35:00 -0400",
+      "fonte": "MIT News — Artificial Intelligence",
+      "fonteId": "mit-news-ai",
+      "href": "https://news.mit.edu/2026/when-ai-art-has-no-author-generated-images-often-cant-be-traced-to-training-data-0818",
+      "autores": [],
+      "coletadoEm": "2026-09-28T18:09:44+00:00",
+      "revisao": "Pendente de curadoria humana"
+    },
+    {
+      "id": "6aebc1eb2c5ec36d",
+      "status": "pendente",
+      "tipo": "Notícias e atualidades",
+      "titulo": "Q&A: Rethinking how innovation happens",
+      "resumoOriginal": "In his latest book, Professor Eugene Fitzgerald examines the forces that turn breakthroughs into value — and why innovation resists simple formulas.",
+      "dataPublicacao": "Mon, 17 Aug 2026 15:50:00 -0400",
+      "fonte": "MIT News — Artificial Intelligence",
+      "fonteId": "mit-news-ai",
+      "href": "https://news.mit.edu/2026/qa-eugene-fitzgerald-rethinking-how-innovation-happens-0817",
+      "autores": [],
+      "coletadoEm": "2026-09-28T18:09:44+00:00",
+      "revisao": "Pendente de curadoria humana"
+    },
+    {
+      "id": "bbef182b08723e32",
+      "status": "pendente",
+      "tipo": "Artigos científicos",
+      "titulo": "Learning to Stop without Learning to Stop: Self-Supervised Confidence Training Improves Reasoning Efficiency",
+      "resumoOriginal": "Reasoning models often generate very long reasoning traces, making inference computationally expensive. Existing approaches typically improve efficiency either through inference-time early-stopping mechanisms or by explicitly encouraging shorter reasoning during training, for example through reinforcement learning with length penalties. We show that substantial efficiency gains can instead emerge from a different kind of supervision: \\textit{confidence}. Using a self-supervised procedure, we fine-tune reasoning models to predict their confidence in the…",
+      "dataPublicacao": "2026-09-25T17:59:52Z",
+      "fonte": "arXiv — Artificial Intelligence",
+      "fonteId": "arxiv-ai",
+      "href": "https://arxiv.org/abs/2609.31619v1",
+      "autores": [
+        "Parsa Hosseini",
+        "Akasha Tigalappanavara",
+        "Sumit Nawathe",
+        "Chenrui Fan",
+        "Sourya Basu",
+        "Genta Indra Winata",
+        "Anirban Das",
+        "Soheil Feizi",
+        "Nima Chitsazan"
+      ],
+      "coletadoEm": "2026-09-28T18:09:44+00:00",
+      "revisao": "Pendente de curadoria humana"
+    },
+    {
+      "id": "d6bebf931df8af24",
+      "status": "pendente",
+      "tipo": "Artigos científicos",
+      "titulo": "Statistical attribute alignment for black-box generative AI via output post-processing",
+      "resumoOriginal": "Generative AI systems are increasingly used, but aligning their outputs with user requirements poses a continuing challenge. Here, we aim to ensure that the distribution of an attribute of an AI-generated output aligns with a user-specified target. This is motivated by examples such as fairness, where we want to ensure that a protected attribute (e.g., gender, race, or age categories) follows a desired distribution, and synthetic data generation, where we want the generated data to be representative of a target distribution. We study the practically imp…",
+      "dataPublicacao": "2026-09-25T17:55:49Z",
+      "fonte": "arXiv — Artificial Intelligence",
+      "fonteId": "arxiv-ai",
+      "href": "https://arxiv.org/abs/2609.31607v1",
+      "autores": [
+        "Kevin Jiang",
+        "Morgane Austern",
+        "Edgar Dobriban",
+        "Jason M. Klusowski"
+      ],
+      "coletadoEm": "2026-09-28T18:09:44+00:00",
+      "revisao": "Pendente de curadoria humana"
+    },
+    {
+      "id": "f0825c363f776763",
+      "status": "pendente",
+      "tipo": "Artigos científicos",
+      "titulo": "Compact Documentation for Coding Agents: A Benchmark, an Optimizer, and Why It Does Not Transfer",
+      "resumoOriginal": "We investigate whether natural-language documentation helps coding agents resolve software issues, and we build the tools to construct and evaluate it. We introduce a roundtrip benchmark that scores code descriptions by whether code regenerated from them passes the original tests, and show that completeness, not length, drives a description's fidelity. Using the benchmark as an optimization signal, we discover a description-writing prompt that reaches full fidelity and generalizes to unseen files. We then test the hypothesis that motivated the work: tha…",
+      "dataPublicacao": "2026-09-25T17:42:22Z",
+      "fonte": "arXiv — Artificial Intelligence",
+      "fonteId": "arxiv-ai",
+      "href": "https://arxiv.org/abs/2609.31587v1",
+      "autores": [
+        "Md Shohel Arman",
+        "Igor Molybog"
+      ],
+      "coletadoEm": "2026-09-28T18:09:44+00:00",
+      "revisao": "Pendente de curadoria humana"
+    },
+    {
+      "id": "a1ddbb785dd898ae",
+      "status": "pendente",
+      "tipo": "Artigos científicos",
+      "titulo": "OC-GS: Gaussian Splatting for Irregular Turntable Capture",
+      "resumoOriginal": "Uneven rotation and dropped frames make equal-angle assumptions unreliable for turntable reconstruction. We present OC-GS, an object-centric Gaussian splatting that refines each image's angle while maintaining a shared camera, rotation axis, and pivot. This orbit-consistent refinement jointly optimizes image-derived geometry and angles to reconstruct objects from sparse, irregular captures. On rendered objects with 12, 8, and 6 irregularly spaced views, OC-GS achieves mean foreground PSNR scores of 21.26, 19.36, and 15.83dB, respectively, exceeding all…",
+      "dataPublicacao": "2026-09-25T17:35:05Z",
+      "fonte": "arXiv — Artificial Intelligence",
+      "fonteId": "arxiv-ai",
+      "href": "https://arxiv.org/abs/2609.31572v1",
+      "autores": [
+        "Jae Joong Lee",
+        "Bedrich Benes"
+      ],
+      "coletadoEm": "2026-09-28T18:09:44+00:00",
+      "revisao": "Pendente de curadoria humana"
+    },
+    {
+      "id": "580cbf320d873d27",
+      "status": "pendente",
+      "tipo": "Artigos científicos",
+      "titulo": "Adapting for AI: How elementary teachers adjust their practices for an AI-integrated curriculum",
+      "resumoOriginal": "Conversational AI tools are entering children's everyday experiences, and schools are interested in adopting them. However, successful classroom integration depends not only on the technology but also on the work teachers do to make it usable and appropriate for their students and classroom context. There is little known about how elementary teachers work as they implement conversational AI tools in real classrooms. In this study, we examine three teachers' experiences implementing an AI literacy and English Language Arts (ELA) curriculum built around T…",
+      "dataPublicacao": "2026-09-25T17:33:47Z",
+      "fonte": "arXiv — Artificial Intelligence",
+      "fonteId": "arxiv-ai",
+      "href": "https://arxiv.org/abs/2609.31569v1",
+      "autores": [
+        "Fasika Melese",
+        "Ruiyang Wu",
+        "Xinyue Cui",
+        "Joanna Perkins",
+        "Xiaoyi Tian",
+        "Tiffany Barnes",
+        "Shiyan Jiang"
+      ],
+      "coletadoEm": "2026-09-28T18:09:44+00:00",
+      "revisao": "Pendente de curadoria humana"
+    },
+    {
+      "id": "487b648279fd2422",
+      "status": "pendente",
+      "tipo": "Artigos científicos",
+      "titulo": "DeepEdu-v1: Efficient and Scalable Agentic LLMs for Vietnamese Education",
+      "resumoOriginal": "AI tutoring could markedly improve learning outcomes for students in developing regions such as Vietnam, yet the two obvious paths both fall short. Cloud assistants such as ChatGPT route sensitive student data to foreign servers---violating data-sovereignty laws such as Vietnam's Decree 53---and, pre-trained on Western-centric corpora, are not organized around the national textbook curriculum, so their knowledge of local content is unsystematic and frequently hallucinated. Self-hosting an open model keeps data on-premise but hits a two-fold wall: post-t…",
+      "dataPublicacao": "2026-09-25T17:33:41Z",
+      "fonte": "arXiv — Artificial Intelligence",
+      "fonteId": "arxiv-ai",
+      "href": "https://arxiv.org/abs/2609.31568v1",
+      "autores": [
+        "Quang Nguyen",
+        "Hieu Nguyen",
+        "Hien Hoang",
+        "Toan Pham",
+        "Cong Tran",
+        "Nam Vu"
+      ],
+      "coletadoEm": "2026-09-28T18:09:44+00:00",
+      "revisao": "Pendente de curadoria humana"
+    },
+    {
+      "id": "5e742672a9cad354",
+      "status": "pendente",
+      "tipo": "Artigos científicos",
+      "titulo": "Multi-agent Scaling Across Disjunctive and Compensatory Tasks",
+      "resumoOriginal": "Multi-agent LLM systems are often expected to improve as team size increases, yet the scaling behavior may depend on task structure. Our central contribution is to introduce Steiner's taxonomy of group tasks as a framework for analyzing multi-agent LLM scaling and focusing the analysis on disjunctive and compensatory tasks. We model independently sampled agents as conditionally independent given the item, which yields their large-team limits: plurality voting converges to the model's modal answer, and averaging converges to the model's item-level bias.…",
+      "dataPublicacao": "2026-09-25T17:29:15Z",
+      "fonte": "arXiv — Artificial Intelligence",
+      "fonteId": "arxiv-ai",
+      "href": "https://arxiv.org/abs/2609.31563v1",
+      "autores": [
+        "Carolina Fortuna",
+        "Blaz Bertalanic"
+      ],
+      "coletadoEm": "2026-09-28T18:09:44+00:00",
+      "revisao": "Pendente de curadoria humana"
+    },
+    {
+      "id": "adc71a2b0b8356b9",
+      "status": "pendente",
+      "tipo": "Artigos científicos",
+      "titulo": "A Flow Matching Framework for Neural Representational Dissimilarity",
+      "resumoOriginal": "Neural representational dissimilarity quantifies differences between neural response distributions, and is essential for comparing neural codes across stimuli, brain areas, tasks, and models. Commonly used distance metrics involve different assumptions and are estimated with separate methods. Here, we show that a variety of distance metrics can be unified under a flow matching framework developed in deep generative models. That is, these distances arise as Jeffreys divergences under different velocity constraints. We find that flow matching has advantag…",
+      "dataPublicacao": "2026-09-25T17:15:43Z",
+      "fonte": "arXiv — Artificial Intelligence",
+      "fonteId": "arxiv-ai",
+      "href": "https://arxiv.org/abs/2609.31544v1",
+      "autores": [
+        "Zeyuan Ye",
+        "Xue-Xin Wei"
+      ],
+      "coletadoEm": "2026-09-28T18:09:44+00:00",
+      "revisao": "Pendente de curadoria humana"
+    },
+    {
+      "id": "ef6f9088a48a20a8",
+      "status": "pendente",
+      "tipo": "Artigos científicos",
+      "titulo": "Can You Check That? The Checkability Boundary for Local LLM Network Automation",
+      "resumoOriginal": "Sending every network-automation input to a third-party frontier LLM exports sensitive artifacts such as production configurations, topologies, and logs. Querying small language models (SLMs) locally avoids this egress, but SLM outputs can be error-prone for direct use. This work introduces checkability as a criterion for determining which tasks are suitable for local inference. A task is checkable when it exposes a cheap, deterministic test - an intrinsic check - that rejects outputs violating a necessary correctness condition. We instantiate this idea…",
+      "dataPublicacao": "2026-09-25T17:11:55Z",
+      "fonte": "arXiv — Artificial Intelligence",
+      "fonteId": "arxiv-ai",
+      "href": "https://arxiv.org/abs/2609.31540v1",
+      "autores": [
+        "Maleeha Masood",
+        "Momina Nofal"
+      ],
+      "coletadoEm": "2026-09-28T18:09:44+00:00",
+      "revisao": "Pendente de curadoria humana"
+    },
+    {
+      "id": "df8683f0309715d6",
+      "status": "pendente",
+      "tipo": "Artigos científicos",
+      "titulo": "ClearGS: Reliability-Aware Gaussian Splatting from Handheld Videos",
+      "resumoOriginal": "We present ClearGS for 3D Gaussian Splatting (3DGS) from handheld videos with uneven viewpoint coverage and mixed frame quality. Rather than selecting frames with binary decisions, ClearGS uses Reliability-aware View Allocation (RVA) to assign graded raw-supervision weights based on appearance reliability, degradation risk, and geometric utility, while weakly reactivating useful suppressed frames to maintain trajectory coverage. Since weighting cannot restore details lost to blur or distortion, ClearGS further introduces Render-Guided In-Video Restorati…",
+      "dataPublicacao": "2026-09-25T16:50:46Z",
+      "fonte": "arXiv — Artificial Intelligence",
+      "fonteId": "arxiv-ai",
+      "href": "https://arxiv.org/abs/2609.31509v1",
+      "autores": [
+        "Xuanzhi Liu",
+        "Xinyi Wu",
+        "Hang Pan",
+        "Wensi Huang",
+        "Zhenyao Wu",
+        "Ruize Han",
+        "Song Wang"
+      ],
+      "coletadoEm": "2026-09-28T18:09:44+00:00",
+      "revisao": "Pendente de curadoria humana"
+    },
+    {
+      "id": "c6926ac00e6692b3",
+      "status": "pendente",
+      "tipo": "Artigos científicos",
+      "titulo": "Evaluating Cultural Awareness of LLMs for Haitian Creole",
+      "resumoOriginal": "Large language models (LLMs) exhibit substantial performance disparities between high- and low-resource languages. Beyond lower task performance, they often fail to capture the cultural norms and values of underrepresented communities. In this work, we present the first systematic evaluation of cultural awareness in LLMs for Haitian Creole, a language spoken by millions but severely underrepresented in digital resources. We assess cultural awareness along four complementary dimensions---specificity, bias, diversity, and variation---using a benchmark of…",
+      "dataPublicacao": "2026-09-25T16:47:07Z",
+      "fonte": "arXiv — Artificial Intelligence",
+      "fonteId": "arxiv-ai",
+      "href": "https://arxiv.org/abs/2609.31506v1",
+      "autores": [
+        "Christelle Clervilsson",
+        "Yanzhu Guo"
+      ],
+      "coletadoEm": "2026-09-28T18:09:44+00:00",
+      "revisao": "Pendente de curadoria humana"
+    },
+    {
+      "id": "930f8b5db199a26e",
+      "status": "pendente",
+      "tipo": "Artigos científicos",
+      "titulo": "Prompt Minimization: Reducing Input Redundancy Without Sacrificing Output Fidelity",
+      "resumoOriginal": "Despite the growing capabilities of large language models (LLMs), prompt design remains largely heuristic and ad hoc. This project will explore $\\textit{prompt minimization}$, the process of reducing prompts to their smallest, most information-dense form while preserving output fidelity. Practically, shorter prompts reduce computational overhead and inference latency, especially when large contexts, such as entire documents or codebases, are included unnecessarily. Further, longer prompts can damage LLM reasoning and accuracy. Theoretically, the existen…",
+      "dataPublicacao": "2026-09-25T16:45:28Z",
+      "fonte": "arXiv — Artificial Intelligence",
+      "fonteId": "arxiv-ai",
+      "href": "https://arxiv.org/abs/2609.31505v1",
+      "autores": [
+        "Marius F. R. Juston",
+        "Kevin A. Karim",
+        "Jonathan Gao",
+        "Kevin C. Li",
+        "Rudhi Bashambu"
+      ],
+      "coletadoEm": "2026-09-28T18:09:44+00:00",
+      "revisao": "Pendente de curadoria humana"
+    },
+    {
+      "id": "237a0b1ce5f04d1a",
+      "status": "pendente",
+      "tipo": "Artigos científicos",
+      "titulo": "UQ-LOB: Uncertainty-Aware Limit Order Book Mid-Price Forecasting",
+      "resumoOriginal": "Forecasting short-horizon mid-price movements from limit order book (LOB) data is central to algorithmic trading, yet most deep LOB forecasters are point predictors: they output a direction or a displacement, but never indicate which of their forecasts can be trusted. We introduce UQ-LOB, a lightweight, encoder-agnostic uncertainty quantification module that attaches to any pretrained LOB encoder and, in the spirit of attentive neural processes, conditions each forecast on a context set of recently completed windows whose outcomes are already realised.…",
+      "dataPublicacao": "2026-09-25T16:33:23Z",
+      "fonte": "arXiv — Artificial Intelligence",
+      "fonteId": "arxiv-ai",
+      "href": "https://arxiv.org/abs/2609.31491v1",
+      "autores": [
+        "Derrick Gilchrist Edward Manoharan",
+        "Eljas Linna",
+        "Kestutis Baltakys",
+        "Hao Dong",
+        "Juho Kanniainen"
+      ],
+      "coletadoEm": "2026-09-28T18:09:44+00:00",
+      "revisao": "Pendente de curadoria humana"
+    },
+    {
+      "id": "7b733c178b763fac",
+      "status": "pendente",
+      "tipo": "Artigos científicos",
+      "titulo": "\"AI is (not) the new...\": A Diagnostic Analogy Framework for Generative AI's Cultural Impacts",
+      "resumoOriginal": "Generative AI is reshaping the cultural infrastructures through which knowledge is found, synthesized, and held accountable. To make sense of this shift, scholars and policymakers reach for historical analogies of technologies such as the printing press, steam power or electricity. But these comparisons are typically imprecise about which property of the technology carries the comparison, and imprecise analogies produce imprecise governance by designing interventions against the wrong property of the system. This paper offers a diagnostic framework for…",
+      "dataPublicacao": "2026-09-25T16:25:46Z",
+      "fonte": "arXiv — Artificial Intelligence",
+      "fonteId": "arxiv-ai",
+      "href": "https://arxiv.org/abs/2609.31482v1",
+      "autores": [
+        "Rida Qadri",
+        "Vinodkumar Prabhakaran",
+        "Remi Denton"
+      ],
+      "coletadoEm": "2026-09-28T18:09:44+00:00",
+      "revisao": "Pendente de curadoria humana"
+    },
+    {
+      "id": "78e43fdf5afb8239",
+      "status": "pendente",
+      "tipo": "Artigos científicos",
+      "titulo": "Game Arena: Strategic LLM Evaluation in Competitive Environments",
+      "resumoOriginal": "We introduce Kaggle Game Arena, an open and ever-expanding platform to evaluate large language models (LLMs) through competitive games. Different from static benchmarks, game arena enables models to play head-to-head matchups in structured environments where the gameplay strength naturally increases as models evolve, preventing performance saturation. This technical report details the infrastructure behind Game Arena and describes the three pilot game environments: Chess, Poker, and Werewolf. These environments span perfect information, imperfect inform…",
+      "dataPublicacao": "2026-09-25T16:20:55Z",
+      "fonte": "arXiv — Artificial Intelligence",
+      "fonteId": "arxiv-ai",
+      "href": "https://arxiv.org/abs/2609.31473v1",
+      "autores": [
+        "Bovard Doerschuk-Tiberi",
+        "Yao Yan",
+        "Justin Chiu",
+        "Hann Wang",
+        "Timothy Chung",
+        "Martyna Plomecka",
+        "John Schultz",
+        "Jon Lipovetz",
+        "Clayton Drazner",
+        "Yuchen Zhuang",
+        "Jaimie Hwang",
+        "Nate Keating"
+      ],
+      "coletadoEm": "2026-09-28T18:09:44+00:00",
+      "revisao": "Pendente de curadoria humana"
+    },
+    {
+      "id": "0d7a7dd17dd52e6d",
+      "status": "pendente",
+      "tipo": "Artigos científicos",
+      "titulo": "PriceBench: A Diagnostic Benchmark for Price, Quality, and Brand Preferences in LLM Booking Agents",
+      "resumoOriginal": "LLMs increasingly act as purchasing agents, which makes the LLM, not the user, the one choosing among the options that satisfy a request; its preferences quietly fix what gets bought and what it costs. Hotel booking is a clean instance: a high-volume choice settled on a few comparable attributes, where the pick reveals those preferences. We introduce PriceBench, a diagnostic benchmark that recovers an LLM's price, quality, and brand preferences from its booking choices with a logit choice model, applied to 28 LLMs from 8 providers on 3,600 hotel tasks f…",
+      "dataPublicacao": "2026-09-25T16:17:28Z",
+      "fonte": "arXiv — Artificial Intelligence",
+      "fonteId": "arxiv-ai",
+      "href": "https://arxiv.org/abs/2609.31468v1",
+      "autores": [
+        "Pavel Kireyev"
+      ],
+      "coletadoEm": "2026-09-28T18:09:44+00:00",
+      "revisao": "Pendente de curadoria humana"
+    },
+    {
+      "id": "51ccd1ca87d1c33f",
+      "status": "pendente",
+      "tipo": "Artigos científicos",
+      "titulo": "Uncertainty-Aware Federated Learning for Infant Movement Analysis",
+      "resumoOriginal": "Infant movement analysis provides valuable biomarkers for the early identification of neurodevelopmental disorders. Recent advances in deep learning have enabled automated analysis of infant movements from video-derived skeletal representations, achieving performance comparable to expert assessment for tasks such as General Movement Assessment (GMA). However, most existing approaches rely on centralized training, requiring data from multiple institutions to be collected and stored at a single site. Such assumptions are often impractical in clinical sett…",
+      "dataPublicacao": "2026-09-25T16:13:48Z",
+      "fonte": "arXiv — Artificial Intelligence",
+      "fonteId": "arxiv-ai",
+      "href": "https://arxiv.org/abs/2609.31463v1",
+      "autores": [
+        "Edmond S. L. Ho"
+      ],
+      "coletadoEm": "2026-09-28T18:09:44+00:00",
+      "revisao": "Pendente de curadoria humana"
+    },
+    {
+      "id": "95326a7e70fd31b1",
+      "status": "pendente",
+      "tipo": "Artigos científicos",
+      "titulo": "Segment-Level Agentic Topic Modeling for Improved Data Exploration and Resource Efficiency",
+      "resumoOriginal": "Topic modeling is an effective technique for discovering hidden themes within documents and is widely used in text mining and data analysis across a variety of industry sectors. Recently, large language model (LLM)-based topic models have been emerged that prompt LLMs to generate topics then assign the topics to documents, producing more natural and human-readable topics than conventional topic modeling algorithms. However, the nature of topic assignment process causes certain drawbacks, such as the incapability to produce topic distributions over a doc…",
+      "dataPublicacao": "2026-09-25T16:11:42Z",
+      "fonte": "arXiv — Artificial Intelligence",
+      "fonteId": "arxiv-ai",
+      "href": "https://arxiv.org/abs/2609.31460v1",
+      "autores": [
+        "Myeongjun Erik Jang",
+        "Antonios Georgiadis",
+        "Sae Young Moon",
+        "Fran Silavong"
+      ],
+      "coletadoEm": "2026-09-28T18:09:44+00:00",
+      "revisao": "Pendente de curadoria humana"
+    },
+    {
+      "id": "d933ec4c2323b305",
+      "status": "pendente",
+      "tipo": "Artigos científicos",
+      "titulo": "Different Corruptions, Different Signals: Uncertainty and Loss in Federated Data Quality",
+      "resumoOriginal": "Federated learning (FL) data corruption can affect either inputs or labels, but it remains unclear whether input-conditional uncertainty and prediction-label loss expose these corruption modes equally. This paper compares two corruption-detection signals in FL: input-conditional uncertainty and prediction-label loss. The uncertainty signal is characterised using a learned aleatoric variance estimate together with Monte Carlo (MC) dropout variance and entropy measures, while the loss is computed against the supplied label. We test these signals against a…",
+      "dataPublicacao": "2026-09-25T16:09:21Z",
+      "fonte": "arXiv — Artificial Intelligence",
+      "fonteId": "arxiv-ai",
+      "href": "https://arxiv.org/abs/2609.31454v1",
+      "autores": [
+        "Bradley Scott",
+        "Zeqi Luo",
+        "Edmond S. L. Ho"
+      ],
+      "coletadoEm": "2026-09-28T18:09:44+00:00",
+      "revisao": "Pendente de curadoria humana"
+    },
+    {
+      "id": "06fdce84d48171a7",
+      "status": "pendente",
+      "tipo": "Artigos científicos",
+      "titulo": "From Reward Signal to Visual Utility: A Controlled Audit of Medical VLM Post-Training",
+      "resumoOriginal": "Medical vision-language model (VLM) post-training is commonly evaluated through answer accuracy. We examine how changes in accuracy and training objectives relate to image-conditioned decisions in a controlled Qwen2.5-VL-3B study on PMC-VQA. We compare supervised fine-tuning (SFT) with low-rank adaptation (LoRA) restricted to the language model, expanded multimodal adaptation scopes, standard answer-only Group Relative Policy Optimization (GRPO), and a counterfactual evidence objective. On 2,000 clean-test questions, language model LoRA SFT changes corr…",
+      "dataPublicacao": "2026-09-25T16:06:54Z",
+      "fonte": "arXiv — Artificial Intelligence",
+      "fonteId": "arxiv-ai",
+      "href": "https://arxiv.org/abs/2609.31450v1",
+      "autores": [
+        "Wang Jingxin"
+      ],
+      "coletadoEm": "2026-09-28T18:09:44+00:00",
+      "revisao": "Pendente de curadoria humana"
+    },
+    {
+      "id": "e6e249ef4ad809a3",
+      "status": "pendente",
+      "tipo": "Artigos científicos",
+      "titulo": "The Role of Attachment Styles and Spiritual Intelligence in Predicting Women’s Emotional Divorce",
+      "resumoOriginal": "Background: Emotional divorce refers to a situation in which the emotional relationship, support, passion, warmth, attention, love, and intimacy between couples (husband & wife) decline or diminish. Such conditions lead to an unaffectionate marital life to the point that the couples are only together under one roof. Accordingly, the present study aimed to explore the role of attachment styles and spiritual intelligence in predicting emotional divorce in women. Methods: This study employed a descriptive-correlational design. The research population inclu…",
+      "dataPublicacao": "2121-02-01",
+      "fonte": "Crossref — produção científica sobre IA",
+      "fonteId": "crossref-ai",
+      "href": "https://doi.org/10.32598/jccnc.7.1.350.1",
+      "autores": [
+        "Zahra Shirzadi",
+        "Reza Khakpour",
+        "Anahita Khodabakhshi-Koolaee"
+      ],
+      "coletadoEm": "2026-09-28T18:09:45+00:00",
+      "revisao": "Pendente de curadoria humana"
+    },
+    {
+      "id": "67f3a66e69379bd8",
+      "status": "pendente",
+      "tipo": "Artigos científicos",
+      "titulo": "We Cannot Cede Control of Weapons to Artificial Intelligence",
+      "resumoOriginal": "",
+      "dataPublicacao": "2077-07-01",
+      "fonte": "Crossref — produção científica sobre IA",
+      "fonteId": "crossref-ai",
+      "href": "https://doi.org/10.1038/scientificamerican072077-axs4kzsdvehyqhomb7gkv",
+      "autores": [
+        "Kate G"
+      ],
+      "coletadoEm": "2026-09-28T18:09:45+00:00",
+      "revisao": "Pendente de curadoria humana"
+    },
+    {
+      "id": "123d2de833c95d54",
+      "status": "pendente",
+      "tipo": "Artigos científicos",
+      "titulo": "Evolution and Applications of Artificial Intelligence in SAIs",
+      "resumoOriginal": "",
+      "dataPublicacao": "2030-10-20",
+      "fonte": "Crossref — produção científica sobre IA",
+      "fonteId": "crossref-ai",
+      "href": "https://doi.org/10.56251/yxek7242",
+      "autores": [
+        "Diego Oliveira Farias",
+        "Eric Hans Messias da Silva",
+        "Erick Muzart Fonseca dos Santo",
+        "Monique Louise de Barros Monteiro",
+        "Tibério Cesar Jocundo Loureiro"
+      ],
+      "coletadoEm": "2026-09-28T18:09:45+00:00",
+      "revisao": "Pendente de curadoria humana"
+    },
+    {
+      "id": "9f94195e131184c2",
+      "status": "pendente",
+      "tipo": "Artigos científicos",
+      "titulo": "Russian ‘special military operation’ as a failed coup de main. An intelligence analysis perspective",
+      "resumoOriginal": "The authors analyse the invasions and accompanying intelligence activities as coup de main operations, understood not as strict execution of the art of war, but rather as a coup d’état carried out by external forces on the territory of the attacked state. Coup de main as an effective surprise attack requires the use of offensive counterintelligence infiltration and the pacification of the opponent with police-type forces. In the article, these mechanisms are analysed using the example of Soviet actions in countries perceived by Moscow as its sphere of i…",
+      "dataPublicacao": "2028-08-14",
+      "fonte": "Crossref — produção científica sobre IA",
+      "fonteId": "crossref-ai",
+      "href": "https://doi.org/10.4467/20801335pbw.25.015.22181",
+      "autores": [
+        "Marek Klasa",
+        "Michał Klasa"
+      ],
+      "coletadoEm": "2026-09-28T18:09:45+00:00",
+      "revisao": "Pendente de curadoria humana"
+    },
+    {
+      "id": "fb6a18b368ac915f",
+      "status": "pendente",
+      "tipo": "Artigos científicos",
+      "titulo": "Different optimal controllers for cable driven continuum robot based on artificial circulation system algorithms",
+      "resumoOriginal": "",
+      "dataPublicacao": "2028-01-01",
+      "fonte": "Crossref — produção científica sobre IA",
+      "fonteId": "crossref-ai",
+      "href": "https://doi.org/10.1504/ijaac.2028.10079258",
+      "autores": [
+        "Kawthar Abd Al Jabbar Hashim",
+        "Ekhlas Hameed Karam"
+      ],
+      "coletadoEm": "2026-09-28T18:09:45+00:00",
+      "revisao": "Pendente de curadoria humana"
+    },
+    {
+      "id": "cb755c61310d72d2",
+      "status": "pendente",
+      "tipo": "Artigos científicos",
+      "titulo": "A method for enhancing learning with artificial intelligence",
+      "resumoOriginal": "",
+      "dataPublicacao": "2028-01-01",
+      "fonte": "Crossref — produção científica sobre IA",
+      "fonteId": "crossref-ai",
+      "href": "https://doi.org/10.1504/ijil.2028.10079618",
+      "autores": [
+        "Murad Huseynli",
+        "Udo Bub"
+      ],
+      "coletadoEm": "2026-09-28T18:09:45+00:00",
+      "revisao": "Pendente de curadoria humana"
+    },
+    {
+      "id": "4f9853feb5994958",
+      "status": "pendente",
+      "tipo": "Artigos científicos",
+      "titulo": "A comparative study of college students perceptions of self-efficacy and social intelligence: an exploratory factor analytical study",
+      "resumoOriginal": "",
+      "dataPublicacao": "2028-01-01",
+      "fonte": "Crossref — produção científica sobre IA",
+      "fonteId": "crossref-ai",
+      "href": "https://doi.org/10.1504/ijams.2028.10078118",
+      "autores": [
+        "Pooja Tiwari",
+        "Chandra Kumar Tewari"
+      ],
+      "coletadoEm": "2026-09-28T18:09:45+00:00",
+      "revisao": "Pendente de curadoria humana"
+    },
+    {
+      "id": "96bbcc35621a5ae0",
+      "status": "pendente",
+      "tipo": "Artigos científicos",
+      "titulo": "Interdisciplinary approach to problematic features of the use of artificial intelligence among university students",
+      "resumoOriginal": "",
+      "dataPublicacao": "2028-01-01",
+      "fonte": "Crossref — produção científica sobre IA",
+      "fonteId": "crossref-ai",
+      "href": "https://doi.org/10.1504/ijil.2028.10080246",
+      "autores": [
+        "Mirjana Radetic  . Paic N.A."
+      ],
+      "coletadoEm": "2026-09-28T18:09:45+00:00",
+      "revisao": "Pendente de curadoria humana"
+    },
+    {
+      "id": "73d992fc5dcff801",
+      "status": "pendente",
+      "tipo": "Artigos científicos",
+      "titulo": "Trends and topics in arts education and artificial intelligence: a systematic review using a human-in-the-loop model",
+      "resumoOriginal": "",
+      "dataPublicacao": "2028-01-01",
+      "fonte": "Crossref — produção científica sobre IA",
+      "fonteId": "crossref-ai",
+      "href": "https://doi.org/10.1504/ijart.2028.155022",
+      "autores": [
+        "e Yu",
+        "Ruolin Sun"
+      ],
+      "coletadoEm": "2026-09-28T18:09:45+00:00",
+      "revisao": "Pendente de curadoria humana"
+    },
+    {
+      "id": "eac1554839019d16",
+      "status": "pendente",
+      "tipo": "Artigos científicos",
+      "titulo": "Enhancing Real Time Decision Intelligence through Federated Learning Integration in Edge Computing Networks",
+      "resumoOriginal": "",
+      "dataPublicacao": "2028-01-01",
+      "fonte": "Crossref — produção científica sobre IA",
+      "fonteId": "crossref-ai",
+      "href": "https://doi.org/10.1504/ijcis.2028.10073919",
+      "autores": [
+        "M.S. Bennet Praba",
+        "M.Vinay Kumar",
+        "K.B. Anusha",
+        "Nitin Tiwari",
+        "Nidal Al Said",
+        "K. Kandan"
+      ],
+      "coletadoEm": "2026-09-28T18:09:45+00:00",
+      "revisao": "Pendente de curadoria humana"
+    },
+    {
+      "id": "c519209c38372df5",
+      "status": "pendente",
+      "tipo": "Artigos científicos",
+      "titulo": "The Role of Artificial Intelligence in Optimising Routing Protocols for Wireless Sensor Networks",
+      "resumoOriginal": "",
+      "dataPublicacao": "2028-01-01",
+      "fonte": "Crossref — produção científica sobre IA",
+      "fonteId": "crossref-ai",
+      "href": "https://doi.org/10.1504/ijcis.2028.10073620",
+      "autores": [
+        "Kanimozhi T",
+        "S. Murali",
+        "G. Ragu",
+        "Maria Michael Visuwasam L",
+        "Shajini G. Inbakani",
+        "Shynu T"
+      ],
+      "coletadoEm": "2026-09-28T18:09:45+00:00",
+      "revisao": "Pendente de curadoria humana"
+    },
+    {
+      "id": "31cf855be7968657",
+      "status": "pendente",
+      "tipo": "Artigos científicos",
+      "titulo": "Trends and Topics in Arts Education and Artificial Intelligence: a Systematic Review using a Human-In-The-Loop Model",
+      "resumoOriginal": "",
+      "dataPublicacao": "2028-01-01",
+      "fonte": "Crossref — produção científica sobre IA",
+      "fonteId": "crossref-ai",
+      "href": "https://doi.org/10.1504/ijart.2028.10078302",
+      "autores": [
+        "Yue Yu",
+        "Ruolin Sun"
+      ],
+      "coletadoEm": "2026-09-28T18:09:45+00:00",
+      "revisao": "Pendente de curadoria humana"
+    },
+    {
+      "id": "505bbac3844f8a1a",
+      "status": "pendente",
+      "tipo": "Artigos científicos",
+      "titulo": "Human-AI Synergy in Investment: The Role of Cognitive Intelligence in Decision-Making",
+      "resumoOriginal": "",
+      "dataPublicacao": "2028-01-01",
+      "fonte": "Crossref — produção científica sobre IA",
+      "fonteId": "crossref-ai",
+      "href": "https://doi.org/10.1504/ijams.2028.10081067",
+      "autores": [
+        "Preeti Sharma",
+        "Neha Sarin"
+      ],
+      "coletadoEm": "2026-09-28T18:09:45+00:00",
+      "revisao": "Pendente de curadoria humana"
+    },
+    {
+      "id": "ab6778c2ccdca625",
+      "status": "pendente",
+      "tipo": "Artigos científicos",
+      "titulo": "A systematic review of empirical studies on artificial intelligence in EFL/ESL reading instruction (2015-2025)",
+      "resumoOriginal": "",
+      "dataPublicacao": "2028-01-01",
+      "fonte": "Crossref — produção científica sobre IA",
+      "fonteId": "crossref-ai",
+      "href": "https://doi.org/10.1504/ijil.2028.10079534",
+      "autores": [
+        "Xuerong Peng",
+        "Hasan Tinmaz"
+      ],
+      "coletadoEm": "2026-09-28T18:09:45+00:00",
+      "revisao": "Pendente de curadoria humana"
+    },
+    {
+      "id": "09e419db42215818",
+      "status": "pendente",
+      "tipo": "Artigos científicos",
+      "titulo": "The Connection Between Emotional Intelligence, the Level of Loneliness and Characteristics of Attitudes towards Parents in Adolescence",
+      "resumoOriginal": "This article examines the connections between emotional intelligence, the level of loneliness and the characteristics of adolescents&rsquo; relationships with their parents. Adolescence is characterized by significant emotional changes that affect adolescents&rsquo; social relationships and self-esteem. The study is based on theoretical concepts of emotional intelligence, the phenomenon of loneliness and child-parent relationships, developed by both domestic and foreign psychologists. In the empirical part of the work, methods of psychodiagnostic resear…",
+      "dataPublicacao": "2027-09-27",
+      "fonte": "Crossref — produção científica sobre IA",
+      "fonteId": "crossref-ai",
+      "href": "https://doi.org/10.17759/psylaw.2024140305",
+      "autores": [
+        "A.V. Degtyarev",
+        "S.D. Chivileva",
+        "D.M. Kuptsova"
+      ],
+      "coletadoEm": "2026-09-28T18:09:45+00:00",
+      "revisao": "Pendente de curadoria humana"
+    },
+    {
+      "id": "41c926e2fee351a9",
+      "status": "pendente",
+      "tipo": "Artigos científicos",
+      "titulo": "Using Generative Artificial Intelligence ‘Gemini’ and ‘ChatGPT-4’ Development and Research of a Teaching Model on Making Children’s Books",
+      "resumoOriginal": "",
+      "dataPublicacao": "2027-07-31",
+      "fonte": "Crossref — produção científica sobre IA",
+      "fonteId": "crossref-ai",
+      "href": "https://doi.org/10.47293/ihumjj.2024.37.3",
+      "autores": [
+        "Seung-Woo Han",
+        "Sung-Ae Kang"
+      ],
+      "coletadoEm": "2026-09-28T18:09:45+00:00",
+      "revisao": "Pendente de curadoria humana"
+    },
+    {
+      "id": "387eb4a7d6a28464",
+      "status": "pendente",
+      "tipo": "Artigos científicos",
+      "titulo": "Information-Theoretic Limits of Scenario-Based Validation for Agentic Artificial Intelligence",
+      "resumoOriginal": "Validating agentic artificial intelligence systems that operate through long-horizon interaction with complex environments remains a fundamental and unresolved challenge. Contemporary validation practice relies heavily on scenario-based testing, benchmarking, and large-scale simulation, implicitly assuming that sufficient scenario coverage can approximate the system’s operational behavior. This paper challenges that assumption by framing validation as an inference problem under bounded information and analyzing its limits from an information-theoretic p…",
+      "dataPublicacao": "2027-06-15",
+      "fonte": "Crossref — produção científica sobre IA",
+      "fonteId": "crossref-ai",
+      "href": "https://doi.org/10.26634/jcom.14.1.11256",
+      "autores": [
+        "SANKAR S"
+      ],
+      "coletadoEm": "2026-09-28T18:09:45+00:00",
+      "revisao": "Pendente de curadoria humana"
+    },
+    {
+      "id": "9e8dca2cb2430e13",
+      "status": "pendente",
+      "tipo": "Artigos científicos",
+      "titulo": "Desempeño de un modelo de inteligencia artificial parala clasificación de la consistencia de las deposicionesen lactantes",
+      "resumoOriginal": "",
+      "dataPublicacao": "2027-06-01",
+      "fonte": "Crossref — produção científica sobre IA",
+      "fonteId": "crossref-ai",
+      "href": "https://doi.org/10.5546/aap.2026-11012",
+      "autores": [],
+      "coletadoEm": "2026-09-28T18:09:45+00:00",
+      "revisao": "Pendente de curadoria humana"
+    },
+    {
+      "id": "7f32b630aa75aa6e",
+      "status": "pendente",
+      "tipo": "Artigos científicos",
+      "titulo": "Performance of an artificial intelligence model forclassifying stool consistency in infants",
+      "resumoOriginal": "",
+      "dataPublicacao": "2027-06-01",
+      "fonte": "Crossref — produção científica sobre IA",
+      "fonteId": "crossref-ai",
+      "href": "https://doi.org/10.5546/aap.2026-11012.eng",
+      "autores": [],
+      "coletadoEm": "2026-09-28T18:09:45+00:00",
+      "revisao": "Pendente de curadoria humana"
+    },
+    {
+      "id": "5a506079bd7ecab5",
+      "status": "pendente",
+      "tipo": "Artigos científicos",
+      "titulo": "Polarimetric photodetector based on quasi-1D Ta2NiSe5/2D MoSe2 heterojunction with polarization inversion for multidimensional optical encoding and artificial vision",
+      "resumoOriginal": "",
+      "dataPublicacao": "2027-05-01",
+      "fonte": "Crossref — produção científica sobre IA",
+      "fonteId": "crossref-ai",
+      "href": "https://doi.org/10.1016/j.jmst.2026.08.040",
+      "autores": [
+        "Hong Zhou",
+        "Jiao Qi",
+        "Xuanbo Zhao",
+        "Zhongtao Duan",
+        "Fengxian Xie",
+        "Yuxiang Zheng",
+        "Weibo Duan",
+        "Junhao Chu",
+        "Rongjun Zhang"
+      ],
+      "coletadoEm": "2026-09-28T18:09:45+00:00",
+      "revisao": "Pendente de curadoria humana"
+    },
+    {
+      "id": "aeb9d4525f864c4a",
+      "status": "pendente",
+      "tipo": "Estado da arte",
+      "titulo": "Artificial Intelligence in Plant Sciences",
+      "resumoOriginal": "Artificial intelligence (AI) may be referred to as a family of technologies which allow computers and other machines to perform the tasks that were previously dependent on human intelligence. In order to perform the tasks autonomously, the machines learn from large volumes of input data and involve the use of machine learning algorithms. It attempts to mimic the process of human learning in which a person gradually develops knowledge and skills by continuous trial and error method. Due to the ability of AI to perform intelligent tasks, it finds a number…",
+      "dataPublicacao": "2045-12-10",
+      "fonte": "OpenAlex — estado da arte em IA",
+      "fonteId": "openalex-ai",
+      "href": "https://doi.org/10.5281/zenodo.17036033",
+      "autores": [
+        "Dr. Nupur Prasad"
+      ],
+      "coletadoEm": "2026-09-28T18:09:45+00:00",
+      "revisao": "Pendente de curadoria humana"
+    },
+    {
+      "id": "8721ad69e2c5c596",
+      "status": "pendente",
+      "tipo": "Estado da arte",
+      "titulo": "Artificial Intelligence in Plant Sciences",
+      "resumoOriginal": "Artificial intelligence (AI) may be referred to as a family of technologies which allow computers and other machines to perform the tasks that were previously dependent on human intelligence. In order to perform the tasks autonomously, the machines learn from large volumes of input data and involve the use of machine learning algorithms. It attempts to mimic the process of human learning in which a person gradually develops knowledge and skills by continuous trial and error method. Due to the ability of AI to perform intelligent tasks, it finds a number…",
+      "dataPublicacao": "2045-12-10",
+      "fonte": "OpenAlex — estado da arte em IA",
+      "fonteId": "openalex-ai",
+      "href": "https://doi.org/10.5281/zenodo.17036034",
+      "autores": [
+        "Dr. Nupur Prasad"
+      ],
+      "coletadoEm": "2026-09-28T18:09:45+00:00",
+      "revisao": "Pendente de curadoria humana"
+    },
+    {
+      "id": "f3d3856c3bee7dc3",
+      "status": "pendente",
+      "tipo": "Estado da arte",
+      "titulo": "MODELING HOSPITALITY AND TOURISM STRATEGIES",
+      "resumoOriginal": "This dissertation investigates various strategies to advance the development of the hospitality and tourism industry through three essays, with a particular emphasis on the transformative roles of artificial intelligence (AI) and women’s economic empowerment. The first essay investigates the nonlinear impact of AI adoption on hospitality firm profit based on both demand and productivity perspectives. This study develops a differentiated Bertrand competition model where firms compete on price and AI enhances service differentiation and pricing strategies…",
+      "dataPublicacao": "2030-01-01",
+      "fonte": "OpenAlex — estado da arte em IA",
+      "fonteId": "openalex-ai",
+      "href": "https://doi.org/10.7273/000007504",
+      "autores": [
+        "Di Zhu"
+      ],
+      "coletadoEm": "2026-09-28T18:09:45+00:00",
+      "revisao": "Pendente de curadoria humana"
+    },
+    {
+      "id": "c59ec2ba9c053c0d",
+      "status": "pendente",
+      "tipo": "Estado da arte",
+      "titulo": "Development of an Advanced Artificial Intelligence-based Model (Deep Business Analytics) for Managing and Improving Control and Decision Making in Modern Organisations: Application in a Hospital Clinical Laboratory",
+      "resumoOriginal": "",
+      "dataPublicacao": "2029-01-01",
+      "fonte": "OpenAlex — estado da arte em IA",
+      "fonteId": "openalex-ai",
+      "href": "https://doi.org/10.17638/03194278",
+      "autores": [
+        "Mahdi Seify"
+      ],
+      "coletadoEm": "2026-09-28T18:09:45+00:00",
+      "revisao": "Pendente de curadoria humana"
+    },
+    {
+      "id": "fd50bf1d1ce4910b",
+      "status": "pendente",
+      "tipo": "Estado da arte",
+      "titulo": "ARTIFICIAL INTELLIGENCE IN ENGLISH LANGUAGE TEACHING AND LEARNING",
+      "resumoOriginal": "This dissertation explores the emerging role of artificial intelligence (AI) technologies in English language teaching and learning. The dissertation comprises two complementary studies. The first study is a systematic review, utilizing the PRISMA model, that examines empirical research studies on the use of intelligent personal assistants (IPAs) tools in an English as a foreign language (EFL) context. It focuses on the types of IPAs implemented, the language skills the studies target, IPA effectiveness for language learners, and the challenges students…",
+      "dataPublicacao": "2028-02-26",
+      "fonte": "OpenAlex — estado da arte em IA",
+      "fonteId": "openalex-ai",
+      "href": "https://doi.org/10.7273/000008420",
+      "autores": [
+        "Mazen Hamady Alyobi"
+      ],
+      "coletadoEm": "2026-09-28T18:09:45+00:00",
+      "revisao": "Pendente de curadoria humana"
+    },
+    {
+      "id": "5685e4e257b9b92f",
+      "status": "pendente",
+      "tipo": "Estado da arte",
+      "titulo": "Combating foreign bribery and corruption : an integrated corporate governance, sustainability, and artificial intelligence approach",
+      "resumoOriginal": "The full abstract for this thesis is available in the body of the thesis, and will be available when the embargo expires.",
+      "dataPublicacao": "2028-01-01",
+      "fonte": "OpenAlex — estado da arte em IA",
+      "fonteId": "openalex-ai",
+      "href": "http://hdl.handle.net/2429/93271",
+      "autores": [
+        "Oludolapo Makinde"
+      ],
+      "coletadoEm": "2026-09-28T18:09:45+00:00",
+      "revisao": "Pendente de curadoria humana"
+    },
+    {
+      "id": "7ea1d1c81e37f908",
+      "status": "pendente",
+      "tipo": "Estado da arte",
+      "titulo": "Places and Non-Places for Language",
+      "resumoOriginal": "The thesis argues in favour of distinguishing the language of artificial intelligence (AI) from the human linguistic condition where psychoanalysis has identified absence and its effects on the subject’s ordering of reality. Furthermore, it addresses the implications of the new technologies integrated by the capitalist discourse on the subject in the Lacanian sense. It argues in favour of coining a new term, ‘placelessness’, when the embodied subject speaks with the non-incarnate other of which speech is lacking formations of the unconscious. While addr…",
+      "dataPublicacao": "2028-01-01",
+      "fonte": "OpenAlex — estado da arte em IA",
+      "fonteId": "openalex-ai",
+      "href": "https://research.gold.ac.uk/id/eprint/40376/2/ENG_thesis_GermanosC_2025.pdf",
+      "autores": [
+        "Camille Germanos"
+      ],
+      "coletadoEm": "2026-09-28T18:09:45+00:00",
+      "revisao": "Pendente de curadoria humana"
+    },
+    {
+      "id": "45bdcd199c4ad20f",
+      "status": "pendente",
+      "tipo": "Estado da arte",
+      "titulo": "Funding Innovation for Future-Ready Healthcare Systems",
+      "resumoOriginal": "Healthcare has a lot of issues that need to be fixed. Some people believe that smart capital platforms can help with these healthcare problems. They use a combination of ways to pay for things like centers that use artificial intelligence to make decisions and technology to verify things. These smart capital platforms can really help with healthcare issues. They have centers that use artificial intelligence to make decisions and technology to verify things in healthcare. Healthcare is not working well. Experts say there are many reasons for this. For in…",
+      "dataPublicacao": "2027-07-29",
+      "fonte": "OpenAlex — estado da arte em IA",
+      "fonteId": "openalex-ai",
+      "href": "https://doi.org/10.5281/zenodo.21672368",
+      "autores": [
+        "Prof. Ramya HP Mr. Achhuth N"
+      ],
+      "coletadoEm": "2026-09-28T18:09:45+00:00",
+      "revisao": "Pendente de curadoria humana"
+    },
+    {
+      "id": "f75be8f18ef99a7e",
+      "status": "pendente",
+      "tipo": "Estado da arte",
+      "titulo": "Funding Innovation for Future-Ready Healthcare Systems",
+      "resumoOriginal": "Healthcare has a lot of issues that need to be fixed. Some people believe that smart capital platforms can help with these healthcare problems. They use a combination of ways to pay for things like centers that use artificial intelligence to make decisions and technology to verify things. These smart capital platforms can really help with healthcare issues. They have centers that use artificial intelligence to make decisions and technology to verify things in healthcare. Healthcare is not working well. Experts say there are many reasons for this. For in…",
+      "dataPublicacao": "2027-07-29",
+      "fonte": "OpenAlex — estado da arte em IA",
+      "fonteId": "openalex-ai",
+      "href": "https://doi.org/10.5281/zenodo.21672369",
+      "autores": [
+        "Prof. Ramya HP Mr. Achhuth N"
+      ],
+      "coletadoEm": "2026-09-28T18:09:45+00:00",
+      "revisao": "Pendente de curadoria humana"
+    },
+    {
+      "id": "95bef164b801428f",
+      "status": "pendente",
+      "tipo": "Estado da arte",
+      "titulo": "Bridging the Gap - AI Access in the Caribbean as a Telecom Infrastructure.pdf",
+      "resumoOriginal": "This conference paper examines the application of artificial intelligence within the Caribbean telecommunications sector, highlighting opportunities to improve operational efficiency, customer experience, and digital innovation. It explores key challenges surrounding AI adoption, including governance, implementation, and responsible deployment, while considering the region's unique technological and socioeconomic context. The paper provides recommendations for leveraging AI to support sustainable digital transformation and strengthen the telecommunicati…",
+      "dataPublicacao": "2027-05-02",
+      "fonte": "OpenAlex — estado da arte em IA",
+      "fonteId": "openalex-ai",
+      "href": "https://doi.org/10.5281/zenodo.20969884",
+      "autores": [
+        "Kai Clarke"
+      ],
+      "coletadoEm": "2026-09-28T18:09:45+00:00",
+      "revisao": "Pendente de curadoria humana"
+    },
+    {
+      "id": "3f57f429d5b6c0ae",
+      "status": "pendente",
+      "tipo": "Estado da arte",
+      "titulo": "Bridging the Gap - AI Access in the Caribbean as a Telecom Infrastructure.pdf",
+      "resumoOriginal": "This conference paper examines the application of artificial intelligence within the Caribbean telecommunications sector, highlighting opportunities to improve operational efficiency, customer experience, and digital innovation. It explores key challenges surrounding AI adoption, including governance, implementation, and responsible deployment, while considering the region's unique technological and socioeconomic context. The paper provides recommendations for leveraging AI to support sustainable digital transformation and strengthen the telecommunicati…",
+      "dataPublicacao": "2027-05-02",
+      "fonte": "OpenAlex — estado da arte em IA",
+      "fonteId": "openalex-ai",
+      "href": "https://doi.org/10.5281/zenodo.20969885",
+      "autores": [
+        "Kai Clarke"
+      ],
+      "coletadoEm": "2026-09-28T18:09:45+00:00",
+      "revisao": "Pendente de curadoria humana"
+    },
+    {
+      "id": "3660ad72831aaab3",
+      "status": "pendente",
+      "tipo": "Estado da arte",
+      "titulo": "The Decolonial Intelligence Algorithmic (DIA) Framework: Seventeenth Edition",
+      "resumoOriginal": "The Decolonial Intelligence Algorithmic (DIA) Framework™, developed by Christian Ortiz (ZacaTechO), is the first operational system to solve the AI bias problem. The Decolonial Intelligence Algorithmic Framework, or DIA Framework, developed by Christian Ortiz (ZacaTechO), is the first documented system that directly addresses and solves the problem of AI bias by removing the conditions that produce it. Rather than attempting to reduce bias within systems already shaped by colonial logic, this framework restructures how artificial intelligence is designe…",
+      "dataPublicacao": "2027-04-06",
+      "fonte": "OpenAlex — estado da arte em IA",
+      "fonteId": "openalex-ai",
+      "href": "https://doi.org/10.5281/zenodo.20550260",
+      "autores": [
+        "Christian Ortiz"
+      ],
+      "coletadoEm": "2026-09-28T18:09:45+00:00",
+      "revisao": "Pendente de curadoria humana"
+    },
+    {
+      "id": "e284c1043e8798df",
+      "status": "pendente",
+      "tipo": "Estado da arte",
+      "titulo": "Entrepreneurial subjectivity, expertise, and speculation in artificial intelligence start-ups in Taipei, Taiwan",
+      "resumoOriginal": "This thesis examines entrepreneurial subjectivity in the artificial intelligence industry through an analysis of startup business founders, venture capitalists, and other entrepreneurs. In recent decades, increasing financialization has led to the emergence of a particular form of techno-optimism that is central to the ethos of these entrepreneurs. Through an ethnography based on 18 months of fieldwork, I show that AI and the economic subversions it will allegedly cause have profound effects on the self-making practices of those involved, generating for…",
+      "dataPublicacao": "2027-01-01",
+      "fonte": "OpenAlex — estado da arte em IA",
+      "fonteId": "openalex-ai",
+      "href": "http://etheses.lse.ac.uk/4965/1/Stahl_201612905.pdf",
+      "autores": [
+        "Stahl, Laura A."
+      ],
+      "coletadoEm": "2026-09-28T18:09:45+00:00",
+      "revisao": "Pendente de curadoria humana"
+    },
+    {
+      "id": "1b9cdcafa9b000d0",
+      "status": "pendente",
+      "tipo": "Estado da arte",
+      "titulo": "MODELING AND CHARACTERIZATION OF ALGAL GROWTH IN ANAEROBIC DIGESTION WASTEWATER FOR PROCESS OPTIMIZATION",
+      "resumoOriginal": "Microalgae cultivation using anaerobic digestion (AD) wastewater is an attractive way of producing nutrient-rich biomass and treating wastewater. Integration of computational modeling provides valuable insights into algal-bacterial interactions and process scalability. With the help of metabolic flux analysis, kinetic modeling, cellular automata, and computational fluid dynamics (CFD), the predictive capability of algal growth patterns and reactor efficiency could be enhanced. Each modeling approach captures different facets of microalgal systems, inclu…",
+      "dataPublicacao": "2027-01-01",
+      "fonte": "OpenAlex — estado da arte em IA",
+      "fonteId": "openalex-ai",
+      "href": "https://doi.org/10.7273/000008004",
+      "autores": [
+        "S. M. Hasan Shahriar Rahat"
+      ],
+      "coletadoEm": "2026-09-28T18:09:45+00:00",
+      "revisao": "Pendente de curadoria humana"
+    },
+    {
+      "id": "de839ef13a92c59c",
+      "status": "pendente",
+      "tipo": "Estado da arte",
+      "titulo": "[Call for Papers] Ethical implications of artificial intelligence (AI) and automation in service industries: Addressing algorithmic bias, opacity and unclear accountability mechanisms",
+      "resumoOriginal": "",
+      "dataPublicacao": "2027-01-01",
+      "fonte": "OpenAlex — estado da arte em IA",
+      "fonteId": "openalex-ai",
+      "href": "https://doi.org/10.13140/rg.2.2.13702.64328",
+      "autores": [
+        "Mark Anthony Camilleri",
+        "Serena Strazzullo",
+        "Raffaele Campo",
+        "Alhamzah F. Abbas",
+        "Pasquale Del Vecchio",
+        "Mark Scott Rosenbaum"
+      ],
+      "coletadoEm": "2026-09-28T18:09:45+00:00",
+      "revisao": "Pendente de curadoria humana"
+    },
+    {
+      "id": "a3336b99c76618eb",
+      "status": "pendente",
+      "tipo": "Estado da arte",
+      "titulo": "Investigating the effects of vaping on lung structure and function with pulmonary imaging",
+      "resumoOriginal": "The full abstract for this thesis is available in the body of the thesis, and will be available when the embargo expires.",
+      "dataPublicacao": "2027-01-01",
+      "fonte": "OpenAlex — estado da arte em IA",
+      "fonteId": "openalex-ai",
+      "href": "http://hdl.handle.net/2429/93933",
+      "autores": [
+        "A. H. SCHMIDT"
+      ],
+      "coletadoEm": "2026-09-28T18:09:45+00:00",
+      "revisao": "Pendente de curadoria humana"
+    },
+    {
+      "id": "3ded68eefbfd2c25",
+      "status": "pendente",
+      "tipo": "Estado da arte",
+      "titulo": "Supplementary Material for \"Same Same, but Different: How Dedicated AI Leadership Roles Differentiate from Technology Leadership\"",
+      "resumoOriginal": "Supplementary material for the article: Markic, M., Hennemann, S. & Poeppelbuss, J. (2027). Same Same, but Different: How Dedicated AI Leadership Roles Differentiate from Technology Leadership. Hawaii International Conference on System Sciences (HICSS) 2027. Abstract: Organizations across industries increasingly create dedicated artificial intelligence (AI) leadership roles alongside, rather than in place of, established technology leadership roles, although the literature suggests that governance demands could be absorbed by existing leadership roles.…",
+      "dataPublicacao": "2027-01-01",
+      "fonte": "OpenAlex — estado da arte em IA",
+      "fonteId": "openalex-ai",
+      "href": "https://doi.org/10.23728/b2share.7qxzn-4tw36",
+      "autores": [
+        "Mihael Markic",
+        "Sven Hennemann",
+        "Jens Pöppelbuß"
+      ],
+      "coletadoEm": "2026-09-28T18:09:45+00:00",
+      "revisao": "Pendente de curadoria humana"
+    },
+    {
+      "id": "c20ab3da67471e78",
+      "status": "pendente",
+      "tipo": "Estado da arte",
+      "titulo": "Supplementary Material for \"Same Same, but Different: How Dedicated AI Leadership Roles Differentiate from Technology Leadership\"",
+      "resumoOriginal": "Supplementary material for the article: Markic, M., Hennemann, S. & Poeppelbuss, J. (2027). Same Same, but Different: How Dedicated AI Leadership Roles Differentiate from Technology Leadership. Hawaii International Conference on System Sciences (HICSS) 2027. Abstract: Organizations across industries increasingly create dedicated artificial intelligence (AI) leadership roles alongside, rather than in place of, established technology leadership roles, although the literature suggests that governance demands could be absorbed by existing leadership roles.…",
+      "dataPublicacao": "2027-01-01",
+      "fonte": "OpenAlex — estado da arte em IA",
+      "fonteId": "openalex-ai",
+      "href": "https://doi.org/10.23728/b2share.xgk82-9rd16",
+      "autores": [
+        "Mihael Markic",
+        "Sven Hennemann",
+        "Jens Pöppelbuß"
+      ],
+      "coletadoEm": "2026-09-28T18:09:45+00:00",
+      "revisao": "Pendente de curadoria humana"
+    },
+    {
+      "id": "9b28250c6c19a5ce",
+      "status": "pendente",
+      "tipo": "Estado da arte",
+      "titulo": "Artificial Coherence Intelligence (ACI): Behavioral Demonstration of a New Intelligence Class",
+      "resumoOriginal": "This publication presents a controlled behavioral demonstration of Artificial Coherence Intelligence (ACI), a proposed class of artificial reasoning systems characterized by invariant-bound coherence rather than optimization, prediction, or scale. ACI systems are defined by their ability to preserve identity, proportionality, and internal stability as reasoning unfolds under sustained pressure, contradiction, and uncertainty. The study examines AIngel v2.01 as a reference runtime to assess whether coherence-preserving behavior can be instantiated and ob…",
+      "dataPublicacao": "2026-12-31",
+      "fonte": "OpenAlex — estado da arte em IA",
+      "fonteId": "openalex-ai",
+      "href": "https://doi.org/10.5281/zenodo.18112866",
+      "autores": [
+        "Matthew Ainsworth"
+      ],
+      "coletadoEm": "2026-09-28T18:09:45+00:00",
+      "revisao": "Pendente de curadoria humana"
+    },
+    {
+      "id": "b2539014b2d03f00",
+      "status": "pendente",
+      "tipo": "Estado da arte",
+      "titulo": "Artificial Coherence Intelligence (ACI): Behavioral Demonstration of a New Intelligence Class",
+      "resumoOriginal": "This publication presents a controlled behavioral demonstration of Artificial Coherence Intelligence (ACI), a proposed class of artificial reasoning systems characterized by invariant-bound coherence rather than optimization, prediction, or scale. ACI systems are defined by their ability to preserve identity, proportionality, and internal stability as reasoning unfolds under sustained pressure, contradiction, and uncertainty. The study examines AIngel v2.01 as a reference runtime to assess whether coherence-preserving behavior can be instantiated and ob…",
+      "dataPublicacao": "2026-12-31",
+      "fonte": "OpenAlex — estado da arte em IA",
+      "fonteId": "openalex-ai",
+      "href": "https://doi.org/10.5281/zenodo.18112867",
+      "autores": [
+        "Matthew Ainsworth"
+      ],
+      "coletadoEm": "2026-09-28T18:09:45+00:00",
+      "revisao": "Pendente de curadoria humana"
+    }
+  ]
 }
