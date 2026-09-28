@@ -1,3 +1,5 @@
+import { SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, configReady } from './portal/config.js'
+
 const axisIcons={
   aprender:'<svg viewBox="0 0 48 48" aria-hidden="true"><path d="M7 12h14c3 0 5 2 5 5v23c0-3-2-5-5-5H7V12Zm34 0H27c-3 0-5 2-5 5v23c0-3 2-5 5-5h14V12Z"/><path d="M14 19h7M14 25h7M34 19h-7M34 25h-7"/></svg>',
   experimentar:'<svg viewBox="0 0 48 48" aria-hidden="true"><path d="M18 5h12M21 5v11L10 35a5 5 0 0 0 4 8h20a5 5 0 0 0 4-8L27 16V5"/><path d="M15 31h18M19 36h2M27 36h2"/></svg>',
@@ -72,13 +74,49 @@ async function loadAxes(){
   try{
     const response=await fetch('assets/data/ecossistema-eixos.json');
     if(!response.ok)throw new Error('Eixos indisponíveis');
-    const axes=await response.json();
+    const fallback=await response.json();
+    const axes=await loadPublishedAxes(fallback);
     target.replaceChildren(...axes.map(axisCard));
+    const hashTarget=location.hash&&document.querySelector(location.hash);
+    if(hashTarget&&['aprender','experimentar','pesquisa','inovacao'].includes(hashTarget.id)) requestAnimationFrame(()=>hashTarget.scrollIntoView({block:'start'}));
   }catch(error){
     const message=document.createElement('p');
     message.className='ecosystem-data-message';
     message.textContent='Os eixos do ecossistema estarão disponíveis quando o portal for acessado pelo servidor web.';
     target.replaceChildren(message);
+  }
+}
+
+function normalizeHighlights(value){
+  if(Array.isArray(value))return value;
+  return String(value||'').split(',').map(item=>item.trim()).filter(Boolean);
+}
+
+async function loadPublishedAxes(fallback){
+  if(!configReady())return fallback;
+  const headers={apikey:SUPABASE_PUBLISHABLE_KEY,Authorization:`Bearer ${SUPABASE_PUBLISHABLE_KEY}`};
+  const base=`${SUPABASE_URL}/rest/v1`;
+  try{
+    const [axesResponse,initiativesResponse]=await Promise.all([
+      fetch(`${base}/ecossistema_eixos?select=*&status=eq.publicado&revisao_humana=eq.true&order=ordem.asc`,{headers}),
+      fetch(`${base}/ecossistema_iniciativas?select=*&status=eq.publicado&revisao_humana=eq.true&order=ordem.asc`,{headers})
+    ]);
+    if(!axesResponse.ok||!initiativesResponse.ok)return fallback;
+    const [rows,initiatives]=await Promise.all([axesResponse.json(),initiativesResponse.json()]);
+    if(!rows.length)return fallback;
+    return rows.map(axis=>({
+      id:axis.id,
+      ordem:String(axis.ordem).padStart(2,'0'),
+      nome:axis.nome,
+      rotulo:axis.rotulo,
+      descricao:axis.descricao,
+      destaques:normalizeHighlights(axis.destaques),
+      iniciativas:initiatives.filter(item=>item.eixo===axis.id).map(item=>({nome:item.nome,descricao:item.descricao,href:item.url,externo:item.externo})),
+      acao:{rotulo:axis.acao_rotulo,href:axis.acao_url,externo:axis.acao_externa}
+    }));
+  }catch(error){
+    console.info('Dados locais dos eixos utilizados.',error);
+    return fallback;
   }
 }
 

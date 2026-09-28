@@ -669,3 +669,5 @@ a.axis-initiative:hover{background:color-mix(in srgb,var(--axis) 6%,white);text-
 .redirect-page>div{max-width:720px;padding:40px;border:1px solid #c8ddea;border-radius:24px;background:#fff;box-shadow:0 22px 60px #07395d18;text-align:center}
 .redirect-page h1{margin:8px 0 16px;color:#07365f;font-size:clamp(34px,5vw,56px);line-height:1.08}
 .redirect-page p:not(.section-kicker){margin:0 0 26px;color:#49697c;font-size:18px;line-height:1.65}
+.portal-management-link{align-self:center;margin-top:12px;color:#6c7f89;font-size:12px;text-decoration:underline;text-underline-offset:3px}.portal-management-link:hover{color:#062f57}
+.portal-fixed-value{display:block;padding:11px 12px;border:1px solid #cbd8e1;border-radius:9px;background:#f1f5f8;color:#365267;font-weight:700}

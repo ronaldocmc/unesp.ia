@@ -1,6 +1,31 @@
 import { requireAdmin, supabase, showMessage } from './supabase.js'
 
+const initiativeDefinition = (title, eixo) => ({
+  title,
+  description: `Cadastre projetos, produtos, formações, ferramentas e outras iniciativas de ${title}.`,
+  sourceTable: 'ecossistema_iniciativas', filter: { eixo }, order: 'ordem', pk: ['id'],
+  columns: ['id','tipo','nome','descricao','url','ordem','status','revisao_humana'], fields: [
+    ['eixo','Eixo','fixed',true,eixo], ['tipo','Tipo','text',true], ['nome','Nome','text',true],
+    ['descricao','Descrição','textarea',true], ['url','Link','url',false], ['externo','Abrir em nova aba','checkbox',false,false],
+    ['ordem','Ordem','number',true], ['destaque','Destaque','checkbox',false,false],
+    ['status','Situação editorial','select-static',true,['rascunho','revisao','publicado','arquivado']],
+    ['revisao_humana','Revisão humana concluída','checkbox',false,false]
+  ]
+})
+
 const definitions = {
+  ecossistema_eixos: { title: 'Configuração dos eixos', description: 'Edite identidade, descrição, destaques e chamada pública dos quatro eixos.', pk: ['id'], order: 'ordem', columns: ['id','ordem','nome','rotulo','status','revisao_humana'], fields: [
+    ['id','Identificador técnico','text',true], ['ordem','Ordem','number',true], ['nome','Nome público','text',true],
+    ['rotulo','Subtítulo','text',true], ['descricao','Descrição','textarea',true],
+    ['destaques','Destaques, separados por vírgulas','textarea',false], ['acao_rotulo','Texto do botão','text',true],
+    ['acao_url','Destino do botão','text',true], ['acao_externa','Abrir em nova aba','checkbox',false,false],
+    ['status','Situação editorial','select-static',true,['rascunho','revisao','publicado','arquivado']],
+    ['revisao_humana','Revisão humana concluída','checkbox',false,false]
+  ]},
+  aprender_ia: initiativeDefinition('Aprender.IA','aprender'),
+  experimentar_ia: initiativeDefinition('Experimentar.IA','experimentar'),
+  pesquisar_ia: initiativeDefinition('Pesquisar.IA','pesquisa'),
+  inovar_ia: initiativeDefinition('Inovar.IA','inovacao'),
   modulos: { title: 'Módulos', description: 'Catálogo acadêmico e carga horária.', pk: ['id'], fields: [
     ['codigo','Código','text',true], ['descricao','Descrição','text',true], ['carga_horaria','Carga horária','number',true], ['ativo','Ativo','checkbox',false]
   ]},
@@ -39,7 +64,7 @@ const definitions = {
   candidatos_observatorio: { title: 'Sugestões do agente', description: 'Itens coletados automaticamente. Revise a fonte e use uma sugestão para iniciar um cadastro; nenhuma sugestão é publicada automaticamente.', virtual: true, pk: ['id'], fields: [] },
 }
 
-const state = { table: 'modulos', rows: [], editing: null, lookups: {} }
+const state = { table: 'ecossistema_eixos', rows: [], editing: null, lookups: {} }
 const $ = (selector) => document.querySelector(selector)
 const message = $('[data-admin-message]')
 const dialog = $('[data-record-dialog]')
@@ -47,6 +72,7 @@ const form = $('[data-record-form]')
 
 const escapeHtml = (value) => String(value ?? '').replace(/[&<>'"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]))
 const keyOf = (row, def = definitions[state.table]) => def.pk.map(k => row[k]).join('|')
+const sourceTableOf = (def = definitions[state.table]) => def.sourceTable || state.table
 
 document.querySelector('[data-logout]').addEventListener('click', async () => {
   await supabase.auth.signOut(); location.href = 'login.html'
@@ -91,7 +117,10 @@ async function renderTable() {
   $('[data-new-record]').hidden = Boolean(def.virtual)
   if (def.virtual) return renderCandidateQueue()
   showMessage(message, 'Carregando registros...', 'info')
-  const { data, error } = await supabase.from(state.table).select('*').limit(1000)
+  let query = supabase.from(sourceTableOf(def)).select('*').limit(1000)
+  for (const [column, value] of Object.entries(def.filter || {})) query = query.eq(column, value)
+  if (def.order) query = query.order(def.order, { ascending: true })
+  const { data, error } = await query
   if (error) return showMessage(message, error.message, 'error')
   state.rows = data ?? []
   const columns = def.columns || [...new Set([...def.pk, ...def.fields.map(f => f[0])])]
@@ -115,7 +144,8 @@ async function openDialog(row = null, options = {}) {
     const value = row?.[name]
     const disabled = Boolean(row && def.pk.includes(name))
     let control
-    if (type === 'textarea') control = `<textarea name="${name}" ${required ? 'required' : ''}>${escapeHtml(value)}</textarea>`
+    if (type === 'fixed') control = `<span class="portal-fixed-value">${escapeHtml(source)}</span><input type="hidden" name="${name}" value="${escapeHtml(source)}">`
+    else if (type === 'textarea') control = `<textarea name="${name}" ${required ? 'required' : ''}>${escapeHtml(value)}</textarea>`
     else if (type === 'checkbox') control = `<input type="checkbox" name="${name}" ${(row ? value !== false : source !== false) ? 'checked' : ''}>`
     else if (type === 'select-static') control = `<select name="${name}" ${required ? 'required' : ''}>${required ? '' : '<option value="">Selecione</option>'}${source.map(v => `<option value="${v}" ${value === v ? 'selected' : ''}>${v}</option>`).join('')}</select>`
     else if (type === 'select') {
@@ -159,8 +189,9 @@ function useCandidate(candidate) {
 
 function formPayload(def) {
   const fd = new FormData(form); const payload = {}
-  for (const [name,,type] of def.fields) {
+  for (const [name,,type,,source] of def.fields) {
     if (type === 'checkbox') payload[name] = form.elements[name].checked
+    else if (type === 'fixed') payload[name] = source
     else if (['number','select'].includes(type) && fd.get(name) !== '') payload[name] = Number(fd.get(name))
     else payload[name] = fd.get(name) === '' ? null : fd.get(name)
   }
@@ -189,7 +220,7 @@ async function saveRecord(event) {
         if (error || data?.error) throw new Error(data?.error || error.message)
         delete payload.email
       }
-      let query = state.editing ? supabase.from(state.table).update(payload) : supabase.from(state.table).insert(payload)
+      let query = state.editing ? supabase.from(sourceTableOf(def)).update(payload) : supabase.from(sourceTableOf(def)).insert(payload)
       if (state.editing) for (const pk of def.pk) query = query.eq(pk, state.editing[pk])
       const { error } = await query
       if (error) throw error
@@ -205,7 +236,7 @@ async function deleteRecord(row) {
       const { data, error } = await supabase.functions.invoke('admin-users', { body: { action: 'delete_participant', participantId: row.id } })
       if (error || data?.error) throw new Error(data?.error || error.message)
     } else {
-      let query = supabase.from(state.table).delete()
+      let query = supabase.from(sourceTableOf()).delete()
       for (const pk of definitions[state.table].pk) query = query.eq(pk, row[pk])
       const { error } = await query
       if (error) throw error

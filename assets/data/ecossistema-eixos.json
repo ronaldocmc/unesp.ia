@@ -30,7 +30,7 @@
   {
     "id": "pesquisa",
     "ordem": "03",
-    "nome": "Pesquisa.IA",
+    "nome": "Pesquisar.IA",
     "rotulo": "Research & Innovation Lab",
     "descricao": "Pesquisa, desenvolvimento e inovação científica em Ciência de Dados e Inteligência Artificial.",
     "destaques": ["Linhas de pesquisa", "Projetos estruturantes", "Pós-graduação e IC", "Produção científica"],
@@ -39,12 +39,12 @@
       {"nome": "EdmLens DataFlow", "descricao": "Engenharia e Mineração de Dados Educacionais."},
       {"nome": "MIL@-eDU", "descricao": "Análise orientada à decisão em contextos educacionais."}
     ],
-    "acao": {"rotulo": "Acessar Pesquisa.IA", "href": "pesquisa.html"}
+    "acao": {"rotulo": "Acessar Pesquisar.IA", "href": "pesquisa.html"}
   },
   {
     "id": "inovacao",
     "ordem": "04",
-    "nome": "Inovação.IA",
+    "nome": "Inovar.IA",
     "rotulo": "Da pesquisa à aplicação",
     "descricao": "Ciência de Dados e Inteligência Artificial transformadas em produtos, processos e serviços para a sociedade e para as organizações.",
     "destaques": ["Pescar.IA", "pet.IA", "paranapanema.IA", "Metodologia APLICAR.IA"],
