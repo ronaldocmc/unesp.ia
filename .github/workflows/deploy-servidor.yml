@@ -1,0 +1,134 @@
+name: Publicar portal no servidor
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+concurrency:
+  group: producao-unesp-ia
+  cancel-in-progress: false
+
+jobs:
+  publicar:
+    if: github.event_name == 'workflow_dispatch' || vars.DEPLOY_ENABLED == 'true'
+    runs-on: ubuntu-latest
+    environment: production
+    env:
+      DEPLOY_HOST: ${{ vars.DEPLOY_HOST || '200.145.184.28' }}
+      DEPLOY_PORT: ${{ vars.DEPLOY_PORT || '22' }}
+      DEPLOY_USER: ${{ vars.DEPLOY_USER }}
+      DEPLOY_PATH: ${{ vars.DEPLOY_PATH }}
+      RELEASE_ID: ${{ github.sha }}
+
+    steps:
+      - name: Obter o repositório
+        uses: actions/checkout@v4
+
+      - name: Validar configuração de implantação
+        env:
+          DEPLOY_SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+          DEPLOY_KNOWN_HOSTS: ${{ secrets.DEPLOY_KNOWN_HOSTS }}
+        run: |
+          set -euo pipefail
+          test -n "$DEPLOY_HOST" || { echo "DEPLOY_HOST não configurado"; exit 1; }
+          test -n "$DEPLOY_USER" || { echo "DEPLOY_USER não configurado"; exit 1; }
+          test -n "$DEPLOY_PATH" || { echo "DEPLOY_PATH não configurado"; exit 1; }
+          test -n "$DEPLOY_SSH_KEY" || { echo "DEPLOY_SSH_KEY não configurado"; exit 1; }
+          test -n "$DEPLOY_KNOWN_HOSTS" || { echo "DEPLOY_KNOWN_HOSTS não configurado"; exit 1; }
+
+      - name: Validar arquivos do portal
+        run: |
+          set -euo pipefail
+          python -m json.tool assets/data/ecossistema-eixos.json > /dev/null
+          python -m json.tool assets/data/ecossistema-conteudos.json > /dev/null
+          python -m json.tool assets/data/observatorio-conteudos.json > /dev/null
+          find assets/js js -type f -name '*.js' -print0 | xargs -0 -n1 node --check
+          test -f index.html
+          test -f administracao.html
+          test -f observatorio.html
+
+      - name: Preparar pacote público
+        run: |
+          set -euo pipefail
+          mkdir -p _deploy
+          rsync -a ./ _deploy/ \
+            --exclude '/_deploy/' \
+            --exclude '/.git/' \
+            --exclude '/.github/' \
+            --exclude '/.agents/' \
+            --exclude '/.codex/' \
+            --exclude '/supabase/' \
+            --exclude '/scripts/' \
+            --exclude '/modulos_v3_original/' \
+            --exclude '/personagens_v5/' \
+            --exclude '/README*.md' \
+            --exclude '/.env' \
+            --exclude '/.env.*' \
+            --exclude '*.sql' \
+            --exclude '*.log'
+          tar -czf "unesp-ia-${RELEASE_ID}.tar.gz" -C _deploy .
+
+      - name: Configurar conexão SSH
+        env:
+          DEPLOY_SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+          DEPLOY_KNOWN_HOSTS: ${{ secrets.DEPLOY_KNOWN_HOSTS }}
+        run: |
+          set -euo pipefail
+          install -m 700 -d "$HOME/.ssh"
+          printf '%s\n' "$DEPLOY_SSH_KEY" > "$HOME/.ssh/id_deploy"
+          printf '%s\n' "$DEPLOY_KNOWN_HOSTS" > "$HOME/.ssh/known_hosts"
+          chmod 600 "$HOME/.ssh/id_deploy" "$HOME/.ssh/known_hosts"
+
+      - name: Verificar servidor e diretório
+        run: |
+          set -euo pipefail
+          ssh -i "$HOME/.ssh/id_deploy" -p "$DEPLOY_PORT" \
+            -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes \
+            "$DEPLOY_USER@$DEPLOY_HOST" \
+            "test -d '$DEPLOY_PATH' && test -w '$DEPLOY_PATH'"
+
+      - name: Enviar pacote
+        run: |
+          set -euo pipefail
+          scp -i "$HOME/.ssh/id_deploy" -P "$DEPLOY_PORT" \
+            -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes \
+            "unesp-ia-${RELEASE_ID}.tar.gz" \
+            "$DEPLOY_USER@$DEPLOY_HOST:unesp-ia-${RELEASE_ID}.tar.gz"
+
+      - name: Ativar nova versão
+        run: |
+          set -euo pipefail
+          ssh -i "$HOME/.ssh/id_deploy" -p "$DEPLOY_PORT" \
+            -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes \
+            "$DEPLOY_USER@$DEPLOY_HOST" \
+            "bash -s -- '$DEPLOY_PATH' '$RELEASE_ID' 'unesp-ia-${RELEASE_ID}.tar.gz'" <<'REMOTE_SCRIPT'
+          set -euo pipefail
+          base_path="$1"
+          release_id="$2"
+          package_name="$3"
+          release_path="$base_path/releases/$release_id"
+
+          test ! -e "$release_path" || { echo "A versão $release_id já existe no servidor."; exit 1; }
+          mkdir -p "$release_path"
+          tar -xzf "$HOME/$package_name" -C "$release_path"
+          test -f "$release_path/index.html"
+
+          ln -sfn "$release_path" "$base_path/current.next"
+          mv -Tf "$base_path/current.next" "$base_path/current"
+          rm -f "$HOME/$package_name"
+          echo "Versão $release_id ativada em $base_path/current"
+          REMOTE_SCRIPT
+
+      - name: Registrar resumo
+        run: |
+          {
+            echo "## Portal publicado"
+            echo "- Servidor: $DEPLOY_HOST"
+            echo "- Versão: $RELEASE_ID"
+            echo "- Diretório: $DEPLOY_PATH/current"
+          } >> "$GITHUB_STEP_SUMMARY"
