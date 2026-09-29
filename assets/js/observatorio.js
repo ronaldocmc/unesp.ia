@@ -63,7 +63,9 @@ function applyObservatoryFilters() {
   const query = (document.getElementById('observatory-search')?.value || '').trim().toLocaleLowerCase('pt-BR');
   let visible = 0;
   grid.querySelectorAll('.observatory-card').forEach(card => {
-    const matchesType = filter === 'Todos' || (filter === 'Mídia' ? card.dataset.collection === 'unesp.IA na mídia' : card.dataset.type === filter);
+    const matchesType = filter === 'Todos'
+      || (filter === 'Notícias' && (card.dataset.type.startsWith('Notícia') || card.dataset.type === 'Mídia'))
+      || (filter === 'Mídia' ? card.dataset.collection === 'unesp.IA na mídia' : card.dataset.type === filter);
     const matchesSearch = !query || card.dataset.search.includes(query);
     card.hidden = !(matchesType && matchesSearch);
     if (!card.hidden) visible += 1;
@@ -122,6 +124,15 @@ async function loadDatabaseItems() {
   }
 }
 
+function selectObservatoryFilter(filter) {
+  document.querySelectorAll('[data-observatory-filter]').forEach(button => {
+    const selected = button.dataset.observatoryFilter === filter;
+    button.classList.toggle('active', selected);
+    button.setAttribute('aria-pressed', String(selected));
+  });
+  applyObservatoryFilters();
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   const requestedSearch = new URLSearchParams(location.search).get('busca');
   const searchInput = document.getElementById('observatory-search');
@@ -129,10 +140,14 @@ document.addEventListener('DOMContentLoaded', () => {
   if (requestedSearch && searchInput) searchInput.value = requestedSearch;
   if (requestedSearch && globalSearch) globalSearch.value = requestedSearch;
   loadObservatory();
-  document.querySelectorAll('[data-observatory-filter]').forEach(button => button.addEventListener('click', () => {
-    document.querySelectorAll('[data-observatory-filter]').forEach(item => item.classList.remove('active'));
-    button.classList.add('active');
-    applyObservatoryFilters();
+  document.querySelectorAll('[data-observatory-filter]').forEach(button => {
+    button.setAttribute('aria-pressed', String(button.classList.contains('active')));
+    button.addEventListener('click', () => selectObservatoryFilter(button.dataset.observatoryFilter));
+  });
+  document.querySelectorAll('[data-observatory-shortcut]').forEach(link => link.addEventListener('click', () => {
+    if (searchInput) searchInput.value = '';
+    if (globalSearch) globalSearch.value = '';
+    selectObservatoryFilter(link.dataset.observatoryShortcut);
   }));
   searchInput?.addEventListener('input', applyObservatoryFilters);
   globalSearch?.addEventListener('input', () => {

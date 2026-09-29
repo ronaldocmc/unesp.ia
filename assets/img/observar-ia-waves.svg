@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1672 1000" preserveAspectRatio="none">
+  <defs>
+    <linearGradient id="blue" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#e0f4ff" stop-opacity=".7"/>
+      <stop offset=".5" stop-color="#f5fbff" stop-opacity=".15"/>
+      <stop offset="1" stop-color="#c9eaff" stop-opacity=".7"/>
+    </linearGradient>
+  </defs>
+  <path d="M0 55C180 140 60 365 380 355S650 285 900 190 1300 245 1672 100V0H0Z" fill="#eef9ff" opacity=".6"/>
+  <path d="M0 300C255 485 555 290 790 355S1320 570 1672 375V515C1305 640 925 405 690 405S210 515 0 465Z" fill="url(#blue)"/>
+  <path d="M0 450C330 420 605 390 855 465S1300 565 1672 460V490C1340 575 1050 580 830 505S320 470 0 495Z" fill="#fff" opacity=".85"/>
+  <path d="M0 660C310 530 550 815 900 715S1410 530 1672 590V760C1370 640 1180 870 790 810S230 670 0 730Z" fill="url(#blue)"/>
+  <path d="M0 820C340 920 680 740 1050 835S1435 865 1672 790V1000H0Z" fill="#def2ff" opacity=".65"/>
+  <path d="M0 915C310 850 620 980 960 925S1350 850 1672 930V980C1260 900 1090 1000 770 985S245 915 0 965Z" fill="#fff" opacity=".7"/>
+</svg>

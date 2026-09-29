@@ -1,0 +1,281 @@
+/* Abertura do Observar.IA baseada na referência aprovada. */
+.observatory-page {
+  --obs-ink: #060d49;
+  --obs-blue: #0075ff;
+  --obs-muted: #415587;
+  background: #fff;
+}
+
+.observatory-page .observatory-topbar {
+  min-height: 70px;
+  padding: 8px clamp(24px, 4.2vw, 80px);
+  gap: 24px;
+  border-bottom: 2px solid #00b8ef;
+  background: #fff;
+}
+
+/* Exibe a marca compacta sem modificar o arquivo original. */
+.observatory-brand-mark {
+  display: block;
+  position: relative;
+  width: 244px;
+  height: 50px;
+  overflow: hidden;
+}
+
+.observatory-page .observatory-topbar .brand-logo {
+  position: absolute;
+  width: 294px;
+  height: 98px;
+  max-width: none;
+  left: -5px;
+  top: -24px;
+  clip-path: polygon(0 27%, 78% 27%, 78% 31%, 80% 45%, 84% 69%, 84% 72%, 0 72%);
+}
+
+.observatory-page .observatory-topbar .nav {
+  flex: 1 1 auto;
+  justify-content: center;
+  gap: 8px;
+  margin: 0;
+}
+
+.observatory-page .observatory-topbar .nav a {
+  padding: 16px 8px;
+  color: var(--obs-ink);
+  font-size: 14px;
+  font-weight: 400;
+  border-radius: 0;
+}
+
+.observatory-page .observatory-topbar .nav a[aria-current="page"] {
+  border-bottom: 4px solid var(--obs-blue);
+  color: var(--obs-ink);
+  font-weight: 700;
+  background: transparent;
+}
+
+.observatory-header-search {
+  flex: 0 1 310px;
+  min-width: 200px;
+  padding: 7px 14px;
+  gap: 10px;
+  border-color: #cdddf2;
+}
+
+.observatory-header-search svg {
+  flex-shrink: 0;
+  width: 22px;
+  height: 22px;
+  fill: none;
+  stroke: var(--obs-blue);
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+
+.observatory-header-search input { font-size: 13px; }
+.observatory-header-search input::placeholder { color: #60739d; opacity: 1; }
+
+.observatory-opening {
+  background: url('../img/observar-ia-waves.svg') center top / 100% 100% no-repeat,
+    linear-gradient(110deg, #fff 25%, #f6fbff);
+}
+
+.observatory-opening > section { background: transparent; }
+.observatory-hero { padding: 0; }
+.observatory-hero-content {
+  max-width: 1760px;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.06fr);
+  gap: 20px;
+  padding: 4px clamp(24px, 4.2vw, 80px) 8px;
+}
+
+.observatory-hero-copy { padding-bottom: 12px; }
+.observatory-logo {
+  width: 100%;
+  max-width: none;
+  height: clamp(150px, 12.5vw, 220px);
+  margin: 0 0 10px;
+  object-fit: cover;
+  mix-blend-mode: multiply;
+}
+
+.observatory-hero-copy > p {
+  max-width: none;
+  margin: 0 0 22px;
+  color: var(--obs-muted);
+  font-size: clamp(18px, 1.35vw, 23px);
+  line-height: 1.4;
+}
+.observatory-hero-copy > p strong { color: var(--obs-ink); }
+
+.observatory-hero .research-actions {
+  display: grid;
+  grid-template-columns: 1fr 1.1fr;
+  gap: 20px;
+}
+
+.observatory-hero .ecosystem-button {
+  display: flex;
+  gap: 12px;
+  min-width: 0;
+  min-height: 56px;
+  padding: 12px 18px;
+  border-radius: 11px;
+  font-size: clamp(14px, 1.05vw, 18px);
+  font-weight: 500;
+  line-height: 1.25;
+  text-align: left;
+  box-shadow: 0 5px 16px #1680dc16;
+}
+
+.observatory-hero .ecosystem-button.primary { background: #0075ff; border-color: #0075ff; }
+.observatory-hero .ecosystem-button.secondary { background: #ffffffeb; border-color: #b7d7ff; color: #006bff; }
+.observatory-hero .ecosystem-button svg {
+  flex: 0 0 25px;
+  width: 25px;
+  height: 25px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.observatory-hero .button-arrow { margin-left: auto; font-size: 32px; line-height: .7; }
+.observatory-hero-visual {
+  width: 100%;
+  height: auto;
+  max-height: 455px;
+  object-fit: contain;
+  filter: drop-shadow(0 12px 24px #109bf018);
+}
+
+.observatory-scope { padding: 0 0 30px; border: 0; }
+.observatory-scope > .container { max-width: 1760px; padding: 8px clamp(24px, 4.2vw, 80px) 24px; }
+.observatory-scope-heading { margin: 0 0 24px; }
+.observatory-scope-heading::before {
+  content: "";
+  display: block;
+  width: 82px;
+  height: 4px;
+  margin-bottom: 14px;
+  border-radius: 4px;
+  background: linear-gradient(90deg, #006fff, #00d7ed);
+}
+.observatory-scope-heading h2 {
+  margin: 0 0 5px;
+  color: var(--obs-ink);
+  font-size: clamp(32px, 3.25vw, 55px);
+  line-height: 1.08;
+  letter-spacing: -.045em;
+}
+.observatory-scope-heading h2 span { color: var(--obs-blue); }
+.observatory-scope-heading p {
+  max-width: 1120px;
+  margin: 0;
+  color: var(--obs-muted);
+  font-size: clamp(17px, 1.36vw, 23px);
+  line-height: 1.3;
+}
+.observatory-scope-grid { grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 14px; }
+.observatory-area-card {
+  grid-column: span 3;
+  grid-template-columns: 88px minmax(0, 1fr);
+  align-items: start;
+  gap: 22px;
+  min-height: 145px;
+  padding: 16px 18px;
+  border: 1px solid #e3effb;
+  border-radius: 13px;
+  background: #ffffffef;
+  box-shadow: 0 5px 18px #0b489508;
+}
+.observatory-area-card:nth-child(n+5) { grid-column: span 4; }
+.observatory-area-card .observatory-area-number {
+  position: absolute;
+  top: 9px;
+  left: 18px;
+  color: var(--area-accent);
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1;
+}
+.observatory-area-icon { width: 88px; height: 88px; margin-top: 19px; border-radius: 15px; }
+.observatory-area-icon svg { width: 53px; height: 53px; stroke-width: 2.1; }
+.observatory-area-card h3 { margin: 0 0 8px; color: var(--obs-ink); font-size: 18px; line-height: 1.12; letter-spacing: -.035em; }
+.observatory-area-card p { margin: 0 0 7px; padding-right: 3px; color: var(--obs-muted); font-size: 15.5px; line-height: 1.28; }
+.observatory-area-card > b { bottom: 9px; right: 14px; font-size: 28px; line-height: 1; }
+.observatory-area-card:nth-child(2) { --area-accent: #00bea9; }
+.observatory-area-card:nth-child(3), .observatory-area-card:nth-child(7) { --area-accent: #6300ff; }
+.observatory-area-card:nth-child(4) { --area-accent: #ffa000; }
+.observatory-area-card:nth-child(5) { --area-accent: #fa2463; }
+
+@media (max-width: 1400px) {
+  .observatory-page .observatory-topbar { gap: 18px; }
+  .observatory-brand-mark { width: 214px; height: 46px; }
+  .observatory-page .observatory-topbar .brand-logo { width: 260px; height: 87px; top: -22px; left: -4px; }
+  .observatory-page .observatory-topbar .nav { gap: 3px; }
+  .observatory-page .observatory-topbar .nav a { padding-inline: 6px; font-size: 13px; }
+  .observatory-header-search { flex-basis: 240px; min-width: 190px; }
+  .observatory-hero .research-actions { gap: 12px; }
+  .observatory-hero .ecosystem-button { padding-inline: 12px; gap: 8px; }
+  .observatory-area-card { grid-template-columns: 65px minmax(0, 1fr); gap: 16px; padding-inline: 14px; }
+  .observatory-area-icon { width: 65px; height: 76px; }
+  .observatory-area-icon svg { width: 46px; height: 46px; }
+  .observatory-area-card .observatory-area-number { left: 14px; }
+  .observatory-area-card h3 { font-size: 16px; }
+  .observatory-area-card p { font-size: 14px; }
+}
+
+@media (max-width: 1100px) {
+  .observatory-page .observatory-topbar .nav { order: 3; flex-basis: 100%; justify-content: center; }
+  .observatory-page .observatory-topbar .nav a { padding: 8px 12px; }
+  .observatory-header-search { margin-left: auto; flex-basis: 300px; }
+  .observatory-hero-content { gap: 16px; }
+  .observatory-hero .research-actions { grid-template-columns: 1fr; gap: 10px; }
+  .observatory-hero .ecosystem-button { min-height: 48px; }
+  .observatory-area-card, .observatory-area-card:nth-child(n+5) { grid-column: span 6; }
+  .observatory-area-card:last-child { grid-column: span 12; }
+}
+
+@media (max-width: 780px) {
+  .observatory-page .observatory-topbar { padding: 8px 20px; gap: 8px; }
+  .observatory-brand-mark { width: 195px; height: 42px; }
+  .observatory-page .observatory-topbar .brand-logo { width: 238px; height: 79.3px; top: -20px; }
+  .observatory-header-search { min-width: 160px; flex-basis: 220px; }
+  .observatory-hero-content { grid-template-columns: 1fr; gap: 12px; padding: 16px 24px 10px; }
+  .observatory-hero-copy { max-width: 680px; padding: 0; }
+  .observatory-logo { height: clamp(120px, 23vw, 185px); }
+  .observatory-hero-copy > p { font-size: 18px; }
+  .observatory-hero .research-actions { grid-template-columns: 1fr 1.1fr; }
+  .observatory-hero-visual { max-height: 370px; }
+  .observatory-scope > .container { padding: 18px 24px 24px; }
+  .observatory-scope-heading h2 { font-size: clamp(30px, 5.2vw, 39px); }
+  .observatory-scope-heading p { font-size: 18px; }
+}
+
+@media (max-width: 540px) {
+  .observatory-page .observatory-topbar .nav { justify-content: flex-start; gap: 4px; }
+  .observatory-page .observatory-topbar .nav a { padding: 6px 7px; font-size: 12px; }
+  .observatory-header-search { flex-basis: 100%; order: 2; margin-left: 0; }
+  .observatory-hero-content { padding-inline: 20px; }
+  .observatory-logo { height: 118px; margin-bottom: 8px; }
+  .observatory-hero-copy > p { font-size: 17px; line-height: 1.5; }
+  .observatory-hero .research-actions { grid-template-columns: 1fr; }
+  .observatory-hero .ecosystem-button { font-size: 16px; padding: 13px 17px; }
+  .observatory-hero-visual { max-height: 260px; }
+  .observatory-scope > .container { padding-inline: 20px; }
+  .observatory-scope-heading h2 { font-size: 31px; line-height: 1.1; }
+  .observatory-scope-heading p { font-size: 17px; line-height: 1.4; }
+  .observatory-area-card, .observatory-area-card:nth-child(n+5), .observatory-area-card:last-child {
+    grid-column: span 12;
+    grid-template-columns: 76px minmax(0, 1fr);
+    gap: 18px;
+    min-height: 146px;
+    padding: 17px;
+  }
+  .observatory-area-icon { width: 76px; height: 82px; }
+  .observatory-area-card .observatory-area-number { left: 17px; }
+  .observatory-area-card h3 { font-size: 18px; }
+  .observatory-area-card p { font-size: 15px; padding-right: 8px; }
+}
