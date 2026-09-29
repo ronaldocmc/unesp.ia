@@ -125,7 +125,9 @@ async function loadDatabaseItems() {
 document.addEventListener('DOMContentLoaded', () => {
   const requestedSearch = new URLSearchParams(location.search).get('busca');
   const searchInput = document.getElementById('observatory-search');
+  const globalSearch = document.getElementById('observatory-global-search');
   if (requestedSearch && searchInput) searchInput.value = requestedSearch;
+  if (requestedSearch && globalSearch) globalSearch.value = requestedSearch;
   loadObservatory();
   document.querySelectorAll('[data-observatory-filter]').forEach(button => button.addEventListener('click', () => {
     document.querySelectorAll('[data-observatory-filter]').forEach(item => item.classList.remove('active'));
@@ -133,4 +135,15 @@ document.addEventListener('DOMContentLoaded', () => {
     applyObservatoryFilters();
   }));
   searchInput?.addEventListener('input', applyObservatoryFilters);
+  globalSearch?.addEventListener('input', () => {
+    if (searchInput) searchInput.value = globalSearch.value;
+    applyObservatoryFilters();
+  });
+  globalSearch?.closest('form')?.addEventListener('submit', event => {
+    event.preventDefault();
+    document.getElementById('acervo')?.scrollIntoView({ behavior: 'smooth' });
+  });
+  searchInput?.addEventListener('input', () => {
+    if (globalSearch) globalSearch.value = searchInput.value;
+  });
 });
