@@ -2,6 +2,18 @@
 
 Este procedimento publica o portal no servidor `200.145.184.28` por SSH. A automação prepara uma pasta por execução e sincroniza os arquivos validados com a pasta pública já existente. A instalação anterior ao primeiro deploy automatizado não é preservada.
 
+## Restrição de rede atual
+
+O servidor e os runners públicos do GitHub Actions não conseguem estabelecer conexão entre si na rede atual. Enquanto essa restrição permanecer, o deploy deve ser iniciado em uma máquina autorizada a acessar simultaneamente o GitHub e a porta SSH `2232` do servidor.
+
+Depois de enviar o commit ao branch `main`, execute no PowerShell:
+
+```powershell
+.\scripts\deploy_server.ps1 -KeyPath 'C:\Users\User\Documents\chave\deploy unesp ia'
+```
+
+O script recusa o deploy quando o commit local ainda não é o mesmo publicado em `origin/main`, usa a chave de host verificada em `deploy/known_hosts`, cria uma versão identificada pelo commit e sincroniza o portal sem preservar a instalação anterior ao primeiro deploy.
+
 ## Premissas
 
 - servidor Linux com `bash`, `tar` e OpenSSH;

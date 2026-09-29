@@ -90,7 +90,7 @@ jobs:
         run: |
           set -euo pipefail
           ssh -i "$HOME/.ssh/id_deploy" -p "$DEPLOY_PORT" \
-            -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes \
+            -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes -o ConnectTimeout=15 \
             "$DEPLOY_USER@$DEPLOY_HOST" \
             "test -d '$DEPLOY_PATH' && test -w '$DEPLOY_PATH' && command -v rsync >/dev/null"
 
@@ -98,7 +98,7 @@ jobs:
         run: |
           set -euo pipefail
           scp -i "$HOME/.ssh/id_deploy" -P "$DEPLOY_PORT" \
-            -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes \
+            -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes -o ConnectTimeout=15 \
             "unesp-ia-${RELEASE_ID}.tar.gz" \
             "$DEPLOY_USER@$DEPLOY_HOST:unesp-ia-${RELEASE_ID}.tar.gz"
 
@@ -106,7 +106,7 @@ jobs:
         run: |
           set -euo pipefail
           ssh -i "$HOME/.ssh/id_deploy" -p "$DEPLOY_PORT" \
-            -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes \
+            -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes -o ConnectTimeout=15 \
             "$DEPLOY_USER@$DEPLOY_HOST" \
             "bash -s -- '$DEPLOY_PATH' '$RELEASES_PATH' '$RELEASE_ID' 'unesp-ia-${RELEASE_ID}.tar.gz'" <<'REMOTE_SCRIPT'
           set -euo pipefail
