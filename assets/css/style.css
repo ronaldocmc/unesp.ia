@@ -611,7 +611,7 @@ a.axis-initiative:hover{background:color-mix(in srgb,var(--axis) 6%,white);text-
 .observatory-hero .ecosystem-button{display:inline-flex;align-items:center;justify-content:space-between;gap:20px;min-width:205px;padding:12px 18px;border-radius:10px}
 .observatory-hero .ecosystem-button.primary{border-color:#0878f7;background:#0878f7}
 .observatory-hero .ecosystem-button.secondary{border-color:#c9dced;color:#075ac9}
-.observatory-hero-visual{display:block;width:100%;max-height:460px;object-fit:contain;filter:drop-shadow(0 15px 32px #0b83d927)}
+.observatory-hero-visual{display:block;width:100%;height:auto;object-fit:contain;border-radius:22px;box-shadow:0 16px 38px #0b3f802e}
 
 .observatory-connection{display:grid;grid-template-columns:minmax(300px,.75fr) minmax(600px,1.25fr);gap:60px;align-items:center;padding-top:78px;padding-bottom:78px}
 .observatory-connection h2,.observatory-scope h2,.observatory-library h2,.observatory-future h2{margin:6px 0 16px;color:#07355f;font-size:clamp(32px,3.4vw,50px);line-height:1.08;letter-spacing:-.035em}
