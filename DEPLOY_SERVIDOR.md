@@ -1,28 +1,33 @@
 # Publicação do portal no servidor próprio
 
-Este procedimento publica o portal no servidor `200.145.184.28` por SSH. A automação cria uma pasta por commit e troca o link simbólico `current` somente depois que o pacote completo foi validado e extraído.
+Este procedimento publica o portal no servidor `200.145.184.28` por SSH. A automação prepara uma pasta por execução, preserva um backup recuperável da instalação anterior e sincroniza os arquivos validados com a pasta pública já existente.
 
 ## Premissas
 
 - servidor Linux com `bash`, `tar` e OpenSSH;
-- Nginx ou Apache configurado para servir `/var/www/html/current`;
-- usuário `iafct` com acesso de escrita a `/var/www/html`;
+- Nginx configurado para servir `/var/www/html`;
+- portal disponível em `/var/www/html/unesp.ia`;
+- usuário `iafct` com acesso de escrita a `/var/www/html/unesp.ia`;
 - chave SSH exclusiva para a automação;
 - porta SSH acessível pelos runners hospedados do GitHub.
 
-## 1. Preparar o usuário e os diretórios
+## 1. Estrutura confirmada no servidor
 
-O usuário `iafct` já existe. Execute no servidor com uma conta que possua `sudo`:
+O diagnóstico confirmou:
 
-```bash
-sudo apt-get update
-sudo apt-get install -y acl nginx
-sudo install -d /var/www/html
-sudo setfacl -m u:iafct:rwx /var/www/html
-sudo install -d -o iafct -g iafct /var/www/html/releases
-sudo -u iafct install -d -m 700 /home/iafct/.ssh
-sudo -u iafct touch /home/iafct/.ssh/authorized_keys
-sudo chmod 600 /home/iafct/.ssh/authorized_keys
+- Ubuntu Linux x86_64;
+- Nginx 1.24;
+- SSH em `200.145.184.28:2232`;
+- usuário `iafct` pertencente ao grupo `sudo`, sem `sudo` não interativo;
+- raiz do Nginx em `/var/www/html`;
+- portal atual em `/var/www/html/unesp.ia`, gravável por `iafct`;
+- `rsync` instalado;
+- aproximadamente 33 GB livres no volume.
+
+As versões ficarão fora da pasta pública:
+
+```text
+/home/iafct/deployments/unesp-ia/releases
 ```
 
 Adicione a chave **pública** exclusiva de implantação em:
@@ -60,7 +65,8 @@ Cadastre as variáveis:
 | `DEPLOY_HOST` | `200.145.184.28` |
 | `DEPLOY_PORT` | `2232` |
 | `DEPLOY_USER` | `iafct` |
-| `DEPLOY_PATH` | `/var/www/html` |
+| `DEPLOY_PATH` | `/var/www/html/unesp.ia` |
+| `RELEASES_PATH` | `/home/iafct/deployments/unesp-ia/releases` |
 | `DEPLOY_ENABLED` | `false` inicialmente |
 
 Cadastre os secrets:
@@ -70,41 +76,22 @@ Cadastre os secrets:
 | `DEPLOY_SSH_KEY` | chave privada completa da conta de implantação |
 | `DEPLOY_KNOWN_HOSTS` | linha `known_hosts` verificada do servidor |
 
-## 4. Configurar o Nginx
+## 4. Configuração atual do Nginx
 
-Exemplo inicial usando o IP. Para produção com autenticação, configure um domínio e HTTPS.
+O Nginx já utiliza `/var/www/html` como raiz. Portanto, não é necessário alterá-lo para a primeira publicação. O portal continuará disponível em:
 
-```nginx
-server {
-    listen 80;
-    server_name 200.145.184.28;
-
-    root /var/www/html/current;
-    index index.html;
-
-    location / {
-        try_files $uri $uri/ =404;
-    }
-
-    location ~ /\. {
-        deny all;
-    }
-}
+```text
+http://200.145.184.28/unesp.ia/
 ```
 
-Depois de salvar a configuração:
-
-```bash
-sudo nginx -t
-sudo systemctl reload nginx
-```
+Para autenticação e uso público em produção, ainda será necessário configurar domínio e HTTPS.
 
 ## 5. Fazer a primeira publicação
 
 1. Acesse **Actions → Publicar portal no servidor**.
 2. Escolha **Run workflow**.
 3. Confira o resultado de cada etapa.
-4. Abra `http://200.145.184.28/` e valide a versão publicada.
+4. Abra `http://200.145.184.28/unesp.ia/` e valide a versão publicada.
 
 Depois que a implantação manual funcionar, altere `DEPLOY_ENABLED` para `true`. A partir daí, cada atualização da branch `main` iniciará a publicação automaticamente.
 
@@ -113,14 +100,16 @@ Depois que a implantação manual funcionar, altere `DEPLOY_ENABLED` para `true`
 Liste as versões disponíveis:
 
 ```bash
-ls -1 /var/www/html/releases
+ls -1 /home/iafct/deployments/unesp-ia/releases
 ```
 
-Ative uma versão anterior substituindo `COMMIT` pelo identificador desejado:
+Ative uma versão anterior substituindo `VERSAO` pelo diretório desejado:
 
 ```bash
-ln -sfn /var/www/html/releases/COMMIT /var/www/html/current.next
-mv -Tf /var/www/html/current.next /var/www/html/current
+rsync -a --delete-delay --delay-updates \
+  --exclude '.deploy-managed' \
+  /home/iafct/deployments/unesp-ia/releases/VERSAO/ \
+  /var/www/html/unesp.ia/
 ```
 
 ## Banco de dados

@@ -22,8 +22,9 @@ jobs:
       DEPLOY_HOST: ${{ vars.DEPLOY_HOST || '200.145.184.28' }}
       DEPLOY_PORT: ${{ vars.DEPLOY_PORT || '2232' }}
       DEPLOY_USER: ${{ vars.DEPLOY_USER || 'iafct' }}
-      DEPLOY_PATH: ${{ vars.DEPLOY_PATH || '/var/www/html' }}
-      RELEASE_ID: ${{ github.sha }}
+      DEPLOY_PATH: ${{ vars.DEPLOY_PATH || '/var/www/html/unesp.ia' }}
+      RELEASES_PATH: ${{ vars.RELEASES_PATH || '/home/iafct/deployments/unesp-ia/releases' }}
+      RELEASE_ID: ${{ github.sha }}-${{ github.run_number }}-${{ github.run_attempt }}
 
     steps:
       - name: Obter o repositório
@@ -38,6 +39,7 @@ jobs:
           test -n "$DEPLOY_HOST" || { echo "DEPLOY_HOST não configurado"; exit 1; }
           test -n "$DEPLOY_USER" || { echo "DEPLOY_USER não configurado"; exit 1; }
           test -n "$DEPLOY_PATH" || { echo "DEPLOY_PATH não configurado"; exit 1; }
+          test -n "$RELEASES_PATH" || { echo "RELEASES_PATH não configurado"; exit 1; }
           test -n "$DEPLOY_SSH_KEY" || { echo "DEPLOY_SSH_KEY não configurado"; exit 1; }
           test -n "$DEPLOY_KNOWN_HOSTS" || { echo "DEPLOY_KNOWN_HOSTS não configurado"; exit 1; }
 
@@ -90,7 +92,7 @@ jobs:
           ssh -i "$HOME/.ssh/id_deploy" -p "$DEPLOY_PORT" \
             -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes \
             "$DEPLOY_USER@$DEPLOY_HOST" \
-            "test -d '$DEPLOY_PATH' && test -w '$DEPLOY_PATH'"
+            "test -d '$DEPLOY_PATH' && test -w '$DEPLOY_PATH' && command -v rsync >/dev/null"
 
       - name: Enviar pacote
         run: |
@@ -106,22 +108,33 @@ jobs:
           ssh -i "$HOME/.ssh/id_deploy" -p "$DEPLOY_PORT" \
             -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes \
             "$DEPLOY_USER@$DEPLOY_HOST" \
-            "bash -s -- '$DEPLOY_PATH' '$RELEASE_ID' 'unesp-ia-${RELEASE_ID}.tar.gz'" <<'REMOTE_SCRIPT'
+            "bash -s -- '$DEPLOY_PATH' '$RELEASES_PATH' '$RELEASE_ID' 'unesp-ia-${RELEASE_ID}.tar.gz'" <<'REMOTE_SCRIPT'
           set -euo pipefail
           base_path="$1"
-          release_id="$2"
-          package_name="$3"
-          release_path="$base_path/releases/$release_id"
+          releases_path="$2"
+          release_id="$3"
+          package_name="$4"
+          release_path="$releases_path/$release_id"
+
+          mkdir -p "$releases_path"
+          if [ ! -f "$base_path/.deploy-managed" ]; then
+            backup_path="$releases_path/pre-automation-$(date -u +%Y%m%dT%H%M%SZ)"
+            mkdir -p "$backup_path"
+            rsync -a "$base_path/" "$backup_path/"
+            echo "Instalação anterior preservada em $backup_path"
+          fi
 
           test ! -e "$release_path" || { echo "A versão $release_id já existe no servidor."; exit 1; }
           mkdir -p "$release_path"
           tar -xzf "$HOME/$package_name" -C "$release_path"
           test -f "$release_path/index.html"
 
-          ln -sfn "$release_path" "$base_path/current.next"
-          mv -Tf "$base_path/current.next" "$base_path/current"
+          rsync -a --delete-delay --delay-updates \
+            --exclude '.deploy-managed' \
+            "$release_path/" "$base_path/"
+          printf '%s\n' "$release_id" > "$base_path/.deploy-managed"
           rm -f "$HOME/$package_name"
-          echo "Versão $release_id ativada em $base_path/current"
+          echo "Versão $release_id ativada em $base_path"
           REMOTE_SCRIPT
 
       - name: Registrar resumo
@@ -130,5 +143,5 @@ jobs:
             echo "## Portal publicado"
             echo "- Servidor: $DEPLOY_HOST"
             echo "- Versão: $RELEASE_ID"
-            echo "- Diretório: $DEPLOY_PATH/current"
+            echo "- Diretório: $DEPLOY_PATH"
           } >> "$GITHUB_STEP_SUMMARY"
