@@ -83,10 +83,6 @@ async function loadObservatory() {
     const byIdentity = new Map([...data.itens, ...databaseItems].map(item => [item.id || item.href, item]));
     const items = [...byIdentity.values()].sort((a, b) => b.data.localeCompare(a.data));
     grid.replaceChildren(...items.map(observatoryCard));
-    const count = document.getElementById('observatory-count');
-    if (count) count.textContent = items.length;
-    const updated = document.getElementById('observatory-updated');
-    if (updated && data.atualizadoEm) updated.textContent = new Intl.DateTimeFormat('pt-BR', { dateStyle: 'long', timeStyle: 'short' }).format(new Date(data.atualizadoEm));
     applyObservatoryFilters();
   } catch (error) {
     const message = document.createElement('p');
