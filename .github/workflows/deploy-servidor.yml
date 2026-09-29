@@ -20,9 +20,9 @@ jobs:
     environment: production
     env:
       DEPLOY_HOST: ${{ vars.DEPLOY_HOST || '200.145.184.28' }}
-      DEPLOY_PORT: ${{ vars.DEPLOY_PORT || '22' }}
-      DEPLOY_USER: ${{ vars.DEPLOY_USER }}
-      DEPLOY_PATH: ${{ vars.DEPLOY_PATH }}
+      DEPLOY_PORT: ${{ vars.DEPLOY_PORT || '2232' }}
+      DEPLOY_USER: ${{ vars.DEPLOY_USER || 'iafct' }}
+      DEPLOY_PATH: ${{ vars.DEPLOY_PATH || '/var/www/html' }}
       RELEASE_ID: ${{ github.sha }}
 
     steps:

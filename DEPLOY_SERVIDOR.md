@@ -5,28 +5,30 @@ Este procedimento publica o portal no servidor `200.145.184.28` por SSH. A autom
 ## Premissas
 
 - servidor Linux com `bash`, `tar` e OpenSSH;
-- Nginx ou Apache configurado para servir `/var/www/unesp-ia/current`;
-- usuário exclusivo de implantação com acesso de escrita a `/var/www/unesp-ia`;
+- Nginx ou Apache configurado para servir `/var/www/html/current`;
+- usuário `iafct` com acesso de escrita a `/var/www/html`;
 - chave SSH exclusiva para a automação;
 - porta SSH acessível pelos runners hospedados do GitHub.
 
 ## 1. Preparar o usuário e os diretórios
 
-Execute no servidor com uma conta que possua `sudo`, ajustando o nome do usuário se necessário:
+O usuário `iafct` já existe. Execute no servidor com uma conta que possua `sudo`:
 
 ```bash
-sudo useradd --create-home --shell /bin/bash deploy-unesp
-sudo install -d -o deploy-unesp -g deploy-unesp /var/www/unesp-ia
-sudo -u deploy-unesp mkdir -p /var/www/unesp-ia/releases
-sudo -u deploy-unesp install -d -m 700 /home/deploy-unesp/.ssh
-sudo -u deploy-unesp touch /home/deploy-unesp/.ssh/authorized_keys
-sudo chmod 600 /home/deploy-unesp/.ssh/authorized_keys
+sudo apt-get update
+sudo apt-get install -y acl nginx
+sudo install -d /var/www/html
+sudo setfacl -m u:iafct:rwx /var/www/html
+sudo install -d -o iafct -g iafct /var/www/html/releases
+sudo -u iafct install -d -m 700 /home/iafct/.ssh
+sudo -u iafct touch /home/iafct/.ssh/authorized_keys
+sudo chmod 600 /home/iafct/.ssh/authorized_keys
 ```
 
 Adicione a chave **pública** exclusiva de implantação em:
 
 ```text
-/home/deploy-unesp/.ssh/authorized_keys
+/home/iafct/.ssh/authorized_keys
 ```
 
 A chave privada não deve ser enviada ao repositório nem gravada dentro da pasta pública.
@@ -42,7 +44,7 @@ sudo ssh-keygen -lf /etc/ssh/ssh_host_ed25519_key.pub
 Compare essa impressão digital com a apresentada no primeiro acesso SSH. Somente depois da conferência, gere a linha que será armazenada no secret `DEPLOY_KNOWN_HOSTS`:
 
 ```bash
-ssh-keyscan -t ed25519 -p 22 200.145.184.28
+ssh-keyscan -t ed25519 -p 2232 200.145.184.28
 ```
 
 `ssh-keyscan` coleta a chave, mas não comprova sozinho a identidade do servidor; por isso a comparação anterior é necessária.
@@ -56,9 +58,9 @@ Cadastre as variáveis:
 | Variável | Exemplo |
 |---|---|
 | `DEPLOY_HOST` | `200.145.184.28` |
-| `DEPLOY_PORT` | `22` |
-| `DEPLOY_USER` | `deploy-unesp` |
-| `DEPLOY_PATH` | `/var/www/unesp-ia` |
+| `DEPLOY_PORT` | `2232` |
+| `DEPLOY_USER` | `iafct` |
+| `DEPLOY_PATH` | `/var/www/html` |
 | `DEPLOY_ENABLED` | `false` inicialmente |
 
 Cadastre os secrets:
@@ -77,7 +79,7 @@ server {
     listen 80;
     server_name 200.145.184.28;
 
-    root /var/www/unesp-ia/current;
+    root /var/www/html/current;
     index index.html;
 
     location / {
@@ -111,14 +113,14 @@ Depois que a implantação manual funcionar, altere `DEPLOY_ENABLED` para `true`
 Liste as versões disponíveis:
 
 ```bash
-ls -1 /var/www/unesp-ia/releases
+ls -1 /var/www/html/releases
 ```
 
 Ative uma versão anterior substituindo `COMMIT` pelo identificador desejado:
 
 ```bash
-ln -sfn /var/www/unesp-ia/releases/COMMIT /var/www/unesp-ia/current.next
-mv -Tf /var/www/unesp-ia/current.next /var/www/unesp-ia/current
+ln -sfn /var/www/html/releases/COMMIT /var/www/html/current.next
+mv -Tf /var/www/html/current.next /var/www/html/current
 ```
 
 ## Banco de dados
