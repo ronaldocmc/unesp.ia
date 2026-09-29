@@ -1,6 +1,6 @@
 # Publicação do portal no servidor próprio
 
-Este procedimento publica o portal no servidor `200.145.184.28` por SSH. A automação prepara uma pasta por execução, preserva um backup recuperável da instalação anterior e sincroniza os arquivos validados com a pasta pública já existente.
+Este procedimento publica o portal no servidor `200.145.184.28` por SSH. A automação prepara uma pasta por execução e sincroniza os arquivos validados com a pasta pública já existente. A instalação anterior ao primeiro deploy automatizado não é preservada.
 
 ## Premissas
 

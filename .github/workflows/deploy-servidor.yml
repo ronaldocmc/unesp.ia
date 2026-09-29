@@ -117,13 +117,6 @@ jobs:
           release_path="$releases_path/$release_id"
 
           mkdir -p "$releases_path"
-          if [ ! -f "$base_path/.deploy-managed" ]; then
-            backup_path="$releases_path/pre-automation-$(date -u +%Y%m%dT%H%M%SZ)"
-            mkdir -p "$backup_path"
-            rsync -a "$base_path/" "$backup_path/"
-            echo "Instalação anterior preservada em $backup_path"
-          fi
-
           test ! -e "$release_path" || { echo "A versão $release_id já existe no servidor."; exit 1; }
           mkdir -p "$release_path"
           tar -xzf "$HOME/$package_name" -C "$release_path"
