@@ -1,164 +1,208 @@
-const observatoryDate = value => new Intl.DateTimeFormat('pt-BR', {
-  day: '2-digit', month: 'short', year: 'numeric'
-}).format(new Date(`${value}T12:00:00`));
-
-function observatoryCard(item) {
-  const article = document.createElement('article');
-  article.className = 'observatory-card';
-  article.dataset.type = item.tipo;
-  article.dataset.category = item.categoria;
-  article.dataset.collection = item.colecao || 'Observatório';
-  article.dataset.search = [item.titulo, item.resumo, item.fonte, item.veiculo, item.projeto, ...(item.tags || [])].filter(Boolean).join(' ').toLocaleLowerCase('pt-BR');
-
-  const meta = document.createElement('div');
-  meta.className = 'observatory-card-meta';
-  const type = document.createElement('span');
-  type.textContent = item.tipo;
-  const date = document.createElement('time');
-  date.dateTime = item.data;
-  date.textContent = observatoryDate(item.data);
-  meta.append(type, date);
-
-  const category = document.createElement('p');
-  category.className = 'observatory-category';
-  category.textContent = item.colecao === 'unesp.IA na mídia' ? `unesp.IA na mídia • ${item.categoria}` : item.categoria;
-  const title = document.createElement('h3');
-  const link = document.createElement('a');
-  link.href = item.href;
-  link.textContent = item.titulo;
-  if (/^https?:/.test(item.href)) {
-    link.target = '_blank';
-    link.rel = 'noopener noreferrer';
+/* Interface do Observatório: o acervo local continua disponível sem o Supabase. */
+(() => {
+  'use strict';
+  const model = window.ObservatoryModel;
+  const state = { items: [], area: 'Todos', type: 'Todos', query: '', failed: false };
+  const $ = id => document.getElementById(id);
+  const areaIcons = { Dados: 'dados', Pesquisas: 'pesquisas', Avaliações: 'avaliacoes', Regulação: 'regulacao', Aplicações: 'casos', Relatórios: 'publicacoes' };
+  const colors = { dados: '#008a7e', pesquisas: '#6515ed', avaliacoes: '#9c5900', regulacao: '#df104a', casos: '#006bff', publicacoes: '#6515ed', radar: '#006bff' };
+  function element(tag, className, text) {
+    const node = document.createElement(tag);
+    if (className) node.className = className;
+    if (text !== undefined) node.textContent = text;
+    return node;
   }
-  title.append(link);
-  const summary = document.createElement('p');
-  summary.className = 'observatory-summary';
-  summary.textContent = item.resumo;
-
-  const tags = document.createElement('ul');
-  tags.className = 'observatory-tags';
-  tags.setAttribute('aria-label', 'Temas');
-  (item.tags || []).forEach(value => {
-    const tag = document.createElement('li');
-    tag.textContent = value;
-    tags.append(tag);
-  });
-
-  const trust = document.createElement('div');
-  trust.className = 'observatory-trust';
-  const source = document.createElement('span');
-  source.textContent = item.fonte;
-  const review = document.createElement('span');
-  review.textContent = item.revisao;
-  trust.append(source, review);
-  article.append(meta, category, title, summary, tags, trust);
-  return article;
-}
-
-function applyObservatoryFilters() {
-  const grid = document.getElementById('observatory-grid');
-  if (!grid) return;
-  const active = document.querySelector('[data-observatory-filter].active');
-  const filter = active ? active.dataset.observatoryFilter : 'Todos';
-  const query = (document.getElementById('observatory-search')?.value || '').trim().toLocaleLowerCase('pt-BR');
-  let visible = 0;
-  grid.querySelectorAll('.observatory-card').forEach(card => {
-    const matchesType = filter === 'Todos'
-      || (filter === 'Notícias' && (card.dataset.type.startsWith('Notícia') || card.dataset.type === 'Mídia'))
-      || (filter === 'Mídia' ? card.dataset.collection === 'unesp.IA na mídia' : card.dataset.type === filter);
-    const matchesSearch = !query || card.dataset.search.includes(query);
-    card.hidden = !(matchesType && matchesSearch);
-    if (!card.hidden) visible += 1;
-  });
-  const result = document.getElementById('observatory-result');
-  if (result) result.textContent = `${visible} ${visible === 1 ? 'conteúdo encontrado' : 'conteúdos encontrados'}`;
-}
-
-async function loadObservatory() {
-  const grid = document.getElementById('observatory-grid');
-  if (!grid) return;
-  try {
+  function icon(name) {
+    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    svg.setAttribute('class', 'obs-icon');
+    svg.setAttribute('viewBox', '0 0 24 24');
+    svg.setAttribute('aria-hidden', 'true');
+    const use = document.createElementNS('http://www.w3.org/2000/svg', 'use');
+    use.setAttribute('href', 'assets/img/observar-ia-area-icons.svg?v=20260930#' + name);
+    svg.append(use);
+    return svg;
+  }
+  function dateLabel(value) {
+    const date = new Date(String(value || '').slice(0, 10) + 'T12:00:00');
+    return Number.isNaN(date.getTime()) ? 'Data não informada' : new Intl.DateTimeFormat('pt-BR', { day: '2-digit', month: 'short', year: 'numeric' }).format(date).replaceAll(' de ', ' ');
+  }
+  function linkTo(item, className, label) {
+    const href = model.safeURL(item.href, location.href);
+    const link = element(href ? 'a' : 'span', className, label);
+    if (href) {
+      link.href = href;
+      if (new URL(href).origin !== location.origin) { link.target = '_blank'; link.rel = 'noopener noreferrer'; }
+    }
+    return link;
+  }
+  function card(item, compact = false) {
+    const area = model.areasFor(item)[0];
+    const symbol = areaIcons[area] || 'radar';
+    const article = element('article', 'obs-story');
+    article.style.setProperty('--story-color', colors[symbol]);
+    const meta = element('div', 'obs-story-meta');
+    const type = item.colecao === 'unesp.IA na mídia' ? 'Na mídia' : String(item.tipo || 'Publicação');
+    const typeLabel = compact && type.startsWith('Notícia') ? 'Notícia' : type;
+    const time = element('time', '', dateLabel(item.data));
+    if (/^\d{4}-\d{2}-\d{2}/.test(item.data || '')) time.dateTime = item.data.slice(0, 10);
+    meta.append(element('span', '', typeLabel), time);
+    article.append(meta);
+    if (compact) {
+      const cover = element('div', 'obs-story-cover');
+      cover.setAttribute('aria-hidden', 'true');
+      cover.append(icon(symbol));
+      const source = model.safeURL(item.imagem, location.href);
+      if (source) {
+        const img = element('img');
+        img.alt = ''; img.loading = 'lazy'; img.decoding = 'async'; img.src = source;
+        img.addEventListener('error', () => img.remove(), { once: true });
+        cover.append(img);
+      }
+      article.append(cover);
+    }
+    const title = element('h3');
+    title.append(linkTo(item, '', item.titulo));
+    article.append(title, element('p', 'obs-story-summary', item.resumo || ''));
+    article.append(element('small', 'obs-story-source', 'Fonte: ' + (item.fonte || 'Não informada') + (compact ? '' : ' · ' + (item.revisao || 'Situação editorial não informada'))));
+    const read = linkTo(item, 'obs-read-more', 'Ler mais ');
+    if (read.tagName === 'A') {
+      read.setAttribute('aria-label', 'Ler mais: ' + item.titulo);
+      const arrow = element('span', '', '→'); arrow.setAttribute('aria-hidden', 'true'); read.append(arrow);
+      article.append(read);
+    }
+    return article;
+  }
+  function showArchive(scroll = false) {
+    $('acervo').open = true;
+    if (scroll) $('acervo').scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth', block: 'start' });
+  }
+  function applyFilters() {
+    const items = state.items.filter(item => model.matches(item, state));
+    $('observatory-grid').replaceChildren(...items.map(item => card(item)));
+    $('observatory-result').textContent = state.failed ? 'Acervo temporariamente indisponível' : items.length + (items.length === 1 ? ' conteúdo encontrado' : ' conteúdos encontrados');
+    $('observatory-empty').hidden = items.length > 0;
+    $('observatory-empty').textContent = state.failed ? 'Não foi possível carregar o acervo. Tente recarregar a página em alguns instantes.' : 'Nenhum conteúdo publicado corresponde a esta seleção. Experimente outro tema ou limpe os filtros.';
+    document.querySelectorAll('[data-observatory-filter]').forEach(button => {
+      const selected = button.dataset.observatoryFilter === state.area;
+      button.classList.toggle('active', selected);
+      button.setAttribute('aria-pressed', String(selected));
+    });
+  }
+  function render() {
+    const highlights = model.highlights(state.items);
+    $('observatory-highlights').replaceChildren(...highlights.map(item => card(item, true)));
+    if (!highlights.length) $('observatory-highlights').append(element('p', 'obs-message', state.failed ? 'Não foi possível carregar os destaques. Tente recarregar a página.' : 'Novos destaques serão exibidos após a publicação pela equipe.'));
+    $('observatory-total').textContent = '(' + state.items.length + ')';
+    // Inclui os tipos novos cadastrados no painel, sem perder as opções editoriais.
+    const typeSelect = $('observatory-type');
+    const existing = new Set([...typeSelect.options].map(option => option.value));
+    state.items.forEach(item => {
+      if (item.tipo && !existing.has(item.tipo)) {
+        typeSelect.append(new Option(item.tipo, item.tipo));
+        existing.add(item.tipo);
+      }
+    });
+    applyFilters();
+  }
+  async function localItems() {
     const response = await fetch('assets/data/observatorio-conteudos.json');
-    if (!response.ok) throw new Error('Conteúdo indisponível');
+    if (!response.ok) throw new Error('Acervo local indisponível');
     const data = await response.json();
-    const databaseItems = await loadDatabaseItems();
-    const byIdentity = new Map([...data.itens, ...databaseItems].map(item => [item.id || item.href, item]));
-    const items = [...byIdentity.values()].sort((a, b) => b.data.localeCompare(a.data));
-    grid.replaceChildren(...items.map(observatoryCard));
-    applyObservatoryFilters();
-  } catch (error) {
-    const message = document.createElement('p');
-    message.className = 'observatory-message';
-    message.textContent = 'Os conteúdos serão exibidos quando o portal estiver disponível pelo servidor web.';
-    grid.replaceChildren(message);
+    if (!Array.isArray(data.itens)) throw new Error('Formato de acervo inválido');
+    return data.itens;
   }
-}
-
-async function loadDatabaseItems() {
-  try {
-    const config = await import('./portal/config.js');
-    if (!config.configReady()) return [];
-    const endpoint = `${config.SUPABASE_URL}/rest/v1/observatorio_conteudos?select=*&status=eq.publicado&revisao_humana=eq.true&order=destaque.desc,data_publicacao.desc`;
-    const response = await fetch(endpoint, { headers: {
-      apikey: config.SUPABASE_PUBLISHABLE_KEY,
-      Authorization: `Bearer ${config.SUPABASE_PUBLISHABLE_KEY}`
-    }});
-    if (!response.ok) return [];
-    return (await response.json()).map(row => ({
-      id: `supabase-${row.id}`,
-      colecao: row.colecao,
-      tipo: row.tipo,
-      categoria: row.categoria,
-      titulo: row.titulo,
-      resumo: row.resumo,
-      data: row.data_publicacao,
-      fonte: row.veiculo ? `${row.veiculo} • ${row.fonte}` : row.fonte,
-      veiculo: row.veiculo,
-      projeto: row.projeto_relacionado,
-      href: row.url,
-      tags: String(row.palavras_chave || '').split(',').map(value => value.trim()).filter(Boolean),
-      revisao: 'Revisão humana concluída'
+  async function databaseItems() {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 7000);
+    try {
+      const config = await import('./portal/config.js');
+      if (!config.configReady()) return { items: [], available: false };
+      const endpoint = config.SUPABASE_URL + '/rest/v1/observatorio_conteudos?select=*&status=eq.publicado&revisao_humana=eq.true&order=destaque.desc,data_publicacao.desc';
+      const response = await fetch(endpoint, { signal: controller.signal, headers: { apikey: config.SUPABASE_PUBLISHABLE_KEY, Authorization: 'Bearer ' + config.SUPABASE_PUBLISHABLE_KEY } });
+      if (!response.ok) throw new Error('Acervo remoto indisponível');
+      const rows = await response.json();
+      if (!Array.isArray(rows)) throw new Error('Formato remoto inválido');
+      return { items: rows.map(model.fromDatabase), available: true };
+    } catch { return { items: [], available: false }; }
+    finally { clearTimeout(timeout); }
+  }
+  async function load() {
+    // Renderiza cada fonte assim que responder: uma falha externa não bloqueia o acervo local.
+    let available = false;
+    const local = localItems().then(items => { available = true; state.items = model.merge(state.items, items); render(); }).catch(() => {});
+    const remote = databaseItems().then(result => {
+      available ||= result.available;
+      state.items = model.merge(state.items, result.items);
+      if (result.available) render();
+    });
+    await Promise.all([local, remote]);
+    state.failed = !available;
+    render();
+  }
+  function reset() {
+    state.area = 'Todos'; state.type = 'Todos'; state.query = '';
+    $('observatory-search').value = ''; $('observatory-global-search').value = ''; $('observatory-type').value = 'Todos';
+  }
+  const dialogs = {
+    agentes: ['Arquitetura em desenvolvimento', 'Agentes Inteligentes do Observar.IA', 'Seis especialidades estão previstas: radar, dados, pesquisa, regulação, avaliação e aplicações. Os agentes poderão apoiar coleta, classificação e preparação de sínteses para a equipe.', 'A estrutura de coleta e curadoria já pode ser aproveitada. Os seis agentes especializados não estão em operação. Toda publicação exige fonte identificada e revisão humana.'],
+    radar: ['Agente em desenvolvimento', 'Agente Radar', 'Função prevista: acompanhar notícias, eventos, novos modelos, ferramentas e publicações; identificar novidades e encaminhá-las à curadoria.', 'Os conteúdos coletados devem permanecer em uma fila de revisão. Monitoramento em tempo real não está ativo.'],
+    dados: ['Agente em desenvolvimento', 'Agente Dados', 'Função prevista: organizar bases de múltiplas fontes, registrar sua procedência, identificar atualizações e preparar indicadores comparáveis.', 'Painéis e indicadores só serão apresentados com fonte, período, metodologia e limitações.'],
+    pesquisas: ['Agente em desenvolvimento', 'Agente Pesquisa', 'Função prevista: mapear artigos, teses e outras produções científicas; organizar temas e evidências relevantes no Brasil e no mundo.', 'Sínteses devem preservar as referências e distinguir resultados publicados, hipóteses e limitações.'],
+    regulacao: ['Agente em desenvolvimento', 'Agente Regulação', 'Função prevista: acompanhar legislações, políticas públicas, recomendações e mudanças regulatórias relacionadas à Inteligência Artificial.', 'Cada registro deverá identificar a jurisdição, a fonte oficial, a data e a situação da norma. O conteúdo não substitui orientação jurídica.'],
+    avaliacoes: ['Agente em desenvolvimento', 'Agente Avaliação', 'Função prevista: apoiar comparações de modelos, agentes e aplicações, documentando tarefas, dados, critérios e resultados.', 'Avaliações deverão ser reproduzíveis e indicar versões, limitações e possíveis conflitos de interesse. Nenhum benchmark próprio está publicado nesta etapa.'],
+    casos: ['Agente em desenvolvimento', 'Agente Aplicações', 'Função prevista: identificar e analisar casos de uso da IA em educação, saúde, gestão, meio ambiente e outros setores.', 'A análise deverá distinguir propostas, experimentos e aplicações em operação, sem tratar promessas como resultados comprovados.'],
+    conversa: ['Recurso em desenvolvimento', 'Converse com o Agente Observar.IA', 'Futuramente, será possível consultar o acervo em linguagem natural. O agente deverá responder com base nas fontes do Observatório, citando evidências e limites.', 'Nenhuma resposta automática está ativa. Por enquanto, use a busca e os filtros para explorar os conteúdos publicados.'],
+    metodologia: ['Sobre o Observatório', 'Informação com contexto e procedência', 'O Observar.IA monitora e analisa a evolução, a adoção e os impactos da IA. Seu propósito é transformar informação em evidências e conhecimento para apoiar pesquisa, formação, inovação e decisões.', 'Publicações devem ter fonte identificada, data e revisão humana. Agentes apoiam a equipe, mas não substituem a análise crítica nem a responsabilidade editorial.'],
+    fontes: ['Fontes e metodologia', 'Fontes abertas, critérios transparentes', 'As fontes efetivamente utilizadas são informadas em cada publicação. O acervo reúne os registros locais do portal e os conteúdos publicados e revisados no painel administrativo.', 'A arquitetura poderá integrar repositórios científicos e bases públicas, como OpenAlex, Crossref, arXiv, IBGE, CETIC.br, OECD e UNESCO. São possibilidades de evolução, não integrações já ativas.'],
+    contato: ['Equipe e contato', 'Fale com a equipe do Observar.IA', 'A coordenação do projeto é de Ronaldo Celso Messias Correia, da FCT/UNESP. A página da equipe reúne a apresentação dos responsáveis e seus perfis acadêmicos.', 'Acesse a equipe para conhecer a coordenação do projeto.', 'equipe.html#ronaldo-name', 'Conhecer a coordenação']
+  };
+  function openDialog(name) {
+    const content = dialogs[name];
+    if (!content) return;
+    $('dialog-kicker').textContent = content[0];
+    $('dialog-title').textContent = content[1];
+    $('dialog-description').textContent = content[2];
+    $('dialog-note').textContent = content[3];
+    const link = $('dialog-link');
+    link.hidden = !content[4];
+    if (content[4]) { link.href = content[4]; link.textContent = content[5]; }
+    $('observatory-dialog').showModal();
+  }
+  document.addEventListener('DOMContentLoaded', () => {
+    const requested = new URLSearchParams(location.search).get('busca');
+    if (requested) {
+      state.query = requested; $('observatory-search').value = requested; $('observatory-global-search').value = requested;
+      showArchive();
+    }
+    if (location.hash === '#acervo') showArchive();
+    window.addEventListener('hashchange', () => { if (location.hash === '#acervo') showArchive(); });
+    document.querySelectorAll('[data-observatory-filter]').forEach(button => button.addEventListener('click', () => {
+      state.area = button.dataset.observatoryFilter;
+      applyFilters(); showArchive();
     }));
-  } catch (error) {
-    return [];
-  }
-}
-
-function selectObservatoryFilter(filter) {
-  document.querySelectorAll('[data-observatory-filter]').forEach(button => {
-    const selected = button.dataset.observatoryFilter === filter;
-    button.classList.toggle('active', selected);
-    button.setAttribute('aria-pressed', String(selected));
+    document.querySelectorAll('[data-observatory-shortcut]').forEach(link => link.addEventListener('click', () => {
+      reset();
+      const value = link.dataset.observatoryShortcut;
+      if (model.AREAS.includes(value)) state.area = value; else state.type = value;
+      $('observatory-type').value = state.type;
+      applyFilters(); showArchive();
+    }));
+    [$('observatory-search'), $('observatory-global-search')].forEach(input => {
+      input.addEventListener('input', () => {
+        state.query = input.value;
+        $('observatory-search').value = input.value; $('observatory-global-search').value = input.value;
+        applyFilters(); showArchive();
+      });
+      input.closest('form').addEventListener('submit', event => { event.preventDefault(); showArchive(true); });
+    });
+    $('observatory-type').addEventListener('change', event => { state.type = event.target.value; applyFilters(); });
+    $('observatory-reset').addEventListener('click', () => { reset(); applyFilters(); });
+    document.querySelectorAll('[data-dialog]').forEach(trigger => trigger.addEventListener('click', event => { event.preventDefault(); openDialog(trigger.dataset.dialog); }));
+    $('observatory-dialog').querySelector('.obs-dialog-close').addEventListener('click', () => $('observatory-dialog').close());
+    document.querySelectorAll('.observatory-topbar .nav a[href^="#"]:not([data-dialog])').forEach(link => link.addEventListener('click', () => {
+      document.querySelectorAll('.observatory-topbar .nav a[aria-current]').forEach(item => item.removeAttribute('aria-current'));
+      link.setAttribute('aria-current', 'location');
+    }));
+    load();
   });
-  applyObservatoryFilters();
-}
-
-document.addEventListener('DOMContentLoaded', () => {
-  const requestedSearch = new URLSearchParams(location.search).get('busca');
-  const searchInput = document.getElementById('observatory-search');
-  const globalSearch = document.getElementById('observatory-global-search');
-  if (requestedSearch && searchInput) searchInput.value = requestedSearch;
-  if (requestedSearch && globalSearch) globalSearch.value = requestedSearch;
-  loadObservatory();
-  document.querySelectorAll('[data-observatory-filter]').forEach(button => {
-    button.setAttribute('aria-pressed', String(button.classList.contains('active')));
-    button.addEventListener('click', () => selectObservatoryFilter(button.dataset.observatoryFilter));
-  });
-  document.querySelectorAll('[data-observatory-shortcut]').forEach(link => link.addEventListener('click', () => {
-    if (searchInput) searchInput.value = '';
-    if (globalSearch) globalSearch.value = '';
-    selectObservatoryFilter(link.dataset.observatoryShortcut);
-  }));
-  searchInput?.addEventListener('input', applyObservatoryFilters);
-  globalSearch?.addEventListener('input', () => {
-    if (searchInput) searchInput.value = globalSearch.value;
-    applyObservatoryFilters();
-  });
-  globalSearch?.closest('form')?.addEventListener('submit', event => {
-    event.preventDefault();
-    document.getElementById('acervo')?.scrollIntoView({ behavior: 'smooth' });
-  });
-  searchInput?.addEventListener('input', () => {
-    if (globalSearch) globalSearch.value = searchInput.value;
-  });
-});
+})();

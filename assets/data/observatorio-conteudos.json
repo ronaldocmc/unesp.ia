@@ -12,9 +12,18 @@
       "data": "2026-09-26",
       "fonte": "Equipe unesp.IA",
       "href": "observatorio.html#como-funciona",
-      "tags": ["observatório", "evidências", "inteligência"],
+      "tags": [
+        "observatório",
+        "evidências",
+        "inteligência"
+      ],
       "revisao": "Revisão humana concluída",
-      "coletadoPor": "Publicação institucional"
+      "coletadoPor": "Publicação institucional",
+      "destaque": true,
+      "areas": [
+        "Relatórios"
+      ],
+      "imagem": "assets/img/observar-ia-hero-paineis.png"
     },
     {
       "id": "pesquisa-portal",
@@ -26,9 +35,17 @@
       "data": "2026-09-26",
       "fonte": "unesp.IA Research & Innovation Lab",
       "href": "pesquisa.html",
-      "tags": ["pesquisa", "projetos", "ciência de dados"],
+      "tags": [
+        "pesquisa",
+        "projetos",
+        "ciência de dados"
+      ],
       "revisao": "Revisão humana concluída",
-      "coletadoPor": "Publicação institucional"
+      "coletadoPor": "Publicação institucional",
+      "destaque": true,
+      "areas": [
+        "Pesquisas"
+      ]
     },
     {
       "id": "quatro-eixos",
@@ -40,7 +57,11 @@
       "data": "2026-09-26",
       "fonte": "Equipe unesp.IA",
       "href": "index.html#eixos",
-      "tags": ["ecossistema", "formação", "inovação"],
+      "tags": [
+        "ecossistema",
+        "formação",
+        "inovação"
+      ],
       "revisao": "Revisão humana concluída",
       "coletadoPor": "Publicação institucional"
     },
@@ -54,9 +75,17 @@
       "data": "2026-09-26",
       "fonte": "Equipe unesp.IA",
       "href": "index.html#inovacao-iniciativas",
-      "tags": ["adoção", "organizações", "automação"],
+      "tags": [
+        "adoção",
+        "organizações",
+        "automação"
+      ],
       "revisao": "Revisão humana concluída",
-      "coletadoPor": "Publicação institucional"
+      "coletadoPor": "Publicação institucional",
+      "destaque": true,
+      "areas": [
+        "Aplicações"
+      ]
     },
     {
       "id": "agente-ia-experimentacao",
@@ -69,9 +98,17 @@
       "fonte": "Equipe unesp.IA",
       "href": "index.html#experimentar",
       "projeto": "Agente.IA",
-      "tags": ["agentes inteligentes", "experimentação", "automação"],
+      "tags": [
+        "agentes inteligentes",
+        "experimentação",
+        "automação"
+      ],
       "revisao": "Revisão humana concluída",
-      "coletadoPor": "Publicação institucional"
+      "coletadoPor": "Publicação institucional",
+      "destaque": true,
+      "areas": [
+        "Aplicações"
+      ]
     },
     {
       "id": "pet-ia-cuidado",
@@ -84,9 +121,16 @@
       "fonte": "Equipe unesp.IA",
       "href": "index.html#inovacao-iniciativas",
       "projeto": "pet.IA",
-      "tags": ["pet.IA", "animais", "cuidado responsável"],
+      "tags": [
+        "pet.IA",
+        "animais",
+        "cuidado responsável"
+      ],
       "revisao": "Revisão humana concluída",
-      "coletadoPor": "Publicação institucional"
+      "coletadoPor": "Publicação institucional",
+      "areas": [
+        "Aplicações"
+      ]
     },
     {
       "id": "pescar-ia-ciencia-cidada",
@@ -99,9 +143,18 @@
       "fonte": "Equipe unesp.IA",
       "href": "index.html#inovacao-iniciativas",
       "projeto": "Pescar.IA",
-      "tags": ["Pescar.IA", "dados ambientais", "sustentabilidade"],
+      "tags": [
+        "Pescar.IA",
+        "dados ambientais",
+        "sustentabilidade"
+      ],
       "revisao": "Revisão humana concluída",
-      "coletadoPor": "Publicação institucional"
+      "coletadoPor": "Publicação institucional",
+      "destaque": true,
+      "areas": [
+        "Dados",
+        "Aplicações"
+      ]
     },
     {
       "id": "paranapanema-ia-desenvolvimento",
@@ -114,9 +167,17 @@
       "fonte": "Equipe unesp.IA",
       "href": "index.html#inovacao-iniciativas",
       "projeto": "paranapanema.IA",
-      "tags": ["paranapanema.IA", "desenvolvimento regional", "dados"],
+      "tags": [
+        "paranapanema.IA",
+        "desenvolvimento regional",
+        "dados"
+      ],
       "revisao": "Revisão humana concluída",
-      "coletadoPor": "Publicação institucional"
+      "coletadoPor": "Publicação institucional",
+      "areas": [
+        "Dados",
+        "Aplicações"
+      ]
     }
   ]
 }
