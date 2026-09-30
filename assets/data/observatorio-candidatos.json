@@ -1,6 +1,6 @@
 {
-  "geradoEm": "2026-09-29T16:30:29+00:00",
-  "total": 107,
+  "geradoEm": "2026-09-30T16:24:28+00:00",
+  "total": 129,
   "erros": [],
   "itens": [
     {
@@ -1878,6 +1878,454 @@
         "Vasudeva Varma"
       ],
       "coletadoEm": "2026-09-29T16:30:27+00:00",
+      "revisao": "Pendente de curadoria humana"
+    },
+    {
+      "id": "17f635e65de87807",
+      "status": "pendente",
+      "tipo": "Notícias e atualidades",
+      "titulo": "MIT Transit Lab to develop an AI platform for public transit agencies",
+      "resumoOriginal": "With $2.1 million funding from Google.org, the open-source Public Transit Intelligence Hub will unify public transit monitoring, operations, and passenger communication.",
+      "dataPublicacao": "Wed, 30 Sep 2026 11:15:00 -0400",
+      "fonte": "MIT News — Artificial Intelligence",
+      "fonteId": "mit-news-ai",
+      "href": "https://news.mit.edu/2026/mit-transit-lab-to-develop-ai-platform-public-transit-agencies-0930",
+      "autores": [],
+      "coletadoEm": "2026-09-30T16:24:27+00:00",
+      "revisao": "Pendente de curadoria humana"
+    },
+    {
+      "id": "03dddcc866a982e1",
+      "status": "pendente",
+      "tipo": "Notícias e atualidades",
+      "titulo": "This game-playing AI is the new champ at Stratego",
+      "resumoOriginal": "Able to defeat top-ranked human players and more efficient than other models, the new system could help decision-makers in military maneuvers or business negotiations.",
+      "dataPublicacao": "Wed, 30 Sep 2026 11:00:00 -0400",
+      "fonte": "MIT News — Artificial Intelligence",
+      "fonteId": "mit-news-ai",
+      "href": "https://news.mit.edu/2026/game-playing-ai-stratego-new-champ-0930",
+      "autores": [],
+      "coletadoEm": "2026-09-30T16:24:27+00:00",
+      "revisao": "Pendente de curadoria humana"
+    },
+    {
+      "id": "20fe8bd76cc91480",
+      "status": "pendente",
+      "tipo": "Artigos científicos",
+      "titulo": "Skill-Space Shooting for Autonomous Robot Policy Improvement",
+      "resumoOriginal": "Robots deployed in the physical world must be able to improve beyond their initial training as they encounter new situations and failures. For this improvement to scale across tasks, it must make effective use of experience without requiring human demonstration of each correction. Recent agentic systems offer a way to reduce this reliance on human effort by using foundation models to autonomously compose learned behaviors to complete tasks. Yet completing tasks this way does not itself teach a task policy to overcome its own failures; that requires turn…",
+      "dataPublicacao": "2026-09-29T17:59:55Z",
+      "fonte": "arXiv — Artificial Intelligence",
+      "fonteId": "arxiv-ai",
+      "href": "https://arxiv.org/abs/2609.38178v1",
+      "autores": [
+        "Zihang Rui",
+        "Renhao Wang",
+        "Haoxu Huang",
+        "Yang Gao"
+      ],
+      "coletadoEm": "2026-09-30T16:24:27+00:00",
+      "revisao": "Pendente de curadoria humana"
+    },
+    {
+      "id": "506ecfd1901eebb4",
+      "status": "pendente",
+      "tipo": "Artigos científicos",
+      "titulo": "STEPQuant: When and Where Errors Matter in Delta-Rule Recurrent State Quantization",
+      "resumoOriginal": "Linear attention replaces growing KV caches with fixed-size recurrent states, yet these persistent states can become a substantial memory bottleneck under concurrent serving. Directly quantizing recurrent states to low precision often leads to severe accuracy degradation, as quantization errors propagate through successive state updates. We discover that the impact of these errors depends on two complementary dimensions: temporally, errors in long-lived memory can persist across many decoding steps; spatially, errors in different key rows affect model o…",
+      "dataPublicacao": "2026-09-29T17:59:40Z",
+      "fonte": "arXiv — Artificial Intelligence",
+      "fonteId": "arxiv-ai",
+      "href": "https://arxiv.org/abs/2609.38169v1",
+      "autores": [
+        "Bingchen Yao",
+        "Haobo Xu",
+        "Haokun Lin",
+        "Yichen Wu",
+        "Ziyu Guo",
+        "Renrui Zhang",
+        "Zhichao Lu",
+        "Zhenan Sun",
+        "Ying Wei"
+      ],
+      "coletadoEm": "2026-09-30T16:24:27+00:00",
+      "revisao": "Pendente de curadoria humana"
+    },
+    {
+      "id": "1759558f459c1a04",
+      "status": "pendente",
+      "tipo": "Artigos científicos",
+      "titulo": "LeapQuant: Efficient Linear Attention with Accurate Recurrent State Quantization",
+      "resumoOriginal": "Recent LLMs increasingly adopt hybrid designs that replace standard attention with linear attention, such as Gated DeltaNet (GDN) and Kimi Delta Attention (KDA). Although they compress the context into a fixed-size recurrent state and substantially reduce the cost of long-context processing, repeatedly reading and updating that state remains a major inference bottleneck. Quantization offers a natural way to reduce this cost, but can significantly degrade model quality, due to the accumulation of rounding errors and the presence of outlier rows and colum…",
+      "dataPublicacao": "2026-09-29T17:59:34Z",
+      "fonte": "arXiv — Artificial Intelligence",
+      "fonteId": "arxiv-ai",
+      "href": "https://arxiv.org/abs/2609.38166v1",
+      "autores": [
+        "Yi Pan",
+        "Haocheng Xi",
+        "Kan Zhu",
+        "Xingyang Li",
+        "Yibo Wu",
+        "Mayank Mishra",
+        "Hongtao Zhang",
+        "William X. Zheng",
+        "Baris Kasikci",
+        "Song Han",
+        "Kurt Keutzer",
+        "Rishabh Iyer"
+      ],
+      "coletadoEm": "2026-09-30T16:24:27+00:00",
+      "revisao": "Pendente de curadoria humana"
+    },
+    {
+      "id": "1ce0c396d24b24cf",
+      "status": "pendente",
+      "tipo": "Artigos científicos",
+      "titulo": "Beyond the Timeline: Augmenting Long-Video Memory with Grounded Entity Biographies",
+      "resumoOriginal": "Answering questions about long videos often requires connecting events involving the same objects across hours or days. Chronological descriptions and text-derived entities can leave physical identity unresolved: different objects may share a description, while observations of the same object remain disconnected across events. Retrieving relevant events therefore does not necessarily recover the \"biography\" of the particular entity a question concerns. To address this, we introduce Grounded Entity Biographies (GEB), a long-video memory framework that gr…",
+      "dataPublicacao": "2026-09-29T17:59:01Z",
+      "fonte": "arXiv — Artificial Intelligence",
+      "fonteId": "arxiv-ai",
+      "href": "https://arxiv.org/abs/2609.38155v1",
+      "autores": [
+        "Hui Ren",
+        "Lei Fan",
+        "Henry Pao",
+        "Han Guo",
+        "Zeeshan Zia",
+        "Ying Chen",
+        "Alexander Schwing",
+        "Gang Hua"
+      ],
+      "coletadoEm": "2026-09-30T16:24:27+00:00",
+      "revisao": "Pendente de curadoria humana"
+    },
+    {
+      "id": "7b3569de6706b7a4",
+      "status": "pendente",
+      "tipo": "Artigos científicos",
+      "titulo": "Thinking Before Thinking: Scaling Agentic Inference Through Meta-Reasoning",
+      "resumoOriginal": "As agents take on longer and more complex problems, controlling the execution becomes a task in its own right. Each step in the run brings new control choices, like which partial work to build on, whether to start fresh, or when to stop. We introduce agentic meta-reasoning, an inference-time harness that makes these choices an explicit and structured reasoning process. Workers carry out the task-level computation, while a controller consolidates what the run has established, explores next options, assesses what each option is worth under the remaining b…",
+      "dataPublicacao": "2026-09-29T17:57:25Z",
+      "fonte": "arXiv — Artificial Intelligence",
+      "fonteId": "arxiv-ai",
+      "href": "https://arxiv.org/abs/2609.38147v1",
+      "autores": [
+        "Paras Dahal",
+        "Anton Bakhtin",
+        "Taco Cohen",
+        "Zhengxing Chen",
+        "Carole-Jean Wu",
+        "Rob Fergus",
+        "Scott Yih",
+        "Gabriel Synnaeve",
+        "Ruslan Salakhutdinov",
+        "Sanjeev Arora",
+        "Jason Weston",
+        "Anirudh Goyal"
+      ],
+      "coletadoEm": "2026-09-30T16:24:27+00:00",
+      "revisao": "Pendente de curadoria humana"
+    },
+    {
+      "id": "1afe69dfed86f9a6",
+      "status": "pendente",
+      "tipo": "Artigos científicos",
+      "titulo": "Learning Meta-Skills for Agent Harness Design in Test-Time AI4AI",
+      "resumoOriginal": "Agent performance depends on both reasoning ability and the environment in which it acts. We study test-time AI-for-AI, asking how a Builder can learn to construct better execution environments for a Target while both models' weights remain fixed. To make the Builder's experience reusable, we introduce Meta-Skill: principles specifying when support is needed and what resources to provide. The Builder learns these principles from Target's execution feedback on the development set, then uses the frozen skill bank to construct harnesses for unseen tasks. A…",
+      "dataPublicacao": "2026-09-29T17:55:56Z",
+      "fonte": "arXiv — Artificial Intelligence",
+      "fonteId": "arxiv-ai",
+      "href": "https://arxiv.org/abs/2609.38143v1",
+      "autores": [
+        "Cheng Qian",
+        "Kunlun Zhu",
+        "Beibin Li",
+        "Zhenhailong Wang",
+        "Heng Ji"
+      ],
+      "coletadoEm": "2026-09-30T16:24:27+00:00",
+      "revisao": "Pendente de curadoria humana"
+    },
+    {
+      "id": "9c2205994171a578",
+      "status": "pendente",
+      "tipo": "Artigos científicos",
+      "titulo": "AdviSD: Learning to Advise Frontier LLMs via Targeted Multi-Turn Self-Distillation",
+      "resumoOriginal": "A small trainable advisor can steer a frozen language-model executor using natural-language advice. In addition to learning from task rewards, the advisor can use feedback from completed interactions to improve its advice. However, a plausible correction need not change execution, yet learning from such corrections can still affect the advisor's future decisions in other contexts. In a shared-parameter model, we prove that such corrections can limit learning if their targets favor useful advice less strongly than those of other corrections. Keeping them…",
+      "dataPublicacao": "2026-09-29T17:55:40Z",
+      "fonte": "arXiv — Artificial Intelligence",
+      "fonteId": "arxiv-ai",
+      "href": "https://arxiv.org/abs/2609.38142v1",
+      "autores": [
+        "Rishabh Agrawal",
+        "Hejie Cui",
+        "Shasha Li",
+        "Shanchan Wu",
+        "Sercan Ö. Arık"
+      ],
+      "coletadoEm": "2026-09-30T16:24:27+00:00",
+      "revisao": "Pendente de curadoria humana"
+    },
+    {
+      "id": "310ecadfee307250",
+      "status": "pendente",
+      "tipo": "Artigos científicos",
+      "titulo": "Breaking the Uniformity Trap: Scaling Video Diffusion Model via SplitMoE",
+      "resumoOriginal": "Mixture-of-Experts (MoE), popularized by large language models, is a promising paradigm for scaling visual generative models. However, conventional token-wise MoE routes tokens independently within a homogeneous expert pool and regularizes expert usage toward uniformity, making it poorly matched to video data that is spatiotemporally redundant and semantically long-tailed. We show that existing visual MoEs fall into a uniformity trap: semantically under-organized routing, compounded by uniform expert-usage regularization, scatters coherent patches acros…",
+      "dataPublicacao": "2026-09-29T17:55:19Z",
+      "fonte": "arXiv — Artificial Intelligence",
+      "fonteId": "arxiv-ai",
+      "href": "https://arxiv.org/abs/2609.38140v1",
+      "autores": [
+        "Yu Xu",
+        "Yuxin Zhang",
+        "Xiao Yang",
+        "Haotian Yang",
+        "Yizhi Wang",
+        "Xinwei Huang",
+        "Minxuan Lin",
+        "Angtian Wang",
+        "Chongyang Ma",
+        "Fan Tang"
+      ],
+      "coletadoEm": "2026-09-30T16:24:27+00:00",
+      "revisao": "Pendente de curadoria humana"
+    },
+    {
+      "id": "a0fdf600469e04fd",
+      "status": "pendente",
+      "tipo": "Artigos científicos",
+      "titulo": "Stochastic World Models for Verifying Vision-Based Neural Feedback Systems",
+      "resumoOriginal": "Verifying a vision-based neural feedback system requires a model of the observations its controller acts upon. Such a model must capture the variation the sensor produces, while remaining tractable for closed-loop analysis. Generative adversarial networks (GANs) have served as perception surrogates, but they are large, reproduce complex scenes poorly, and are hard to verify. We explore stochastic world models as a richer class of perception surrogates. We train a world model with physically grounded latents, built from operations that standard verifiers…",
+      "dataPublicacao": "2026-09-29T17:50:40Z",
+      "fonte": "arXiv — Artificial Intelligence",
+      "fonteId": "arxiv-ai",
+      "href": "https://arxiv.org/abs/2609.38120v1",
+      "autores": [
+        "I. Samuel Akinwande",
+        "Mykel J. Kochenderfer",
+        "Clark Barrett"
+      ],
+      "coletadoEm": "2026-09-30T16:24:27+00:00",
+      "revisao": "Pendente de curadoria humana"
+    },
+    {
+      "id": "941b2865e60f69fe",
+      "status": "pendente",
+      "tipo": "Artigos científicos",
+      "titulo": "How Local Mixing Encodes Relative Position in Global NoPE Attention",
+      "resumoOriginal": "The attention operation is naively position invariant. However, positional information is fundamental to natural language, and therefore a variety of explicit position encodings have been developed in transformer-based models, such as rotary position encoding (RoPE). Although explicit position encodings have long been assumed to be required, recent methods that interleave local mixing layers, such as sliding window attention (SWA) and gated linear attention, while not encoding position (NoPE) in global attention layers has recently been shown to be succ…",
+      "dataPublicacao": "2026-09-29T17:47:41Z",
+      "fonte": "arXiv — Artificial Intelligence",
+      "fonteId": "arxiv-ai",
+      "href": "https://arxiv.org/abs/2609.38109v1",
+      "autores": [
+        "Cutter Dawes",
+        "Nick Alonso",
+        "Tom Figliolia",
+        "Beren Millidge"
+      ],
+      "coletadoEm": "2026-09-30T16:24:27+00:00",
+      "revisao": "Pendente de curadoria humana"
+    },
+    {
+      "id": "b70b943cc1f2218d",
+      "status": "pendente",
+      "tipo": "Artigos científicos",
+      "titulo": "Do LLM Agents Execute the Plans They Declare? From Planning-Mode Declaration to Pattern-Specific Execution",
+      "resumoOriginal": "Large language models (LLMs) enable agents to solve long-horizon tasks by generating a plan and then executing it in an environment. However, successful planning requires two distinct capabilities: selecting an appropriate plan for the task and executing it faithfully. Existing planner--executor systems can fail at either stage, while final task success alone cannot distinguish selection from execution failures. We therefore study the Plan Declaration--Execution Gap and introduce Planning-as-Routing, where an LLM declares one of four planning modes: Pre…",
+      "dataPublicacao": "2026-09-29T17:47:18Z",
+      "fonte": "arXiv — Artificial Intelligence",
+      "fonteId": "arxiv-ai",
+      "href": "https://arxiv.org/abs/2609.38108v1",
+      "autores": [
+        "Subba Reddy Oota",
+        "Francisco Herrera",
+        "Jordi Cabot Sagrera",
+        "Marcos López de Prado",
+        "Shadab Khan"
+      ],
+      "coletadoEm": "2026-09-30T16:24:27+00:00",
+      "revisao": "Pendente de curadoria humana"
+    },
+    {
+      "id": "98bc0550db1bc769",
+      "status": "pendente",
+      "tipo": "Artigos científicos",
+      "titulo": "Correct Answers, Invalid Traces: What Verifiable Grade-School Math Reveals About Chain-of-Thought Traces",
+      "resumoOriginal": "Chain-of-thought traces are widely read as records of how models reach their answers, informing debugging, agent auditing, and claims about reasoning. Testing this interpretation is difficult because natural-language thinking traces are rarely mechanically verifiable. We revisit it in iGSM, a synthetic grade-school mathematics benchmark designed to study thinking traces and used to support claims of learned reasoning and planning. Crucially, iGSM exposes the exact quantities and dependencies that a correct solution should use, allowing generated traces…",
+      "dataPublicacao": "2026-09-29T17:46:55Z",
+      "fonte": "arXiv — Artificial Intelligence",
+      "fonteId": "arxiv-ai",
+      "href": "https://arxiv.org/abs/2609.38107v1",
+      "autores": [
+        "Ratish Puduppully",
+        "Pranabendu Misra",
+        "Paarth Iyer",
+        "Durgesh Kalwar",
+        "Vardhan Palod",
+        "Subbarao Kambhampati"
+      ],
+      "coletadoEm": "2026-09-30T16:24:27+00:00",
+      "revisao": "Pendente de curadoria humana"
+    },
+    {
+      "id": "4d0a48cf8ac82854",
+      "status": "pendente",
+      "tipo": "Artigos científicos",
+      "titulo": "NeuronEye: Query-Guided Visual Concept Activation for Vision-Language Reasoning",
+      "resumoOriginal": "Current vision-language models (VLMs) encode visual information in dense hidden states where object identity, spatial layout, and local attributes are implicitly entangled rather than explicitly disentangled, limiting their ability to isolate and modulate the specific visual evidence required by a given language query. Inspired by sparse population coding and top-down modulation in biological vision, we introduce NeuronEye, a plug-in framework that constructs a sparse, concept-level neuron vocabulary from intermediate VLM representations and selectively…",
+      "dataPublicacao": "2026-09-29T17:44:09Z",
+      "fonte": "arXiv — Artificial Intelligence",
+      "fonteId": "arxiv-ai",
+      "href": "https://arxiv.org/abs/2609.38098v1",
+      "autores": [
+        "Ruiyu Yan",
+        "Bowen Chen",
+        "Shaowen Wan",
+        "Lin Zhao"
+      ],
+      "coletadoEm": "2026-09-30T16:24:27+00:00",
+      "revisao": "Pendente de curadoria humana"
+    },
+    {
+      "id": "ece00cd48bae4ff1",
+      "status": "pendente",
+      "tipo": "Artigos científicos",
+      "titulo": "Character Training for Risk-Averse Agents",
+      "resumoOriginal": "Risk aversion in resources could prevent misaligned AI agents from causing catastrophic harm. Misaligned but risk-averse agents would tend to favor safer strategies like making deals with humans over riskier strategies like rebelling. We train agents to be risk averse through character training, finding that persona traits provide a robust mechanism for instilling risk preferences. To do this, we construct a model constitution describing constant absolute risk aversion (CARA) over an agent's resources and instill it through on-policy distillation. Despi…",
+      "dataPublicacao": "2026-09-29T17:42:54Z",
+      "fonte": "arXiv — Artificial Intelligence",
+      "fonteId": "arxiv-ai",
+      "href": "https://arxiv.org/abs/2609.38093v1",
+      "autores": [
+        "Arav Dhoot",
+        "Punya Syon Pandey",
+        "Jamie Johnson",
+        "Daniel Tan",
+        "Elliott Thornley",
+        "David Demitri Africa"
+      ],
+      "coletadoEm": "2026-09-30T16:24:27+00:00",
+      "revisao": "Pendente de curadoria humana"
+    },
+    {
+      "id": "9cebf15f7d35bf6f",
+      "status": "pendente",
+      "tipo": "Artigos científicos",
+      "titulo": "Neural topology optimization of ship structures under propulsion machinery vibrations",
+      "resumoOriginal": "Ship structural vibrations contribute to noise, fatigue, and equipment damage, while dynamic-compliance topology optimization can produce pathological designs near resonance. This study extends neural-reparameterized topology optimization using a convolutional Kolmogorov-Arnold network (KATO) to forced-vibration design with active input power (AIP) as the objective. Applications include a 100 Hz engine-supporting deck panel and an 18 Hz thruster foundation frame. Helmholtz PDE filtering and Heaviside projection control feature sizes and manufacturing to…",
+      "dataPublicacao": "2026-09-29T17:41:08Z",
+      "fonte": "arXiv — Artificial Intelligence",
+      "fonteId": "arxiv-ai",
+      "href": "https://arxiv.org/abs/2609.38089v1",
+      "autores": [
+        "Shengyu Yan",
+        "Muhammad Muztahidul Hakim Zareer",
+        "Jasmin Jelovica"
+      ],
+      "coletadoEm": "2026-09-30T16:24:27+00:00",
+      "revisao": "Pendente de curadoria humana"
+    },
+    {
+      "id": "f487014385d17349",
+      "status": "pendente",
+      "tipo": "Artigos científicos",
+      "titulo": "Probability is Not Enough: Exploring and Counting Divergent Tokens for Reasoning Uncertainty Quantification in LLMs",
+      "resumoOriginal": "As the chain-of-thought reasoning capabilities of large language models improve, evaluating and calibrating their reasoning confidence is becoming increasingly important for quantifying the uncertainty of their answers. Current methods for estimating the confidence of large language models are generally based on probabilities of selected key tokens, but the underlying mechanism remains unclear. Our pilot study finds that replacing selected token probabilities with coarse substitutes can also improve calibration, motivating us to further explore effectiv…",
+      "dataPublicacao": "2026-09-29T17:33:36Z",
+      "fonte": "arXiv — Artificial Intelligence",
+      "fonteId": "arxiv-ai",
+      "href": "https://arxiv.org/abs/2609.38070v1",
+      "autores": [
+        "Feiyang Li",
+        "Shengjing Liu",
+        "Qi Zhan",
+        "Sijie Cheng",
+        "Weiqing Wang",
+        "Hongwen Chen",
+        "Yuxuan Yang",
+        "Wen Wang",
+        "Yile Wang",
+        "Hui Huang"
+      ],
+      "coletadoEm": "2026-09-30T16:24:27+00:00",
+      "revisao": "Pendente de curadoria humana"
+    },
+    {
+      "id": "0a65b2659ddccb71",
+      "status": "pendente",
+      "tipo": "Artigos científicos",
+      "titulo": "Jaxolotl: A Unified High-Performance Benchmark Suite for LTL-Based Multi-Task RL",
+      "resumoOriginal": "Training agents to follow arbitrary instructions is an important goal of multi-task reinforcement learning (RL). Linear temporal logic (LTL) provides a precise and structured formalism for specifying instructions to agents, and has been successfully adopted for training generalist multi-task policies. However, differences in implementations, task distributions, and evaluation protocols make existing methods difficult to compare, while high computational costs limit the scale and statistical reliability of experiments. We introduce Jaxolotl, a unified hi…",
+      "dataPublicacao": "2026-09-29T17:30:21Z",
+      "fonte": "arXiv — Artificial Intelligence",
+      "fonteId": "arxiv-ai",
+      "href": "https://arxiv.org/abs/2609.38065v1",
+      "autores": [
+        "Mathias Jackermeier",
+        "Jacques Cloete",
+        "Alessandro Abate"
+      ],
+      "coletadoEm": "2026-09-30T16:24:27+00:00",
+      "revisao": "Pendente de curadoria humana"
+    },
+    {
+      "id": "0c41b636aba670ea",
+      "status": "pendente",
+      "tipo": "Artigos científicos",
+      "titulo": "UserProxyBench: Evaluating LLM User Simulators for Agent Benchmarks and Training",
+      "resumoOriginal": "Interactive agent benchmarks and multi-turn reinforcement learning increasingly place a second language model in the role of the user. This simulated user controls what information the agent receives and when, yet current benchmarks score only the agent and do not directly measure whether the user correctly executed its assigned role. We introduce UserProxyBench, an evaluation layer over the tau-bench family, and the User Fidelity Score (UFS), which measures adherence to the benchmark's private user instructions using task-grounded rubric criteria score…",
+      "dataPublicacao": "2026-09-29T17:17:24Z",
+      "fonte": "arXiv — Artificial Intelligence",
+      "fonteId": "arxiv-ai",
+      "href": "https://arxiv.org/abs/2609.38043v1",
+      "autores": [
+        "Ashish Jain",
+        "Armaan Sandhu"
+      ],
+      "coletadoEm": "2026-09-30T16:24:27+00:00",
+      "revisao": "Pendente de curadoria humana"
+    },
+    {
+      "id": "fb9e8ad6841fca07",
+      "status": "pendente",
+      "tipo": "Artigos científicos",
+      "titulo": "Gender bias across LLMs is common and highly heterogenous",
+      "resumoOriginal": "Understanding gender biases in large language models (LLMs) is increasingly important as these systems become embedded in decision-support tools with real consequences. Prior research has focused only on a small set of models, leaving open the extent to which gender biases are common and heterogeneous across LLMs. We address this gap across ten models released between April 2025 and June 2026, spanning nine vendors, using two paradigms: gender attribution to stereotyped phrases (Study 1) and moral judgment of abuse or torture against a woman or a man to…",
+      "dataPublicacao": "2026-09-29T17:11:53Z",
+      "fonte": "arXiv — Artificial Intelligence",
+      "fonteId": "arxiv-ai",
+      "href": "https://arxiv.org/abs/2609.38036v1",
+      "autores": [
+        "Edoardo Bolzoni",
+        "Valerio Capraro"
+      ],
+      "coletadoEm": "2026-09-30T16:24:27+00:00",
+      "revisao": "Pendente de curadoria humana"
+    },
+    {
+      "id": "05887790a89dcbde",
+      "status": "pendente",
+      "tipo": "Artigos científicos",
+      "titulo": "doPlan: A Variable-Horizon Dataset for Multi-Stage Language-Conditioned Planning in Autonomous Driving",
+      "resumoOriginal": "Autonomous vehicles interacting with passengers through natural language must reason beyond immediate commands. Passenger intent may span multiple stages of behavior, depend on future events, refer to surrounding agents or landmarks, and remain relevant as driving conditions evolve. Existing language-enabled driving datasets largely focus on short, localized interactions, leaving these longer-horizon forms of passenger intent comparatively underexplored. We introduce doPlan, to our knowledge the first publicly available, human-annotated real-world datas…",
+      "dataPublicacao": "2026-09-29T17:08:01Z",
+      "fonte": "arXiv — Artificial Intelligence",
+      "fonteId": "arxiv-ai",
+      "href": "https://arxiv.org/abs/2609.38028v1",
+      "autores": [
+        "Parthib Roy",
+        "Yash Tandon",
+        "Marcus Blennemann",
+        "Giovanni Tapia Lopez",
+        "Angel Martinez-Sanchez",
+        "Mohan M. Trivedi",
+        "Ross Greer"
+      ],
+      "coletadoEm": "2026-09-30T16:24:27+00:00",
       "revisao": "Pendente de curadoria humana"
     }
   ]
