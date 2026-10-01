@@ -1,6 +1,6 @@
 {
-  "geradoEm": "2026-09-30T16:24:28+00:00",
-  "total": 129,
+  "geradoEm": "2026-10-01T17:01:32+00:00",
+  "total": 149,
   "erros": [],
   "itens": [
     {
@@ -2326,6 +2326,425 @@
         "Ross Greer"
       ],
       "coletadoEm": "2026-09-30T16:24:27+00:00",
+      "revisao": "Pendente de curadoria humana"
+    },
+    {
+      "id": "e35f0319f694b4f0",
+      "status": "pendente",
+      "tipo": "Artigos científicos",
+      "titulo": "Semifactual Credit-Augmented Policy Optimization",
+      "resumoOriginal": "Reinforcement learning with verifiable rewards (RLVR) has improved the reasoning capabilities of large language models (LLMs), yet their predictions remain sensitive to task-irrelevant prompt features. We investigate this sensitivity through semifactual prompt interventions that preserve the underlying problem and its answer. Our analysis reveals substantial variation in token-level sensitivity and shows that suppressing high-drift token candidates during decoding improves reasoning accuracy without updating model weights. These findings highlight a lim…",
+      "dataPublicacao": "2026-09-30T17:59:56Z",
+      "fonte": "arXiv — Artificial Intelligence",
+      "fonteId": "arxiv-ai",
+      "href": "https://arxiv.org/abs/2609.40360v1",
+      "autores": [
+        "Junshu Pan",
+        "Zhizhang Fu",
+        "Shulin Huang",
+        "Yiran Ding",
+        "Zifan Cheng",
+        "Wenqi Shao",
+        "Qiaosheng Zhang",
+        "Yue Zhang"
+      ],
+      "coletadoEm": "2026-10-01T17:01:30+00:00",
+      "revisao": "Pendente de curadoria humana"
+    },
+    {
+      "id": "c3fa9b8d1c2c94f7",
+      "status": "pendente",
+      "tipo": "Artigos científicos",
+      "titulo": "ViTeX-Bench: Benchmarking High-Fidelity Video Scene Text Editing",
+      "resumoOriginal": "Recent video generation is increasingly realistic and controllable, yet video editing remains less developed, particularly for precise local edits that must preserve the original scene dynamics. Video scene text editing replaces text on scene surfaces, such as storefront signs, whiteboards, and product labels, while preserving the surrounding content, motion, and camera dynamics. Although scene text editing is well studied for images, video scene text editing that achieves high visual quality, temporal consistency, and edit locality remains underexplore…",
+      "dataPublicacao": "2026-09-30T17:59:33Z",
+      "fonte": "arXiv — Artificial Intelligence",
+      "fonteId": "arxiv-ai",
+      "href": "https://arxiv.org/abs/2609.40356v1",
+      "autores": [
+        "Xinghao Chen",
+        "Xiangbo Gao",
+        "Jiongze Yu",
+        "Yuheng Wu",
+        "Zhengzhong Tu"
+      ],
+      "coletadoEm": "2026-10-01T17:01:30+00:00",
+      "revisao": "Pendente de curadoria humana"
+    },
+    {
+      "id": "256a0500c567609c",
+      "status": "pendente",
+      "tipo": "Artigos científicos",
+      "titulo": "Turbo Harness: Instance-Adaptive Harness Optimization",
+      "resumoOriginal": "Automating the search for effective harnesses is an important step toward enabling agents to recursively self-improve. Existing harness optimizations typically produce a single global harness that is applied uniformly across task instances. However, a harness that works well on average may not be optimal for every instance. We introduce Turbo Harness, a framework that can adapt a globally optimized harness to each instance by reusing information generated during the original optimization process. Specifically, Turbo Harness recycles artifacts produced d…",
+      "dataPublicacao": "2026-09-30T17:56:09Z",
+      "fonte": "arXiv — Artificial Intelligence",
+      "fonteId": "arxiv-ai",
+      "href": "https://arxiv.org/abs/2609.40330v1",
+      "autores": [
+        "Tunyu Zhang",
+        "Hao Wang",
+        "Kai Xu",
+        "Dimitris N. Metaxas"
+      ],
+      "coletadoEm": "2026-10-01T17:01:30+00:00",
+      "revisao": "Pendente de curadoria humana"
+    },
+    {
+      "id": "85a724a6a988f80c",
+      "status": "pendente",
+      "tipo": "Artigos científicos",
+      "titulo": "WorldAuditBench: Interactive 3D World Auditing with Multimodal Agents",
+      "resumoOriginal": "As interactive 3D worlds are increasingly used to study intelligent behavior, it becomes important to develop efficient pipelines for identifying anomalies in these simulated environments, such as floating objects, traversable walls, or objects inconsistent with the surrounding scene. Multimodal AI systems, including vision-language models (VLMs) and vision-language-action models (VLAs), have shown potential for automating this task. However, 3D world auditing is complex, requiring the close coupling of two distinct capabilities: action, to navigate the…",
+      "dataPublicacao": "2026-09-30T17:55:29Z",
+      "fonte": "arXiv — Artificial Intelligence",
+      "fonteId": "arxiv-ai",
+      "href": "https://arxiv.org/abs/2609.40325v1",
+      "autores": [
+        "Ziyan Jiang",
+        "Jingbo Yang",
+        "Jiabao Ji",
+        "Yujian Liu",
+        "Qiucheng Wu",
+        "Tommi Jaakkola",
+        "Yang Zhang",
+        "Shiyu Chang"
+      ],
+      "coletadoEm": "2026-10-01T17:01:30+00:00",
+      "revisao": "Pendente de curadoria humana"
+    },
+    {
+      "id": "35ddd0979c5c3319",
+      "status": "pendente",
+      "tipo": "Artigos científicos",
+      "titulo": "Cogentic: Multi-Agent Orchestration for Automated Proof Discovery",
+      "resumoOriginal": "We present Cogentic, a multi-agent harness for automated proof discovery on open research problems. While frontier language models can generate strong mathematical ideas in a single shot, single-shot generation is often insufficient for open problems that require exploring multiple competing conjectures, overcoming subtle technical obstructions, and retaining intermediate progress over a long horizon. Cogentic addresses these challenges through an iterative prove--verify loop in which an orchestrator allocates a population of independent provers across…",
+      "dataPublicacao": "2026-09-30T17:55:22Z",
+      "fonte": "arXiv — Artificial Intelligence",
+      "fonteId": "arxiv-ai",
+      "href": "https://arxiv.org/abs/2609.40324v1",
+      "autores": [
+        "Yang Cai",
+        "Vineet Gupta",
+        "Yanchen Jiang",
+        "Christopher Liaw",
+        "Aranyak Mehta",
+        "Grigoris Velegkas",
+        "Di Wang"
+      ],
+      "coletadoEm": "2026-10-01T17:01:30+00:00",
+      "revisao": "Pendente de curadoria humana"
+    },
+    {
+      "id": "562185d7d34c31da",
+      "status": "pendente",
+      "tipo": "Artigos científicos",
+      "titulo": "MatLoom: Layered Text-to-Material Generation in a Compact Program Space",
+      "resumoOriginal": "Material generation should produce not only an appearance, but also the rules that construct it. We introduce MatLoom, a compact, layer-oriented language for text-to-material generation with pretrained language models. Each program composes alpha-masked layers whose shared spatial expressions define coverage and physically based rendering (PBR) channels, making dependencies between patterns, color, and relief explicit. A standalone interpreter evaluates the program into material maps, while the source retains named fields and layer parameters for subseq…",
+      "dataPublicacao": "2026-09-30T17:55:06Z",
+      "fonte": "arXiv — Artificial Intelligence",
+      "fonteId": "arxiv-ai",
+      "href": "https://arxiv.org/abs/2609.40322v1",
+      "autores": [
+        "Anson Y. Lam",
+        "Shuqing Li",
+        "Michael R. Lyu"
+      ],
+      "coletadoEm": "2026-10-01T17:01:30+00:00",
+      "revisao": "Pendente de curadoria humana"
+    },
+    {
+      "id": "f126dd7cc80f85ff",
+      "status": "pendente",
+      "tipo": "Artigos científicos",
+      "titulo": "Scaling Laws for Looped Mixture of Experts",
+      "resumoOriginal": "Looped transformers and Mixture-of-Experts (MoE) offer complementary routes to efficient scaling: recurrence increases computational depth at fixed parameters, while MoE sparsity expands total capacity at fixed active compute. Yet existing scaling laws model recurrence or sparsity in isolation. In this work, we introduce Loop Scaling Laws, the first scaling law to jointly model recurrence and sparsity alongside model size and data. At its core is a bounded, sparsity-conditional recurrence mapping that characterizes the effective-parameter gain from loop…",
+      "dataPublicacao": "2026-09-30T17:53:47Z",
+      "fonte": "arXiv — Artificial Intelligence",
+      "fonteId": "arxiv-ai",
+      "href": "https://arxiv.org/abs/2609.40316v1",
+      "autores": [
+        "Yanbei Chen",
+        "Anirudh Goyal",
+        "Raghuraman Krishnamoorthi"
+      ],
+      "coletadoEm": "2026-10-01T17:01:30+00:00",
+      "revisao": "Pendente de curadoria humana"
+    },
+    {
+      "id": "237b7afc798c2ea8",
+      "status": "pendente",
+      "tipo": "Artigos científicos",
+      "titulo": "DynaHarness: A Dynamic Physical Harness for Self-Evolving Robot Agents",
+      "resumoOriginal": "Pretrained robot policies provide useful action priors, but long-horizon manipulation still requires coordination between semantic reasoning and physical execution. Semantic reasoning operates at a coarser timescale than physical interaction, while episode-level failures provide limited guidance on which system component should be revised. We propose DynaHarness, a dynamic physical harness that couples semantic reasoning with physical governance through a shared execution contract and turns failure evidence into validated capability revisions. To be mor…",
+      "dataPublicacao": "2026-09-30T17:52:09Z",
+      "fonte": "arXiv — Artificial Intelligence",
+      "fonteId": "arxiv-ai",
+      "href": "https://arxiv.org/abs/2609.40306v1",
+      "autores": [
+        "Haoyuan Deng",
+        "Jiebin Liu",
+        "Tengxiao Zhang",
+        "Langning Yan",
+        "Hongye Cao",
+        "Ziwei Wang"
+      ],
+      "coletadoEm": "2026-10-01T17:01:30+00:00",
+      "revisao": "Pendente de curadoria humana"
+    },
+    {
+      "id": "203f86468b7918d8",
+      "status": "pendente",
+      "tipo": "Artigos científicos",
+      "titulo": "How Much of a Harness Does a Strong Agent Need for Autonomous ML Engineering?",
+      "resumoOriginal": "Recent autonomous machine learning engineering (MLE) agents have made significant progress on public leaderboards. Often motivated by progress stagnation over long-horizon cycles and limited Large Language Model (LLM) primitives, modern MLE agents are deployed on top of increasingly elaborate machinery: multi-agent orchestrators, dedicated retrieval subagents, and more. While such harnesses expand, the use of more primitive but improved coding agents - where LLMs have direct access to the execution environment through read, write, and bash primitives -…",
+      "dataPublicacao": "2026-09-30T17:51:30Z",
+      "fonte": "arXiv — Artificial Intelligence",
+      "fonteId": "arxiv-ai",
+      "href": "https://arxiv.org/abs/2609.40303v1",
+      "autores": [
+        "Kirill Brilliantov",
+        "Alejandro Hernández-Cano",
+        "Emmanuel Abbé"
+      ],
+      "coletadoEm": "2026-10-01T17:01:30+00:00",
+      "revisao": "Pendente de curadoria humana"
+    },
+    {
+      "id": "04d213ee3f53e076",
+      "status": "pendente",
+      "tipo": "Artigos científicos",
+      "titulo": "CAS II: Symmetric Partitions as Kolmogorov Models",
+      "resumoOriginal": "In algorithmic statistics a string x is explained by a finite set containing it, and Kolmogorov's structure function records the smallest such model at each level of complexity. Vereshchagin's strong models, those computable from the data by a total algorithm, are essentially the cells of simple partitions. We read a partition of binary strings as a hypothesis, with the cell containing x as its model, and develop algorithmic statistics over symmetric partitions: the orbit partitions of groups acting on strings. The Galois connection between subgroups an…",
+      "dataPublicacao": "2026-09-30T17:49:15Z",
+      "fonte": "arXiv — Artificial Intelligence",
+      "fonteId": "arxiv-ai",
+      "href": "https://arxiv.org/abs/2609.40290v1",
+      "autores": [
+        "Romie Banerjee"
+      ],
+      "coletadoEm": "2026-10-01T17:01:30+00:00",
+      "revisao": "Pendente de curadoria humana"
+    },
+    {
+      "id": "5fb1d2e03fe2823e",
+      "status": "pendente",
+      "tipo": "Artigos científicos",
+      "titulo": "Linguistic Loopholes in LLM Unlearning: From a 174-Language Benchmark to Coverage-Aware Unlearning",
+      "resumoOriginal": "Unlearning a fact in one language does not guarantee its removal in others as changing the query or even the requested answer language can reopen seemingly forgotten knowledge -- a cross-lingual loophole. The most straightforward solution to this challenge -- unlearning in all languages -- is neither scalable nor desirable as it amplifies damage to unrelated model capabilities. We introduce the task of language budgeted multilingual unlearning where the goal is to select a subset of languages that maximizes cross-lingual erasure. To study this task we i…",
+      "dataPublicacao": "2026-09-30T17:48:13Z",
+      "fonte": "arXiv — Artificial Intelligence",
+      "fonteId": "arxiv-ai",
+      "href": "https://arxiv.org/abs/2609.40286v1",
+      "autores": [
+        "Tyler Skow",
+        "Shravan Chaudhari",
+        "Rama Chellappa",
+        "Abhay Yadav"
+      ],
+      "coletadoEm": "2026-10-01T17:01:30+00:00",
+      "revisao": "Pendente de curadoria humana"
+    },
+    {
+      "id": "47bb8f8303ffaf6e",
+      "status": "pendente",
+      "tipo": "Artigos científicos",
+      "titulo": "PivotOPD: Learning to Recover from Pivotal Mistakes in Multi-Turn Agents",
+      "resumoOriginal": "On-policy distillation (OPD) is a promising approach for training language agents, providing dense teacher supervision on student-generated trajectories. However, in multi-turn interaction, an incorrect action changes the states the student encounters later, so errors compound across turns. In preliminary experiments across three Qwen3 models (8B to 235B), we find that more than half of the failed rollouts contain a pivotal mistake, an action that moves the agent farther from completing the task, and this mistake typically occurs early. These pivotal mi…",
+      "dataPublicacao": "2026-09-30T17:48:11Z",
+      "fonte": "arXiv — Artificial Intelligence",
+      "fonteId": "arxiv-ai",
+      "href": "https://arxiv.org/abs/2609.40285v1",
+      "autores": [
+        "Yinghui He",
+        "Yapei Chang",
+        "Khushi Bhardwaj",
+        "Daniele Molinari",
+        "Tugrul Konuk",
+        "Jan Kautz",
+        "Ali Hatamizadeh"
+      ],
+      "coletadoEm": "2026-10-01T17:01:30+00:00",
+      "revisao": "Pendente de curadoria humana"
+    },
+    {
+      "id": "0a23d5bb54f8d38b",
+      "status": "pendente",
+      "tipo": "Artigos científicos",
+      "titulo": "cua-speedrun: Standardized Benchmarking of the Speed of Computer-Use Agents",
+      "resumoOriginal": "Computer use agents (CUAs), which use graphical user interfaces (GUIs) to complete tasks on a computer, have recently surpassed human performance on many standard benchmarks, including difficult long-horizon tasks. Their capabilities are undoubtedly impressive, however, a key barrier to the widespread adoption and deployment of CUAs remains their speed and cost. Progress towards faster yet capable CUAs requires reliable evaluation of their speed, but many CUA benchmarks currently face a reproducibility crisis. Benchmarks are based on complex infrastruct…",
+      "dataPublicacao": "2026-09-30T17:48:06Z",
+      "fonte": "arXiv — Artificial Intelligence",
+      "fonteId": "arxiv-ai",
+      "href": "https://arxiv.org/abs/2609.40284v1",
+      "autores": [
+        "Pranjal Aggarwal",
+        "Lawrence Keunho Jang",
+        "Sean Welleck",
+        "Daniel Fried",
+        "Ruslan Salakhutdinov",
+        "Jing Yu Koh"
+      ],
+      "coletadoEm": "2026-10-01T17:01:30+00:00",
+      "revisao": "Pendente de curadoria humana"
+    },
+    {
+      "id": "b58335d70bca7b79",
+      "status": "pendente",
+      "tipo": "Artigos científicos",
+      "titulo": "Belief-Aware Multi-Agent Path Finding under Map Uncertainty",
+      "resumoOriginal": "Multi-Agent Path Finding (MAPF) aims to find collision-free paths for multiple agents in a shared environment. Classical MAPF assumes that all static obstacles are known in advance, but real-world environments can change unexpectedly due to fallen objects, spills, or other local disturbances. When such changes are spatially correlated, an observation can inform traversability estimates beyond the observed location. Prior approaches address uncertainty in traversability through contingent plans or replanning based on direct observations, but do not lever…",
+      "dataPublicacao": "2026-09-30T17:44:19Z",
+      "fonte": "arXiv — Artificial Intelligence",
+      "fonteId": "arxiv-ai",
+      "href": "https://arxiv.org/abs/2609.40269v1",
+      "autores": [
+        "Viraj Parimi",
+        "Shao-Hung Chan",
+        "Han Zhang",
+        "Jingkai Chen",
+        "Brian Williams"
+      ],
+      "coletadoEm": "2026-10-01T17:01:30+00:00",
+      "revisao": "Pendente de curadoria humana"
+    },
+    {
+      "id": "d1ab8a015ed1d99e",
+      "status": "pendente",
+      "tipo": "Artigos científicos",
+      "titulo": "ComputerSD: Online Self-Distillation from Real-Time Feedback for Computer-Use Agents",
+      "resumoOriginal": "Online training enables computer-use agents (CUAs) to improve through interaction with executable environments. However, existing methods primarily rely on sparse outcome rewards, which provide no supervision for intermediate actions. On-policy self-distillation (OPSD) offers token-level learning signals through privileged rescoring, but directly applying it to CUA online training presents two challenges: fixed guidance may become misaligned with the student's current state, and guidance-induced probability shifts may conflict with step-level correctnes…",
+      "dataPublicacao": "2026-09-30T17:40:09Z",
+      "fonte": "arXiv — Artificial Intelligence",
+      "fonteId": "arxiv-ai",
+      "href": "https://arxiv.org/abs/2609.40253v1",
+      "autores": [
+        "Yong Du",
+        "Tongbo Chen",
+        "Zhengxi Lu",
+        "Yizhou Liu",
+        "Bofan Chen",
+        "Tao Jiang",
+        "Wenhao Xu",
+        "Yongliang Shen"
+      ],
+      "coletadoEm": "2026-10-01T17:01:30+00:00",
+      "revisao": "Pendente de curadoria humana"
+    },
+    {
+      "id": "daf3ee091e5e1d62",
+      "status": "pendente",
+      "tipo": "Artigos científicos",
+      "titulo": "EviRover: Reinforcing Agentic Perception Beyond a Glance",
+      "resumoOriginal": "Visual perception is conventionally formulated as a one-shot prediction from a single glance at the image, under the assumption that the image content and the model's parametric knowledge suffice to resolve the query. This assumption often fails in real-world scenarios that hinge on fine-grained visual details or require knowledge-intensive and up-to-date information. We term such cases \\textit{perception under insufficient evidence} and formulate perception as an agentic process that can obtain information beyond a single glance. To address the absence…",
+      "dataPublicacao": "2026-09-30T17:30:09Z",
+      "fonte": "arXiv — Artificial Intelligence",
+      "fonteId": "arxiv-ai",
+      "href": "https://arxiv.org/abs/2609.40230v1",
+      "autores": [
+        "Kaixuan Fan",
+        "Kaituo Feng",
+        "Tianshuo Peng",
+        "Yilei Jiang",
+        "Manyuan Zhang",
+        "Junke Wang",
+        "Xiangyu Yue"
+      ],
+      "coletadoEm": "2026-10-01T17:01:30+00:00",
+      "revisao": "Pendente de curadoria humana"
+    },
+    {
+      "id": "8e7d2e6b3304a9eb",
+      "status": "pendente",
+      "tipo": "Artigos científicos",
+      "titulo": "PhantomEnvironments: Training LLM Agents in Fictional Worlds",
+      "resumoOriginal": "Training LLM agents with reinforcement learning (RL) is bottlenecked by environments, which must provide verifiable rewards, support long-horizon interaction, and scale cheaply. Existing approaches rely on costly human-curated data or on LLM-generated environments that risk hallucinations and benchmark contamination. We show that LLMs can instead be trained into capable search agents using synthetic environments generated entirely by rules, whose generation requires no LLM and has zero marginal cost. We build PhantomEnvironments, multi-turn RL environme…",
+      "dataPublicacao": "2026-09-30T17:26:57Z",
+      "fonte": "arXiv — Artificial Intelligence",
+      "fonteId": "arxiv-ai",
+      "href": "https://arxiv.org/abs/2609.40221v1",
+      "autores": [
+        "Anmol Kabra",
+        "Swathi Saravana Selvam",
+        "Albert Gong",
+        "Chao Wan",
+        "Christian Belardi",
+        "Dongyoung Go",
+        "Katie Z. Luo",
+        "Kilian Q. Weinberger"
+      ],
+      "coletadoEm": "2026-10-01T17:01:30+00:00",
+      "revisao": "Pendente de curadoria humana"
+    },
+    {
+      "id": "649a6f87f7a114f7",
+      "status": "pendente",
+      "tipo": "Artigos científicos",
+      "titulo": "Learning Skills from Historical Action Trajectories: Action Experience Dictionary for World Action Models",
+      "resumoOriginal": "World Action Models (WAMs) couple visual dynamics prediction with action generation, yet they do not explicitly support the reuse of action experience across manipulation tasks. Furthermore, existing WAMs struggle to capture underlying cross-task semantic relationships that could guide target action prediction, as redundant background elements interfere with the extraction of key visual information. To address these challenges, we develop a novel Action Experience Dictionary (AED) that encodes historical physical action trajectories into shared action e…",
+      "dataPublicacao": "2026-09-30T17:26:38Z",
+      "fonte": "arXiv — Artificial Intelligence",
+      "fonteId": "arxiv-ai",
+      "href": "https://arxiv.org/abs/2609.40219v1",
+      "autores": [
+        "Qi Lyu",
+        "Jiahua Dong",
+        "Hao Shen",
+        "Xudong Wang",
+        "Hongyuan Yu",
+        "Baichen Liu",
+        "Henghui Ding",
+        "Zhi Han",
+        "Nicu Sebe",
+        "Ivan Laptev",
+        "Fahad Shahbaz Khan",
+        "Salman Khan"
+      ],
+      "coletadoEm": "2026-10-01T17:01:30+00:00",
+      "revisao": "Pendente de curadoria humana"
+    },
+    {
+      "id": "b2fe6f125c8636c1",
+      "status": "pendente",
+      "tipo": "Artigos científicos",
+      "titulo": "SCB: SpeechConversationBench for Evaluating Multi-Turn Reasoning in Speech-to-Speech Models",
+      "resumoOriginal": "Speech-to-speech systems must solve tasks whose requirements emerge across conversational turns. We introduce SpeechConversationBench (SCB), a focused evaluation of spoken mathematical reasoning using 103 sharded GSM8K problems. The framework compares the original problem delivered in one turn (full), its concatenated information shards delivered together (concat), and incremental spoken disclosure across turns (sharded). We report final-answer accuracy for four commercial speech systems and LEGO, a proprietary speech pipeline developed internally by th…",
+      "dataPublicacao": "2026-09-30T17:13:30Z",
+      "fonte": "arXiv — Artificial Intelligence",
+      "fonteId": "arxiv-ai",
+      "href": "https://arxiv.org/abs/2609.40198v1",
+      "autores": [
+        "Kanpat Vesessook",
+        "Saksorn Ruangtanusak"
+      ],
+      "coletadoEm": "2026-10-01T17:01:30+00:00",
+      "revisao": "Pendente de curadoria humana"
+    },
+    {
+      "id": "c556b88a2ec25824",
+      "status": "pendente",
+      "tipo": "Artigos científicos",
+      "titulo": "MemLife: Curating and Reasoning over Long-Term Egocentric Video Memories",
+      "resumoOriginal": "Long-term egocentric video enables personalized AI assistants to reason about daily life. However, as video histories grow to hundreds of hours spanning months or years, reprocessing raw clips for every query becomes computationally prohibitive. Memory systems offer a scalable alternative by compacting videos into text representations, but often fail on practical benchmarks: either the memory does not preserve key evidence, or the retriever fails to locate relevant entries due to retrieval competition in growing search spaces. To address these challenge…",
+      "dataPublicacao": "2026-09-30T17:11:33Z",
+      "fonte": "arXiv — Artificial Intelligence",
+      "fonteId": "arxiv-ai",
+      "href": "https://arxiv.org/abs/2609.40195v1",
+      "autores": [
+        "Guangzhi Xiong",
+        "Xinyuan Zhang",
+        "Xiao Yang",
+        "Hyokun Yun",
+        "Kai Zhang",
+        "Shiun-Zu Kuo",
+        "Hyeonjeong Ha",
+        "Xilun Chen",
+        "Kai Sun",
+        "Lucas Liang",
+        "Guangqiang Dong",
+        "Ejaz Ahmed"
+      ],
+      "coletadoEm": "2026-10-01T17:01:30+00:00",
       "revisao": "Pendente de curadoria humana"
     }
   ]
