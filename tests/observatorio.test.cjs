@@ -72,6 +72,14 @@ test('segue a estrutura acordada e não repete destaques nem o cartão de dados'
   assert.ok(html.includes('Acompanhe novidades, pesquisas, dados e análises sobre Inteligência Artificial.'));
   assert.ok(html.includes('Explorar análises e sínteses'));
 });
+test('cabeçalho mantém a marca completa usada na home', () => {
+  const home = fs.readFileSync(path.join(root,'index.html'),'utf8');
+  const html = fs.readFileSync(path.join(root,'observatorio.html'),'utf8');
+  const brandImage = /<img\b[^>]*class="brand-logo"[^>]*>/;
+  assert.equal(html.match(brandImage)?.[0],home.match(brandImage)?.[0]);
+  assert.ok(!html.includes('observatory-brand-mark'),'O logo não deve usar o contêiner de recorte');
+});
+
 test('URLs externas e locais são permitidas, protocolos executáveis não', () => {
   const base='https://ronaldocmc.github.io/unesp.ia/observatorio.html';
   assert.equal(model.safeURL('pesquisa.html',base),'https://ronaldocmc.github.io/unesp.ia/pesquisa.html');
