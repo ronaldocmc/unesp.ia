@@ -49,7 +49,6 @@
     article.append(meta);
     if (compact) {
       const cover = element('div', 'obs-story-cover');
-      cover.setAttribute('aria-hidden', 'true');
       cover.append(icon(symbol));
       const source = model.safeURL(item.imagem, location.href);
       if (source) {
@@ -58,12 +57,13 @@
         img.addEventListener('error', () => img.remove(), { once: true });
         cover.append(img);
       }
+      if (item.destaque === true) cover.append(element('span', 'obs-featured-label', 'Destaque da curadoria'));
       article.append(cover);
     }
     const title = element('h3');
     title.append(linkTo(item, '', item.titulo));
     article.append(title, element('p', 'obs-story-summary', item.resumo || ''));
-    article.append(element('small', 'obs-story-source', 'Fonte: ' + (item.fonte || 'Não informada') + (compact ? '' : ' · ' + (item.revisao || 'Situação editorial não informada'))));
+    article.append(element('small', 'obs-story-source', 'Fonte: ' + (item.fonte || 'Não informada') + ' · ' + (item.revisao || 'Situação editorial não informada')));
     const read = linkTo(item, 'obs-read-more', 'Ler mais ');
     if (read.tagName === 'A') {
       read.setAttribute('aria-label', 'Ler mais: ' + item.titulo);
@@ -73,12 +73,12 @@
     return article;
   }
   function showArchive(scroll = false) {
-    $('acervo').open = true;
     if (scroll) $('acervo').scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth', block: 'start' });
   }
   function applyFilters() {
-    const items = state.items.filter(item => model.matches(item, state));
-    $('observatory-grid').replaceChildren(...items.map(item => card(item)));
+    const items = model.orderedContents(state.items.filter(item => model.matches(item, state)));
+    $('observatory-grid').replaceChildren(...items.map(item => card(item, true)));
+    $('observatory-data-note').hidden = state.area !== 'Dados';
     $('observatory-result').textContent = state.failed ? 'Acervo temporariamente indisponível' : items.length + (items.length === 1 ? ' conteúdo encontrado' : ' conteúdos encontrados');
     $('observatory-empty').hidden = items.length > 0;
     $('observatory-empty').textContent = state.failed ? 'Não foi possível carregar o acervo. Tente recarregar a página em alguns instantes.' : 'Nenhum conteúdo publicado corresponde a esta seleção. Experimente outro tema ou limpe os filtros.';
@@ -89,10 +89,6 @@
     });
   }
   function render() {
-    const highlights = model.highlights(state.items);
-    $('observatory-highlights').replaceChildren(...highlights.map(item => card(item, true)));
-    if (!highlights.length) $('observatory-highlights').append(element('p', 'obs-message', state.failed ? 'Não foi possível carregar os destaques. Tente recarregar a página.' : 'Novos destaques serão exibidos após a publicação pela equipe.'));
-    $('observatory-total').textContent = '(' + state.items.length + ')';
     // Inclui os tipos novos cadastrados no painel, sem perder as opções editoriais.
     const typeSelect = $('observatory-type');
     const existing = new Set([...typeSelect.options].map(option => option.value));
@@ -172,26 +168,31 @@
     const requested = new URLSearchParams(location.search).get('busca');
     if (requested) {
       state.query = requested; $('observatory-search').value = requested; $('observatory-global-search').value = requested;
-      showArchive();
     }
-    if (location.hash === '#acervo') showArchive();
-    window.addEventListener('hashchange', () => { if (location.hash === '#acervo') showArchive(); });
+    // Preserva links antigos de Dados sem recriar o cartão separado.
+    const selectLegacyData = () => {
+      if (location.hash !== '#dados') return;
+      state.area = 'Dados';
+      applyFilters();
+    };
+    selectLegacyData();
+    window.addEventListener('hashchange', selectLegacyData);
     document.querySelectorAll('[data-observatory-filter]').forEach(button => button.addEventListener('click', () => {
       state.area = button.dataset.observatoryFilter;
-      applyFilters(); showArchive();
+      applyFilters();
     }));
     document.querySelectorAll('[data-observatory-shortcut]').forEach(link => link.addEventListener('click', () => {
       reset();
       const value = link.dataset.observatoryShortcut;
       if (model.AREAS.includes(value)) state.area = value; else state.type = value;
       $('observatory-type').value = state.type;
-      applyFilters(); showArchive();
+      applyFilters();
     }));
     [$('observatory-search'), $('observatory-global-search')].forEach(input => {
       input.addEventListener('input', () => {
         state.query = input.value;
         $('observatory-search').value = input.value; $('observatory-global-search').value = input.value;
-        applyFilters(); showArchive();
+        applyFilters();
       });
       input.closest('form').addEventListener('submit', event => { event.preventDefault(); showArchive(true); });
     });

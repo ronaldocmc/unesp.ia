@@ -5,11 +5,14 @@ const path = require('node:path');
 const model = require('../assets/js/observatorio-model.js');
 const root = path.join(__dirname, '..');
 const data = JSON.parse(fs.readFileSync(path.join(root, 'assets/data/observatorio-conteudos.json'), 'utf8'));
-test('preserva os oito conteúdos existentes e seleciona cinco destaques', () => {
+test('exibe todos os oito conteúdos, com os destaques primeiro e sem duplicação', () => {
   assert.equal(data.itens.length, 8);
-  const selected = model.highlights(data.itens);
-  assert.equal(selected.length, 5);
-  assert.ok(selected.every(item => item.destaque));
+  const selected = model.orderedContents(data.itens);
+  assert.equal(selected.length, data.itens.length);
+  assert.equal(new Set(selected.map(item => item.id)).size, data.itens.length);
+  const count = data.itens.filter(item => item.destaque).length;
+  assert.ok(selected.slice(0, count).every(item => item.destaque));
+  assert.ok(selected.slice(count).every(item => !item.destaque));
 });
 test('busca não diferencia maiúsculas nem acentos e inclui fonte, projeto e tags', () => {
   const item = { titulo: 'Adoção responsável', fonte: 'FCT/UNESP', projeto: 'pet.IA', tags: ['regulação'] };
@@ -47,7 +50,27 @@ test('mescla e ordena as fontes sem duplicar IDs e prioriza destaques', () => {
   const items = model.merge([{id:'a',titulo:'Antigo',data:'2026-01-01'}],[{id:'a',titulo:'Atualizado',data:'2026-09-30'},{id:'b',titulo:'Destaque',data:'2025-01-01',destaque:true}]);
   assert.equal(items.length,2);
   assert.equal(items[0].titulo,'Atualizado');
-  assert.equal(model.highlights(items,1)[0].id,'b');
+  assert.equal(model.orderedContents(items)[0].id,'b');
+});
+test('mantém a ordem cronológica dentro de cada grupo editorial sem alterar o original', () => {
+  const items = [
+    {id:'a',data:'2026-09-01'}, {id:'b',data:'2026-08-01',destaque:true},
+    {id:'c',data:'2026-10-01'}, {id:'d',data:'2026-09-01',destaque:true}
+  ];
+  assert.deepEqual(model.orderedContents(items).map(item=>item.id),['d','b','c','a']);
+  assert.deepEqual(items.map(item=>item.id),['a','b','c','d']);
+});
+test('segue a estrutura acordada e não repete destaques nem o cartão de dados', () => {
+  const html = fs.readFileSync(path.join(root,'observatorio.html'),'utf8');
+  const sections = [...html.matchAll(/<section\b[^>]*\bid="([^"]+)"/g)].map(match=>match[1]);
+  assert.deepEqual(sections,['conteudo','areas','analises','agentes','sobre']);
+  assert.equal((html.match(/id="observatory-grid"/g)||[]).length,1);
+  assert.ok(!html.includes('id="observatory-highlights"'));
+  assert.ok(!html.includes('<details'));
+  assert.ok(!html.includes('>Dados e Indicadores</h2>'));
+  assert.ok(html.includes('Explore o <span>Observatório</span>'));
+  assert.ok(html.includes('Acompanhe novidades, pesquisas, dados e análises sobre Inteligência Artificial.'));
+  assert.ok(html.includes('Explorar análises e sínteses'));
 });
 test('URLs externas e locais são permitidas, protocolos executáveis não', () => {
   const base='https://ronaldocmc.github.io/unesp.ia/observatorio.html';

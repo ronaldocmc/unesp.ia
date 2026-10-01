@@ -13,16 +13,16 @@
   <meta property="og:locale" content="pt_BR">
   <meta property="og:image" content="https://ronaldocmc.github.io/unesp.ia/assets/img/observar-ia-logo.png">
   <link rel="stylesheet" href="assets/css/style.css?v=20260929-observar-final">
-  <link rel="stylesheet" href="assets/css/observatorio.css?v=20260930-portal">
-  <script src="assets/js/observatorio-model.js?v=20260930-portal" defer></script>
-  <script src="assets/js/observatorio.js?v=20260930-portal" defer></script>
+  <link rel="stylesheet" href="assets/css/observatorio.css?v=20261001-acervo-unificado">
+  <script src="assets/js/observatorio-model.js?v=20261001-acervo-unificado" defer></script>
+  <script src="assets/js/observatorio.js?v=20261001-acervo-unificado" defer></script>
 </head>
 <body class="ecosystem-page observatory-page">
   <a class="obs-skip" href="#conteudo">Ir para o conteúdo</a>
   <header class="topbar ecosystem-topbar observatory-topbar">
     <a class="brand" href="index.html" aria-label="Página inicial do ecossistema unesp.IA"><span class="observatory-brand-mark"><img class="brand-logo" src="assets/img/logo-unesp-ia-research-innovation-lab.png" alt="unesp.IA" width="2172" height="724"></span></a>
     <nav class="nav" aria-label="Navegação do Observatório">
-      <a href="#top" aria-current="location">Início</a><a href="#sobre">O Observatório</a><a href="#areas">Áreas</a><a href="#destaques">Em destaque</a><a href="#dados">Dados</a><a href="#analises">Análises</a><a href="#agentes">Agentes</a><a href="equipe.html">Equipe</a><a href="#contato" data-dialog="contato">Contato</a>
+      <a href="#top" aria-current="location">Início</a><a href="#areas">Explorar</a><a href="#analises">Análises</a><a href="#agentes">Agentes</a><a href="#sobre">O Observatório</a><a href="equipe.html">Equipe</a><a href="#contato" data-dialog="contato">Contato</a>
     </nav>
     <form class="obs-search obs-header-search" role="search">
       <svg class="obs-icon " viewBox="0 0 24 24" aria-hidden="true"><use href="assets/img/observar-ia-area-icons.svg?v=20260930#search"></use></svg><label class="observatory-visually-hidden" for="observatory-global-search">Buscar no Observatório</label><input id="observatory-global-search" type="search" placeholder="Buscar no Observatório..." autocomplete="off">
@@ -37,20 +37,55 @@
           <p>O observatório monitora e analisa a evolução, a adoção e os impactos da Inteligência Artificial, integrando dados, pesquisas, tecnologias, regulamentações e tendências.</p>
           <div class="obs-actions">
             <a class="obs-button primary" href="#areas"><svg class="obs-icon " viewBox="0 0 24 24" aria-hidden="true"><use href="assets/img/observar-ia-area-icons.svg?v=20260930#dados"></use></svg>Explorar o Observatório<span aria-hidden="true">→</span></a>
-            <a class="obs-button" href="#destaques"><svg class="obs-icon " viewBox="0 0 24 24" aria-hidden="true"><use href="assets/img/observar-ia-area-icons.svg?v=20260930#pesquisas"></use></svg>Ver novidades<span aria-hidden="true">→</span></a>
+            <a class="obs-button" href="#analises"><svg class="obs-icon " viewBox="0 0 24 24" aria-hidden="true"><use href="assets/img/observar-ia-area-icons.svg?v=20260930#pesquisas"></use></svg>Conhecer as análises<span aria-hidden="true">→</span></a>
           </div>
         </div>
         <img class="obs-hero-visual" src="assets/img/observar-ia-hero-paineis.png" width="1659" height="948" fetchpriority="high" alt="Globo com o Brasil em destaque, conectado a painéis de tendências, dados, pesquisas, aplicações, regulação e avaliações.">
       </section>
-      <section class="obs-highlights obs-container" id="destaques" aria-labelledby="highlights-title">
-        <div class="obs-heading-row">
-          <div class="obs-heading"><h2 id="highlights-title">Em <span>destaque</span></h2><p>Novidades, dados e análises selecionadas pelo Observar.IA</p></div>
-          <a class="obs-text-link" href="#acervo" data-observatory-shortcut="Todos">Ver todas as novidades <span aria-hidden="true">→</span></a>
-        </div>
-        <p class="obs-section-note">Acompanhe tendências, explore dados, conheça pesquisas, compare tecnologias e entenda como a IA está sendo aplicada e regulamentada.</p>
-        <div class="obs-highlight-grid" id="observatory-highlights" aria-live="polite"><p class="obs-message">Carregando destaques…</p></div>
-      </section>
     </div>
+
+    <section class="obs-explore obs-container" id="areas" aria-labelledby="explore-title">
+      <span id="destaques" class="obs-anchor" aria-hidden="true"></span>
+      <div class="obs-heading-row">
+        <div class="obs-heading"><h2 id="explore-title">Explore o <span>Observatório</span></h2><p>Acompanhe novidades, pesquisas, dados e análises sobre Inteligência Artificial.</p></div>
+        <form class="obs-search obs-content-search" role="search">
+          <svg class="obs-icon " viewBox="0 0 24 24" aria-hidden="true"><use href="assets/img/observar-ia-area-icons.svg?v=20260930#search"></use></svg><label class="observatory-visually-hidden" for="observatory-search">Buscar conteúdos</label><input id="observatory-search" type="search" placeholder="Buscar conteúdos..." autocomplete="off">
+        </form>
+      </div>
+      <span id="dados" class="obs-anchor" aria-hidden="true"></span>
+      <div class="obs-filters" role="group" aria-label="Filtrar por área">
+          <button type="button" data-observatory-filter="Todos" aria-pressed="true" class="active">Todos</button>
+          <button type="button" data-observatory-filter="Dados" aria-pressed="false"><svg class="obs-icon " viewBox="0 0 24 24" aria-hidden="true"><use href="assets/img/observar-ia-area-icons.svg?v=20260930#dados"></use></svg>Dados</button>
+          <button type="button" data-observatory-filter="Pesquisas" aria-pressed="false"><svg class="obs-icon " viewBox="0 0 24 24" aria-hidden="true"><use href="assets/img/observar-ia-area-icons.svg?v=20260930#pesquisas"></use></svg>Pesquisas</button>
+          <button type="button" data-observatory-filter="Avaliações" aria-pressed="false"><svg class="obs-icon " viewBox="0 0 24 24" aria-hidden="true"><use href="assets/img/observar-ia-area-icons.svg?v=20260930#avaliacoes"></use></svg>Avaliações</button>
+          <button type="button" data-observatory-filter="Regulação" aria-pressed="false"><svg class="obs-icon " viewBox="0 0 24 24" aria-hidden="true"><use href="assets/img/observar-ia-area-icons.svg?v=20260930#regulacao"></use></svg>Regulação</button>
+          <button type="button" data-observatory-filter="Aplicações" aria-pressed="false"><svg class="obs-icon " viewBox="0 0 24 24" aria-hidden="true"><use href="assets/img/observar-ia-area-icons.svg?v=20260930#casos"></use></svg>Aplicações</button>
+          <button type="button" data-observatory-filter="Relatórios" aria-pressed="false"><svg class="obs-icon " viewBox="0 0 24 24" aria-hidden="true"><use href="assets/img/observar-ia-area-icons.svg?v=20260930#publicacoes"></use></svg>Relatórios</button>
+      </div>
+      <div class="obs-archive" id="acervo">
+        <p class="obs-archive-order">Destaques da curadoria primeiro; demais conteúdos por data.</p>
+        <div class="obs-archive-toolbar">
+          <label for="observatory-type">Tipo de publicação <select id="observatory-type"><option value="Todos">Todos os tipos</option><option value="Notícias">Todas as notícias</option><option value="Notícia institucional">Notícias do unesp.IA</option><option value="Notícia monitorada">Notícias monitoradas</option><option value="Mídia">unesp.IA na mídia</option><option value="Pesquisa">Pesquisa</option><option value="Tecnologia">Tecnologia</option><option value="Análise">Análise</option></select></label>
+          <p id="observatory-result" role="status"></p>
+          <button class="obs-reset" type="button" id="observatory-reset">Limpar filtros</button>
+        </div>
+        <p class="obs-section-note" id="observatory-data-note" hidden>Publicações sobre dados e indicadores. Painéis interativos em desenvolvimento.</p>
+        <div class="obs-archive-grid" id="observatory-grid"><p class="obs-message">Carregando conteúdos…</p></div>
+        <p class="obs-message" id="observatory-empty" hidden>Nenhum conteúdo publicado corresponde a esta seleção. Experimente outro tema ou limpe os filtros.</p>
+      </div>
+      <noscript><p>Ative o JavaScript para consultar o acervo e filtrar os conteúdos. Você também pode acessar o <a href="assets/data/observatorio-conteudos.json">acervo público em JSON</a>.</p></noscript>
+    </section>
+
+    <section class="obs-analysis-surface" id="analises" aria-labelledby="analysis-title">
+      <div class="obs-container obs-analysis-layout">
+        <span class="obs-icon-tile obs-color-pesquisas" aria-hidden="true"><svg class="obs-icon" viewBox="0 0 24 24"><use href="assets/img/observar-ia-area-icons.svg?v=20260930#pesquisas"></use></svg></span>
+        <div class="obs-heading">
+          <h2 id="analysis-title">Análises do <span>Observar.IA</span></h2>
+          <p>Análises e sínteses que conectam dados, pesquisas e tendências para compreender os avanços, os impactos e os desafios da Inteligência Artificial.</p>
+        </div>
+        <a class="obs-button" href="#acervo" data-observatory-shortcut="Análise">Explorar análises e sínteses<span aria-hidden="true">→</span></a>
+      </div>
+    </section>
 
     <section class="obs-agents-surface" id="agentes" aria-labelledby="agents-title">
       <div class="obs-container">
@@ -92,50 +127,6 @@
           <button class="obs-button" type="button" data-dialog="conversa" aria-haspopup="dialog"><svg class="obs-icon " viewBox="0 0 24 24" aria-hidden="true"><use href="assets/img/observar-ia-area-icons.svg?v=20260930#chat"></use></svg>Conversar com o Agente Observar.IA<span class="obs-soon">Em breve</span></button>
         </div>
         <p class="obs-agent-note">O Agente Observar.IA reunirá o conhecimento dos agentes especializados para permitir consultas ao Observatório em linguagem natural, com indicação das fontes.</p>
-      </div>
-    </section>
-
-    <section class="obs-explore obs-container" id="areas" aria-labelledby="explore-title">
-      <div class="obs-heading-row">
-        <div class="obs-heading"><h2 id="explore-title">Explore por <span>tipo de conteúdo</span></h2><p>Navegue por dados, pesquisas, avaliações, regulamentações, aplicações e relatórios.</p></div>
-        <form class="obs-search obs-content-search" role="search">
-          <svg class="obs-icon " viewBox="0 0 24 24" aria-hidden="true"><use href="assets/img/observar-ia-area-icons.svg?v=20260930#search"></use></svg><label class="observatory-visually-hidden" for="observatory-search">Buscar conteúdos</label><input id="observatory-search" type="search" placeholder="Buscar conteúdos..." autocomplete="off">
-        </form>
-      </div>
-      <div class="obs-filters" role="group" aria-label="Filtrar por área">
-          <button type="button" data-observatory-filter="Todos" aria-pressed="true" class="active">Todos</button>
-          <button type="button" data-observatory-filter="Dados" aria-pressed="false"><svg class="obs-icon " viewBox="0 0 24 24" aria-hidden="true"><use href="assets/img/observar-ia-area-icons.svg?v=20260930#dados"></use></svg>Dados</button>
-          <button type="button" data-observatory-filter="Pesquisas" aria-pressed="false"><svg class="obs-icon " viewBox="0 0 24 24" aria-hidden="true"><use href="assets/img/observar-ia-area-icons.svg?v=20260930#pesquisas"></use></svg>Pesquisas</button>
-          <button type="button" data-observatory-filter="Avaliações" aria-pressed="false"><svg class="obs-icon " viewBox="0 0 24 24" aria-hidden="true"><use href="assets/img/observar-ia-area-icons.svg?v=20260930#avaliacoes"></use></svg>Avaliações</button>
-          <button type="button" data-observatory-filter="Regulação" aria-pressed="false"><svg class="obs-icon " viewBox="0 0 24 24" aria-hidden="true"><use href="assets/img/observar-ia-area-icons.svg?v=20260930#regulacao"></use></svg>Regulação</button>
-          <button type="button" data-observatory-filter="Aplicações" aria-pressed="false"><svg class="obs-icon " viewBox="0 0 24 24" aria-hidden="true"><use href="assets/img/observar-ia-area-icons.svg?v=20260930#casos"></use></svg>Aplicações</button>
-          <button type="button" data-observatory-filter="Relatórios" aria-pressed="false"><svg class="obs-icon " viewBox="0 0 24 24" aria-hidden="true"><use href="assets/img/observar-ia-area-icons.svg?v=20260930#publicacoes"></use></svg>Relatórios</button>
-      </div>
-      <details class="obs-archive" id="acervo">
-        <summary>Ver acervo completo <span id="observatory-total"></span></summary>
-        <div class="obs-archive-toolbar">
-          <label for="observatory-type">Tipo de publicação <select id="observatory-type"><option value="Todos">Todos os tipos</option><option value="Notícias">Todas as notícias</option><option value="Notícia institucional">Notícias do unesp.IA</option><option value="Notícia monitorada">Notícias monitoradas</option><option value="Mídia">unesp.IA na mídia</option><option value="Pesquisa">Pesquisa</option><option value="Tecnologia">Tecnologia</option><option value="Análise">Análise</option></select></label>
-          <p id="observatory-result" role="status"></p>
-          <button class="obs-reset" type="button" id="observatory-reset">Limpar filtros</button>
-        </div>
-        <div class="obs-archive-grid" id="observatory-grid"><p class="obs-message">Carregando conteúdos…</p></div>
-        <p class="obs-message" id="observatory-empty" hidden>Nenhum conteúdo publicado corresponde a esta seleção. Experimente outro tema ou limpe os filtros.</p>
-      </details>
-      <noscript><p>Ative o JavaScript para consultar o acervo e filtrar os conteúdos. Você também pode acessar o <a href="assets/data/observatorio-conteudos.json">acervo público em JSON</a>.</p></noscript>
-    </section>
-
-    <section class="obs-features-surface" aria-label="Dados e análises">
-      <div class="obs-container obs-feature-grid">
-        <article class="obs-feature" id="dados">
-          <span class="obs-icon-tile obs-color-dados"><svg class="obs-icon " viewBox="0 0 24 24" aria-hidden="true"><use href="assets/img/observar-ia-area-icons.svg?v=20260930#dados"></use></svg></span>
-          <div><h2>Dados e Indicadores</h2><p>Explore publicações sobre dados, adoção, pesquisa e aplicações de IA.</p><a class="obs-button small" href="#acervo" data-observatory-shortcut="Dados">Explorar dados<span aria-hidden="true">→</span></a><small>Painéis interativos em desenvolvimento.</small></div>
-          <div class="obs-feature-art" aria-hidden="true"><svg class="obs-icon " viewBox="0 0 24 24" aria-hidden="true"><use href="assets/img/observar-ia-area-icons.svg?v=20260930#dados"></use></svg><i></i><i></i><i></i></div>
-        </article>
-        <article class="obs-feature" id="analises">
-          <span class="obs-icon-tile obs-color-pesquisas"><svg class="obs-icon " viewBox="0 0 24 24" aria-hidden="true"><use href="assets/img/observar-ia-area-icons.svg?v=20260930#pesquisas"></use></svg></span>
-          <div><h2>Análises do Observar.IA</h2><p>Conheça análises e conteúdos que contextualizam os avanços da Inteligência Artificial.</p><a class="obs-button small" href="#acervo" data-observatory-shortcut="Análise">Ver análises<span aria-hidden="true">→</span></a></div>
-          <div class="obs-feature-art obs-report-art" aria-hidden="true"><svg class="obs-icon " viewBox="0 0 24 24" aria-hidden="true"><use href="assets/img/observar-ia-area-icons.svg?v=20260930#pesquisas"></use></svg><i></i><i></i><i></i></div>
-        </article>
       </div>
     </section>
 

@@ -31,8 +31,8 @@
     });
     return [...map.values()].sort((a, b) => String(b.data || '').localeCompare(String(a.data || '')));
   }
-  function highlights(items, limit = 5) {
-    return [...items].sort((a, b) => Number(b.destaque === true) - Number(a.destaque === true) || String(b.data || '').localeCompare(String(a.data || ''))).slice(0, limit);
+  function orderedContents(items) {
+    return [...items].sort((a, b) => Number(b.destaque === true) - Number(a.destaque === true) || String(b.data || '').localeCompare(String(a.data || '')));
   }
   function safeURL(value, base) {
     if (typeof value !== 'string' || !value.trim()) return null;
@@ -52,7 +52,7 @@
       revisao: 'Revisão humana concluída'
     };
   }
-  const api = { AREAS, normalize, areasFor, matches, merge, highlights, safeURL, fromDatabase };
+  const api = { AREAS, normalize, areasFor, matches, merge, orderedContents, safeURL, fromDatabase };
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
   else root.ObservatoryModel = api;
 })(globalThis);
