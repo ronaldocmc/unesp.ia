@@ -1,6 +1,6 @@
 {
-  "geradoEm": "2026-10-01T17:01:32+00:00",
-  "total": 149,
+  "geradoEm": "2026-10-02T16:15:58+00:00",
+  "total": 171,
   "erros": [],
   "itens": [
     {
@@ -2745,6 +2745,459 @@
         "Ejaz Ahmed"
       ],
       "coletadoEm": "2026-10-01T17:01:30+00:00",
+      "revisao": "Pendente de curadoria humana"
+    },
+    {
+      "id": "59d88ee0fd4c3ec0",
+      "status": "pendente",
+      "tipo": "Notícias e atualidades",
+      "titulo": "3 Questions: A new resource to empower young entrepreneurs",
+      "resumoOriginal": "Martin Trust Center Managing Director Bill Aulet introduces Dear Dreamer, a free platform for middle and high school students who want to learn about entrepreneurship.",
+      "dataPublicacao": "Fri, 02 Oct 2026 00:00:00 -0400",
+      "fonte": "MIT News — Artificial Intelligence",
+      "fonteId": "mit-news-ai",
+      "href": "https://news.mit.edu/2026/3-questions-new-resource-empower-young-entrepreneurs-1002",
+      "autores": [],
+      "coletadoEm": "2026-10-02T16:15:57+00:00",
+      "revisao": "Pendente de curadoria humana"
+    },
+    {
+      "id": "02c744c8cb64f92f",
+      "status": "pendente",
+      "tipo": "Notícias e atualidades",
+      "titulo": "New tool lets users repair AI-generated 3D models, then fabricate them just the way they want",
+      "resumoOriginal": "“InstructMesh” can generate designs for everyday objects that are easy to edit and fabricate for both experts and newcomers to 3D modeling.",
+      "dataPublicacao": "Thu, 01 Oct 2026 18:00:00 -0400",
+      "fonte": "MIT News — Artificial Intelligence",
+      "fonteId": "mit-news-ai",
+      "href": "https://news.mit.edu/2026/instructmesh-tool-lets-users-repair-ai-3d-models-then-fabricate-them-1001",
+      "autores": [],
+      "coletadoEm": "2026-10-02T16:15:57+00:00",
+      "revisao": "Pendente de curadoria humana"
+    },
+    {
+      "id": "ac9ba7b5f44cb662",
+      "status": "pendente",
+      "tipo": "Artigos científicos",
+      "titulo": "One Basis to Animate Them All: Gaussian Blendshape Distillation for Real-Time Avatars",
+      "resumoOriginal": "3D Gaussian avatars support fast rendering, however, their real-time animation is often challenged by the costly neural inference. We address this bottleneck and show that the animation of pretrained avatar models can be closely approximated by a linear combination of identity-independent blendshapes. Building on this finding, we introduce GALA (Gaussian Animation via Linear Approximation), a distillation method that replaces per-frame heavy neural decoding with a shallow coefficient predictor and a linear blend. To improve fidelity and reduce memory re…",
+      "dataPublicacao": "2026-10-01T17:59:58Z",
+      "fonte": "arXiv — Artificial Intelligence",
+      "fonteId": "arxiv-ai",
+      "href": "https://arxiv.org/abs/2610.02207v1",
+      "autores": [
+        "Ramazan Fazylov",
+        "Stamatis Lefkimmiatis",
+        "Ivan Laptev"
+      ],
+      "coletadoEm": "2026-10-02T16:15:57+00:00",
+      "revisao": "Pendente de curadoria humana"
+    },
+    {
+      "id": "cc61231f7447ce7b",
+      "status": "pendente",
+      "tipo": "Artigos científicos",
+      "titulo": "KaliBench: A Fine-Grained Benchmark for Cybersecurity Tool Use on Kali Linux with Runtime-Free Verifiable Rewards",
+      "resumoOriginal": "LLMs are increasingly applied to cybersecurity workflows, where they are expected to translate analysts' intent into tool invocations. However, existing evaluations focus on knowledge-based assessments or end-to-end agentic tasks, and do not directly measure LLMs' ability to generate executable commands for real-world cybersecurity tools. This gap is critical because cybersecurity operations rely on strict command-line interfaces (CLIs), where minor syntax errors, incorrect flag--value bindings, or argument misordering can invalidate execution. We intro…",
+      "dataPublicacao": "2026-10-01T17:59:55Z",
+      "fonte": "arXiv — Artificial Intelligence",
+      "fonteId": "arxiv-ai",
+      "href": "https://arxiv.org/abs/2610.02206v1",
+      "autores": [
+        "Pengfei Li",
+        "Naufal Suryanto",
+        "Sicheng Zhang",
+        "Muzammal Naseer"
+      ],
+      "coletadoEm": "2026-10-02T16:15:57+00:00",
+      "revisao": "Pendente de curadoria humana"
+    },
+    {
+      "id": "eb1511cd5cd61258",
+      "status": "pendente",
+      "tipo": "Artigos científicos",
+      "titulo": "Reconstruct, Practice, Go Real: Guided Self-Improvement for Embodied Agents",
+      "resumoOriginal": "Building reliable robot capabilities across diverse tasks requires substantial human effort to develop and maintain skills, design rewards, and integrate perception with control. We present Reconstruct, Practice, Go Real (RPG), a framework for autonomous improvement of robot execution systems without updating model weights. RPG identifies manipulation capabilities in an offline dataset and constructs related practice tasks in simulation. During practice, RPG uses execution feedback, privileged simulator state, and available dataset videos to diagnose fa…",
+      "dataPublicacao": "2026-10-01T17:59:50Z",
+      "fonte": "arXiv — Artificial Intelligence",
+      "fonteId": "arxiv-ai",
+      "href": "https://arxiv.org/abs/2610.02204v1",
+      "autores": [
+        "Yen-Jen Wang",
+        "Haozhe Jiang",
+        "Shuying Deng",
+        "Haoru Xue",
+        "Weirui Ye",
+        "Rocky Duan",
+        "Nika Haghtalab",
+        "S. Shankar Sastry",
+        "Pieter Abbeel",
+        "Haozhi Qi"
+      ],
+      "coletadoEm": "2026-10-02T16:15:57+00:00",
+      "revisao": "Pendente de curadoria humana"
+    },
+    {
+      "id": "837d05800cba81d0",
+      "status": "pendente",
+      "tipo": "Artigos científicos",
+      "titulo": "ScholarCatalyst: A Benchmark for Retrieving Papers That Inspire New Research",
+      "resumoOriginal": "What makes great scientists great? Even as AI systems start to make progress on open problems, scientists remain far ahead of them at sensing which prior idea, buried in an ever-growing archive of research, a new problem needs. To study this skill, we draw on researchers who know firsthand which earlier work advanced their completed projects, with papers serving as pointers to the ideas within. Using our automated pipeline that makes author annotation scalable, we build ScholarCatalyst by having 184 lead authors of 207 recent computer science papers lab…",
+      "dataPublicacao": "2026-10-01T17:59:47Z",
+      "fonte": "arXiv — Artificial Intelligence",
+      "fonteId": "arxiv-ai",
+      "href": "https://arxiv.org/abs/2610.02202v1",
+      "autores": [
+        "Sohyeon Kim",
+        "Yoonho Lee",
+        "Bo Liu",
+        "Dayoon Ko",
+        "Rulin Shao",
+        "Seungone Kim",
+        "Graham Neubig",
+        "Pang Wei Koh",
+        "Aakanksha Chowdhery",
+        "Akari Asai",
+        "Omar Khattab",
+        "Yejin Choi"
+      ],
+      "coletadoEm": "2026-10-02T16:15:57+00:00",
+      "revisao": "Pendente de curadoria humana"
+    },
+    {
+      "id": "5cb69f2d8484a839",
+      "status": "pendente",
+      "tipo": "Artigos científicos",
+      "titulo": "SILSA: Sliding-Window Slice Latents for Topology-Preserving High-Resolution 3D Generation",
+      "resumoOriginal": "High-resolution 3D generation increasingly relies on voxel latents and multi-stage pipelines that first predict active structure and then synthesize local geometry. While effective, this design fragments continuous surfaces into many local tokens, inflates generation cost, and often weakens topological consistency for thin or highly connected shapes. We introduce SILSA, a topology-aware 3D generation framework that represents shapes with compact sliding-window slice latents. Instead of generating expensive voxel tokens, SILSA uses a fixed set of overlap…",
+      "dataPublicacao": "2026-10-01T17:59:46Z",
+      "fonte": "arXiv — Artificial Intelligence",
+      "fonteId": "arxiv-ai",
+      "href": "https://arxiv.org/abs/2610.02201v1",
+      "autores": [
+        "Tianjiao Yu",
+        "Xinzhuo Li",
+        "Yifan Shen",
+        "Ying Shen",
+        "Kiet A. Nguyen",
+        "Adheesh Sunil Juvekar",
+        "Ismini Lourentzou"
+      ],
+      "coletadoEm": "2026-10-02T16:15:57+00:00",
+      "revisao": "Pendente de curadoria humana"
+    },
+    {
+      "id": "53715849b3832352",
+      "status": "pendente",
+      "tipo": "Artigos científicos",
+      "titulo": "VISTA: A Visual Harness for Reasoning in an Interactive World",
+      "resumoOriginal": "We show that multimodal models possess strong reasoning abilities and that an appropriate harness can unlock their potential to solve tasks across diverse interactive environments. We introduce VISTA, a visual harness that gives a general-purpose multimodal model long-horizon vision. VISTA allows the model to directly perceive the environment through visual observations and maintains a lossless visual memory that preserves past observations in their original form. The model can actively retrieve these observations and reorganize its visual input as it r…",
+      "dataPublicacao": "2026-10-01T17:59:45Z",
+      "fonte": "arXiv — Artificial Intelligence",
+      "fonteId": "arxiv-ai",
+      "href": "https://arxiv.org/abs/2610.02200v1",
+      "autores": [
+        "Qiushi Han",
+        "Keya Hu",
+        "Linlu Qiu",
+        "Cathy Wu",
+        "Kaiming He"
+      ],
+      "coletadoEm": "2026-10-02T16:15:57+00:00",
+      "revisao": "Pendente de curadoria humana"
+    },
+    {
+      "id": "26fdf0d0b1d98738",
+      "status": "pendente",
+      "tipo": "Artigos científicos",
+      "titulo": "FERPO: Forward Entropy-Regularized Policy Optimization",
+      "resumoOriginal": "Several state-of-the-art methods for online reinforcement learning in continuous control improve policies using action gradients of a learned critic. However, critics are typically trained to predict returns, and accurate value predictions do not necessarily yield accurate action derivatives, potentially leading to unreliable policy updates. We propose Forward Entropy-Regularized Policy Optimization (FERPO), an on-policy maximum entropy reinforcement learning algorithm that performs policy improvement using critic values without differentiating the crit…",
+      "dataPublicacao": "2026-10-01T17:59:41Z",
+      "fonte": "arXiv — Artificial Intelligence",
+      "fonteId": "arxiv-ai",
+      "href": "https://arxiv.org/abs/2610.02198v1",
+      "autores": [
+        "Sebastian Sanokowski",
+        "Alireza Sarmadi",
+        "Majid Khadiv"
+      ],
+      "coletadoEm": "2026-10-02T16:15:57+00:00",
+      "revisao": "Pendente de curadoria humana"
+    },
+    {
+      "id": "9f1274798d658933",
+      "status": "pendente",
+      "tipo": "Artigos científicos",
+      "titulo": "Hierarchical Continuous Diffusion Language Models",
+      "resumoOriginal": "Discrete diffusion language models offer a compelling alternative to autoregressive generation for tasks demanding bidirectional reasoning and global constraint satisfaction. Yet they share a structural bottleneck: when decoding in parallel, each token is sampled independently from its marginal, severing the statistical dependencies among the tokens decoded together. Continuous diffusion language models avoid this by denoising a shared continuous state, but their denoiser sees only that state, so nothing ties it to a valid token configuration until it i…",
+      "dataPublicacao": "2026-10-01T17:59:39Z",
+      "fonte": "arXiv — Artificial Intelligence",
+      "fonteId": "arxiv-ai",
+      "href": "https://arxiv.org/abs/2610.02193v1",
+      "autores": [
+        "Hui Ren",
+        "Zihan Li",
+        "Chang Liu",
+        "Huidong Liu",
+        "Alexander Schwing"
+      ],
+      "coletadoEm": "2026-10-02T16:15:57+00:00",
+      "revisao": "Pendente de curadoria humana"
+    },
+    {
+      "id": "7a828813f78f8c51",
+      "status": "pendente",
+      "tipo": "Artigos científicos",
+      "titulo": "DMAD: Distribution Matching as Adversarial Distillation for Fast Visual Generation",
+      "resumoOriginal": "Distribution Matching Distillation (DMD) trains a few-step student from the difference between separately estimated target and student scores, so it must keep an auxiliary diffusion model fitted to the student's evolving distribution at extra memory and computation cost. We introduce DMAD, Distribution Matching as Adversarial Distillation, which recasts distribution matching as classification and learns the required log-density ratios directly. Two discriminator heads on a shared backbone distinguish real data and teacher samples from the student's, and…",
+      "dataPublicacao": "2026-10-01T17:59:01Z",
+      "fonte": "arXiv — Artificial Intelligence",
+      "fonteId": "arxiv-ai",
+      "href": "https://arxiv.org/abs/2610.02188v1",
+      "autores": [
+        "Zhengming Yu",
+        "Junkun Yuan",
+        "Haotian Yang",
+        "Gordon Guocheng Qian",
+        "Yizhi Wang",
+        "Angtian Wang",
+        "Yiding Yang",
+        "Bo Liu",
+        "Xin Li",
+        "Wenping Wang",
+        "Chongyang Ma"
+      ],
+      "coletadoEm": "2026-10-02T16:15:57+00:00",
+      "revisao": "Pendente de curadoria humana"
+    },
+    {
+      "id": "fe2c61481132ac44",
+      "status": "pendente",
+      "tipo": "Artigos científicos",
+      "titulo": "Higher-Order Molecular Grammars for Generative and Foundation Models in Chemistry",
+      "resumoOriginal": "Molecular learning models are strongly shaped by their underlying representations. Yet standard sequential and graph formalisms struggle to explicitly encode higher-order topology, such as ring systems and recurring motifs. Existing higher-order representations can capture these structures directly, but they are often computationally demanding and difficult to decode into valid molecules. Here, we introduce Higher-order Grammar Representation (HGR), a principled, topology-aware framework that lifts molecules to combinatorial complexes and parses each co…",
+      "dataPublicacao": "2026-10-01T17:58:45Z",
+      "fonte": "arXiv — Artificial Intelligence",
+      "fonteId": "arxiv-ai",
+      "href": "https://arxiv.org/abs/2610.02186v1",
+      "autores": [
+        "Yiming Huang",
+        "Yujie Zeng",
+        "Vijay Prakash Dwivedi",
+        "Simone Foti",
+        "Jianmin Wang",
+        "Jure Leskovec",
+        "Tolga Birdal"
+      ],
+      "coletadoEm": "2026-10-02T16:15:57+00:00",
+      "revisao": "Pendente de curadoria humana"
+    },
+    {
+      "id": "23b711d3a3f1b734",
+      "status": "pendente",
+      "tipo": "Artigos científicos",
+      "titulo": "SoftServe: A Scalable Quasi-Newton Method for Deep Learning",
+      "resumoOriginal": "Quasi-Newton (QN) methods have long been among the most effective methods for large-scale unconstrained convex optimization. Two obstacles have limited their use in deep learning: non-convexity and enormous parameter sizes. We introduce SoftServe, a family of QN methods designed to overcome these obstacles without line searches or ad hoc curvature corrections. SoftServe derives positivedefinite curvature estimates from the variational objective of Berglund et al. (2025), even in the presence of negative curvature. We develop diagonal and Kroneckerfactor…",
+      "dataPublicacao": "2026-10-01T17:58:24Z",
+      "fonte": "arXiv — Artificial Intelligence",
+      "fonteId": "arxiv-ai",
+      "href": "https://arxiv.org/abs/2610.02182v1",
+      "autores": [
+        "Joohwan Ko",
+        "Tetiana Parshakova",
+        "Diana Cai",
+        "Robert M. Gower"
+      ],
+      "coletadoEm": "2026-10-02T16:15:57+00:00",
+      "revisao": "Pendente de curadoria humana"
+    },
+    {
+      "id": "f78f5f9768d3582e",
+      "status": "pendente",
+      "tipo": "Artigos científicos",
+      "titulo": "Generative Cinematographer: Composing Camera and Object Motion in 3D",
+      "resumoOriginal": "Current controllable video generation systems often rely on 2D motion trajectories or sparse drag signals for object motion. These controls are ambiguous because the same 2D trajectory can correspond to different 3D motions, especially when the camera and objects move simultaneously. We present Generative Cinematographer (GenCine), a system that lifts a single image into an editable 3D scene scaffold where artists jointly author camera and foreground motion. Artists specify a camera path and move selected foreground regions using local 3D motion handles…",
+      "dataPublicacao": "2026-10-01T17:58:09Z",
+      "fonte": "arXiv — Artificial Intelligence",
+      "fonteId": "arxiv-ai",
+      "href": "https://arxiv.org/abs/2610.02180v1",
+      "autores": [
+        "Jiahan Zhang",
+        "Chaohao Yang",
+        "Namitha Guruprasad",
+        "Vivekjyoti Banerjee",
+        "Trong-Tung Nguyen",
+        "Alan Yuille",
+        "Anand Bhattad"
+      ],
+      "coletadoEm": "2026-10-02T16:15:57+00:00",
+      "revisao": "Pendente de curadoria humana"
+    },
+    {
+      "id": "8ebdb5ef81625c51",
+      "status": "pendente",
+      "tipo": "Artigos científicos",
+      "titulo": "Watch, Infer, Coordinate: Inferring Robot Partner Constraints for Zero-Shot Coordination",
+      "resumoOriginal": "Robots operating in the physical world will increasingly need to coordinate with other robots, particularly in manipulation tasks where an object may be too large or heavy for a single robot to carry alone. Physical limitations caused by hardware degradation or actuator faults can restrict the actions a robot can reliably execute, yet these limitations may be unknown to its partner. We study whether a helper can infer a robot partner's physical constraints from observing it coordinate with another robot, then use the inferred capability to coordinate wi…",
+      "dataPublicacao": "2026-10-01T17:56:04Z",
+      "fonte": "arXiv — Artificial Intelligence",
+      "fonteId": "arxiv-ai",
+      "href": "https://arxiv.org/abs/2610.02170v1",
+      "autores": [
+        "Suyu Ye",
+        "Zheyuan Zhang",
+        "Vaishnav Tadiparthi",
+        "Hossein Nourkhiz Mahjoub",
+        "Ehsan Moradi Pari",
+        "Tianmin Shu",
+        "Homanga Bharadhwaj",
+        "Nakul Agarwal"
+      ],
+      "coletadoEm": "2026-10-02T16:15:57+00:00",
+      "revisao": "Pendente de curadoria humana"
+    },
+    {
+      "id": "79129456c6176869",
+      "status": "pendente",
+      "tipo": "Artigos científicos",
+      "titulo": "DuoMind: Enabling Distributed Multi-Robot Coordination with Semantic Communication",
+      "resumoOriginal": "Vision-language models (VLMs) and vision-language-action models (VLAs) have recently driven rapid progress in general-purpose robots, yet most progress has focused on single-robot settings. Extending these capabilities to multi-robot systems remains challenging because robots must coordinate long-horizon behaviors while maintaining reliable, fine-grained execution. We introduce DuoMind, a distributed hierarchical framework for multi-robot coordination through semantic communication. Each robot uses a VLA-based action model for low-level execution and a…",
+      "dataPublicacao": "2026-10-01T17:53:09Z",
+      "fonte": "arXiv — Artificial Intelligence",
+      "fonteId": "arxiv-ai",
+      "href": "https://arxiv.org/abs/2610.02161v1",
+      "autores": [
+        "Hanchu Zhou",
+        "Dechen Gao",
+        "Hang Wang",
+        "Brendan Lynch",
+        "Boqi Zhao",
+        "Qiyao Ma",
+        "Raman Goyal",
+        "Junshan Zhang"
+      ],
+      "coletadoEm": "2026-10-02T16:15:57+00:00",
+      "revisao": "Pendente de curadoria humana"
+    },
+    {
+      "id": "9c80f37ae871ee2b",
+      "status": "pendente",
+      "tipo": "Artigos científicos",
+      "titulo": "From Knowledge Access to Source Learning: Developing Source-Specific Competence",
+      "resumoOriginal": "Large language model (LLM) agents increasingly rely on persistent external sources to solve sequences of knowledge-intensive tasks. Existing methods improve how source content is accessed and organized, while agent-memory systems preserve reusable knowledge from prior interactions, but repeated use of the same source is still largely treated as repeated access rather than an opportunity to progressively improve understanding of that source. We study source learning: developing reusable source-specific competence over a persistent authoritative source. W…",
+      "dataPublicacao": "2026-10-01T17:50:16Z",
+      "fonte": "arXiv — Artificial Intelligence",
+      "fonteId": "arxiv-ai",
+      "href": "https://arxiv.org/abs/2610.02150v1",
+      "autores": [
+        "Lucheng Fu",
+        "Kejing Xia",
+        "Yiyang Wang",
+        "Yiqiao Jin",
+        "Jinjin He",
+        "Xiyuan Yang",
+        "Haoxin Liu",
+        "Ye Yu",
+        "Haibo Jin",
+        "Yijia Xiao",
+        "Wenke Lee",
+        "B. Aditya Prakash"
+      ],
+      "coletadoEm": "2026-10-02T16:15:57+00:00",
+      "revisao": "Pendente de curadoria humana"
+    },
+    {
+      "id": "2719dd922714a9f3",
+      "status": "pendente",
+      "tipo": "Artigos científicos",
+      "titulo": "Finetuning with Sampling: SFT Learns Better Than You Think",
+      "resumoOriginal": "Introducing new capabilities to frontier models has long been the goal of posttraining, which predominantly employs supervised finetuning (SFT) and reinforcement learning (RL) to this end. Conventional wisdom dictates that RL enables strong generalization on new tasks without losing existing capabilities, while SFT is prone to weak generalization and catastrophic forgetting. At the same time, SFT can learn from off-policy expert data, whereas RL must rely on a model's ability to find successful trajectories with repeated sampling. In our work, we seek t…",
+      "dataPublicacao": "2026-10-01T17:45:07Z",
+      "fonte": "arXiv — Artificial Intelligence",
+      "fonteId": "arxiv-ai",
+      "href": "https://arxiv.org/abs/2610.02140v1",
+      "autores": [
+        "Aayush Karan",
+        "Sitan Chen",
+        "Yilun Du"
+      ],
+      "coletadoEm": "2026-10-02T16:15:57+00:00",
+      "revisao": "Pendente de curadoria humana"
+    },
+    {
+      "id": "1acde97c5b7842f2",
+      "status": "pendente",
+      "tipo": "Artigos científicos",
+      "titulo": "MIRTO: a registration-gated, multiverse-tested evaluation protocol for unsupervised anomaly segmentation in brain MRI",
+      "resumoOriginal": "Unsupervised anomaly detection (UAD) methods for brain MRI are ranked by a single score, yet that score rests on choices that are rarely reported: how each anomaly map is aligned with the reference, how and on which data the threshold is set, and which false-positive budget, metric, aggregation and lesion definition are used. We present MIRTO, an evaluation protocol that makes these choices explicit and measures their effect. It gates the geometry of every comparison with a registration check and label-free diagnostics of known power, sets thresholds on…",
+      "dataPublicacao": "2026-10-01T17:44:22Z",
+      "fonte": "arXiv — Artificial Intelligence",
+      "fonteId": "arxiv-ai",
+      "href": "https://arxiv.org/abs/2610.02136v1",
+      "autores": [
+        "Negin Kafee Hernashki",
+        "Soumick Chatterjee"
+      ],
+      "coletadoEm": "2026-10-02T16:15:57+00:00",
+      "revisao": "Pendente de curadoria humana"
+    },
+    {
+      "id": "a44107ee1688fd6c",
+      "status": "pendente",
+      "tipo": "Artigos científicos",
+      "titulo": "Local Support Learning",
+      "resumoOriginal": "We explore catastrophic forgetting in the context of large pre-trained models. By considering forgetting as a geometric problem in the input space of each weight matrix, we uncover a natural retention objective under which updates produced by gradient-based optimizers are suboptimal. Following this observation, we propose Local Support Learning (LSL), a general-purpose framework that augments gradient-based training for retention of prior capabilities without access to prior data. During a new learning phase, LSL pairs two components with distinct roles…",
+      "dataPublicacao": "2026-10-01T17:39:03Z",
+      "fonte": "arXiv — Artificial Intelligence",
+      "fonteId": "arxiv-ai",
+      "href": "https://arxiv.org/abs/2610.02126v1",
+      "autores": [
+        "Assaf Ben-Kish",
+        "Akarsh Kumar",
+        "James Glass",
+        "Raja Giryes"
+      ],
+      "coletadoEm": "2026-10-02T16:15:57+00:00",
+      "revisao": "Pendente de curadoria humana"
+    },
+    {
+      "id": "e32a5e177531463e",
+      "status": "pendente",
+      "tipo": "Artigos científicos",
+      "titulo": "Argo-Bench: Evaluating Data Agents on Enterprise-Scale Workflows",
+      "resumoOriginal": "Real-world enterprise data science and analytics workflows require reasoning across dozens of tables, performing statistical analyses, and acting on the results. Established text-to-SQL benchmarks evaluate query generation alone, and audits have found their answer keys frequently wrong. Because real enterprise warehouses are too sensitive to release, these benchmarks are built on public datasets where a business event fits in a single table. We introduce Argo-Bench, an evaluation framework comprising 210 data science and analytics tasks. Drawing on publ…",
+      "dataPublicacao": "2026-10-01T17:35:44Z",
+      "fonte": "arXiv — Artificial Intelligence",
+      "fonteId": "arxiv-ai",
+      "href": "https://arxiv.org/abs/2610.02122v1",
+      "autores": [
+        "Gabriel Tomitsuka",
+        "Arman Raayatsanati",
+        "Emma Xing",
+        "Duke Gand",
+        "Joseph J Ma"
+      ],
+      "coletadoEm": "2026-10-02T16:15:57+00:00",
+      "revisao": "Pendente de curadoria humana"
+    },
+    {
+      "id": "e1045ff4bbaa1b3a",
+      "status": "pendente",
+      "tipo": "Artigos científicos",
+      "titulo": "Where-OPD: Spatially Guided On-Policy Self-Distillation of MLLMs with Synthetic Scenes",
+      "resumoOriginal": "On-policy self-distillation has recently emerged as an effective approach for improving language-model reasoning by supervising students with a frozen or EMA version of themselves that receives privileged information. Its application to multimodal large language models (MLLMs), however, remains largely unexplored. Recent approaches use privileged visual information, such as image crops corresponding to a question, to improve fine-grained perception, but their gains are confined to tasks that benefit from such visual zooming and require either human-anno…",
+      "dataPublicacao": "2026-10-01T17:34:10Z",
+      "fonte": "arXiv — Artificial Intelligence",
+      "fonteId": "arxiv-ai",
+      "href": "https://arxiv.org/abs/2610.02117v1",
+      "autores": [
+        "Sophia Sirko-Galouchenko",
+        "Monika Wysoczanska",
+        "Andrei Bursuc",
+        "Nicolas Thome",
+        "Spyros Gidaris"
+      ],
+      "coletadoEm": "2026-10-02T16:15:57+00:00",
       "revisao": "Pendente de curadoria humana"
     }
   ]
