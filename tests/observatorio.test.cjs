@@ -79,6 +79,21 @@ test('cabeçalho do Observatório preserva a marca institucional completa', () =
   assert.ok(!html.includes('observatory-brand-mark'),'O logo não deve usar o contêiner de recorte');
 });
 
+test('apresentação institucional identifica a FCT/UNESP e mantém as estruturas futuras no condicional', () => {
+  const html = fs.readFileSync(path.join(root,'observatorio.html'),'utf8');
+  const text = html.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ');
+  assert.match(html, /<title>Observar\.IA — Observatório de Inteligência Artificial da FCT\/UNESP<\/title>/);
+  assert.match(text, /Faculdade de Ciências e Tecnologia da UNESP \(FCT\/UNESP\), Câmpus de Presidente Prudente/);
+  assert.match(text, /Prof\. Ronaldo Celso Messias Correia/);
+  assert.match(text, /Engenharia de Dados, Ciência de Dados e Inteligência Artificial/);
+  assert.match(text, /Com a futura criação do Núcleo de Inteligência Artificial do Departamento de Matemática e Computação da FCT\/UNESP/);
+  assert.match(text, /poderá integrar sua estrutura/);
+  assert.match(text, /futuro I3A — Instituto de Inteligência Artificial Aplicada da UNESP/);
+  assert.match(text, /dados produzidos por iniciativas, projetos e pesquisas da UNESP/);
+  assert.equal((text.match(/dedicado ao acompanhamento sistemático/g) || []).length, 1);
+  assert.doesNotMatch(text, /Claro, fica mais preciso|Essa formulação deixa/);
+});
+
 test('cartões agrupam capa, título e descrição no mesmo link seguro', () => {
   const js=fs.readFileSync(path.join(root,'assets/js/observatorio.js'),'utf8');
   const css=fs.readFileSync(path.join(root,'assets/css/observatorio.css'),'utf8');

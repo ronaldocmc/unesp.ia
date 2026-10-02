@@ -143,12 +143,16 @@
 
 /* Sobre e rodapé preservados. */
 .obs-button.small { min-height: 35px; padding: 6px 12px; font-size: 13px; border-radius: 6px; gap: 12px; }
-.obs-about { display: flex; align-items: center; justify-content: space-between; gap: 28px; padding-block: 28px; }
+.obs-about { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 28px; padding-block: 28px; }
 .obs-about-intro { display: flex; gap: 16px; align-items: center; }
 .obs-about-icon { display: grid; place-items: center; width: 65px; height: 65px; flex-shrink: 0; border-radius: 50%; background: #e5f5ff; color: var(--obs-blue); }
 .obs-about-icon .obs-icon { width: 44px; height: 44px; }
 .obs-about h2 { font-size: 19px; margin: 0 0 4px; letter-spacing: -.03em; }
 .obs-about p { font-size: 13px; margin: 0; color: var(--obs-muted); }
+.obs-about-content { flex-basis: 100%; min-width: 0; padding-top: 24px; border-top: 1px solid var(--obs-border); }
+.obs-about-content p { max-width: 92ch; margin: 0 auto 20px; font-size: 16px; line-height: 1.75; }
+.obs-about-content p:last-child { margin-bottom: 0; }
+.obs-about-content strong { color: var(--obs-ink); }
 .obs-about-links { display: grid; grid-template-columns: repeat(4,1fr); gap: 30px; }
 .obs-about-links :is(a,button) { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 7px; padding: 5px; background: none; border: 0; color: var(--obs-muted); font-size: 13px; text-align: center; white-space: nowrap; }
 .obs-about-links .obs-icon { width: 29px; height: 29px; color: var(--obs-blue); }
