@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Administração | unesp.IA</title>
-  <link rel="stylesheet" href="assets/css/style.css?v=20260927-ecossistema-admin2">
+  <link rel="stylesheet" href="assets/css/style.css?v=20261002-observatorio-admin">
 </head>
 <body>
   <div class="topbar">
@@ -25,8 +25,7 @@
           <button data-admin-tab="pesquisar_ia">Pesquisar.IA</button>
           <button data-admin-tab="inovar_ia">Inovar.IA</button>
           <p class="admin-nav-label">Observar.IA</p>
-          <button data-admin-tab="observatorio_conteudos">Conteúdos e mídia</button>
-          <button data-admin-tab="candidatos_observatorio">Sugestões do agente</button>
+          <button data-admin-tab="observatorio_conteudos">Publicações do Observatório</button>
           <p class="admin-nav-label">Portal acadêmico</p>
           <button data-admin-tab="modulos">Módulos</button>
           <button data-admin-tab="turmas">Turmas</button>
@@ -45,6 +44,16 @@
               <input type="file" data-import-file accept=".xlsx,.xls,.csv" hidden>
             </div>
           </div>
+          <section class="admin-link-import" data-link-panel hidden aria-labelledby="link-import-title">
+            <h3 id="link-import-title">Cadastrar por link</h3>
+            <p>Cole o link de uma matéria para preencher os dados disponíveis. Revise o conteúdo antes de salvar. Sem agentes ou publicação automática.</p>
+            <form class="portal-form" data-link-form>
+              <label>Link público da matéria<input type="url" name="source_url" placeholder="https://..." required maxlength="2048"></label>
+              <div class="portal-form-actions"><button class="btn" type="submit">Buscar dados do link</button><button class="btn secondary" type="button" data-manual-link>Preencher manualmente</button></div>
+              <p data-link-message role="status" aria-live="polite" hidden></p>
+            </form>
+            <p class="admin-editorial-help">Para aparecer no site, selecione <strong>publicado</strong> e marque <strong>Revisão humana concluída</strong>. Rascunhos e itens em revisão ficam somente no painel.</p>
+          </section>
           <div class="table-wrap"><table class="admin-table"><thead data-admin-head></thead><tbody data-admin-body></tbody></table></div>
         </section>
       </div>
@@ -54,6 +63,7 @@
     <div class="portal-dialog-inner">
       <form class="portal-form" data-record-form>
         <h2 data-dialog-title>Cadastro</h2>
+        <p data-editorial-help hidden>Revise o resumo e os créditos da fonte. Para publicar no Observatório, escolha a situação “publicado” e confirme a revisão humana. Você também pode salvar um rascunho.</p>
         <div data-dialog-fields></div>
         <p data-dialog-message hidden></p>
         <div class="portal-form-actions"><button class="btn" type="submit">Salvar</button><button class="btn secondary" type="button" data-dialog-close>Cancelar</button></div>
@@ -61,6 +71,6 @@
     </div>
   </dialog>
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-  <script type="module" src="assets/js/portal/admin.js?v=20260927-ecossistema-admin2"></script>
+  <script type="module" src="assets/js/portal/admin.js?v=20261002-observatorio-admin"></script>
 </body>
 </html>

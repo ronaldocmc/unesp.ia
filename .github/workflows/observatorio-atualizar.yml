@@ -2,8 +2,8 @@ name: Atualizar candidatos do Observatório unesp.IA
 
 on:
   workflow_dispatch:
-  schedule:
-    - cron: "17 10 * * 1-5"
+  # Coleta automática pausada: nesta etapa as publicações são cadastradas pelo painel.
+  # workflow_dispatch permanece disponível para uma futura retomada manual.
 
 permissions:
   contents: write

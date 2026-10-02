@@ -47,7 +47,7 @@ const definitions = {
   conteudos_modulo: { title: 'Conteúdos protegidos', description: 'HTML ou caminho no bucket privado, liberado por matrícula.', pk: ['id'], fields: [
     ['modulo_id','Módulo','select',true,'modulos'], ['titulo','Título','text',true], ['ordem','Ordem','number',true], ['html','HTML do conteúdo','textarea',false], ['storage_path','Caminho no Storage','text',false], ['publicado','Publicado','checkbox',false]
   ]},
-  observatorio_conteudos: { title: 'Observatório e unesp.IA na mídia', description: 'Cadastre conteúdos monitorados e matérias de TV, jornais, rádio, podcasts e portais sobre os projetos.', pk: ['id'], columns: ['id','colecao','tipo','titulo','veiculo','projeto_relacionado','data_publicacao','status','destaque'], fields: [
+  observatorio_conteudos: { title: 'Publicações do Observatório', description: 'Cadastre, revise e publique notícias, pesquisas, análises e matérias sobre os projetos. Os registros são salvos diretamente no banco do Observatório.', order: 'updated_at', descending: true, pk: ['id'], columns: ['id','colecao','tipo','titulo','data_publicacao','status','revisao_humana','destaque'], fields: [
     ['colecao','Coleção','select-static',true,['Observatório','unesp.IA na mídia']],
     ['tipo','Tipo de conteúdo ou mídia','select-static',true,['Notícia institucional','Notícia monitorada','Pesquisa','Tecnologia','Análise','Artigo científico','Tese ou dissertação','TV','Jornal','Revista','Rádio','Podcast','Portal','Vídeo','Política ou regulação','Evento ou oportunidade','Indicador']],
     ['categoria','Categoria','text',true], ['titulo','Título','text',true], ['resumo','Resumo','textarea',true],
@@ -64,7 +64,8 @@ const definitions = {
   candidatos_observatorio: { title: 'Sugestões do agente', description: 'Itens coletados automaticamente. Revise a fonte e use uma sugestão para iniciar um cadastro; nenhuma sugestão é publicada automaticamente.', virtual: true, pk: ['id'], fields: [] },
 }
 
-const state = { table: 'ecossistema_eixos', rows: [], editing: null, lookups: {} }
+const requestedSection = new URLSearchParams(location.search).get('secao')
+const state = { table: requestedSection === 'observatorio_conteudos' ? requestedSection : 'ecossistema_eixos', rows: [], editing: null, lookups: {}, saving: false, importing: false }
 const $ = (selector) => document.querySelector(selector)
 const message = $('[data-admin-message]')
 const dialog = $('[data-record-dialog]')
@@ -86,9 +87,67 @@ document.querySelectorAll('[data-admin-tab]').forEach(button => button.addEventL
 
 $('[data-new-record]').addEventListener('click', () => openDialog())
 $('[data-dialog-close]').addEventListener('click', () => dialog.close())
+dialog.addEventListener('cancel', event => { if (state.saving) event.preventDefault() })
 $('[data-import-button]').addEventListener('click', () => $('[data-import-file]').click())
 $('[data-import-file]').addEventListener('change', importSpreadsheet)
 form.addEventListener('submit', saveRecord)
+$('[data-link-form]').addEventListener('submit', importLink)
+$('[data-manual-link]').addEventListener('click', () => openDialog(manualDraft(), { asNew: true }))
+
+function manualDraft() {
+  return { colecao: 'Observatório', tipo: 'Notícia monitorada', categoria: 'Atualidades',
+    url: $('[data-link-form]').elements.source_url.value.trim(), origem: 'Cadastro manual',
+    status: 'rascunho', destaque: false, revisao_humana: false }
+}
+
+function normalizeLink(value) {
+  const url = new URL(value)
+  if (!['https:', 'http:'].includes(url.protocol) || url.username || url.password) throw new Error('Informe um link HTTP ou HTTPS válido, sem credenciais.')
+  url.hash = ''
+  return url.href
+}
+
+async function existingPublication(url, exceptId) {
+  let query = supabase.from('observatorio_conteudos').select('*').eq('url', url).limit(1)
+  if (exceptId != null) query = query.neq('id', exceptId)
+  const { data, error } = await query
+  if (error) throw error
+  return data?.[0]
+}
+
+async function importLink(event) {
+  event.preventDefault()
+  if (state.importing) return
+  state.importing = true
+  const linkMessage = $('[data-link-message]')
+  const controls = document.querySelectorAll('[data-admin-tab], [data-new-record], [data-admin-body] button, [data-link-form] button')
+  controls.forEach(button => { button.disabled = true })
+  showMessage(linkMessage, 'Buscando os dados públicos da matéria...', 'info')
+  try {
+    const url = normalizeLink($('[data-link-form]').elements.source_url.value.trim())
+    let existing = await existingPublication(url)
+    if (existing) {
+      await openDialog(existing)
+      showMessage($('[data-dialog-message]'), 'Este link já está cadastrado. Você está editando a publicação existente.', 'info')
+      showMessage(linkMessage, 'Cadastro existente aberto para edição.', 'info')
+      return
+    }
+    const { data, error } = await supabase.functions.invoke('observatorio-link', { body: { url } })
+    if (error || data?.error) {
+      let detail = data?.error
+      if (!detail && error?.context?.json) {
+        try { detail = (await error.context.json()).error } catch { /* Network errors have no JSON body. */ }
+      }
+      throw new Error(detail || 'A importação está indisponível. Tente novamente ou use “Preencher manualmente”.')
+    }
+    if (!data?.draft?.url) throw new Error('A fonte não retornou dados. Use “Preencher manualmente”.')
+    existing = await existingPublication(data.draft.url)
+    await openDialog(existing || data.draft, { asNew: !existing })
+    showMessage($('[data-dialog-message]'), existing ? 'O endereço final já está cadastrado. Edite a publicação existente.' : (data.warnings || []).join(' '), 'info')
+    showMessage(linkMessage, 'Dados carregados para revisão. Nada foi salvo ou publicado automaticamente.', 'success')
+  } catch (error) { showMessage(linkMessage, error.message, 'error') }
+  finally { state.importing = false; controls.forEach(button => { button.disabled = false }) }
+}
 
 async function loadLookup(table) {
   if (state.lookups[table]) return state.lookups[table]
@@ -111,6 +170,8 @@ function lookupLabel(table, row) {
 
 async function renderTable() {
   const def = definitions[state.table]
+  document.querySelectorAll('[data-admin-tab]').forEach(button => button.classList.toggle('active', button.dataset.adminTab === state.table))
+  $('[data-link-panel]').hidden = state.table !== 'observatorio_conteudos'
   $('[data-admin-title]').textContent = def.title
   $('[data-admin-description]').textContent = def.description
   $('[data-import-button]').hidden = !def.import
@@ -119,7 +180,7 @@ async function renderTable() {
   showMessage(message, 'Carregando registros...', 'info')
   let query = supabase.from(sourceTableOf(def)).select('*').limit(1000)
   for (const [column, value] of Object.entries(def.filter || {})) query = query.eq(column, value)
-  if (def.order) query = query.order(def.order, { ascending: true })
+  if (def.order) query = query.order(def.order, { ascending: !def.descending })
   const { data, error } = await query
   if (error) return showMessage(message, error.message, 'error')
   state.rows = data ?? []
@@ -135,9 +196,11 @@ const formatValue = value => typeof value === 'boolean' ? (value ? 'Sim' : 'Não
 const findRow = key => state.rows.find(row => keyOf(row) === key)
 
 async function openDialog(row = null, options = {}) {
+  if (!row && state.table === 'observatorio_conteudos') { row = { ...manualDraft(), url: '' }; options = { ...options, asNew: true } }
   state.editing = options.asNew ? null : row
   const def = definitions[state.table]
   $('[data-dialog-title]').textContent = `${state.editing ? 'Editar' : 'Cadastrar'} ${def.title.toLowerCase()}`
+  $('[data-editorial-help]').hidden = state.table !== 'observatorio_conteudos'
   const container = $('[data-dialog-fields]')
   container.innerHTML = ''
   for (const [name, label, type, required, source] of def.fields) {
@@ -193,7 +256,7 @@ function formPayload(def) {
     if (type === 'checkbox') payload[name] = form.elements[name].checked
     else if (type === 'fixed') payload[name] = source
     else if (['number','select'].includes(type) && fd.get(name) !== '') payload[name] = Number(fd.get(name))
-    else payload[name] = fd.get(name) === '' ? null : fd.get(name)
+    else payload[name] = String(fd.get(name) ?? '').trim() || null
   }
   if (payload.cpf) payload.cpf = String(payload.cpf).replace(/\D/g, '')
   return payload
@@ -201,11 +264,21 @@ function formPayload(def) {
 
 async function saveRecord(event) {
   event.preventDefault()
+  if (state.saving) return
+  state.saving = true
+  const formButtons = form.querySelectorAll('button')
+  formButtons.forEach(button => { button.disabled = true })
   const def = definitions[state.table]
   const payload = formPayload(def)
   const dialogMessage = $('[data-dialog-message]')
   showMessage(dialogMessage, 'Salvando...', 'info')
   try {
+    if (state.table === 'observatorio_conteudos') {
+      if (payload.status === 'publicado' && !payload.revisao_humana) throw new Error('Confirme “Revisão humana concluída” antes de publicar.')
+      payload.url = normalizeLink(payload.url)
+      for (const field of ['video_url', 'imagem_url']) if (payload[field]) payload[field] = normalizeLink(payload[field])
+      if (await existingPublication(payload.url, state.editing?.id)) throw new Error('Este link já possui uma publicação. Cancele e edite o registro existente.')
+    }
     if (state.table === 'participantes' && !state.editing) {
       const { data, error } = await supabase.functions.invoke('admin-users', { body: {
         action: 'create_participant', participant: payload,
@@ -226,7 +299,11 @@ async function saveRecord(event) {
       if (error) throw error
     }
     dialog.close(); state.lookups = {}; await renderTable()
+    if (state.table === 'observatorio_conteudos') showMessage(message, payload.status === 'publicado'
+      ? 'Publicação salva no banco e disponível no Observatório. Atualize a página pública para vê-la.'
+      : 'Cadastro salvo no banco. Este conteúdo ainda não está publicado no Observatório.', 'success')
   } catch (error) { showMessage(dialogMessage, error.message, 'error') }
+  finally { state.saving = false; formButtons.forEach(button => { button.disabled = false }) }
 }
 
 async function deleteRecord(row) {
