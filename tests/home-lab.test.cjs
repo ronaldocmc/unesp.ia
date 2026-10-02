@@ -14,7 +14,15 @@ test('cabeçalho mantém a identidade do Observatório e o menu dos eixos', () =
   const links = [...nav.matchAll(/<a href="([^"]+)"[^>]*>([^<]+)<\/a>/g)].map(match => [match[1], match[2]]);
   assert.deepEqual(links, [['#ecossistema','Ecossistema'],['#aprender','Aprender.IA'],['#experimentar','Experimentar.IA'],['pesquisa.html','Pesquisar.IA'],['#inovacao-iniciativas','Inovar.IA'],['observatorio.html','Observar.IA'],['equipe.html','Equipe']]);
   assert.ok(!html.includes('class="lab-access"'));
-  assert.match(html, /<figure class="lab-hero-art"><img src="assets\/img\/ecossistema\/hero-ecossistema-unesp-ia-v6-orbita.webp"/);
+});
+
+test('hero usa apenas a ilustração do novo anexo, com os textos da home preservados', () => {
+  const png=fs.readFileSync(path.join(root,'assets/img/ecossistema/referencia-home-ecossistema.png'));
+  assert.equal(png.readUInt32BE(16),941);
+  assert.equal(png.readUInt32BE(20),1672);
+  assert.match(html, /<figure class="lab-hero-art"><img src="assets\/img\/ecossistema\/referencia-home-ecossistema.png"/);
+  assert.ok(html.includes('Ciência de Dados e Inteligência Artificial</span></h1>'));
+  assert.ok(html.includes('O ecossistema do unesp.IA Lab integra pesquisa, formação e inovação'));
 });
 
 test('home contém as seções da proposta e mantém as âncoras antigas', () => {

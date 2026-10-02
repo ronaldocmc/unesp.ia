@@ -28,8 +28,9 @@
 .lab-actions{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
 .lab-button{display:inline-flex;align-items:center;justify-content:center;gap:20px;border:1px solid #4c94ff;border-radius:10px;padding:12px 18px;min-height:44px;background:#fff;color:var(--lab-blue);font-size:13px;line-height:1.2;font-weight:600}
 .lab-button>span{font-size:22px;font-weight:400;line-height:1}.lab-button.primary{background:var(--lab-blue);border-color:var(--lab-blue);color:#fff}.lab-button:hover{box-shadow:0 5px 18px #0065ff28}.lab-hero .lab-actions{flex-wrap:nowrap;gap:12px}.lab-hero .lab-button{flex:1;padding-inline:12px;gap:10px;font-size:12px}
-.lab-hero-art{width:120%;max-width:900px;margin:0;justify-self:center}
-.lab-hero-art img{display:block;width:100%;height:auto;max-height:490px;object-fit:contain}
+/* Janela da ilustração no anexo original (941 × 1672), sem reproduzir os textos da proposta. */
+.lab-hero-art{position:relative;overflow:hidden;aspect-ratio:541/442;width:100%;max-width:580px;margin:0;justify-self:center;mix-blend-mode:multiply;clip-path:polygon(4% 0,100% 0,100% 100%,4% 100%,4% 74%,0 68%,0 46%,4% 40%);mask-image:linear-gradient(to right,transparent,#000 2%,#000 98%,transparent),linear-gradient(to bottom,transparent,#000 2%,#000 98%,transparent);mask-composite:intersect}
+.lab-hero-art img{position:absolute;display:block;max-width:none;width:calc(94100% / 541);height:auto;left:calc(-40000% / 541);top:calc(-5100% / 442)}
 .lab-sections{background:url('../img/observar-ia-waves.svg') center 50px/100% 860px no-repeat}
 .lab-section{padding-block:18px}.lab-home h2{font-size:clamp(27px,2.65vw,38px);line-height:1.08;letter-spacing:-.04em;margin:0 0 3px}
 .lab-section-lead{font-size:14px;line-height:1.4;margin:0 0 13px;color:var(--lab-muted)}
