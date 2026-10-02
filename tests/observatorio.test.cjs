@@ -79,6 +79,18 @@ test('cabeçalho do Observatório preserva a marca institucional completa', () =
   assert.ok(!html.includes('observatory-brand-mark'),'O logo não deve usar o contêiner de recorte');
 });
 
+test('cartões agrupam capa, título e descrição no mesmo link seguro', () => {
+  const js=fs.readFileSync(path.join(root,'assets/js/observatorio.js'),'utf8');
+  const css=fs.readFileSync(path.join(root,'assets/css/observatorio.css'),'utf8');
+  assert.ok(js.includes("const content = linkTo(item, 'obs-story-content')"));
+  assert.ok(js.includes('content.append(cover)'));
+  assert.ok(js.includes("content.append(title, element('p', 'obs-story-summary', item.resumo || ''))"));
+  assert.ok(js.includes('article.append(content)'));
+  assert.ok(!js.includes('title.append(linkTo('), 'Não deve haver links aninhados');
+  assert.match(css,/\.obs-story-cover\s*\{[^}]*aspect-ratio: 3 \/ 2/);
+  assert.match(css,/\.obs-story-cover img\s*\{[^}]*object-fit: contain/);
+});
+
 test('URLs externas e locais são permitidas, protocolos executáveis não', () => {
   const base='https://ronaldocmc.github.io/unesp.ia/observatorio.html';
   assert.equal(model.safeURL('pesquisa.html',base),'https://ronaldocmc.github.io/unesp.ia/pesquisa.html');

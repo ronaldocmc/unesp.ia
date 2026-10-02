@@ -47,6 +47,8 @@
     if (/^\d{4}-\d{2}-\d{2}/.test(item.data || '')) time.dateTime = item.data.slice(0, 10);
     meta.append(element('span', '', typeLabel), time);
     article.append(meta);
+    // Uma única área de navegação reúne capa, título e resumo, sem links aninhados.
+    const content = linkTo(item, 'obs-story-content');
     if (compact) {
       const cover = element('div', 'obs-story-cover');
       cover.append(icon(symbol));
@@ -58,11 +60,11 @@
         cover.append(img);
       }
       if (item.destaque === true) cover.append(element('span', 'obs-featured-label', 'Destaque da curadoria'));
-      article.append(cover);
+      content.append(cover);
     }
-    const title = element('h3');
-    title.append(linkTo(item, '', item.titulo));
-    article.append(title, element('p', 'obs-story-summary', item.resumo || ''));
+    const title = element('h3', '', item.titulo);
+    content.append(title, element('p', 'obs-story-summary', item.resumo || ''));
+    article.append(content);
     article.append(element('small', 'obs-story-source', 'Fonte: ' + (item.fonte || 'Não informada') + ' · ' + (item.revisao || 'Situação editorial não informada')));
     const read = linkTo(item, 'obs-read-more', 'Ler mais ');
     if (read.tagName === 'A') {
