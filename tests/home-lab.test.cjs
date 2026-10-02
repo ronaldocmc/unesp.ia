@@ -5,6 +5,18 @@ const path = require('node:path');
 const root = path.join(__dirname, '..');
 const html = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
 
+test('cabeçalho mantém a identidade do Observatório e o menu dos eixos', () => {
+  const observatory = fs.readFileSync(path.join(root, 'observatorio.html'), 'utf8');
+  const logo = '<img class="brand-logo" src="assets/img/logo-unesp-ia-research-innovation-lab.png" alt="unesp.IA Research &amp; Innovation Lab" width="2172" height="724">';
+  assert.ok(html.includes(logo));
+  assert.ok(observatory.includes(logo));
+  const nav = html.match(/<nav class="lab-nav"[^>]*>([\s\S]*?)<\/nav>/)[1];
+  const links = [...nav.matchAll(/<a href="([^"]+)"[^>]*>([^<]+)<\/a>/g)].map(match => [match[1], match[2]]);
+  assert.deepEqual(links, [['#ecossistema','Ecossistema'],['#aprender','Aprender.IA'],['#experimentar','Experimentar.IA'],['pesquisa.html','Pesquisar.IA'],['#inovacao-iniciativas','Inovar.IA'],['observatorio.html','Observar.IA'],['equipe.html','Equipe']]);
+  assert.ok(!html.includes('class="lab-access"'));
+  assert.match(html, /<figure class="lab-hero-art"><img src="assets\/img\/ecossistema\/hero-ecossistema-unesp-ia-v6-orbita.webp"/);
+});
+
 test('home contém as seções da proposta e mantém as âncoras antigas', () => {
   const ids = [...html.matchAll(/\bid="([^"]+)"/g)].map(match => match[1]);
   assert.equal(ids.length, new Set(ids).size);

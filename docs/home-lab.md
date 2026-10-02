@@ -5,8 +5,11 @@ cartões e botões são HTML responsivo, não uma captura da página inteira.
 
 - `assets/css/home-lab.css` mantém o novo layout isolado do curso e do Observatório.
 - `assets/img/ecossistema/referencia-home-lab.png` é o anexo original, sem alteração.
-  As janelas CSS `.lab-crop` exibem apenas o logo, a ilustração principal e as três fotos.
+  As janelas CSS `.lab-crop` exibem apenas as três fotos das iniciativas.
   Os limites de cada janela são definidos em pixels da referência por `--crop-x/y/w/h`.
+- O cabeçalho usa o logo completo Research & Innovation Lab, igual ao Observatório,
+  e o menu dos eixos. A abertura reutiliza `hero-ecossistema-unesp-ia-v6-orbita.webp`,
+  com fundo transparente, escala contida e sem sobreposição de ondas.
 - Os quatro eixos continuam consultando JSON local e os conteúdos publicados no Supabase.
   O modo compacto preserva os cartões HTML em caso de falha de rede e não remove
   Aplicar.IA nem Agentes. Descrições/ações modificadas no painel substituem as sínteses locais.
