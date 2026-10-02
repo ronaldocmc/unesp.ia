@@ -72,11 +72,10 @@ test('segue a estrutura acordada e não repete destaques nem o cartão de dados'
   assert.ok(html.includes('Acompanhe novidades, pesquisas, dados e análises sobre Inteligência Artificial.'));
   assert.ok(html.includes('Explorar análises e sínteses'));
 });
-test('cabeçalho mantém a marca completa usada na home', () => {
-  const home = fs.readFileSync(path.join(root,'index.html'),'utf8');
+test('cabeçalho do Observatório preserva a marca institucional completa', () => {
   const html = fs.readFileSync(path.join(root,'observatorio.html'),'utf8');
   const brandImage = /<img\b[^>]*class="brand-logo"[^>]*>/;
-  assert.equal(html.match(brandImage)?.[0],home.match(brandImage)?.[0]);
+  assert.equal(html.match(brandImage)?.[0],'<img class="brand-logo" src="assets/img/logo-unesp-ia-research-innovation-lab.png" alt="unesp.IA Research &amp; Innovation Lab" width="2172" height="724">');
   assert.ok(!html.includes('observatory-brand-mark'),'O logo não deve usar o contêiner de recorte');
 });
 

@@ -76,10 +76,29 @@ async function loadAxes(){
     if(!response.ok)throw new Error('Eixos indisponíveis');
     const fallback=await response.json();
     const axes=await loadPublishedAxes(fallback);
-    target.replaceChildren(...axes.map(axisCard));
-    const hashTarget=location.hash&&document.querySelector(location.hash);
+    if(target.dataset.layout==='compact'){
+      // Mantém os cartões HTML disponíveis mesmo sem rede e preserva as duas frentes extras.
+      const cards=new Map([...target.children].map(card=>[card.id,card]));
+      axes.forEach(axis=>{
+        const card=cards.get(axis.id),local=fallback.find(item=>item.id===axis.id);
+        if(!card||card.hasAttribute('data-static-card'))return;
+        card.querySelector('h3').textContent=axis.nome;
+        if(!local||axis.descricao!==local.descricao)card.querySelector('p').textContent=axis.descricao;
+        const action=card.querySelector('a');
+        const actionURL=new URL(axis.acao.href,document.baseURI);
+        if(['http:','https:'].includes(actionURL.protocol))action.href=actionURL.href;
+        if(!local||axis.acao.rotulo!==local.acao.rotulo){
+          action.replaceChildren(document.createTextNode(axis.acao.rotulo+' '));
+          const arrow=document.createElement('span');arrow.textContent='→';arrow.setAttribute('aria-hidden','true');action.append(arrow);
+        }
+        action.removeAttribute('target');action.removeAttribute('rel');
+        externalAttributes(action,axis.acao);
+      });
+    }else target.replaceChildren(...axes.map(axisCard));
+    const hashTarget=location.hash&&document.getElementById(decodeURIComponent(location.hash.slice(1)));
     if(hashTarget&&['aprender','experimentar','pesquisa','inovacao'].includes(hashTarget.id)) requestAnimationFrame(()=>hashTarget.scrollIntoView({block:'start'}));
   }catch(error){
+    if(target.dataset.layout==='compact')return; // O HTML inicial já contém os links e descrições.
     const message=document.createElement('p');
     message.className='ecosystem-data-message';
     message.textContent='Os eixos do ecossistema estarão disponíveis quando o portal for acessado pelo servidor web.';
