@@ -90,8 +90,8 @@ test('apresentação institucional identifica a FCT/UNESP e mantém as estrutura
   assert.match(text, /poderá integrar sua estrutura/);
   assert.match(text, /futuro I3A — Instituto de Inteligência Artificial Aplicada da UNESP/);
   assert.match(text, /dados produzidos por iniciativas, projetos e pesquisas da UNESP/);
-  assert.equal((text.match(/é dedicado ao acompanhamento da evolução, da adoção e dos impactos da Engenharia de Dados, da Ciência de Dados e da Inteligência Artificial/g) || []).length, 1);
-  assert.match(text, /com base em informações de fontes nacionais e internacionais e em pesquisas e iniciativas da UNESP/);
+  assert.match(text, /é uma iniciativa do Departamento de Matemática e Computação \(DMC\)/);
+  assert.match(text, /fontes nacionais e internacionais com pesquisas, projetos e iniciativas da UNESP/);
   assert.doesNotMatch(text, /Claro, fica mais preciso|Essa formulação deixa/);
 });
 
@@ -114,7 +114,7 @@ test('Sobre tem acesso na abertura e no menu, com parágrafos sem excesso de neg
   assert.match(html, /<a href="#sobre">Sobre<\/a>/);
   assert.match(hero, /class="obs-button obs-button-about" href="#sobre">Sobre/);
   assert.ok(hero.indexOf('Conhecer as análises') < hero.indexOf('obs-button-about'));
-  assert.doesNotMatch(hero, /<strong>/);
+  assert.match(hero, /<strong>Departamento de Matemática e Computação \(DMC\)<\/strong>/);
   assert.doesNotMatch(about, /<strong>/);
   assert.equal((about.match(/class="obs-about-block"/g) || []).length, 5);
   for (const heading of ['Fontes de informação','O que acompanhamos','Nosso objetivo','Vínculo acadêmico','Perspectivas']) assert.ok(about.includes(`<h3>${heading}</h3>`));
