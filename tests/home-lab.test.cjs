@@ -21,7 +21,7 @@ test('hero usa apenas a ilustração do novo anexo, com os textos da home preser
   assert.equal(png.readUInt32BE(16),941);
   assert.equal(png.readUInt32BE(20),1672);
   assert.match(html, /<figure class="lab-hero-art"><img src="assets\/img\/ecossistema\/referencia-home-ecossistema.png"/);
-  assert.ok(html.includes('Ciência de Dados e Inteligência Artificial</span></h1>'));
+  assert.ok(html.includes('Computação, Dados e Inteligência Artificial</span></h1>'));
   assert.ok(html.includes('O ecossistema do unesp.IA Lab integra pesquisa, formação e inovação'));
 });
 
