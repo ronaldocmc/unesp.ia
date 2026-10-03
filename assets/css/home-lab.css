@@ -34,6 +34,7 @@
 .lab-sections{background:url('../img/observar-ia-waves.svg') center 50px/100% 860px no-repeat}
 .lab-section{padding-block:18px}.lab-home h2{font-size:clamp(27px,2.65vw,38px);line-height:1.08;letter-spacing:-.04em;margin:0 0 3px}
 .lab-section-lead{font-size:14px;line-height:1.4;margin:0 0 13px;color:var(--lab-muted)}
+#ecossistema .lab-section-lead{font-size:15.5px;line-height:1.45;max-width:1120px}
 .lab-anchor{display:block}.lab-axis-grid{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:10px}
 .lab-axis{--card-color:#0076ff;--card-bg:#eef8ff;min-width:0;display:flex;flex-direction:column;border:1px solid #e0effc;border-radius:12px;padding:14px;background:linear-gradient(130deg,var(--card-bg),#f7fcff)}
 .lab-green{--card-color:#00bba4;--card-bg:#eafaf7}.lab-purple{--card-color:#6922ef;--card-bg:#f4efff}.lab-orange{--card-color:#ff9400;--card-bg:#fff5e8}.lab-slate{--card-color:#536987;--card-bg:#f0f3f7}
