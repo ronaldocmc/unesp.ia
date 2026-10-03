@@ -53,6 +53,7 @@
 .obs-button:hover { text-decoration: none; background: #edf6ff; box-shadow: 0 4px 16px #006bff18; }
 .obs-button.primary:hover { background: #0057d6; }
 .obs-hero .obs-button { flex: 1 1 auto; font-size: 14px; padding-inline: 14px; }
+.obs-hero .obs-button-about { flex-grow: 0; }
 .obs-heading::before { content: ""; display: block; width: 56px; height: 3px; margin: 0 0 10px; border-radius: 3px; background: linear-gradient(90deg,#006bff,#00cee9); }
 .obs-heading h2 { margin: 0; font-size: clamp(29px,2.65vw,42px); line-height: 1.1; letter-spacing: -.045em; color: var(--obs-ink); }
 .obs-heading h2 span { color: var(--obs-blue); }
@@ -143,16 +144,18 @@
 
 /* Sobre e rodapé preservados. */
 .obs-button.small { min-height: 35px; padding: 6px 12px; font-size: 13px; border-radius: 6px; gap: 12px; }
-.obs-about { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 28px; padding-block: 28px; }
+.obs-about { padding-block: 42px; }
+.obs-about-header { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 24px; padding-bottom: 28px; border-bottom: 1px solid var(--obs-border); }
 .obs-about-intro { display: flex; gap: 16px; align-items: center; }
 .obs-about-icon { display: grid; place-items: center; width: 65px; height: 65px; flex-shrink: 0; border-radius: 50%; background: #e5f5ff; color: var(--obs-blue); }
 .obs-about-icon .obs-icon { width: 44px; height: 44px; }
-.obs-about h2 { font-size: 19px; margin: 0 0 4px; letter-spacing: -.03em; }
-.obs-about p { font-size: 13px; margin: 0; color: var(--obs-muted); }
-.obs-about-content { flex-basis: 100%; min-width: 0; padding-top: 24px; border-top: 1px solid var(--obs-border); }
-.obs-about-content p { max-width: 92ch; margin: 0 auto 20px; font-size: 16px; line-height: 1.75; }
-.obs-about-content p:last-child { margin-bottom: 0; }
-.obs-about-content strong { color: var(--obs-ink); }
+.obs-about h2 { font-size: clamp(24px,2.3vw,32px); line-height: 1.2; margin: 0 0 8px; letter-spacing: -.03em; }
+.obs-about p { font-size: 14px; margin: 0; color: var(--obs-muted); }
+.obs-about-content { max-width: 1120px; margin-inline: auto; }
+.obs-about-block { display: grid; grid-template-columns: 220px minmax(0,1fr); gap: 36px; padding-block: 28px; border-bottom: 1px solid #eaf0f8; }
+.obs-about-block:last-child { border-bottom: 0; padding-bottom: 0; }
+.obs-about-block h3 { margin: 3px 0 0; font-size: 18px; line-height: 1.4; font-weight: 600; color: #0959ab; }
+.obs-about-block p { font-size: 16px; line-height: 1.75; font-weight: 400; text-align: left; }
 .obs-about-links { display: grid; grid-template-columns: repeat(4,1fr); gap: 30px; }
 .obs-about-links :is(a,button) { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 7px; padding: 5px; background: none; border: 0; color: var(--obs-muted); font-size: 13px; text-align: center; white-space: nowrap; }
 .obs-about-links .obs-icon { width: 29px; height: 29px; color: var(--obs-blue); }
@@ -199,7 +202,7 @@
   .obs-content-search { width: 235px; }
   .obs-analysis-layout { flex-wrap: wrap; gap: 18px; }
   .obs-analysis-layout > .obs-button { margin-left: 83px; }
-  .obs-about { flex-wrap: wrap; }
+  .obs-about-block { grid-template-columns: 180px minmax(0,1fr); gap: 24px; }
   .obs-about-links { flex: 1; }
 }
 @media (max-width: 780px) {
@@ -214,6 +217,7 @@
   .obs-hero-copy > p { max-width: none; font-size: 17px; }
   .obs-hero .obs-button { font-size: 15px; min-height: 47px; }
   .obs-hero-visual { width: 100%; max-width: 100%; margin: 0; max-height: 330px; }
+  .obs-about-block { grid-template-columns: 1fr; gap: 10px; padding-block: 24px; }
   .obs-heading-row { flex-wrap: wrap; align-items: start; gap: 10px; }
   .obs-heading h2 { font-size: 33px; }
   .obs-story { padding: 13px; }
@@ -265,7 +269,7 @@
   .obs-analysis-layout > .obs-icon-tile .obs-icon { width: 32px; height: 32px; }
   .obs-analysis-layout > .obs-button { grid-column: 1 / -1; margin: 0; }
   .obs-analysis-layout h2 { font-size: 27px; }
-  .obs-about { gap: 22px; }
+  .obs-about { padding-block: 30px; }
   .obs-about-intro { align-items: start; gap: 12px; }
   .obs-about-icon { width: 46px; height: 46px; }
   .obs-about-icon .obs-icon { width: 33px; height: 33px; }

@@ -202,10 +202,17 @@
     $('observatory-reset').addEventListener('click', () => { reset(); applyFilters(); });
     document.querySelectorAll('[data-dialog]').forEach(trigger => trigger.addEventListener('click', event => { event.preventDefault(); openDialog(trigger.dataset.dialog); }));
     $('observatory-dialog').querySelector('.obs-dialog-close').addEventListener('click', () => $('observatory-dialog').close());
-    document.querySelectorAll('.observatory-topbar .nav a[href^="#"]:not([data-dialog])').forEach(link => link.addEventListener('click', () => {
-      document.querySelectorAll('.observatory-topbar .nav a[aria-current]').forEach(item => item.removeAttribute('aria-current'));
-      link.setAttribute('aria-current', 'location');
-    }));
+    const navigationLinks = [...document.querySelectorAll('.observatory-topbar .nav a[href^="#"]:not([data-dialog])')];
+    const syncNavigation = () => {
+      const hash = location.hash || '#top';
+      const target = ({ '#acervo': '#areas', '#dados': '#areas', '#destaques': '#areas', '#como-funciona': '#agentes' })[hash] || hash;
+      const active = navigationLinks.find(link => link.getAttribute('href') === target);
+      if (!active) return;
+      navigationLinks.forEach(link => link.removeAttribute('aria-current'));
+      active.setAttribute('aria-current', 'location');
+    };
+    syncNavigation();
+    window.addEventListener('hashchange', syncNavigation);
     load();
   });
 })();

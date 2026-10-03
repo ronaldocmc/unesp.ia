@@ -13,16 +13,16 @@
   <meta property="og:locale" content="pt_BR">
   <meta property="og:image" content="https://ronaldocmc.github.io/unesp.ia/assets/img/observar-ia-logo.png">
   <link rel="stylesheet" href="assets/css/style.css?v=20260929-observar-final">
-  <link rel="stylesheet" href="assets/css/observatorio.css?v=20261002-institucional">
+  <link rel="stylesheet" href="assets/css/observatorio.css?v=20261002-sobre">
   <script src="assets/js/observatorio-model.js?v=20261001-acervo-unificado" defer></script>
-  <script src="assets/js/observatorio.js?v=20261002-institucional" defer></script>
+  <script src="assets/js/observatorio.js?v=20261002-sobre" defer></script>
 </head>
 <body class="ecosystem-page observatory-page">
   <a class="obs-skip" href="#conteudo">Ir para o conteúdo</a>
   <header class="topbar ecosystem-topbar observatory-topbar">
     <a class="brand" href="index.html" aria-label="Página inicial do ecossistema unesp.IA"><img class="brand-logo" src="assets/img/logo-unesp-ia-research-innovation-lab.png" alt="unesp.IA Research &amp; Innovation Lab" width="2172" height="724"></a>
     <nav class="nav" aria-label="Navegação do Observatório">
-      <a href="#top" aria-current="location">Início</a><a href="#areas">Explorar</a><a href="#analises">Análises</a><a href="#agentes">Agentes</a><a href="#sobre">O Observatório</a><a href="equipe.html">Equipe</a><a href="#contato" data-dialog="contato">Contato</a>
+      <a href="#top" aria-current="location">Início</a><a href="#areas">Explorar</a><a href="#analises">Análises</a><a href="#agentes">Agentes</a><a href="#sobre">Sobre</a><a href="equipe.html">Equipe</a><a href="#contato" data-dialog="contato">Contato</a>
     </nav>
     <form class="obs-search obs-header-search" role="search">
       <svg class="obs-icon " viewBox="0 0 24 24" aria-hidden="true"><use href="assets/img/observar-ia-area-icons.svg?v=20260930#search"></use></svg><label class="observatory-visually-hidden" for="observatory-global-search">Buscar no Observatório</label><input id="observatory-global-search" type="search" placeholder="Buscar no Observatório..." autocomplete="off">
@@ -34,10 +34,11 @@
         <div class="obs-hero-copy">
           <h1 class="observatory-visually-hidden" id="observatory-title">Observar.IA — Observatório de Inteligência Artificial da FCT/UNESP</h1>
           <img class="obs-logo" src="assets/img/observar-ia-logo-fct-unesp.png" width="1672" height="941" alt="">
-          <p>O <strong>Observar.IA</strong> é o Observatório de Inteligência Artificial da <strong>Faculdade de Ciências e Tecnologia da UNESP (FCT/UNESP), Câmpus de Presidente Prudente</strong>, dedicado ao acompanhamento sistemático da evolução, da adoção e dos impactos da Inteligência Artificial na ciência, na educação, nas organizações, no setor produtivo, no poder público e na sociedade.</p>
+          <p>O Observatório de Inteligência Artificial da Faculdade de Ciências e Tecnologia da UNESP (FCT/UNESP), Câmpus de Presidente Prudente, é dedicado ao acompanhamento da evolução, da adoção e dos impactos da Engenharia de Dados, da Ciência de Dados e da Inteligência Artificial, com base em informações de fontes nacionais e internacionais e em pesquisas e iniciativas da UNESP.</p>
           <div class="obs-actions">
             <a class="obs-button primary" href="#areas"><svg class="obs-icon " viewBox="0 0 24 24" aria-hidden="true"><use href="assets/img/observar-ia-area-icons.svg?v=20260930#dados"></use></svg>Explorar o Observatório<span aria-hidden="true">→</span></a>
             <a class="obs-button" href="#analises"><svg class="obs-icon " viewBox="0 0 24 24" aria-hidden="true"><use href="assets/img/observar-ia-area-icons.svg?v=20260930#pesquisas"></use></svg>Conhecer as análises<span aria-hidden="true">→</span></a>
+            <a class="obs-button obs-button-about" href="#sobre">Sobre<span aria-hidden="true">→</span></a>
           </div>
         </div>
         <img class="obs-hero-visual" src="assets/img/observar-ia-hero-paineis.png" width="1659" height="948" fetchpriority="high" alt="Globo com o Brasil em destaque, conectado a painéis de tendências, dados, pesquisas, aplicações, regulação e avaliações.">
@@ -131,6 +132,7 @@
     </section>
 
     <section class="obs-about obs-container" id="sobre" aria-labelledby="about-title">
+      <div class="obs-about-header">
       <div class="obs-about-intro"><span class="obs-about-icon"><svg class="obs-icon " viewBox="0 0 24 24" aria-hidden="true"><use href="assets/img/observar-ia-area-icons.svg?v=20260930#info"></use></svg></span><div><h2 id="about-title">Sobre o Observatório</h2><p>Observatório de Inteligência Artificial da FCT/UNESP</p></div></div>
       <div class="obs-about-links">
         <button type="button" data-dialog="metodologia" aria-haspopup="dialog"><svg class="obs-icon " viewBox="0 0 24 24" aria-hidden="true"><use href="assets/img/observar-ia-area-icons.svg?v=20260930#pesquisas"></use></svg>Metodologia</button>
@@ -138,12 +140,28 @@
         <a href="equipe.html"><svg class="obs-icon " viewBox="0 0 24 24" aria-hidden="true"><use href="assets/img/observar-ia-area-icons.svg?v=20260930#team"></use></svg>Equipe</a>
         <button type="button" id="contato" data-dialog="contato" aria-haspopup="dialog"><svg class="obs-icon " viewBox="0 0 24 24" aria-hidden="true"><use href="assets/img/observar-ia-area-icons.svg?v=20260930#mail"></use></svg>Contato</button>
       </div>
+      </div>
       <div class="obs-about-content">
-        <p>O Observatório reúne, organiza e analisa <strong>dados e informações provenientes de fontes públicas, bases oficiais, estudos científicos, relatórios técnicos, notícias e publicações especializadas, organismos nacionais e internacionais, instituições de pesquisa, empresas de tecnologia e dados produzidos por iniciativas, projetos e pesquisas da UNESP</strong>.</p>
-        <p>A partir dessas fontes, o <strong>Observar.IA</strong> acompanha <strong>modelos, ferramentas, agentes inteligentes, pesquisas, aplicações, empresas, indicadores, avaliações, benchmarks, regulamentações, políticas públicas e tendências relacionadas à Inteligência Artificial</strong>, buscando transformar informações dispersas em <strong>dados organizados, análises, indicadores, evidências e conhecimento acessível</strong>.</p>
-        <p>Sua atuação tem como objetivo apoiar a <strong>pesquisa, a formação, a inovação, a disseminação do conhecimento e a tomada de decisões baseada em evidências</strong>, contribuindo para uma compreensão crítica, responsável e atualizada sobre o desenvolvimento, a adoção e os impactos da Inteligência Artificial.</p>
-        <p>O <strong>Observar.IA</strong> integra o <strong>ecossistema unesp.IA Lab</strong>, coordenado pelo <strong>Prof. Ronaldo Celso Messias Correia</strong>, e está articulado às iniciativas de <strong>Engenharia de Dados, Ciência de Dados e Inteligência Artificial</strong> desenvolvidas no <strong>Departamento de Matemática e Computação da FCT/UNESP</strong>.</p>
-        <p>Com a futura criação do <strong>Núcleo de Inteligência Artificial do Departamento de Matemática e Computação da FCT/UNESP</strong>, o <strong>Observar.IA</strong> poderá integrar sua estrutura como uma frente permanente de <strong>monitoramento, análise, produção e disseminação de conhecimento</strong>, atuando de forma articulada com o futuro <strong>I3A — Instituto de Inteligência Artificial Aplicada da UNESP</strong> e contribuindo para a integração de dados, pesquisas, indicadores, avaliações e evidências produzidas no âmbito da Universidade.</p>
+        <div class="obs-about-block">
+          <h3>Fontes de informação</h3>
+          <p>O Observatório reúne, organiza e analisa dados e informações provenientes de fontes públicas, bases oficiais, estudos científicos, relatórios técnicos, notícias e publicações especializadas, organismos nacionais e internacionais, instituições de pesquisa, empresas de tecnologia e dados produzidos por iniciativas, projetos e pesquisas da UNESP.</p>
+        </div>
+        <div class="obs-about-block">
+          <h3>O que acompanhamos</h3>
+          <p>A partir dessas fontes, o Observar.IA acompanha modelos, ferramentas, agentes inteligentes, pesquisas, aplicações, empresas, indicadores, avaliações, benchmarks, regulamentações, políticas públicas e tendências relacionadas à Inteligência Artificial, buscando transformar informações dispersas em dados organizados, análises, indicadores, evidências e conhecimento acessível.</p>
+        </div>
+        <div class="obs-about-block">
+          <h3>Nosso objetivo</h3>
+          <p>Sua atuação tem como objetivo apoiar a pesquisa, a formação, a inovação, a disseminação do conhecimento e a tomada de decisões baseada em evidências, contribuindo para uma compreensão crítica, responsável e atualizada sobre o desenvolvimento, a adoção e os impactos da Inteligência Artificial.</p>
+        </div>
+        <div class="obs-about-block">
+          <h3>Vínculo acadêmico</h3>
+          <p>O Observar.IA integra o ecossistema unesp.IA Lab, coordenado pelo Prof. Ronaldo Celso Messias Correia, e está articulado às iniciativas de Engenharia de Dados, Ciência de Dados e Inteligência Artificial desenvolvidas no Departamento de Matemática e Computação da FCT/UNESP.</p>
+        </div>
+        <div class="obs-about-block">
+          <h3>Perspectivas</h3>
+          <p>Com a futura criação do Núcleo de Inteligência Artificial do Departamento de Matemática e Computação da FCT/UNESP, o Observar.IA poderá integrar sua estrutura como uma frente permanente de monitoramento, análise, produção e disseminação de conhecimento, atuando de forma articulada com o futuro I3A — Instituto de Inteligência Artificial Aplicada da UNESP e contribuindo para a integração de dados, pesquisas, indicadores, avaliações e evidências produzidas no âmbito da Universidade.</p>
+        </div>
       </div>
     </section>
   </main>

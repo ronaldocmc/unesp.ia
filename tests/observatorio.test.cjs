@@ -90,7 +90,8 @@ test('apresentação institucional identifica a FCT/UNESP e mantém as estrutura
   assert.match(text, /poderá integrar sua estrutura/);
   assert.match(text, /futuro I3A — Instituto de Inteligência Artificial Aplicada da UNESP/);
   assert.match(text, /dados produzidos por iniciativas, projetos e pesquisas da UNESP/);
-  assert.equal((text.match(/dedicado ao acompanhamento sistemático/g) || []).length, 1);
+  assert.equal((text.match(/é dedicado ao acompanhamento da evolução, da adoção e dos impactos da Engenharia de Dados, da Ciência de Dados e da Inteligência Artificial/g) || []).length, 1);
+  assert.match(text, /com base em informações de fontes nacionais e internacionais e em pesquisas e iniciativas da UNESP/);
   assert.doesNotMatch(text, /Claro, fica mais preciso|Essa formulação deixa/);
 });
 
@@ -104,6 +105,19 @@ test('cartões agrupam capa, título e descrição no mesmo link seguro', () => 
   assert.ok(!js.includes('title.append(linkTo('), 'Não deve haver links aninhados');
   assert.match(css,/\.obs-story-cover\s*\{[^}]*aspect-ratio: 3 \/ 2/);
   assert.match(css,/\.obs-story-cover img\s*\{[^}]*object-fit: contain/);
+});
+
+test('Sobre tem acesso na abertura e no menu, com parágrafos sem excesso de negrito', () => {
+  const html = fs.readFileSync(path.join(root,'observatorio.html'),'utf8');
+  const hero = html.split('<section class="obs-hero')[1].split('</section>')[0];
+  const about = html.split('id="sobre"')[1].split('</section>')[0];
+  assert.match(html, /<a href="#sobre">Sobre<\/a>/);
+  assert.match(hero, /class="obs-button obs-button-about" href="#sobre">Sobre/);
+  assert.ok(hero.indexOf('Conhecer as análises') < hero.indexOf('obs-button-about'));
+  assert.doesNotMatch(hero, /<strong>/);
+  assert.doesNotMatch(about, /<strong>/);
+  assert.equal((about.match(/class="obs-about-block"/g) || []).length, 5);
+  for (const heading of ['Fontes de informação','O que acompanhamos','Nosso objetivo','Vínculo acadêmico','Perspectivas']) assert.ok(about.includes(`<h3>${heading}</h3>`));
 });
 
 test('URLs externas e locais são permitidas, protocolos executáveis não', () => {
