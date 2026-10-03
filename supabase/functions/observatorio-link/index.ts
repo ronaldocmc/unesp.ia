@@ -8,9 +8,6 @@ Deno.serve(createHandler({
       auth: { persistSession: false, autoRefreshToken: false },
     })
     const { data: { user }, error } = await client.auth.getUser(authorization.slice(7))
-    if (error || !user) throw new ImportError('Sessão expirada. Entre novamente no painel.', 401)
-    const { data: role, error: roleError } = await client.from('papeis_usuario')
-      .select('papel').eq('user_id', user.id).eq('papel', 'administrador').maybeSingle()
-    if (roleError || !role) throw new ImportError('Acesso permitido somente a administradores.', 403)
+    if (error || !user) throw new ImportError('Sessão expirada. Entre novamente para continuar.', 401)
   },
 }))

@@ -69,11 +69,11 @@ test('limita redirecionamentos e devolve URL final', async () => {
 
 function req(body, token = 'Bearer user-jwt') { return new Request('https://function.example.com', { method: 'POST', headers: { Authorization: token, 'Content-Type': 'application/json' }, body: JSON.stringify(body) }) }
 
-test('função exige sessão e papel de administrador antes de ler a URL', async () => {
+test('função exige sessão autenticada antes de ler a URL', async () => {
   let fetched = false
-  const handler = createHandler({ authorize: async () => { throw new ImportError('Somente administradores', 403) }, readPage: async () => { fetched = true } })
+  const handler = createHandler({ authorize: async () => { throw new ImportError('Sessão expirada', 401) }, readPage: async () => { fetched = true } })
   assert.equal((await handler(req({ url: 'https://example.com' }, ''))).status, 401)
-  assert.equal((await handler(req({ url: 'https://example.com' }))).status, 403)
+  assert.equal((await handler(req({ url: 'https://example.com' }))).status, 401)
   assert.equal(fetched, false)
 })
 
@@ -92,14 +92,27 @@ test('painel oferece revisão, cadastro manual e entrada direta, sem fila de age
   const html = readFileSync(new URL('../administracao.html', import.meta.url), 'utf8')
   const js = readFileSync(new URL('../assets/js/portal/admin.js', import.meta.url), 'utf8')
   const page = readFileSync(new URL('../observatorio.html', import.meta.url), 'utf8')
+  const suggestion = readFileSync(new URL('../sugerir-observacao.html', import.meta.url), 'utf8')
+  const suggestionJs = readFileSync(new URL('../assets/js/portal/observatorio-submit.js', import.meta.url), 'utf8')
+  const migration = readFileSync(new URL('../supabase/migrations/202610030001_observatorio_sugestoes.sql', import.meta.url), 'utf8')
   assert.match(html, /data-link-form/)
   assert.match(html, /Preencher manualmente/)
   assert.doesNotMatch(html, /data-admin-tab="candidatos_observatorio"/)
+  assert.match(js, /Usuário identificado/)
+  assert.match(js, /submetido_email/)
   assert.match(js, /payload.status === 'publicado' && !payload.revisao_humana/)
   assert.match(js, /existingPublication\(payload.url, state.editing\?\.id\)/)
   assert.match(page, /administracao.html\?secao=observatorio_conteudos/)
+  assert.match(page, /sugerir-observacao\.html/)
+  assert.match(suggestion, /data-observation-form/)
+  assert.match(suggestion, /Enviar para curadoria/)
+  assert.match(suggestionJs, /origem: 'Usuário identificado'/)
+  assert.match(suggestionJs, /status: 'revisao'/)
+  assert.match(migration, /observatorio_colaborador_insert/)
+  assert.match(migration, /status = 'revisao'/)
+  assert.match(migration, /revisao_humana = false/)
   const edge = readFileSync(new URL('../supabase/functions/observatorio-link/index.ts', import.meta.url), 'utf8')
   assert.match(edge, /getUser/)
-  assert.match(edge, /administrador/)
+  assert.doesNotMatch(edge, /administrador/)
   assert.doesNotMatch(edge, /SERVICE_ROLE|\.insert\(|\.update\(/)
 })

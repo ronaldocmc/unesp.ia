@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Sugerir observação | Observar.IA</title>
+  <meta name="description" content="Envie uma observação, notícia, pesquisa ou fonte para curadoria do Observar.IA.">
+  <link rel="stylesheet" href="assets/css/style.css?v=20261003-observatorio-submit">
+</head>
+<body>
+  <div class="topbar">
+    <a class="brand" href="observatorio.html"><img class="brand-logo" src="assets/img/logo-unesp-ia-research-innovation-lab.png" alt="unesp.IA Research &amp; Innovation Lab"></a>
+    <div class="nav"><a href="observatorio.html">Ver Observatório</a><a href="index.html">Ecossistema</a><button class="btn-small" data-logout hidden>Sair</button></div>
+  </div>
+  <main class="container content">
+    <h1>Sugerir observação</h1>
+    <p>Envie uma notícia, pesquisa, tecnologia, relatório, regulação ou aplicação para a fila de curadoria do Observar.IA. A sugestão será revisada pela administração antes de aparecer no Observatório.</p>
+    <p data-submit-message hidden></p>
+    <section class="admin-link-import" aria-labelledby="link-preview-title">
+      <h2 id="link-preview-title">Cadastrar por link</h2>
+      <p>Cole um link público para preencher título, resumo, fonte e imagem quando esses dados estiverem disponíveis. Você pode revisar tudo antes de enviar.</p>
+      <form class="portal-form" data-link-preview-form>
+        <label>Link público da fonte<input type="url" name="source_url" placeholder="https://..." required maxlength="2048"></label>
+        <div class="portal-form-actions"><button class="btn" type="submit">Buscar dados do link</button><button class="btn secondary" type="button" data-clear-preview>Limpar</button></div>
+        <p data-link-preview-message role="status" aria-live="polite" hidden></p>
+      </form>
+    </section>
+    <section aria-labelledby="submit-title">
+      <h2 id="submit-title">Dados da observação</h2>
+      <form class="portal-form" data-observation-form>
+        <label>Título<input type="text" name="titulo" required maxlength="300"></label>
+        <label>Resumo<textarea name="resumo" required maxlength="1200"></textarea></label>
+        <label>Tipo<select name="tipo" required>
+          <option value="Notícia monitorada">Notícia monitorada</option>
+          <option value="Notícia institucional">Notícia institucional</option>
+          <option value="Pesquisa">Pesquisa</option>
+          <option value="Tecnologia">Tecnologia</option>
+          <option value="Análise">Análise</option>
+          <option value="Artigo científico">Artigo científico</option>
+          <option value="Tese ou dissertação">Tese ou dissertação</option>
+          <option value="Política ou regulação">Política ou regulação</option>
+          <option value="Indicador">Indicador</option>
+          <option value="Portal">Portal</option>
+          <option value="Vídeo">Vídeo</option>
+        </select></label>
+        <label>Categoria<input type="text" name="categoria" required value="Atualidades" maxlength="120"></label>
+        <label>Data de publicação<input type="date" name="data_publicacao" required></label>
+        <label>Link da fonte<input type="url" name="url" required maxlength="2048"></label>
+        <label>Fonte ou autoria<input type="text" name="fonte" required maxlength="200"></label>
+        <label>Imagem de capa, se houver<input type="url" name="imagem_url" maxlength="2048"></label>
+        <label>Palavras-chave<input type="text" name="palavras_chave" placeholder="dados, IA, regulação..." maxlength="400"></label>
+        <label>Observação para a curadoria<textarea name="observacao_colaborador" maxlength="800" placeholder="Explique por que esta fonte é relevante para o Observatório."></textarea></label>
+        <p class="admin-editorial-help">Ao enviar, o item ficará em revisão. Apenas a curadoria administrativa poderá aprovar, editar e publicar.</p>
+        <div class="portal-form-actions"><button class="btn" type="submit">Enviar para curadoria</button><a class="btn secondary" href="observatorio.html">Cancelar</a></div>
+      </form>
+    </section>
+  </main>
+  <script type="module" src="assets/js/portal/observatorio-submit.js?v=20261003-submit"></script>
+</body>
+</html>

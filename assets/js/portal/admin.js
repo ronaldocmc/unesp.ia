@@ -47,7 +47,7 @@ const definitions = {
   conteudos_modulo: { title: 'Conteúdos protegidos', description: 'HTML ou caminho no bucket privado, liberado por matrícula.', pk: ['id'], fields: [
     ['modulo_id','Módulo','select',true,'modulos'], ['titulo','Título','text',true], ['ordem','Ordem','number',true], ['html','HTML do conteúdo','textarea',false], ['storage_path','Caminho no Storage','text',false], ['publicado','Publicado','checkbox',false]
   ]},
-  observatorio_conteudos: { title: 'Publicações do Observatório', description: 'Cadastre, revise e publique notícias, pesquisas, análises e matérias sobre os projetos. Os registros são salvos diretamente no banco do Observatório.', order: 'updated_at', descending: true, pk: ['id'], columns: ['id','colecao','tipo','titulo','data_publicacao','status','revisao_humana','destaque'], fields: [
+  observatorio_conteudos: { title: 'Publicações do Observatório', description: 'Cadastre, revise e publique notícias, pesquisas, análises e matérias sobre os projetos. Os registros são salvos diretamente no banco do Observatório.', order: 'updated_at', descending: true, pk: ['id'], columns: ['id','colecao','tipo','titulo','data_publicacao','origem','submetido_email','status','revisao_humana','destaque'], fields: [
     ['colecao','Coleção','select-static',true,['Observatório','unesp.IA na mídia']],
     ['tipo','Tipo de conteúdo ou mídia','select-static',true,['Notícia institucional','Notícia monitorada','Pesquisa','Tecnologia','Análise','Artigo científico','Tese ou dissertação','TV','Jornal','Revista','Rádio','Podcast','Portal','Vídeo','Política ou regulação','Evento ou oportunidade','Indicador']],
     ['categoria','Categoria','text',true], ['titulo','Título','text',true], ['resumo','Resumo','textarea',true],
@@ -57,7 +57,8 @@ const definitions = {
     ['participantes','Entrevistados ou participantes','textarea',false], ['cidade','Cidade','text',false],
     ['abrangencia','Abrangência','select-static',false,['Local','Regional','Estadual','Nacional','Internacional']],
     ['palavras_chave','Palavras-chave, separadas por vírgulas','text',false], ['fonte','Fonte ou autoria','text',true],
-    ['origem','Origem do cadastro','select-static',true,['Cadastro manual','Agente de IA','Importação']],
+    ['origem','Origem do cadastro','select-static',true,['Cadastro manual','Agente de IA','Importação','Usuário identificado']],
+    ['observacao_colaborador','Observação do usuário ou curadoria','textarea',false],
     ['status','Situação editorial','select-static',true,['rascunho','revisao','publicado','arquivado']],
     ['destaque','Destacar no Observatório','checkbox',false,false], ['revisao_humana','Revisão humana concluída','checkbox',false,false]
   ]},
