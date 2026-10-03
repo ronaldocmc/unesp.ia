@@ -44,7 +44,7 @@
 .obs-intro-surface { background: url('../img/observar-ia-waves.svg') center bottom / 100% 100% no-repeat, linear-gradient(120deg,#fff 20%,#f8fcff); }
 .obs-hero { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1.1fr); gap: 12px; align-items: center; padding-block: 22px 10px; }
 .obs-logo { display: block; width: 100%; height: clamp(130px,13vw,193px); object-fit: cover; mix-blend-mode: multiply; }
-.obs-hero-copy > p { margin: 10px 0 20px; max-width: 640px; font-size: clamp(16px,1.23vw,20px); line-height: 1.5; color: var(--obs-muted); }
+.obs-hero-copy > p { margin: 10px 0 20px; max-width: 640px; font-size: clamp(15px,1.05vw,17px); line-height: 1.5; color: var(--obs-muted); }
 .obs-hero-visual { display: block; width: 110%; max-width: 110%; margin-left: -4%; height: auto; max-height: 430px; object-fit: contain; filter: drop-shadow(0 8px 14px #249fff13); }
 .obs-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 14px; }
 .obs-button { display: inline-flex; align-items: center; justify-content: center; gap: 12px; min-height: 46px; padding: 10px 18px; border: 1px solid #a9cbff; border-radius: 8px; background: #ffffffee; color: #005de2; font-size: 15px; line-height: 1.2; font-weight: 500; text-decoration: none; transition: background .15s, box-shadow .15s; }
@@ -214,7 +214,7 @@
   .observatory-page :is(section,article,details,[id]) { scroll-margin-top: 20px; }
   .obs-hero { grid-template-columns: 1fr; padding-block: 20px 8px; gap: 10px; }
   .obs-logo { width: 100%; max-width: 560px; height: clamp(104px,24vw,160px); margin-inline: auto; }
-  .obs-hero-copy > p { max-width: none; font-size: 17px; }
+  .obs-hero-copy > p { max-width: none; font-size: 16px; }
   .obs-hero .obs-button { font-size: 15px; min-height: 47px; }
   .obs-hero-visual { width: 100%; max-width: 100%; margin: 0; max-height: 330px; }
   .obs-about-block { grid-template-columns: 1fr; gap: 10px; padding-block: 24px; }

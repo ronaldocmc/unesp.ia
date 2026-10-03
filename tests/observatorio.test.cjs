@@ -114,7 +114,7 @@ test('Sobre tem acesso na abertura e no menu, com parágrafos sem excesso de neg
   assert.match(html, /<a href="#sobre">Sobre<\/a>/);
   assert.match(hero, /class="obs-button obs-button-about" href="#sobre">Sobre/);
   assert.ok(hero.indexOf('Conhecer as análises') < hero.indexOf('obs-button-about'));
-  assert.match(hero, /<strong>Departamento de Matemática e Computação \(DMC\)<\/strong>/);
+  assert.doesNotMatch(hero, /<strong>/);
   assert.doesNotMatch(about, /<strong>/);
   assert.equal((about.match(/class="obs-about-block"/g) || []).length, 5);
   for (const heading of ['Fontes de informação','O que acompanhamos','Nosso objetivo','Vínculo acadêmico','Perspectivas']) assert.ok(about.includes(`<h3>${heading}</h3>`));
