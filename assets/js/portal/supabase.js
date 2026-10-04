@@ -22,15 +22,21 @@ export async function requireSession(returnTo = location.href) {
   return session
 }
 
-export async function requireAdmin() {
+export async function requireRole(roles, options = {}) {
+  const allowedRoles = Array.isArray(roles) ? roles : [roles]
   const session = await requireSession()
   const { data, error } = await supabase.from('papeis_usuario')
-    .select('papel').eq('user_id', session.user.id).eq('papel', 'administrador').maybeSingle()
-  if (error || !data) {
-    document.body.innerHTML = '<main class="container content"><h1>Acesso negado</h1><p>Esta área é exclusiva da administração.</p><a href="index.html">Voltar ao portal</a></main>'
-    throw error ?? new Error('Usuário não é administrador')
+    .select('papel').eq('user_id', session.user.id).in('papel', allowedRoles).limit(1)
+  if (error || !data?.length) {
+    const message = options.message || 'Esta área é exclusiva da administração.'
+    document.body.innerHTML = `<main class="container content"><h1>Acesso negado</h1><p>${message}</p><a href="index.html">Voltar ao portal</a></main>`
+    throw error ?? new Error('Usuário sem permissão para esta área')
   }
   return session
+}
+
+export async function requireAdmin() {
+  return requireRole('administrador')
 }
 
 export function showMessage(element, message, type = 'info') {

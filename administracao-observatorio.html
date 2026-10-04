@@ -3,43 +3,29 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Administração | unesp.IA</title>
+  <title>Administração do Observar.IA | unesp.IA</title>
   <link rel="stylesheet" href="assets/css/style.css?v=20261002-observatorio-admin">
 </head>
-<body data-admin-scope="portal">
+<body data-admin-scope="observatorio">
   <div class="topbar">
-    <a class="brand" href="index.html"><img class="brand-logo" src="assets/img/logo-unesp-ia-portal.jpg" alt="unesp.IA"></a>
-    <div class="nav"><a href="index.html">Ver ecossistema</a><a href="observatorio.html">Ver Observar.IA</a><a href="area-aluno.html">Minha área</a><button class="btn-small" data-logout>Sair</button></div>
+    <a class="brand" href="observatorio.html"><img class="brand-logo" src="assets/img/logo-unesp-ia-portal.jpg" alt="unesp.IA"></a>
+    <div class="nav"><a href="observatorio.html">Ver Observar.IA</a><a href="index.html">Ver ecossistema</a><a href="area-aluno.html">Minha área</a><button class="btn-small" data-logout>Sair</button></div>
   </div>
   <main>
     <div class="container content">
-      <h1>Administração do portal</h1>
-      <p>Dados dos quatro eixos, conteúdos do Observar.IA e cadastros acadêmicos em um único ambiente.</p>
+      <h1>Administração do Observar.IA</h1>
+      <p>Ambiente separado para curadoria, publicação e organização das observações do Observatório de Inteligência Artificial.</p>
       <p data-admin-message hidden></p>
       <div class="admin-shell">
-        <nav class="admin-nav" aria-label="Seções administrativas">
-          <p class="admin-nav-label">Gestão do ecossistema</p>
-          <button class="active" data-admin-tab="ecossistema_eixos">Configuração dos eixos</button>
-          <button data-admin-tab="aprender_ia">Aprender.IA</button>
-          <button data-admin-tab="experimentar_ia">Experimentar.IA</button>
-          <button data-admin-tab="pesquisar_ia">Pesquisar.IA</button>
-          <button data-admin-tab="inovar_ia">Inovar.IA</button>
+        <nav class="admin-nav" aria-label="Seções administrativas do Observar.IA">
           <p class="admin-nav-label">Observar.IA</p>
-          <button data-admin-tab="observatorio_conteudos">Publicações do Observatório</button>
+          <button class="active" data-admin-tab="observatorio_conteudos">Publicações do Observatório</button>
           <button data-admin-tab="observatorio_categorias">Categorias</button>
           <button data-admin-tab="observatorio_veiculos">Veículos de comunicação</button>
-          <p class="admin-nav-label">Portal acadêmico</p>
-          <button data-admin-tab="modulos">Módulos</button>
-          <button data-admin-tab="turmas">Turmas</button>
-          <button data-admin-tab="participantes">Participantes</button>
-          <button data-admin-tab="matriculas">Matrículas</button>
-          <button data-admin-tab="encontros">Encontros</button>
-          <button data-admin-tab="frequencias">Frequências</button>
-          <button data-admin-tab="conteudos_modulo">Conteúdos</button>
         </nav>
         <section data-admin-workspace>
           <div class="admin-toolbar">
-            <div><h2 data-admin-title>Configuração dos eixos</h2><p data-admin-description></p></div>
+            <div><h2 data-admin-title>Publicações do Observatório</h2><p data-admin-description></p></div>
             <div class="portal-form-actions">
               <button class="btn" data-new-record>Novo cadastro</button>
               <button class="btn secondary" data-import-button hidden>Importar planilha</button>

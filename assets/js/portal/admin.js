@@ -1,4 +1,4 @@
-import { requireAdmin, supabase, showMessage } from './supabase.js'
+import { requireRole, supabase, showMessage } from './supabase.js'
 
 const initiativeDefinition = (title, eixo) => ({
   title,
@@ -74,7 +74,11 @@ const definitions = {
 }
 
 const requestedSection = new URLSearchParams(location.search).get('secao')
-const state = { table: requestedSection === 'observatorio_conteudos' ? requestedSection : 'ecossistema_eixos', rows: [], editing: null, lookups: {}, saving: false, importing: false }
+const adminScope = document.body.dataset.adminScope || 'portal'
+const observatorioSections = ['observatorio_conteudos', 'observatorio_categorias', 'observatorio_veiculos']
+const allowedSections = adminScope === 'observatorio' ? observatorioSections : Object.keys(definitions).filter(key => key !== 'candidatos_observatorio')
+const initialTable = allowedSections.includes(requestedSection) ? requestedSection : (adminScope === 'observatorio' ? 'observatorio_conteudos' : 'ecossistema_eixos')
+const state = { table: initialTable, rows: [], editing: null, lookups: {}, saving: false, importing: false }
 const $ = (selector) => document.querySelector(selector)
 const message = $('[data-admin-message]')
 const dialog = $('[data-record-dialog]')
@@ -89,6 +93,7 @@ document.querySelector('[data-logout]').addEventListener('click', async () => {
 })
 
 document.querySelectorAll('[data-admin-tab]').forEach(button => button.addEventListener('click', async () => {
+  if (!allowedSections.includes(button.dataset.adminTab)) return
   document.querySelectorAll('[data-admin-tab]').forEach(b => b.classList.toggle('active', b === button))
   state.table = button.dataset.adminTab
   await renderTable()
@@ -187,6 +192,10 @@ function lookupLabel(table, row) {
 
 async function renderTable() {
   const def = definitions[state.table]
+  if (!allowedSections.includes(state.table)) {
+    state.table = initialTable
+    return renderTable()
+  }
   document.querySelectorAll('[data-admin-tab]').forEach(button => button.classList.toggle('active', button.dataset.adminTab === state.table))
   $('[data-link-panel]').hidden = state.table !== 'observatorio_conteudos'
   $('[data-admin-title]').textContent = def.title
@@ -368,5 +377,12 @@ async function importSpreadsheet(event) {
   finally { event.target.value = '' }
 }
 
-try { await requireAdmin(); await renderTable() }
+try {
+  await requireRole(adminScope === 'observatorio' ? ['administrador', 'observatorio_admin'] : 'administrador', {
+    message: adminScope === 'observatorio'
+      ? 'Esta área é exclusiva da curadoria e administração do Observar.IA.'
+      : 'Esta área é exclusiva da administração.'
+  })
+  await renderTable()
+}
 catch (error) { if (message) showMessage(message, error.message, 'error') }
