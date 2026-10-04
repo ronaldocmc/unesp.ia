@@ -47,11 +47,19 @@ const definitions = {
   conteudos_modulo: { title: 'Conteúdos protegidos', description: 'HTML ou caminho no bucket privado, liberado por matrícula.', pk: ['id'], fields: [
     ['modulo_id','Módulo','select',true,'modulos'], ['titulo','Título','text',true], ['ordem','Ordem','number',true], ['html','HTML do conteúdo','textarea',false], ['storage_path','Caminho no Storage','text',false], ['publicado','Publicado','checkbox',false]
   ]},
+  observatorio_categorias: { title: 'Categorias do Observatório', description: 'Lista controlada de categorias usadas para classificar publicações do Observatório.', order: 'ordem', pk: ['id'], columns: ['id','nome','descricao','ordem','ativo'], fields: [
+    ['nome','Nome da categoria','text',true], ['descricao','Descrição','textarea',false], ['ordem','Ordem','number',true], ['ativo','Ativo','checkbox',false,true]
+  ]},
+  observatorio_veiculos: { title: 'Veículos de comunicação', description: 'Lista controlada de veículos, fontes e canais de comunicação usados nas publicações.', order: 'nome', pk: ['id'], columns: ['id','nome','tipo','url','ativo'], fields: [
+    ['nome','Nome do veículo','text',true],
+    ['tipo','Tipo de veículo','select-static',true,['Portal','Jornal','Revista','TV','Rádio','Podcast','Agência','Instituição','Blog','Outro']],
+    ['url','Site oficial','url',false], ['ativo','Ativo','checkbox',false,true]
+  ]},
   observatorio_conteudos: { title: 'Publicações do Observatório', description: 'Cadastre, revise e publique notícias, pesquisas, análises e matérias sobre os projetos. Os registros são salvos diretamente no banco do Observatório.', order: 'updated_at', descending: true, pk: ['id'], columns: ['id','colecao','tipo','titulo','data_publicacao','origem','submetido_email','status','revisao_humana','destaque'], fields: [
     ['colecao','Coleção','select-static',true,['Observatório','unesp.IA na mídia']],
     ['tipo','Tipo de conteúdo ou mídia','select-static',true,['Notícia institucional','Notícia monitorada','Pesquisa','Tecnologia','Análise','Artigo científico','Tese ou dissertação','TV','Jornal','Revista','Rádio','Podcast','Portal','Vídeo','Política ou regulação','Evento ou oportunidade','Indicador']],
-    ['categoria','Categoria','text',true], ['titulo','Título','text',true], ['resumo','Resumo','textarea',true],
-    ['projeto_relacionado','Projeto relacionado','text',false], ['veiculo','Veículo de comunicação','text',false],
+    ['categoria','Categoria','select-text',true,'observatorio_categorias'], ['titulo','Título','text',true], ['resumo','Resumo','textarea',true],
+    ['projeto_relacionado','Projeto relacionado','text',false], ['veiculo','Veículo de comunicação','select-text',false,'observatorio_veiculos'],
     ['data_publicacao','Data de publicação','date',true], ['url','Link da matéria ou fonte','url',true],
     ['video_url','Link do vídeo','url',false], ['imagem_url','Link da imagem de capa','url',false],
     ['participantes','Entrevistados ou participantes','textarea',false], ['cidade','Cidade','text',false],
@@ -155,8 +163,14 @@ async function loadLookup(table) {
   const select = table === 'modulos' ? 'id,codigo,descricao'
     : table === 'turmas' ? 'id,descricao'
     : table === 'participantes' ? 'id,nome,email'
+    : table === 'observatorio_categorias' ? 'id,nome,descricao,ativo,ordem'
+    : table === 'observatorio_veiculos' ? 'id,nome,tipo,url,ativo'
     : 'id,data,turma_id'
-  const { data, error } = await supabase.from(table).select(select).order('id')
+  let query = supabase.from(table).select(select)
+  if (table === 'observatorio_categorias') query = query.eq('ativo', true).order('ordem')
+  else if (table === 'observatorio_veiculos') query = query.eq('ativo', true).order('nome')
+  else query = query.order('id')
+  const { data, error } = await query
   if (error) throw error
   state.lookups[table] = data
   return data
@@ -166,6 +180,8 @@ function lookupLabel(table, row) {
   if (table === 'modulos') return `${row.codigo} - ${row.descricao}`
   if (table === 'participantes') return `${row.nome} - ${row.email}`
   if (table === 'encontros') return `#${row.id} - ${row.data} (turma ${row.turma_id})`
+  if (table === 'observatorio_categorias') return row.nome
+  if (table === 'observatorio_veiculos') return row.tipo ? `${row.nome} (${row.tipo})` : row.nome
   return `#${row.id} - ${row.descricao}`
 }
 
@@ -215,6 +231,9 @@ async function openDialog(row = null, options = {}) {
     else if (type === 'select') {
       const options = await loadLookup(source)
       control = `<select name="${name}" ${required ? 'required' : ''} ${disabled ? 'disabled' : ''}><option value="">Selecione</option>${options.map(o => `<option value="${o.id}" ${Number(value) === Number(o.id) ? 'selected' : ''}>${escapeHtml(lookupLabel(source, o))}</option>`).join('')}</select>${disabled ? `<input type="hidden" name="${name}" value="${value}">` : ''}`
+    } else if (type === 'select-text') {
+      const options = await loadLookup(source)
+      control = `<select name="${name}" ${required ? 'required' : ''}><option value="">Selecione</option>${options.map(o => `<option value="${escapeHtml(o.nome)}" ${value === o.nome ? 'selected' : ''}>${escapeHtml(lookupLabel(source, o))}</option>`).join('')}</select>`
     } else control = `<input type="${type}" name="${name}" value="${escapeHtml(value)}" ${required ? 'required' : ''} ${disabled ? 'disabled' : ''}>${disabled ? `<input type="hidden" name="${name}" value="${escapeHtml(value)}">` : ''}`
     container.insertAdjacentHTML('beforeend', `<label>${label}${control}</label>`)
   }
