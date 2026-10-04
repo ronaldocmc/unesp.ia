@@ -1,4 +1,4 @@
-/* Interface do Observatório: o acervo local continua disponível sem o Supabase. */
+/* Interface do Observatório: o acervo público é carregado somente do Supabase. */
 (() => {
   'use strict';
   const model = window.ObservatoryModel;
@@ -102,13 +102,6 @@
     });
     applyFilters();
   }
-  async function localItems() {
-    const response = await fetch('assets/data/observatorio-conteudos.json');
-    if (!response.ok) throw new Error('Acervo local indisponível');
-    const data = await response.json();
-    if (!Array.isArray(data.itens)) throw new Error('Formato de acervo inválido');
-    return data.itens;
-  }
   async function databaseItems() {
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 7000);
@@ -125,16 +118,9 @@
     finally { clearTimeout(timeout); }
   }
   async function load() {
-    // Renderiza cada fonte assim que responder: uma falha externa não bloqueia o acervo local.
-    let available = false;
-    const local = localItems().then(items => { available = true; state.items = model.merge(state.items, items); render(); }).catch(() => {});
-    const remote = databaseItems().then(result => {
-      available ||= result.available;
-      state.items = model.merge(state.items, result.items);
-      if (result.available) render();
-    });
-    await Promise.all([local, remote]);
-    state.failed = !available;
+    const result = await databaseItems();
+    state.items = result.items;
+    state.failed = !result.available;
     render();
   }
   function reset() {

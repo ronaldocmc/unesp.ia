@@ -102,7 +102,7 @@ test('painel oferece revisão, cadastro manual e entrada direta, sem fila de age
   assert.match(js, /submetido_email/)
   assert.match(js, /payload.status === 'publicado' && !payload.revisao_humana/)
   assert.match(js, /existingPublication\(payload.url, state.editing\?\.id\)/)
-  assert.match(page, /administracao.html\?secao=observatorio_conteudos/)
+  assert.match(page, /administracao-observatorio\.html/)
   assert.match(page, /sugerir-observacao\.html/)
   assert.match(suggestion, /data-observation-form/)
   assert.match(suggestion, /Enviar para curadoria/)
