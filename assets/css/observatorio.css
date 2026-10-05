@@ -122,13 +122,12 @@
 .obs-archive-toolbar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px; margin: 8px 0 20px; font-size: 13px; color: var(--obs-muted); }
 .obs-archive-toolbar label { display: flex; align-items: center; gap: 10px; }
 .obs-type-filter { position: relative; min-width: 260px; max-width: min(100%,360px); margin: 0; color: var(--obs-ink); }
-.obs-type-filter summary { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 42px; padding: 8px 12px; border: 1px solid #bdd5ee; border-radius: 8px; background: #fff; cursor: pointer; list-style: none; }
-.obs-type-filter summary::-webkit-details-marker { display: none; }
-.obs-type-filter summary::after { content: "▾"; color: #006bff; font-size: 13px; }
-.obs-type-filter[open] summary { border-color: #006bff; box-shadow: 0 0 0 3px #006bff18; }
-.obs-type-filter[open] summary::after { transform: rotate(180deg); }
-.obs-type-filter summary span { color: var(--obs-muted); font-size: 12px; }
-.obs-type-filter summary strong { color: var(--obs-ink); font-size: 13px; font-weight: 700; }
+.obs-type-toggle { display: flex; width: 100%; align-items: center; justify-content: space-between; gap: 12px; min-height: 42px; padding: 8px 12px; border: 1px solid #bdd5ee; border-radius: 8px; background: #fff; color: inherit; cursor: pointer; }
+.obs-type-toggle::after { content: "▾"; color: #006bff; font-size: 13px; }
+.obs-type-filter.open .obs-type-toggle { border-color: #006bff; box-shadow: 0 0 0 3px #006bff18; }
+.obs-type-filter.open .obs-type-toggle::after { transform: rotate(180deg); }
+.obs-type-toggle span { color: var(--obs-muted); font-size: 12px; font-weight: 400; }
+.obs-type-toggle strong { color: var(--obs-ink); font-size: 13px; font-weight: 700; }
 .obs-type-options { position: absolute; z-index: 30; top: calc(100% + 6px); left: 0; display: grid; gap: 4px; width: min(360px,calc(100vw - 48px)); max-height: 320px; margin: 0; padding: 9px; overflow: auto; border: 1px solid #bdd5ee; border-radius: 10px; background: #fff; box-shadow: 0 18px 40px #062d5b22; }
 .obs-type-options label { display: flex; align-items: center; gap: 8px; padding: 8px 9px; border-radius: 7px; color: var(--obs-ink); font-size: 13px; line-height: 1.2; cursor: pointer; }
 .obs-type-options label:hover { background: #f0f7ff; }

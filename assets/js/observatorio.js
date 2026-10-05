@@ -148,6 +148,14 @@
     state.types = [...selected];
     updateTypeSummary();
   }
+  function setTypeDropdown(open) {
+    const typeFilter = $('observatory-type');
+    const toggle = typeFilter.querySelector('.obs-type-toggle');
+    const options = typeFilter.querySelector('.obs-type-options');
+    typeFilter.classList.toggle('open', open);
+    toggle.setAttribute('aria-expanded', String(open));
+    options.hidden = !open;
+  }
   const dialogs = {
     agentes: ['Arquitetura em desenvolvimento', 'Agentes Inteligentes do Observar.IA', 'Seis especialidades estão previstas: radar, dados, pesquisa, regulação, avaliação e aplicações. Os agentes poderão apoiar coleta, classificação e preparação de sínteses para a equipe.', 'A estrutura de coleta e curadoria já pode ser aproveitada. Os seis agentes especializados não estão em operação. Toda publicação exige fonte identificada e revisão humana.'],
     radar: ['Agente em desenvolvimento', 'Agente Radar', 'Função prevista: acompanhar notícias, eventos, novos modelos, ferramentas e publicações; identificar novidades e encaminhá-las à curadoria.', 'Os conteúdos coletados devem permanecer em uma fila de revisão. Monitoramento em tempo real não está ativo.'],
@@ -204,10 +212,17 @@
       });
       input.closest('form').addEventListener('submit', event => { event.preventDefault(); showArchive(true); });
     });
-    $('observatory-type').addEventListener('change', () => { state.types = selectedTypes(); updateTypeSummary(); applyFilters(); });
+    const typeFilter = $('observatory-type');
+    typeFilter.querySelector('.obs-type-toggle').addEventListener('click', () => setTypeDropdown(!typeFilter.classList.contains('open')));
+    typeFilter.addEventListener('change', () => { state.types = selectedTypes(); updateTypeSummary(); applyFilters(); });
     document.addEventListener('click', event => {
-      const typeFilter = $('observatory-type');
-      if (typeFilter?.open && !typeFilter.contains(event.target)) typeFilter.open = false;
+      if (typeFilter.classList.contains('open') && !typeFilter.contains(event.target)) setTypeDropdown(false);
+    });
+    document.addEventListener('keydown', event => {
+      if (event.key === 'Escape' && typeFilter.classList.contains('open')) {
+        setTypeDropdown(false);
+        typeFilter.querySelector('.obs-type-toggle').focus();
+      }
     });
     $('observatory-reset').addEventListener('click', () => { reset(); applyFilters(); });
     document.querySelectorAll('[data-dialog]').forEach(trigger => trigger.addEventListener('click', event => { event.preventDefault(); openDialog(trigger.dataset.dialog); }));

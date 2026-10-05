@@ -72,9 +72,11 @@ test('segue a estrutura acordada e não repete destaques nem o cartão de dados'
   assert.ok(html.includes('Explore o <span>Observatório</span>'));
   assert.ok(html.includes('Acompanhe novidades, pesquisas, dados e análises sobre Inteligência Artificial.'));
   assert.ok(html.includes('Explorar análises e sínteses'));
-  assert.ok(html.includes('details class="obs-type-filter"'));
+  assert.ok(html.includes('div class="obs-type-filter"'));
+  assert.ok(html.includes('class="obs-type-toggle"'));
   assert.ok(html.includes('data-type-summary'));
   assert.ok(html.includes('fieldset class="obs-type-options"'));
+  assert.ok(html.includes('hidden'));
   assert.ok(!html.includes('<select id="observatory-type"'));
 });
 test('cabeçalho do Observatório preserva a marca institucional completa', () => {
@@ -112,9 +114,11 @@ test('cartões agrupam capa, título e descrição no mesmo link seguro', () => 
   assert.match(css,/\.obs-story-cover img\s*\{[^}]*object-fit: contain/);
   assert.ok(js.includes('function selectedTypes()'));
   assert.ok(js.includes('function updateTypeSummary()'));
+  assert.ok(js.includes('function setTypeDropdown(open)'));
   assert.ok(js.includes('state.types = selectedTypes()'));
   assert.match(css,/\.obs-type-options label:has\(input:checked\)/);
   assert.match(css,/\.obs-type-options\s*\{[^}]*position: absolute/);
+  assert.match(css,/\.obs-type-toggle\s*\{/);
 });
 
 test('Sobre tem acesso no menu, com parágrafos sem excesso de negrito', () => {
