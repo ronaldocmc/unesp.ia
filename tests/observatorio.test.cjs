@@ -33,7 +33,7 @@ test('notícias incluem matérias de TV e jornais da coleção de mídia', () =>
   assert.equal(model.matches(item, { type: 'Notícia monitorada' }), false);
 });
 test('classifica as publicações do painel sem exigir novos campos no banco', () => {
-  for (const [tipo,area] of [['Indicador','Dados'],['Artigo científico','Pesquisas'],['Tese ou dissertação','Pesquisas'],['Política ou regulação','Regulação'],['Análise','Relatórios'],['Tecnologia','Aplicações']]) {
+  for (const [tipo,area] of [['Notícia monitorada','Radar de Notícias'],['Indicador','Dados'],['Artigo científico','Pesquisas'],['Tese ou dissertação','Pesquisas'],['Política ou regulação','Regulação'],['Análise','Relatórios'],['Tecnologia','Aplicações']]) {
     assert.ok(model.areasFor({tipo}).includes(area));
   }
   assert.ok(model.areasFor({ categoria: 'Benchmarks' }).includes('Avaliações'));

@@ -1,7 +1,7 @@
 /* Modelo compartilhado pelo portal e pelos testes; sem dependência do DOM. */
 (function (root) {
   'use strict';
-  const AREAS = ['Dados', 'Pesquisas', 'Avaliações', 'Regulação', 'Aplicações', 'Relatórios'];
+  const AREAS = ['Radar de Notícias', 'Dados', 'Pesquisas', 'Avaliações', 'Regulação', 'Aplicações', 'Relatórios'];
   const normalize = value => String(value || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLocaleLowerCase('pt-BR');
   function areasFor(item) {
     const explicit = (Array.isArray(item.areas) ? item.areas : [item.area]).filter(area => AREAS.includes(area));
@@ -9,6 +9,7 @@
     const type = normalize(item.tipo);
     const context = normalize([item.categoria, ...(Array.isArray(item.tags) ? item.tags : [])].join(' '));
     const areas = [];
+    if (/noticia|midia|jornal|portal|tv|radio|rede social|radar/.test(type + ' ' + context)) areas.push('Radar de Notícias');
     if (/indicador|dataset|dados/.test(type + ' ' + context)) areas.push('Dados');
     if (/pesquisa|artigo cientifico|tese|dissertacao/.test(type)) areas.push('Pesquisas');
     if (/avaliacao|benchmark/.test(type + ' ' + context)) areas.push('Avaliações');

@@ -4,7 +4,7 @@
   const model = window.ObservatoryModel;
   const state = { items: [], area: 'Todos', type: 'Todos', query: '', failed: false };
   const $ = id => document.getElementById(id);
-  const areaIcons = { Dados: 'dados', Pesquisas: 'pesquisas', Avaliações: 'avaliacoes', Regulação: 'regulacao', Aplicações: 'casos', Relatórios: 'publicacoes' };
+  const areaIcons = { 'Radar de Notícias': 'radar', Dados: 'dados', Pesquisas: 'pesquisas', Avaliações: 'avaliacoes', Regulação: 'regulacao', Aplicações: 'casos', Relatórios: 'publicacoes' };
   const colors = { dados: '#008a7e', pesquisas: '#6515ed', avaliacoes: '#9c5900', regulacao: '#df104a', casos: '#006bff', publicacoes: '#6515ed', radar: '#006bff' };
   function element(tag, className, text) {
     const node = document.createElement(tag);
