@@ -13,6 +13,17 @@ function externalAttributes(link,data){
   link.rel='noopener';
 }
 
+function safeURL(value){
+  if(!value)return '';
+  try{
+    const url=new URL(value,document.baseURI);
+    if(['http:','https:'].includes(url.protocol))return url.href;
+  }catch(error){
+    return '';
+  }
+  return '';
+}
+
 function axisCard(axis){
   const article=document.createElement('article');
   article.className=`ecosystem-axis-card axis-${axis.id}`;
@@ -139,4 +150,63 @@ async function loadPublishedAxes(fallback){
   }
 }
 
-document.addEventListener('DOMContentLoaded',loadAxes);
+function initiativeCard(item){
+  const article=document.createElement('article');
+  article.className='lab-project';
+
+  const imageURL=safeURL(item.imagem_url);
+  if(imageURL){
+    const imageBox=document.createElement('div');
+    imageBox.className='lab-project-image';
+    const image=document.createElement('img');
+    image.src=imageURL;
+    image.alt=item.nome?`Imagem de ${item.nome}.`:'Imagem da iniciativa.';
+    image.loading='lazy';
+    imageBox.append(image);
+    article.append(imageBox);
+  }else{
+    article.classList.add('lab-project-more');
+    const iconBox=document.createElement('div');
+    iconBox.className='lab-more-icon';
+    iconBox.innerHTML='<svg class="lab-icon" aria-hidden="true" viewBox="0 0 24 24"><use href="assets/img/lab-icons.svg#grid"></use></svg>';
+    article.append(iconBox);
+  }
+
+  const body=document.createElement('div');
+  const title=document.createElement('h3');
+  const link=document.createElement('a');
+  link.href=safeURL(item.url)||'#inovacao-iniciativas';
+  externalAttributes(link,item);
+  link.append(document.createTextNode(item.nome||'Iniciativa'));
+  const arrow=document.createElement('span');
+  arrow.setAttribute('aria-hidden','true');
+  arrow.textContent=item.externo?'↗':'→';
+  link.append(document.createTextNode(' '),arrow);
+  title.append(link);
+  const description=document.createElement('p');
+  description.textContent=item.descricao||'Projeto ou solução em desenvolvimento.';
+  body.append(title,description);
+  article.append(body);
+  return article;
+}
+
+async function loadHomeInitiatives(){
+  const target=document.querySelector('[data-home-initiatives]');
+  if(!target||!configReady())return;
+  const headers={apikey:SUPABASE_PUBLISHABLE_KEY,Authorization:`Bearer ${SUPABASE_PUBLISHABLE_KEY}`};
+  const endpoint=`${SUPABASE_URL}/rest/v1/ecossistema_iniciativas?select=*&eixo=eq.inovacao&destaque=eq.true&status=eq.publicado&revisao_humana=eq.true&order=ordem.asc`;
+  try{
+    const response=await fetch(endpoint,{headers});
+    if(!response.ok)return;
+    const initiatives=await response.json();
+    if(!initiatives.length)return;
+    target.replaceChildren(...initiatives.map(initiativeCard));
+  }catch(error){
+    console.info('Cartões locais de Projetos e Soluções utilizados.',error);
+  }
+}
+
+document.addEventListener('DOMContentLoaded',()=>{
+  loadAxes();
+  loadHomeInitiatives();
+});
