@@ -1,12 +1,15 @@
 import { requireRole, supabase, showMessage } from './supabase.js'
 
+const IMAGE_BUCKET = 'ecossistema-imagens'
+const IMAGE_MAX_BYTES = 3 * 1024 * 1024
+
 const initiativeDefinition = (title, eixo) => ({
   title,
   description: `Cadastre projetos, produtos, formações, ferramentas e outras iniciativas de ${title}.`,
   sourceTable: 'ecossistema_iniciativas', filter: { eixo }, order: 'ordem', pk: ['id'],
   columns: ['id','tipo','nome','descricao','url','imagem_url','ordem','destaque','status','revisao_humana'], fields: [
     ['eixo','Eixo','fixed',true,eixo], ['tipo','Tipo','text',true], ['nome','Nome','text',true],
-    ['descricao','Descrição','textarea',true], ['url','Link interno ou URL externa','text',false], ['imagem_url','Imagem do card','url',false],
+    ['descricao','Descrição','textarea',true], ['url','Link interno ou URL externa','text',false], ['imagem_url','Imagem do card','image-upload',false],
     ['externo','Abrir em nova aba','checkbox',false,false],
     ['ordem','Ordem','number',true], ['destaque','Destaque na home','checkbox',false,false],
     ['status','Situação editorial','select-static',true,['rascunho','revisao','publicado','arquivado']],
@@ -88,6 +91,7 @@ const form = $('[data-record-form]')
 const escapeHtml = (value) => String(value ?? '').replace(/[&<>'"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]))
 const keyOf = (row, def = definitions[state.table]) => def.pk.map(k => row[k]).join('|')
 const sourceTableOf = (def = definitions[state.table]) => def.sourceTable || state.table
+const imageExtension = file => ({'image/jpeg':'jpg','image/png':'png','image/webp':'webp','image/gif':'gif'}[file.type] || 'img')
 
 document.querySelector('[data-logout]').addEventListener('click', async () => {
   await supabase.auth.signOut(); location.href = 'login.html'
@@ -238,6 +242,10 @@ async function openDialog(row = null, options = {}) {
     else if (type === 'textarea') control = `<textarea name="${name}" ${required ? 'required' : ''}>${escapeHtml(value)}</textarea>`
     else if (type === 'checkbox') control = `<input type="checkbox" name="${name}" ${(row ? value !== false : source !== false) ? 'checked' : ''}>`
     else if (type === 'select-static') control = `<select name="${name}" ${required ? 'required' : ''}>${required ? '' : '<option value="">Selecione</option>'}${source.map(v => `<option value="${v}" ${value === v ? 'selected' : ''}>${v}</option>`).join('')}</select>`
+    else if (type === 'image-upload') {
+      const preview = value ? `<img src="${escapeHtml(value)}" alt="Prévia da imagem do card" loading="lazy">` : ''
+      control = `<div class="admin-image-upload"><input type="url" name="${name}" value="${escapeHtml(value)}" placeholder="Cole uma URL ou envie uma imagem" ${required ? 'required' : ''}><input type="file" name="${name}_file" accept="image/png,image/jpeg,image/webp,image/gif" data-image-upload="${name}"><small>Envie PNG, JPG, WebP ou GIF até 3 MB. O painel salvará a URL pública no campo acima.</small><div class="admin-image-preview" data-image-preview="${name}" ${value ? '' : 'hidden'}>${preview}</div></div>`
+    }
     else if (type === 'select') {
       const options = await loadLookup(source)
       control = `<select name="${name}" ${required ? 'required' : ''} ${disabled ? 'disabled' : ''}><option value="">Selecione</option>${options.map(o => `<option value="${o.id}" ${Number(value) === Number(o.id) ? 'selected' : ''}>${escapeHtml(lookupLabel(source, o))}</option>`).join('')}</select>${disabled ? `<input type="hidden" name="${name}" value="${value}">` : ''}`
@@ -247,8 +255,41 @@ async function openDialog(row = null, options = {}) {
     } else control = `<input type="${type}" name="${name}" value="${escapeHtml(value)}" ${required ? 'required' : ''} ${disabled ? 'disabled' : ''}>${disabled ? `<input type="hidden" name="${name}" value="${escapeHtml(value)}">` : ''}`
     container.insertAdjacentHTML('beforeend', `<label>${label}${control}</label>`)
   }
+  container.querySelectorAll('[data-image-upload]').forEach(input => input.addEventListener('change', uploadImageField))
   $('[data-dialog-message]').hidden = true
   dialog.showModal()
+}
+
+async function uploadImageField(event) {
+  const file = event.target.files?.[0]
+  if (!file) return
+  const field = event.target.dataset.imageUpload
+  const urlInput = form.elements[field]
+  const preview = form.querySelector(`[data-image-preview="${field}"]`)
+  const dialogMessage = $('[data-dialog-message]')
+  try {
+    if (!file.type.startsWith('image/')) throw new Error('Selecione um arquivo de imagem.')
+    if (file.size > IMAGE_MAX_BYTES) throw new Error('A imagem deve ter no máximo 3 MB.')
+    showMessage(dialogMessage, 'Enviando imagem para o Supabase Storage...', 'info')
+    const safeBase = String(form.elements.nome?.value || field).normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'') || 'imagem'
+    const path = `ecossistema/iniciativas/${safeBase}-${Date.now()}-${crypto.randomUUID()}.${imageExtension(file)}`
+    const { error } = await supabase.storage.from(IMAGE_BUCKET).upload(path, file, {
+      cacheControl: '31536000',
+      contentType: file.type,
+      upsert: false
+    })
+    if (error) throw error
+    const { data } = supabase.storage.from(IMAGE_BUCKET).getPublicUrl(path)
+    urlInput.value = data.publicUrl
+    if (preview) {
+      preview.hidden = false
+      preview.innerHTML = `<img src="${escapeHtml(data.publicUrl)}" alt="Prévia da imagem do card" loading="lazy">`
+    }
+    showMessage(dialogMessage, 'Imagem enviada. A URL pública foi preenchida no campo “Imagem do card”.', 'success')
+  } catch (error) {
+    showMessage(dialogMessage, error.message, 'error')
+    event.target.value = ''
+  }
 }
 
 async function renderCandidateQueue() {

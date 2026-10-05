@@ -61,12 +61,17 @@ test('Projetos e Soluções pode ser administrado pelo banco com imagem de card'
   const js=fs.readFileSync(path.join(root,'assets/js/ecossistema-eixos.js'),'utf8');
   const admin=fs.readFileSync(path.join(root,'assets/js/portal/admin.js'),'utf8');
   const migration=fs.readFileSync(path.join(root,'supabase/migrations/202610050001_ecossistema_iniciativas_home.sql'),'utf8');
+  const storage=fs.readFileSync(path.join(root,'supabase/migrations/202610050002_ecossistema_storage_imagens.sql'),'utf8');
   assert.ok(html.includes('data-home-initiatives'));
   assert.ok(js.includes('eixo=eq.inovacao&destaque=eq.true&status=eq.publicado&revisao_humana=eq.true'));
   assert.ok(js.includes('item.imagem_url'));
-  assert.ok(admin.includes("['imagem_url','Imagem do card','url',false]"));
+  assert.ok(admin.includes("['imagem_url','Imagem do card','image-upload',false]"));
+  assert.ok(admin.includes("const IMAGE_BUCKET = 'ecossistema-imagens'"));
+  assert.ok(admin.includes('supabase.storage.from(IMAGE_BUCKET).upload'));
   assert.ok(admin.includes("['destaque','Destaque na home','checkbox',false,false]"));
   assert.ok(migration.includes('add column if not exists imagem_url text'));
+  assert.ok(storage.includes("insert into storage.buckets"));
+  assert.ok(storage.includes("'ecossistema-imagens'"));
   for (const image of ['pescar-ia.png','pet-ia.png','paranapanema-ia.png']) {
     assert.ok(fs.existsSync(path.join(root,'assets/img/ecossistema/iniciativas',image)),image);
   }

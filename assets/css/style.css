@@ -583,6 +583,7 @@ a.axis-initiative:hover{background:color-mix(in srgb,var(--axis) 6%,white);text-
 .admin-link-import[hidden]{display:none}.admin-link-import button:disabled,.portal-dialog button:disabled{opacity:.6;cursor:wait}
 .portal-form [data-dialog-fields]{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
 .portal-form [data-dialog-fields] label:has(textarea){grid-column:1/-1}
+.admin-image-upload{display:grid;gap:8px}.admin-image-upload input[type=file]{padding:9px;background:#f8fbff}.admin-image-upload small{font-weight:400;color:#5a7288}.admin-image-preview{border:1px solid #d8e7f2;border-radius:10px;overflow:hidden;background:#f3f9ff}.admin-image-preview img{display:block;width:100%;max-height:150px;object-fit:cover}
 .admin-table-actions .btn-small{padding:6px 8px;font-size:13px}
 @media(max-width:800px){.admin-nav-label{grid-column:1/-1}.portal-form [data-dialog-fields]{grid-template-columns:1fr}.portal-form [data-dialog-fields] label:has(textarea){grid-column:auto}}
 
