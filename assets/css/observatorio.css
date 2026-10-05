@@ -107,9 +107,9 @@
 /* Acervo reutiliza a mesma fonte local e a API pública do painel administrativo. */
 .obs-explore { padding-block: 28px 22px; }
 .obs-content-search { width: 300px; flex-shrink: 0; margin-bottom: 6px; }
-.obs-filters { display: grid; grid-template-columns: .7fr repeat(6,1fr); gap: 10px; margin: 19px 0 13px; }
-.obs-filters button { display: flex; justify-content: center; align-items: center; gap: 12px; min-height: 48px; padding: 9px 10px; border: 1px solid #cce0fc; border-radius: 7px; background: #fff; color: var(--obs-ink); font-size: 14px; }
-.obs-filters button .obs-icon { width: 26px; height: 26px; color: var(--obs-blue); }
+.obs-filters { display: grid; grid-template-columns: .7fr 1.05fr repeat(6,.92fr); gap: 8px; margin: 18px 0 13px; }
+.obs-filters button { display: flex; justify-content: center; align-items: center; gap: 8px; min-height: 40px; padding: 7px 8px; border: 1px solid #cce0fc; border-radius: 7px; background: #fff; color: var(--obs-ink); font-size: 13px; white-space: nowrap; }
+.obs-filters button .obs-icon { width: 22px; height: 22px; color: var(--obs-blue); }
 .obs-filters button:nth-child(2) .obs-icon { color: #00a895; }
 .obs-filters button:nth-child(3) .obs-icon, .obs-filters button:nth-child(7) .obs-icon { color: #6515ed; }
 .obs-filters button:nth-child(4) .obs-icon { color: #e68a00; }
