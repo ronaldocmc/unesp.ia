@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 458 210" role="img" aria-labelledby="title desc">
+  <title id="title">Gênio do Prompt</title>
+  <desc id="desc">Balão de conversa com brilho e linhas de prompt em tons de azul e roxo.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#eef8ff"/>
+      <stop offset="1" stop-color="#f3eaff"/>
+    </linearGradient>
+    <linearGradient id="mark" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#00a7ff"/>
+      <stop offset=".55" stop-color="#0065ff"/>
+      <stop offset="1" stop-color="#6d28ff"/>
+    </linearGradient>
+  </defs>
+  <rect width="458" height="210" rx="24" fill="url(#bg)"/>
+  <circle cx="382" cy="38" r="54" fill="#dbeafe" opacity=".7"/>
+  <circle cx="75" cy="166" r="70" fill="#e0f2fe" opacity=".75"/>
+  <g fill="none" stroke="url(#mark)" stroke-linecap="round" stroke-linejoin="round">
+    <path stroke-width="12" d="M132 56h150a42 42 0 0 1 42 42v8a42 42 0 0 1-42 42h-76l-55 35v-35h-19a42 42 0 0 1-42-42v-8a42 42 0 0 1 42-42Z"/>
+    <path stroke-width="10" d="m151 96 28 22-28 22"/>
+    <path stroke-width="10" d="M204 138h72"/>
+    <path stroke-width="7" d="m338 65 9-24 9 24 24 9-24 9-9 24-9-24-24-9 24-9Z"/>
+    <path stroke-width="5" d="m87 62 6-15 6 15 15 6-15 6-6 15-6-15-15-6 15-6Z"/>
+  </g>
+</svg>

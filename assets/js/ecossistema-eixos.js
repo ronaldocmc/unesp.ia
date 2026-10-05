@@ -200,7 +200,7 @@ async function loadHomeInitiatives(){
     if(!response.ok)return;
     const initiatives=await response.json();
     if(!initiatives.length)return;
-    target.replaceChildren(...initiatives.map(initiativeCard));
+    target.replaceChildren(...initiatives.slice(0,4).map(initiativeCard));
   }catch(error){
     console.info('Cartões locais de Projetos e Soluções utilizados.',error);
   }
