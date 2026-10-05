@@ -64,7 +64,7 @@ test('Projetos e Soluções pode ser administrado pelo banco com imagem de card'
   const storage=fs.readFileSync(path.join(root,'supabase/migrations/202610050002_ecossistema_storage_imagens.sql'),'utf8');
   assert.ok(html.includes('data-home-initiatives'));
   assert.ok(js.includes('eixo=eq.inovacao&destaque=eq.true&status=eq.publicado&revisao_humana=eq.true'));
-  assert.ok(js.includes('initiatives.slice(0,4).map(initiativeCard)'));
+  assert.ok(js.includes('initiatives.slice(0,5).map(initiativeCard)'));
   assert.ok(js.includes('item.imagem_url'));
   assert.ok(admin.includes("['imagem_url','Imagem do card','image-upload',false]"));
   assert.ok(admin.includes("const IMAGE_BUCKET = 'ecossistema-imagens'"));
@@ -75,6 +75,7 @@ test('Projetos e Soluções pode ser administrado pelo banco com imagem de card'
   assert.ok(storage.includes("'ecossistema-imagens'"));
   assert.ok(html.includes('unesp.IA Lab'));
   assert.ok(html.includes('Gênio do Prompt'));
+  assert.ok(html.includes('Paranapanema.IA'));
   assert.ok(!html.includes('Outras iniciativas'));
   assert.ok(!html.includes('lab-more-icon'));
   for (const image of ['pescar-ia.png','pet-ia.png','paranapanema-ia.png']) {
