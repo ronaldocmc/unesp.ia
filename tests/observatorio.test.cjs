@@ -107,13 +107,13 @@ test('cartões agrupam capa, título e descrição no mesmo link seguro', () => 
   assert.match(css,/\.obs-story-cover img\s*\{[^}]*object-fit: contain/);
 });
 
-test('Sobre tem acesso na abertura e no menu, com parágrafos sem excesso de negrito', () => {
+test('Sobre tem acesso no menu, com parágrafos sem excesso de negrito', () => {
   const html = fs.readFileSync(path.join(root,'observatorio.html'),'utf8');
   const hero = html.split('<section class="obs-hero')[1].split('</section>')[0];
   const about = html.split('id="sobre"')[1].split('</section>')[0];
   assert.match(html, /<a href="#sobre">Sobre<\/a>/);
-  assert.match(hero, /class="obs-button obs-button-about" href="#sobre">Sobre/);
-  assert.ok(hero.indexOf('Conhecer as análises') < hero.indexOf('obs-button-about'));
+  assert.doesNotMatch(hero, /obs-button-about/);
+  assert.doesNotMatch(hero, /Conhecer as análises/);
   assert.doesNotMatch(hero, /<strong>/);
   assert.doesNotMatch(about, /<strong>/);
   assert.equal((about.match(/class="obs-about-block"/g) || []).length, 5);
