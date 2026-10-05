@@ -18,10 +18,14 @@
     if (/analise|relatorio|nota tecnica/.test(type)) areas.push('Relatórios');
     return areas;
   }
-  function matches(item, { area = 'Todos', type = 'Todos', query = '' } = {}) {
+  function typeMatches(item, type) {
     const media = item.colecao === 'unesp.IA na mídia';
-    const matchesType = type === 'Todos' || (type === 'Notícias' && (String(item.tipo).startsWith('Notícia') || media))
+    return type === 'Todos' || (type === 'Notícias' && (String(item.tipo).startsWith('Notícia') || media))
       || (type === 'Mídia' ? media : item.tipo === type);
+  }
+  function matches(item, { area = 'Todos', type = 'Todos', types = null, query = '' } = {}) {
+    const selectedTypes = Array.isArray(types) ? types.filter(Boolean) : [];
+    const matchesType = selectedTypes.length ? selectedTypes.some(selected => typeMatches(item, selected)) : typeMatches(item, type);
     const haystack = normalize([item.titulo, item.resumo, item.fonte, item.tipo, item.categoria, item.veiculo, item.projeto, ...(Array.isArray(item.tags) ? item.tags : [])].join(' '));
     return (area === 'Todos' || areasFor(item).includes(area)) && matchesType && haystack.includes(normalize(query).trim());
   }

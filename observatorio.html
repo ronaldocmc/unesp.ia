@@ -63,7 +63,16 @@
       <div class="obs-archive" id="acervo">
         <p class="obs-archive-order">Destaques da curadoria primeiro; demais conteúdos por data.</p>
         <div class="obs-archive-toolbar">
-          <label for="observatory-type">Tipo de publicação <select id="observatory-type"><option value="Todos">Todos os tipos</option><option value="Notícias">Todas as notícias</option><option value="Notícia institucional">Notícias do unesp.IA</option><option value="Notícia monitorada">Notícias monitoradas</option><option value="Mídia">unesp.IA na mídia</option><option value="Pesquisa">Pesquisa</option><option value="Tecnologia">Tecnologia</option><option value="Análise">Análise</option></select></label>
+          <fieldset class="obs-type-filter" id="observatory-type" aria-label="Tipo de publicação">
+            <legend>Tipo de publicação</legend>
+            <label><input type="checkbox" value="Notícias">Todas as notícias</label>
+            <label><input type="checkbox" value="Notícia institucional">Notícias do unesp.IA</label>
+            <label><input type="checkbox" value="Notícia monitorada">Notícias monitoradas</label>
+            <label><input type="checkbox" value="Mídia">unesp.IA na mídia</label>
+            <label><input type="checkbox" value="Pesquisa">Pesquisa</label>
+            <label><input type="checkbox" value="Tecnologia">Tecnologia</label>
+            <label><input type="checkbox" value="Análise">Análise</label>
+          </fieldset>
           <p id="observatory-result" role="status"></p>
           <button class="obs-reset" type="button" id="observatory-reset">Limpar filtros</button>
         </div>

@@ -2,7 +2,7 @@
 (() => {
   'use strict';
   const model = window.ObservatoryModel;
-  const state = { items: [], area: 'Todos', type: 'Todos', query: '', failed: false };
+  const state = { items: [], area: 'Todos', types: [], query: '', failed: false };
   const $ = id => document.getElementById(id);
   const areaIcons = { 'Radar de Notícias': 'radar', Dados: 'dados', Pesquisas: 'pesquisas', Avaliações: 'avaliacoes', Regulação: 'regulacao', Aplicações: 'casos', Relatórios: 'publicacoes' };
   const colors = { dados: '#008a7e', pesquisas: '#6515ed', avaliacoes: '#9c5900', regulacao: '#df104a', casos: '#006bff', publicacoes: '#6515ed', radar: '#006bff' };
@@ -92,11 +92,17 @@
   }
   function render() {
     // Inclui os tipos novos cadastrados no painel, sem perder as opções editoriais.
-    const typeSelect = $('observatory-type');
-    const existing = new Set([...typeSelect.options].map(option => option.value));
+    const typeFilter = $('observatory-type');
+    const existing = new Set([...typeFilter.querySelectorAll('input[type="checkbox"]')].map(input => input.value));
     state.items.forEach(item => {
       if (item.tipo && !existing.has(item.tipo)) {
-        typeSelect.append(new Option(item.tipo, item.tipo));
+        const label = element('label');
+        const input = element('input');
+        input.type = 'checkbox';
+        input.value = item.tipo;
+        input.addEventListener('change', () => { state.types = selectedTypes(); applyFilters(); });
+        label.append(input, document.createTextNode(item.tipo));
+        typeFilter.append(label);
         existing.add(item.tipo);
       }
     });
@@ -124,8 +130,16 @@
     render();
   }
   function reset() {
-    state.area = 'Todos'; state.type = 'Todos'; state.query = '';
-    $('observatory-search').value = ''; $('observatory-global-search').value = ''; $('observatory-type').value = 'Todos';
+    state.area = 'Todos'; state.types = []; state.query = '';
+    $('observatory-search').value = ''; $('observatory-global-search').value = ''; setTypeSelection([]);
+  }
+  function selectedTypes() {
+    return [...$('observatory-type').querySelectorAll('input[type="checkbox"]:checked')].map(input => input.value);
+  }
+  function setTypeSelection(types) {
+    const selected = new Set(types);
+    $('observatory-type').querySelectorAll('input[type="checkbox"]').forEach(input => { input.checked = selected.has(input.value); });
+    state.types = [...selected];
   }
   const dialogs = {
     agentes: ['Arquitetura em desenvolvimento', 'Agentes Inteligentes do Observar.IA', 'Seis especialidades estão previstas: radar, dados, pesquisa, regulação, avaliação e aplicações. Os agentes poderão apoiar coleta, classificação e preparação de sínteses para a equipe.', 'A estrutura de coleta e curadoria já pode ser aproveitada. Os seis agentes especializados não estão em operação. Toda publicação exige fonte identificada e revisão humana.'],
@@ -172,8 +186,7 @@
     document.querySelectorAll('[data-observatory-shortcut]').forEach(link => link.addEventListener('click', () => {
       reset();
       const value = link.dataset.observatoryShortcut;
-      if (model.AREAS.includes(value)) state.area = value; else state.type = value;
-      $('observatory-type').value = state.type;
+      if (model.AREAS.includes(value)) state.area = value; else setTypeSelection([value]);
       applyFilters();
     }));
     [$('observatory-search'), $('observatory-global-search')].forEach(input => {
@@ -184,7 +197,7 @@
       });
       input.closest('form').addEventListener('submit', event => { event.preventDefault(); showArchive(true); });
     });
-    $('observatory-type').addEventListener('change', event => { state.type = event.target.value; applyFilters(); });
+    $('observatory-type').addEventListener('change', () => { state.types = selectedTypes(); applyFilters(); });
     $('observatory-reset').addEventListener('click', () => { reset(); applyFilters(); });
     document.querySelectorAll('[data-dialog]').forEach(trigger => trigger.addEventListener('click', event => { event.preventDefault(); openDialog(trigger.dataset.dialog); }));
     $('observatory-dialog').querySelector('.obs-dialog-close').addEventListener('click', () => $('observatory-dialog').close());
