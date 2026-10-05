@@ -93,6 +93,7 @@
   function render() {
     // Inclui os tipos novos cadastrados no painel, sem perder as opções editoriais.
     const typeFilter = $('observatory-type');
+    const typeOptions = typeFilter.querySelector('.obs-type-options');
     const existing = new Set([...typeFilter.querySelectorAll('input[type="checkbox"]')].map(input => input.value));
     state.items.forEach(item => {
       if (item.tipo && !existing.has(item.tipo)) {
@@ -102,7 +103,7 @@
         input.value = item.tipo;
         input.addEventListener('change', () => { state.types = selectedTypes(); applyFilters(); });
         label.append(input, document.createTextNode(item.tipo));
-        typeFilter.append(label);
+        typeOptions.append(label);
         existing.add(item.tipo);
       }
     });
@@ -136,10 +137,16 @@
   function selectedTypes() {
     return [...$('observatory-type').querySelectorAll('input[type="checkbox"]:checked')].map(input => input.value);
   }
+  function updateTypeSummary() {
+    const summary = document.querySelector('[data-type-summary]');
+    if (!summary) return;
+    summary.textContent = state.types.length ? `${state.types.length} selecionado${state.types.length === 1 ? '' : 's'}` : 'Todos os tipos';
+  }
   function setTypeSelection(types) {
     const selected = new Set(types);
     $('observatory-type').querySelectorAll('input[type="checkbox"]').forEach(input => { input.checked = selected.has(input.value); });
     state.types = [...selected];
+    updateTypeSummary();
   }
   const dialogs = {
     agentes: ['Arquitetura em desenvolvimento', 'Agentes Inteligentes do Observar.IA', 'Seis especialidades estão previstas: radar, dados, pesquisa, regulação, avaliação e aplicações. Os agentes poderão apoiar coleta, classificação e preparação de sínteses para a equipe.', 'A estrutura de coleta e curadoria já pode ser aproveitada. Os seis agentes especializados não estão em operação. Toda publicação exige fonte identificada e revisão humana.'],
@@ -197,7 +204,11 @@
       });
       input.closest('form').addEventListener('submit', event => { event.preventDefault(); showArchive(true); });
     });
-    $('observatory-type').addEventListener('change', () => { state.types = selectedTypes(); applyFilters(); });
+    $('observatory-type').addEventListener('change', () => { state.types = selectedTypes(); updateTypeSummary(); applyFilters(); });
+    document.addEventListener('click', event => {
+      const typeFilter = $('observatory-type');
+      if (typeFilter?.open && !typeFilter.contains(event.target)) typeFilter.open = false;
+    });
     $('observatory-reset').addEventListener('click', () => { reset(); applyFilters(); });
     document.querySelectorAll('[data-dialog]').forEach(trigger => trigger.addEventListener('click', event => { event.preventDefault(); openDialog(trigger.dataset.dialog); }));
     $('observatory-dialog').querySelector('.obs-dialog-close').addEventListener('click', () => $('observatory-dialog').close());

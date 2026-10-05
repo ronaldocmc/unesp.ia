@@ -68,12 +68,13 @@ test('segue a estrutura acordada e não repete destaques nem o cartão de dados'
   assert.deepEqual(sections,['conteudo','areas','analises','agentes','sobre']);
   assert.equal((html.match(/id="observatory-grid"/g)||[]).length,1);
   assert.ok(!html.includes('id="observatory-highlights"'));
-  assert.ok(!html.includes('<details'));
   assert.ok(!html.includes('>Dados e Indicadores</h2>'));
   assert.ok(html.includes('Explore o <span>Observatório</span>'));
   assert.ok(html.includes('Acompanhe novidades, pesquisas, dados e análises sobre Inteligência Artificial.'));
   assert.ok(html.includes('Explorar análises e sínteses'));
-  assert.ok(html.includes('fieldset class="obs-type-filter"'));
+  assert.ok(html.includes('details class="obs-type-filter"'));
+  assert.ok(html.includes('data-type-summary'));
+  assert.ok(html.includes('fieldset class="obs-type-options"'));
   assert.ok(!html.includes('<select id="observatory-type"'));
 });
 test('cabeçalho do Observatório preserva a marca institucional completa', () => {
@@ -110,8 +111,10 @@ test('cartões agrupam capa, título e descrição no mesmo link seguro', () => 
   assert.match(css,/\.obs-story-cover\s*\{[^}]*aspect-ratio: 3 \/ 2/);
   assert.match(css,/\.obs-story-cover img\s*\{[^}]*object-fit: contain/);
   assert.ok(js.includes('function selectedTypes()'));
+  assert.ok(js.includes('function updateTypeSummary()'));
   assert.ok(js.includes('state.types = selectedTypes()'));
-  assert.match(css,/\.obs-type-filter label:has\(input:checked\)/);
+  assert.match(css,/\.obs-type-options label:has\(input:checked\)/);
+  assert.match(css,/\.obs-type-options\s*\{[^}]*position: absolute/);
 });
 
 test('Sobre tem acesso no menu, com parágrafos sem excesso de negrito', () => {
