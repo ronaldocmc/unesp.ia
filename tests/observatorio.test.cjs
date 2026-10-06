@@ -95,7 +95,7 @@ test('apresentação institucional identifica a FCT/UNESP e mantém as estrutura
   assert.match(text, /Engenharia de Dados, Ciência de Dados e Inteligência Artificial/);
   assert.match(text, /Com a futura criação do Núcleo de Inteligência Artificial do Departamento de Matemática e Computação da FCT\/UNESP/);
   assert.match(text, /poderá integrar sua estrutura/);
-  assert.match(text, /futuro I3A — Instituto de Inteligência Artificial Aplicada da UNESP/);
+  assert.doesNotMatch(text, /futuro I3A|Instituto de Inteligência Artificial Aplicada da UNESP/);
   assert.match(text, /dados produzidos por iniciativas, projetos e pesquisas da UNESP/);
   assert.match(text, /é uma iniciativa do Departamento de Matemática e Computação \(DMC\)/);
   assert.match(text, /fontes nacionais e internacionais com pesquisas, projetos e iniciativas da UNESP/);
