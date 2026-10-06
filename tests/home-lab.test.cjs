@@ -12,7 +12,7 @@ test('cabeçalho mantém a identidade do Observatório e o menu dos eixos', () =
   assert.ok(observatory.includes(logo));
   const nav = html.match(/<nav class="lab-nav"[^>]*>([\s\S]*?)<\/nav>/)[1];
   const links = [...nav.matchAll(/<a href="([^"]+)"[^>]*>([^<]+)<\/a>/g)].map(match => [match[1], match[2]]);
-  assert.deepEqual(links, [['#ecossistema','Ecossistema'],['#aprender','Aprender.IA'],['#experimentar','Experimentar.IA'],['pesquisa.html','Pesquisar.IA'],['#inovacao-iniciativas','Inovar.IA'],['observatorio.html','Observar.IA'],['equipe.html','Equipe']]);
+  assert.deepEqual(links, [['#ecossistema','Ecossistema'],['#aprender','Aprender.IA'],['#experimentar','Experimentar.IA'],['pesquisa.html','Pesquisar.IA'],['#inovacao-iniciativas','Inovar.IA'],['observatorio.html','Observar.IA'],['equipe-lab.html','Equipe']]);
   assert.ok(!html.includes('class="lab-access"'));
 });
 
