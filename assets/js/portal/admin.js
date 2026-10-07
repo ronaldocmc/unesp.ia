@@ -233,6 +233,8 @@ async function renderTable() {
   $('[data-import-button]').hidden = !def.import
   $('[data-new-record]').hidden = Boolean(def.virtual)
   if (def.virtual) return renderCandidateQueue()
+  $('[data-admin-head]').innerHTML = ''
+  $('[data-admin-body]').innerHTML = ''
   showMessage(message, 'Carregando registros...', 'info')
   let query = supabase.from(sourceTableOf(def)).select('*').limit(1000)
   for (const [column, value] of Object.entries(def.filter || {})) query = query.eq(column, value)
