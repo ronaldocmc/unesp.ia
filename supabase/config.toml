@@ -4,3 +4,6 @@ verify_jwt = true
 [functions.observatorio-link]
 verify_jwt = true
 
+[functions.observatorio-radar]
+verify_jwt = false
+
