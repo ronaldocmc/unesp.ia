@@ -2,6 +2,8 @@ import { requireRole, supabase, showMessage } from './supabase.js'
 
 const IMAGE_BUCKET = 'ecossistema-imagens'
 const IMAGE_MAX_BYTES = 3 * 1024 * 1024
+const DOWNLOAD_BUCKET = 'observatorio-downloads'
+const DOWNLOAD_MAX_BYTES = 30 * 1024 * 1024
 
 const initiativeDefinition = (title, eixo) => ({
   title,
@@ -59,6 +61,16 @@ const definitions = {
     ['tipo','Tipo de veículo','select-static',true,['Portal','Jornal','Revista','TV','Rádio','Podcast','Agência','Instituição','Blog','Outro']],
     ['url','Site oficial','url',false], ['ativo','Ativo','checkbox',false,true]
   ]},
+  observatorio_downloads: { title: 'Downloads', description: 'Arquivos públicos disponibilizados na página de downloads. O cadastro e o upload são feitos somente por administradores do Observatório.', order: 'ordem', pk: ['id'], columns: ['id','titulo','categoria','tipo_arquivo','tamanho_bytes','ordem','ativo'], fields: [
+    ['titulo','Título do arquivo','text',true],
+    ['descricao','Descrição','textarea',false],
+    ['categoria','Categoria','select-static',false,['Material do curso','Modelos e templates','Documentos institucionais','Observatório','Relatórios','Planilhas','Apresentações','Outros']],
+    ['arquivo_url','Arquivo para download','file-upload',true],
+    ['tipo_arquivo','Tipo do arquivo','text',false],
+    ['tamanho_bytes','Tamanho em bytes','number',false],
+    ['ordem','Ordem','number',true],
+    ['ativo','Ativo','checkbox',false,true]
+  ]},
   observatorio_conteudos: { title: 'Publicações do Observatório', description: 'Cadastre, revise e publique notícias, pesquisas, análises e matérias sobre os projetos. Os registros são salvos diretamente no banco do Observatório.', order: 'updated_at', descending: true, pk: ['id'], columns: ['id','colecao','tipo','titulo','data_publicacao','origem','aprovado_curadoria','submetido_email','status','revisao_humana','destaque'], fields: [
     ['colecao','Coleção','select-static',true,['Observatório','unesp.IA na mídia']],
     ['tipo','Tipo de conteúdo ou mídia','select-static',true,['Notícia institucional','Notícia monitorada','Pesquisa','Tecnologia','Análise','Artigo científico','Tese ou dissertação','TV','Jornal','Revista','Rádio','Podcast','Portal','Vídeo','Política ou regulação','Evento ou oportunidade','Indicador']],
@@ -79,7 +91,7 @@ const definitions = {
 
 const requestedSection = new URLSearchParams(location.search).get('secao')
 const adminScope = document.body.dataset.adminScope || 'portal'
-const observatorioSections = ['observatorio_conteudos', 'observatorio_categorias', 'observatorio_veiculos']
+const observatorioSections = ['observatorio_conteudos', 'observatorio_categorias', 'observatorio_veiculos', 'observatorio_downloads']
 const allowedSections = adminScope === 'observatorio' ? observatorioSections : Object.keys(definitions).filter(key => key !== 'candidatos_observatorio')
 const initialTable = allowedSections.includes(requestedSection) ? requestedSection : (adminScope === 'observatorio' ? 'observatorio_conteudos' : 'ecossistema_eixos')
 const state = { table: initialTable, rows: [], editing: null, lookups: {}, saving: false, importing: false }
@@ -92,6 +104,19 @@ const escapeHtml = (value) => String(value ?? '').replace(/[&<>'"]/g, c => ({'&'
 const keyOf = (row, def = definitions[state.table]) => def.pk.map(k => row[k]).join('|')
 const sourceTableOf = (def = definitions[state.table]) => def.sourceTable || state.table
 const imageExtension = file => ({'image/jpeg':'jpg','image/png':'png','image/webp':'webp','image/gif':'gif'}[file.type] || 'img')
+const fileExtension = file => {
+  const namePart = String(file.name || '').split('.').pop()
+  if (namePart && namePart !== file.name) return namePart.toLowerCase().replace(/[^a-z0-9]/g, '') || 'bin'
+  return ({
+    'application/pdf': 'pdf',
+    'application/zip': 'zip',
+    'application/vnd.openxmlformats-officedocument.wordprocessingml.document': 'docx',
+    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': 'xlsx',
+    'application/vnd.openxmlformats-officedocument.presentationml.presentation': 'pptx',
+    'text/plain': 'txt',
+    'text/csv': 'csv',
+  }[file.type] || 'bin')
+}
 
 document.querySelector('[data-logout]').addEventListener('click', async () => {
   await supabase.auth.signOut(); location.href = 'login.html'
@@ -246,6 +271,10 @@ async function openDialog(row = null, options = {}) {
       const preview = value ? `<img src="${escapeHtml(value)}" alt="Prévia da imagem do card" loading="lazy">` : ''
       control = `<div class="admin-image-upload"><input type="url" name="${name}" value="${escapeHtml(value)}" placeholder="Cole uma URL ou envie uma imagem" ${required ? 'required' : ''}><input type="file" name="${name}_file" accept="image/png,image/jpeg,image/webp,image/gif" data-image-upload="${name}"><small>Envie PNG, JPG, WebP ou GIF até 3 MB. O painel salvará a URL pública no campo acima.</small><div class="admin-image-preview" data-image-preview="${name}" ${value ? '' : 'hidden'}>${preview}</div></div>`
     }
+    else if (type === 'file-upload') {
+      const filename = value ? decodeURIComponent(String(value).split('/').pop() || 'arquivo') : ''
+      control = `<div class="admin-image-upload"><input type="url" name="${name}" value="${escapeHtml(value)}" placeholder="Cole uma URL ou envie um arquivo" ${required ? 'required' : ''}><input type="file" name="${name}_file" accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.csv,.txt,.zip,.png,.jpg,.jpeg,.webp" data-file-upload="${name}"><small>Envie PDF, Word, Excel, PowerPoint, CSV, TXT, ZIP ou imagem até 30 MB. O painel salvará a URL pública no campo acima.</small><div class="admin-image-preview" data-file-preview="${name}" ${value ? '' : 'hidden'}>${value ? `<a href="${escapeHtml(value)}" target="_blank" rel="noopener">${escapeHtml(filename)}</a>` : ''}</div></div>`
+    }
     else if (type === 'select') {
       const options = await loadLookup(source)
       control = `<select name="${name}" ${required ? 'required' : ''} ${disabled ? 'disabled' : ''}><option value="">Selecione</option>${options.map(o => `<option value="${o.id}" ${Number(value) === Number(o.id) ? 'selected' : ''}>${escapeHtml(lookupLabel(source, o))}</option>`).join('')}</select>${disabled ? `<input type="hidden" name="${name}" value="${value}">` : ''}`
@@ -256,6 +285,7 @@ async function openDialog(row = null, options = {}) {
     container.insertAdjacentHTML('beforeend', `<label>${label}${control}</label>`)
   }
   container.querySelectorAll('[data-image-upload]').forEach(input => input.addEventListener('change', uploadImageField))
+  container.querySelectorAll('[data-file-upload]').forEach(input => input.addEventListener('change', uploadDownloadField))
   $('[data-dialog-message]').hidden = true
   dialog.showModal()
 }
@@ -319,6 +349,39 @@ function useCandidate(candidate) {
   state.table = 'observatorio_conteudos'
   document.querySelectorAll('[data-admin-tab]').forEach(button => button.classList.toggle('active', button.dataset.adminTab === state.table))
   openDialog(draft, { asNew: true })
+}
+
+async function uploadDownloadField(event) {
+  const file = event.target.files?.[0]
+  if (!file) return
+  const field = event.target.dataset.fileUpload
+  const urlInput = form.elements[field]
+  const preview = form.querySelector(`[data-file-preview="${field}"]`)
+  const dialogMessage = $('[data-dialog-message]')
+  try {
+    if (file.size > DOWNLOAD_MAX_BYTES) throw new Error('O arquivo deve ter no máximo 30 MB.')
+    showMessage(dialogMessage, 'Enviando arquivo para o Supabase Storage...', 'info')
+    const safeBase = String(form.elements.titulo?.value || file.name || field).normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'') || 'arquivo'
+    const path = `observatorio/downloads/${safeBase}-${Date.now()}-${crypto.randomUUID()}.${fileExtension(file)}`
+    const { error } = await supabase.storage.from(DOWNLOAD_BUCKET).upload(path, file, {
+      cacheControl: '31536000',
+      contentType: file.type || 'application/octet-stream',
+      upsert: false
+    })
+    if (error) throw error
+    const { data } = supabase.storage.from(DOWNLOAD_BUCKET).getPublicUrl(path)
+    urlInput.value = data.publicUrl
+    if (form.elements.tipo_arquivo) form.elements.tipo_arquivo.value = file.type || fileExtension(file).toUpperCase()
+    if (form.elements.tamanho_bytes) form.elements.tamanho_bytes.value = file.size
+    if (preview) {
+      preview.hidden = false
+      preview.innerHTML = `<a href="${escapeHtml(data.publicUrl)}" target="_blank" rel="noopener">${escapeHtml(file.name)}</a>`
+    }
+    showMessage(dialogMessage, 'Arquivo enviado. A URL pública foi preenchida no campo “Arquivo para download”.', 'success')
+  } catch (error) {
+    showMessage(dialogMessage, error.message, 'error')
+    event.target.value = ''
+  }
 }
 
 function formPayload(def) {

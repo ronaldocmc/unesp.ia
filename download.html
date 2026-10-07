@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Downloads — unesp.IA Lab</title>
+  <meta name="description" content="Links de arquivos para download do ecossistema unesp.IA Lab.">
+  <link rel="stylesheet" href="assets/css/style.css?v=20260927-eixos2">
+  <link rel="stylesheet" href="assets/css/home-lab.css?v=20261005-cinco-solucoes">
+  <style>
+    .download-hero {
+      padding: 72px 0 38px;
+    }
+
+    .download-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 18px;
+      margin: 28px 0 72px;
+    }
+
+    .download-card {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      min-height: 210px;
+      padding: 24px;
+      border: 1px solid rgba(0, 102, 255, .16);
+      border-radius: 22px;
+      background: rgba(255, 255, 255, .88);
+      box-shadow: 0 18px 38px rgba(11, 50, 104, .08);
+    }
+
+    .download-card h2 {
+      margin: 0;
+      color: var(--lab-navy, #050b4f);
+      font-size: 1.35rem;
+    }
+
+    .download-card p {
+      margin: 0;
+      color: #3f568d;
+      line-height: 1.5;
+    }
+
+    .download-meta {
+      color: #61739c;
+      font-size: .92rem;
+    }
+
+    .download-card .lab-button {
+      align-self: flex-start;
+      margin-top: auto;
+    }
+
+    .download-message {
+      margin-bottom: 28px;
+    }
+  </style>
+</head>
+<body class="lab-home">
+  <a class="lab-skip" href="#conteudo">Ir para o conteúdo</a>
+  <header class="lab-header lab-container">
+    <a class="lab-brand" href="index.html" aria-label="unesp.IA Lab — página inicial"><img class="brand-logo" src="assets/img/logo-unesp-ia-research-innovation-lab.png" alt="unesp.IA Research &amp; Innovation Lab" width="2172" height="724"></a>
+    <nav class="lab-nav" aria-label="Navegação principal"><a href="index.html#ecossistema">Ecossistema</a><a href="index.html#aprender">Aprender.IA</a><a href="index.html#experimentar">Experimentar.IA</a><a href="pesquisa.html">Pesquisar.IA</a><a href="index.html#inovacao-iniciativas">Inovar.IA</a><a href="observatorio.html">Observar.IA</a><a href="equipe-lab.html">Equipe</a></nav>
+    <details class="lab-search"><summary aria-label="Abrir busca no Observatório"><svg class="lab-icon" aria-hidden="true" viewBox="0 0 24 24"><use href="assets/img/lab-icons.svg#search"></use></svg></summary><form action="observatorio.html" method="get"><label for="lab-search-input">Buscar no Observatório</label><div><input id="lab-search-input" type="search" name="busca" placeholder="O que você procura?" required><button type="submit">Buscar</button></div></form></details>
+  </header>
+
+  <main id="conteudo">
+    <section class="lab-section lab-container download-hero" aria-labelledby="download-title">
+      <span class="lab-kicker">Arquivos</span>
+      <h1 id="download-title">Downloads</h1>
+      <p class="lab-section-lead">Espaço para disponibilizar materiais, documentos, planilhas, apresentações e outros arquivos para download.</p>
+    </section>
+
+    <section class="lab-container" aria-label="Lista de arquivos para download">
+      <p class="download-message" data-download-message role="status" aria-live="polite" hidden></p>
+      <div class="download-grid" data-download-list></div>
+    </section>
+  </main>
+
+  <footer class="lab-footer"><div class="lab-container"><div><h2>Participe do <span>unesp.IA Lab</span></h2><p>Forme-se, desenvolva pesquisas, construa soluções e faça parte desta rede de inovação.</p></div><div class="lab-actions"><a class="lab-button" href="inscricoes.html">Participar das formações <span aria-hidden="true">→</span></a><a class="lab-button ghost" href="equipe-lab.html">Conhecer a equipe <span aria-hidden="true">→</span></a></div></div><div class="lab-container lab-footer-meta"><span>unesp.IA — Research &amp; Innovation Lab · FCT/UNESP · Departamento de Matemática e Computação</span><span><a href="administracao.html">Gestão do portal</a> · <a href="download.html" aria-current="page">Download</a></span></div></footer>
+  <script type="module" src="assets/js/portal/downloads.js?v=20261007-observatorio-downloads"></script>
+</body>
+</html>
