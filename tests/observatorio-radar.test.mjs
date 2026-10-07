@@ -44,9 +44,12 @@ test('Agente Radar lê RSS/Atom, normaliza e grava para curadoria humana', () =>
 test('schema e função do Radar têm campos de curadoria e execução segura', () => {
   const migration = readFileSync(new URL('../supabase/migrations/202610060001_observatorio_agente_radar.sql', import.meta.url), 'utf8')
   const index = readFileSync(new URL('../supabase/functions/observatorio-radar/index.ts', import.meta.url), 'utf8')
+  const webIndex = readFileSync(new URL('../supabase/functions/observatorio-radar/index.web.ts', import.meta.url), 'utf8')
   const config = readFileSync(new URL('../supabase/config.toml', import.meta.url), 'utf8')
   assert.match(migration, /aprovado_curadoria boolean not null default false/)
   assert.match(index, /RADAR_AGENT_TOKEN/)
+  assert.match(webIndex, /Versão arquivo único/)
+  assert.match(webIndex, /CATALOGO_FEEDS/)
   assert.match(index, /SUPABASE_SERVICE_ROLE_KEY/)
   assert.match(config, /\[functions\.observatorio-radar\]\s+verify_jwt = false/)
 })
