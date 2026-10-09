@@ -13,9 +13,9 @@
   <meta property="og:locale" content="pt_BR">
   <meta property="og:image" content="https://ronaldocmc.github.io/unesp.ia/assets/img/observar-ia-logo.png">
   <link rel="stylesheet" href="assets/css/style.css?v=20260929-observar-final">
-  <link rel="stylesheet" href="assets/css/observatorio.css?v=20261009-acervo-controles">
+  <link rel="stylesheet" href="assets/css/observatorio.css?v=20261009-ordenacao">
   <script src="assets/js/observatorio-model.js?v=20261004-radar-noticias" defer></script>
-  <script src="assets/js/observatorio.js?v=20261009-acervo-controles" defer></script>
+  <script src="assets/js/observatorio.js?v=20261009-ordenacao" defer></script>
 </head>
 <body class="ecosystem-page observatory-page">
   <a class="obs-skip" href="#conteudo">Ir para o conteúdo</a>
@@ -61,7 +61,7 @@
           <button type="button" data-observatory-filter="Relatórios" aria-pressed="false"><svg class="obs-icon " viewBox="0 0 24 24" aria-hidden="true"><use href="assets/img/observar-ia-area-icons.svg?v=20260930#publicacoes"></use></svg>Relatórios</button>
       </div>
       <div class="obs-archive" id="acervo">
-        <p class="obs-archive-order">Escolha a ordem e a forma de visualizar as publicações.</p>
+        <p class="obs-archive-order">Escolha a ordem das publicações.</p>
         <div class="obs-archive-toolbar">
           <div class="obs-type-filter" id="observatory-type">
             <button class="obs-type-toggle" type="button" aria-expanded="false" aria-controls="observatory-type-options"><span>Tipo de publicação</span><strong data-type-summary>Todos os tipos</strong></button>
@@ -77,7 +77,6 @@
           </div>
           <div class="obs-archive-controls">
             <label class="obs-archive-select"><span>Ordenar por</span><select id="observatory-sort" aria-label="Ordenar publicações"><option value="featured">Destaque da curadoria</option><option value="newest">Data: mais recentes</option><option value="oldest">Data: mais antigas</option><option value="title">Título: A a Z</option></select></label>
-            <label class="obs-archive-select"><span>Visualização</span><select id="observatory-view" aria-label="Forma de visualização"><option value="grid">Cards</option><option value="list">Lista compacta</option></select></label>
           </div>
           <p id="observatory-result" role="status"></p>
           <button class="obs-reset" type="button" id="observatory-reset">Limpar filtros</button>

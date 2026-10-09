@@ -2,7 +2,7 @@
 (() => {
   'use strict';
   const model = window.ObservatoryModel;
-  const state = { items: [], area: 'Todos', types: [], query: '', sort: 'featured', view: 'grid', failed: false };
+  const state = { items: [], area: 'Todos', types: [], query: '', sort: 'featured', failed: false };
   const $ = id => document.getElementById(id);
   const areaIcons = { 'Radar de Notícias': 'radar', Dados: 'dados', Pesquisas: 'pesquisas', Avaliações: 'avaliacoes', Regulação: 'regulacao', Aplicações: 'casos', Relatórios: 'publicacoes' };
   const colors = { dados: '#008a7e', pesquisas: '#6515ed', avaliacoes: '#9c5900', regulacao: '#df104a', casos: '#006bff', publicacoes: '#6515ed', radar: '#006bff' };
@@ -87,7 +87,6 @@
       return Number(b.destaque === true) - Number(a.destaque === true) || byDate(b, a);
     });
     const grid = $('observatory-grid');
-    grid.classList.toggle('is-list', state.view === 'list');
     grid.replaceChildren(...items.map(item => card(item, true)));
     $('observatory-data-note').hidden = state.area !== 'Dados';
     $('observatory-result').textContent = state.failed ? 'Acervo temporariamente indisponível' : items.length + (items.length === 1 ? ' conteúdo encontrado' : ' conteúdos encontrados');
@@ -235,7 +234,6 @@
     });
     $('observatory-reset').addEventListener('click', () => { reset(); applyFilters(); });
     $('observatory-sort').addEventListener('change', event => { state.sort = event.target.value; applyFilters(); });
-    $('observatory-view').addEventListener('change', event => { state.view = event.target.value; applyFilters(); });
     document.querySelectorAll('[data-dialog]').forEach(trigger => trigger.addEventListener('click', event => { event.preventDefault(); openDialog(trigger.dataset.dialog); }));
     $('observatory-dialog').querySelector('.obs-dialog-close').addEventListener('click', () => $('observatory-dialog').close());
     const navigationLinks = [...document.querySelectorAll('.observatory-topbar .nav a[href^="#"]:not([data-dialog])')];
