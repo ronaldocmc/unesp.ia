@@ -121,6 +121,10 @@
 .obs-archive-order { margin: 12px 0; color: #53668e; font-size: 12px; }
 .obs-archive-toolbar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px; margin: 8px 0 20px; font-size: 13px; color: var(--obs-muted); }
 .obs-archive-toolbar label { display: flex; align-items: center; gap: 10px; }
+.obs-archive-controls { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+.obs-archive-toolbar .obs-archive-select { gap: 7px; color: var(--obs-muted); }
+.obs-archive-select select { min-height: 42px; max-width: 220px; padding: 8px 30px 8px 11px; border: 1px solid #bdd5ee; border-radius: 8px; background: #fff; color: var(--obs-ink); font: inherit; cursor: pointer; }
+.obs-archive-select select:focus-visible { outline: 3px solid #006bff35; border-color: #006bff; }
 .obs-type-filter { position: relative; min-width: 260px; max-width: min(100%,360px); margin: 0; color: var(--obs-ink); }
 .obs-type-toggle { display: flex; width: 100%; align-items: center; justify-content: space-between; gap: 12px; min-height: 42px; padding: 8px 12px; border: 1px solid #bdd5ee; border-radius: 8px; background: #fff; color: inherit; cursor: pointer; }
 .obs-type-toggle::after { content: "▾"; color: #006bff; font-size: 13px; }
@@ -141,6 +145,15 @@
 .obs-archive-grid .obs-story-summary { font-size: 15px; }
 .obs-archive-grid .obs-story-meta time { font-size: 12px; }
 .obs-archive-grid .obs-story-meta > span { font-size: 12px; }
+.obs-archive-grid.is-list { grid-template-columns: 1fr; gap: 10px; }
+.obs-archive-grid.is-list .obs-story { display: grid; grid-template-columns: minmax(140px,220px) minmax(0,1fr); grid-template-rows: auto 1fr auto; column-gap: 16px; align-items: start; }
+.obs-archive-grid.is-list .obs-story-meta { grid-column: 1; grid-row: 1; }
+.obs-archive-grid.is-list .obs-story-content { grid-column: 1; grid-row: 2 / span 2; }
+.obs-archive-grid.is-list .obs-story-cover { aspect-ratio: 16 / 10; }
+.obs-archive-grid.is-list .obs-story-source,
+.obs-archive-grid.is-list .obs-read-more { grid-column: 2; }
+.obs-archive-grid.is-list .obs-story-source { grid-row: 1 / span 2; margin-top: 2px; padding-top: 0; }
+.obs-archive-grid.is-list .obs-read-more { grid-row: 3; align-self: end; }
 
 /* Análises e sínteses têm uma chamada editorial própria, sem duplicar o acervo. */
 .obs-analysis-surface { padding-block: 28px; background: #f5f9ff; border-block: 1px solid #e3eefb; }
@@ -243,6 +256,8 @@
   .obs-filters { display: flex; flex-wrap: wrap; gap: 8px; }
   .obs-filters button { flex: 1 1 130px; }
   .obs-archive-grid { grid-template-columns: repeat(2,minmax(0,1fr)); }
+  .obs-archive-grid.is-list { grid-template-columns: 1fr; }
+  .obs-archive-grid.is-list .obs-story { grid-template-columns: minmax(110px,170px) minmax(0,1fr); column-gap: 12px; }
   .obs-footer { flex-direction: column; gap: 10px; }
 }
 @media (max-width: 520px) {
@@ -272,10 +287,16 @@
   .obs-soon { margin-left: auto; }
   .obs-filters button { flex-basis: 135px; font-size: 13px; }
   .obs-filters button:first-child { flex-basis: 100%; }
-  .obs-archive-toolbar label { flex-direction: column; align-items: start; width: 100%; }
+  .obs-archive-toolbar > label { flex-direction: column; align-items: start; width: 100%; }
+  .obs-archive-controls { width: 100%; display: grid; grid-template-columns: 1fr 1fr; }
+  .obs-archive-toolbar .obs-archive-select { flex-direction: column; align-items: stretch; }
+  .obs-archive-select select { max-width: none; width: 100%; }
   .obs-type-filter { width: 100%; max-width: none; }
   .obs-type-options { width: 100%; }
   .obs-archive-grid { grid-template-columns: 1fr; }
+  .obs-archive-grid.is-list .obs-story { grid-template-columns: minmax(86px,110px) minmax(0,1fr); column-gap: 10px; padding: 10px; }
+  .obs-archive-grid.is-list .obs-story h3 { font-size: 14px; }
+  .obs-archive-grid.is-list .obs-story-summary { font-size: 12px; }
   .obs-analysis-layout { display: grid; grid-template-columns: 45px minmax(0,1fr); gap: 14px; align-items: start; }
   .obs-analysis-layout > .obs-icon-tile { width: 45px; height: 52px; }
   .obs-analysis-layout > .obs-icon-tile .obs-icon { width: 32px; height: 32px; }

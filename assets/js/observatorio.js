@@ -2,7 +2,7 @@
 (() => {
   'use strict';
   const model = window.ObservatoryModel;
-  const state = { items: [], area: 'Todos', types: [], query: '', failed: false };
+  const state = { items: [], area: 'Todos', types: [], query: '', sort: 'featured', view: 'grid', failed: false };
   const $ = id => document.getElementById(id);
   const areaIcons = { 'Radar de Notícias': 'radar', Dados: 'dados', Pesquisas: 'pesquisas', Avaliações: 'avaliacoes', Regulação: 'regulacao', Aplicações: 'casos', Relatórios: 'publicacoes' };
   const colors = { dados: '#008a7e', pesquisas: '#6515ed', avaliacoes: '#9c5900', regulacao: '#df104a', casos: '#006bff', publicacoes: '#6515ed', radar: '#006bff' };
@@ -78,8 +78,17 @@
     if (scroll) $('acervo').scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth', block: 'start' });
   }
   function applyFilters() {
-    const items = model.orderedContents(state.items.filter(item => model.matches(item, state)));
-    $('observatory-grid').replaceChildren(...items.map(item => card(item, true)));
+    const items = state.items.filter(item => model.matches(item, state));
+    const byDate = (a, b) => String(a.data || '').localeCompare(String(b.data || ''));
+    items.sort((a, b) => {
+      if (state.sort === 'newest') return byDate(b, a);
+      if (state.sort === 'oldest') return byDate(a, b);
+      if (state.sort === 'title') return String(a.titulo || '').localeCompare(String(b.titulo || ''), 'pt-BR');
+      return Number(b.destaque === true) - Number(a.destaque === true) || byDate(b, a);
+    });
+    const grid = $('observatory-grid');
+    grid.classList.toggle('is-list', state.view === 'list');
+    grid.replaceChildren(...items.map(item => card(item, true)));
     $('observatory-data-note').hidden = state.area !== 'Dados';
     $('observatory-result').textContent = state.failed ? 'Acervo temporariamente indisponível' : items.length + (items.length === 1 ? ' conteúdo encontrado' : ' conteúdos encontrados');
     $('observatory-empty').hidden = items.length > 0;
@@ -158,7 +167,7 @@
   }
   const dialogs = {
     agentes: ['Arquitetura em desenvolvimento', 'Agentes Inteligentes do Observar.IA', 'Seis especialidades estão previstas: radar, dados, pesquisa, regulação, avaliação e aplicações. Os agentes poderão apoiar coleta, classificação e preparação de sínteses para a equipe.', 'A estrutura de coleta e curadoria já pode ser aproveitada. Os seis agentes especializados não estão em operação. Toda publicação exige fonte identificada e revisão humana.'],
-    radar: ['Agente em desenvolvimento', 'Agente Radar', 'Função prevista: acompanhar notícias, eventos, novos modelos, ferramentas e publicações; identificar novidades e encaminhá-las à curadoria.', 'Os conteúdos coletados devem permanecer em uma fila de revisão. Monitoramento em tempo real não está ativo.'],
+    radar: ['Em funcionamento', 'Agente Radar', 'Busca diariamente notícias, pesquisas, ferramentas e outras publicações relevantes sobre Inteligência Artificial, organizando os conteúdos encontrados para análise.', 'Os conteúdos coletados são encaminhados à curadoria humana antes da publicação. Outros agentes serão incorporados gradualmente para acompanhar pesquisas, dados e indicadores, regulamentações, aplicações e avaliações relacionadas à IA.'],
     dados: ['Agente em desenvolvimento', 'Agente Dados', 'Função prevista: organizar bases de múltiplas fontes, registrar sua procedência, identificar atualizações e preparar indicadores comparáveis.', 'Painéis e indicadores só serão apresentados com fonte, período, metodologia e limitações.'],
     pesquisas: ['Agente em desenvolvimento', 'Agente Pesquisa', 'Função prevista: mapear artigos, teses e outras produções científicas; organizar temas e evidências relevantes no Brasil e no mundo.', 'Sínteses devem preservar as referências e distinguir resultados publicados, hipóteses e limitações.'],
     regulacao: ['Agente em desenvolvimento', 'Agente Regulação', 'Função prevista: acompanhar legislações, políticas públicas, recomendações e mudanças regulatórias relacionadas à Inteligência Artificial.', 'Cada registro deverá identificar a jurisdição, a fonte oficial, a data e a situação da norma. O conteúdo não substitui orientação jurídica.'],
@@ -225,6 +234,8 @@
       }
     });
     $('observatory-reset').addEventListener('click', () => { reset(); applyFilters(); });
+    $('observatory-sort').addEventListener('change', event => { state.sort = event.target.value; applyFilters(); });
+    $('observatory-view').addEventListener('change', event => { state.view = event.target.value; applyFilters(); });
     document.querySelectorAll('[data-dialog]').forEach(trigger => trigger.addEventListener('click', event => { event.preventDefault(); openDialog(trigger.dataset.dialog); }));
     $('observatory-dialog').querySelector('.obs-dialog-close').addEventListener('click', () => $('observatory-dialog').close());
     const navigationLinks = [...document.querySelectorAll('.observatory-topbar .nav a[href^="#"]:not([data-dialog])')];
