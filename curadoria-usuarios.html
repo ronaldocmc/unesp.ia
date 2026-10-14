@@ -15,20 +15,29 @@
     <h1>Usuários da curadoria</h1>
     <p>Os curadores podem cadastrar, revisar, publicar e arquivar observações. Cada pessoa usa sua própria conta e senha. A gestão de usuários e a exclusão permanente de publicações são exclusivas da administração.</p>
     <p data-curadoria-message role="status" aria-live="polite" hidden></p>
-    <section class="admin-link-import" aria-labelledby="curadoria-add-title">
-      <h2 id="curadoria-add-title">Liberar acesso à curadoria</h2>
-      <p>Crie primeiro a conta em Authentication → Users no Supabase. Depois informe o mesmo e-mail abaixo para atribuir o perfil de curadoria.</p>
+    <section class="admin-link-import" aria-labelledby="curadoria-invite-title">
+      <h2 id="curadoria-invite-title">Cadastrar novo curador</h2>
+      <p>Informe nome e e-mail. O usuário receberá um convite para definir sua própria senha e acessar a curadoria do Observar.IA.</p>
+      <form class="portal-form" data-curadoria-invite-form>
+        <label>Nome<input type="text" name="nome" autocomplete="off" maxlength="120" required></label>
+        <label>E-mail<input type="email" name="email" autocomplete="off" maxlength="254" required></label>
+        <div class="portal-form-actions"><button class="btn" type="submit">Cadastrar e enviar convite</button></div>
+      </form>
+    </section>
+    <details class="admin-link-import">
+      <summary>Liberar acesso para conta existente</summary>
+      <p>Se a pessoa já tem uma conta no portal, informe o e-mail cadastrado para atribuir o perfil de curadoria.</p>
       <form class="portal-form" data-curadoria-form>
         <label>E-mail da conta<input type="email" name="email" autocomplete="off" maxlength="254" required></label>
         <div class="portal-form-actions"><button class="btn" type="submit">Liberar curadoria</button></div>
       </form>
-    </section>
+    </details>
     <section aria-labelledby="curadoria-list-title">
       <h2 id="curadoria-list-title">Curadores cadastrados</h2>
       <div class="table-wrap"><table class="admin-table"><thead><tr><th>Nome</th><th>E-mail</th><th>Acesso liberado em</th><th>Ações</th></tr></thead><tbody data-curadoria-list></tbody></table></div>
       <p>O curador entra pelo <a href="login.html?returnTo=administracao-observatorio.html">login do Observar.IA</a>. Remover o acesso à curadoria preserva a conta e as publicações cadastradas.</p>
     </section>
   </main>
-  <script type="module" src="assets/js/portal/curadoria-users.js?v=20261014-curadoria"></script>
+  <script type="module" src="assets/js/portal/curadoria-users.js?v=20261014-convites"></script>
 </body>
 </html>

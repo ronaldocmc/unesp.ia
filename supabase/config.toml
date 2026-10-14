@@ -7,3 +7,7 @@ verify_jwt = true
 [functions.observatorio-radar]
 verify_jwt = false
 
+[functions.observatorio-curadores]
+# A função valida o JWT com Auth.getUser e verifica o papel administrativo.
+verify_jwt = false
+

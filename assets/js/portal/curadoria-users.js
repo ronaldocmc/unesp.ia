@@ -1,6 +1,7 @@
 import { requireRole, supabase, showMessage } from './supabase.js'
 
 const form = document.querySelector('[data-curadoria-form]')
+const inviteForm = document.querySelector('[data-curadoria-invite-form]')
 const list = document.querySelector('[data-curadoria-list]')
 const message = document.querySelector('[data-curadoria-message]')
 let busy = false
@@ -8,7 +9,7 @@ let authorized = false
 
 function setBusy(value) {
   busy = value
-  document.querySelectorAll('[data-curadoria-form] input, [data-curadoria-form] button, [data-curadoria-list] button').forEach(control => { control.disabled = value })
+  document.querySelectorAll('[data-curadoria-invite-form] input, [data-curadoria-invite-form] button, [data-curadoria-form] input, [data-curadoria-form] button, [data-curadoria-list] button').forEach(control => { control.disabled = value })
 }
 
 async function rpc(name, args) {
@@ -57,6 +58,33 @@ async function revokeUser(user) {
   } catch (error) { showMessage(message, error.message, 'error') }
   finally { setBusy(false) }
 }
+
+inviteForm.addEventListener('submit', async event => {
+  event.preventDefault()
+  if (!authorized || busy) return
+  const nome = inviteForm.elements.nome.value.trim()
+  const email = inviteForm.elements.email.value.trim().toLowerCase()
+  setBusy(true)
+  showMessage(message, 'Cadastrando curador e enviando convite...', 'info')
+  try {
+    const { data, error } = await supabase.functions.invoke('observatorio-curadores', { body: { nome, email } })
+    if (error || data?.error) {
+      let detail = data?.error
+      if (!detail && error?.context?.json) {
+        try { detail = (await error.context.json()).error } catch { /* Respostas de rede podem não conter JSON. */ }
+      }
+      throw new Error(detail || 'O serviço de convites está indisponível. Confira a ativação no Supabase ou tente novamente mais tarde.')
+    }
+    if (!data?.ok) throw new Error('O serviço não confirmou o envio do convite.')
+    inviteForm.reset()
+    try { await loadUsers() } catch {
+      showMessage(message, 'Convite enviado e curadoria liberada. Recarregue a página para atualizar a lista.', 'success')
+      return
+    }
+    showMessage(message, 'Curador cadastrado e convite enviado. A pessoa deve abrir o e-mail e definir sua própria senha.', 'success')
+  } catch (error) { showMessage(message, error.message, 'error') }
+  finally { setBusy(false) }
+})
 
 form.addEventListener('submit', async event => {
   event.preventDefault()

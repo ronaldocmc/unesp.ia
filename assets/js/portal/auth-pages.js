@@ -36,7 +36,13 @@ form?.addEventListener('submit', async (event) => {
       const { error } = await supabase.auth.updateUser({ password: String(values.password) })
       if (error) throw error
       showMessage(message, 'Senha atualizada. Redirecionando para o login...', 'success')
-      setTimeout(() => { location.href = 'login.html' }, 1200)
+      const requested = new URLSearchParams(location.search).get('returnTo')
+      const login = new URL('login.html', location.href)
+      if (requested) {
+        const target = new URL(requested, location.href)
+        if (target.origin === location.origin) login.searchParams.set('returnTo', target.href)
+      }
+      setTimeout(() => { location.href = login.href }, 1200)
     }
   } catch (error) {
     showMessage(message, error.message || 'Não foi possível concluir a operação.', 'error')
