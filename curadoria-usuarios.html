@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Usuários da curadoria | Observar.IA</title>
+  <link rel="stylesheet" href="assets/css/style.css?v=20261014-curadoria">
+</head>
+<body>
+  <div class="topbar">
+    <a class="brand" href="observatorio.html"><img class="brand-logo" src="assets/img/logo-unesp-ia-portal.jpg" alt="unesp.IA"></a>
+    <div class="nav"><a href="administracao-observatorio.html">Publicações</a><a href="observatorio.html">Ver Observar.IA</a><button class="btn-small" data-logout>Sair</button></div>
+  </div>
+  <main class="container content">
+    <h1>Usuários da curadoria</h1>
+    <p>Os curadores podem cadastrar, revisar, publicar e arquivar observações. Cada pessoa usa sua própria conta e senha. A gestão de usuários e a exclusão permanente de publicações são exclusivas da administração.</p>
+    <p data-curadoria-message role="status" aria-live="polite" hidden></p>
+    <section class="admin-link-import" aria-labelledby="curadoria-add-title">
+      <h2 id="curadoria-add-title">Liberar acesso à curadoria</h2>
+      <p>Crie primeiro a conta em Authentication → Users no Supabase. Depois informe o mesmo e-mail abaixo para atribuir o perfil de curadoria.</p>
+      <form class="portal-form" data-curadoria-form>
+        <label>E-mail da conta<input type="email" name="email" autocomplete="off" maxlength="254" required></label>
+        <div class="portal-form-actions"><button class="btn" type="submit">Liberar curadoria</button></div>
+      </form>
+    </section>
+    <section aria-labelledby="curadoria-list-title">
+      <h2 id="curadoria-list-title">Curadores cadastrados</h2>
+      <div class="table-wrap"><table class="admin-table"><thead><tr><th>Nome</th><th>E-mail</th><th>Acesso liberado em</th><th>Ações</th></tr></thead><tbody data-curadoria-list></tbody></table></div>
+      <p>O curador entra pelo <a href="login.html?returnTo=administracao-observatorio.html">login do Observar.IA</a>. Remover o acesso à curadoria preserva a conta e as publicações cadastradas.</p>
+    </section>
+  </main>
+  <script type="module" src="assets/js/portal/curadoria-users.js?v=20261014-curadoria"></script>
+</body>
+</html>

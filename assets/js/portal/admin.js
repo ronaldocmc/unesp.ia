@@ -92,9 +92,9 @@ const definitions = {
 const requestedSection = new URLSearchParams(location.search).get('secao')
 const adminScope = document.body.dataset.adminScope || 'portal'
 const observatorioSections = ['observatorio_conteudos', 'observatorio_categorias', 'observatorio_veiculos', 'observatorio_downloads']
-const allowedSections = adminScope === 'observatorio' ? observatorioSections : Object.keys(definitions).filter(key => key !== 'candidatos_observatorio')
+let allowedSections = adminScope === 'observatorio' ? observatorioSections : Object.keys(definitions).filter(key => key !== 'candidatos_observatorio')
 const initialTable = allowedSections.includes(requestedSection) ? requestedSection : (adminScope === 'observatorio' ? 'observatorio_conteudos' : 'ecossistema_eixos')
-const state = { table: initialTable, rows: [], editing: null, lookups: {}, saving: false, importing: false }
+const state = { table: initialTable, rows: [], editing: null, lookups: {}, saving: false, importing: false, curador: false }
 const $ = (selector) => document.querySelector(selector)
 const message = $('[data-admin-message]')
 const dialog = $('[data-record-dialog]')
@@ -223,7 +223,7 @@ function lookupLabel(table, row) {
 async function renderTable() {
   const def = definitions[state.table]
   if (!allowedSections.includes(state.table)) {
-    state.table = initialTable
+    state.table = allowedSections[0]
     return renderTable()
   }
   document.querySelectorAll('[data-admin-tab]').forEach(button => button.classList.toggle('active', button.dataset.adminTab === state.table))
@@ -244,7 +244,7 @@ async function renderTable() {
   state.rows = data ?? []
   const columns = def.columns || [...new Set([...def.pk, ...def.fields.map(f => f[0])])]
   $('[data-admin-head]').innerHTML = `<tr>${columns.map(c => `<th>${escapeHtml(c)}</th>`).join('')}<th>Ações</th></tr>`
-  $('[data-admin-body]').innerHTML = state.rows.map(row => `<tr>${columns.map(c => `<td>${escapeHtml(formatValue(row[c]))}</td>`).join('')}<td><div class="admin-table-actions"><button data-edit="${escapeHtml(keyOf(row))}">Editar</button><button data-delete="${escapeHtml(keyOf(row))}">Excluir</button></div></td></tr>`).join('') || `<tr><td colspan="${columns.length + 1}">Nenhum registro.</td></tr>`
+  $('[data-admin-body]').innerHTML = state.rows.map(row => `<tr>${columns.map(c => `<td>${escapeHtml(formatValue(row[c]))}</td>`).join('')}<td><div class="admin-table-actions"><button data-edit="${escapeHtml(keyOf(row))}">Editar</button>${state.curador ? '' : `<button data-delete="${escapeHtml(keyOf(row))}">Excluir</button>`}</div></td></tr>`).join('') || `<tr><td colspan="${columns.length + 1}">Nenhum registro.</td></tr>`
   $('[data-admin-body]').querySelectorAll('[data-edit]').forEach(b => b.addEventListener('click', () => openDialog(findRow(b.dataset.edit))))
   $('[data-admin-body]').querySelectorAll('[data-delete]').forEach(b => b.addEventListener('click', () => deleteRecord(findRow(b.dataset.delete))))
   showMessage(message, `${state.rows.length} registro(s) carregado(s).`, 'success')
@@ -443,6 +443,7 @@ async function saveRecord(event) {
 }
 
 async function deleteRecord(row) {
+  if (state.curador) return showMessage(message, 'A curadoria pode arquivar publicações. A exclusão permanente é exclusiva da administração.', 'error')
   if (!confirm('Confirma a exclusão deste registro? Relações dependentes poderão ser removidas.')) return
   try {
     if (state.table === 'participantes') {
@@ -485,11 +486,21 @@ async function importSpreadsheet(event) {
 }
 
 try {
-  await requireRole(adminScope === 'observatorio' ? ['administrador', 'observatorio_admin'] : 'administrador', {
+  const session = await requireRole(adminScope === 'observatorio' ? ['administrador', 'observatorio_admin', 'observatorio_curador'] : 'administrador', {
     message: adminScope === 'observatorio'
       ? 'Esta área é exclusiva da curadoria e administração do Observar.IA.'
       : 'Esta área é exclusiva da administração.'
   })
+  const { data: role, error: roleError } = await supabase.from('papeis_usuario').select('papel').eq('user_id', session.user.id).single()
+  if (roleError) throw roleError
+  state.curador = role.papel === 'observatorio_curador'
+  if (state.curador) {
+    allowedSections = ['observatorio_conteudos']
+    document.querySelectorAll('[data-admin-tab]').forEach(button => { button.hidden = !allowedSections.includes(button.dataset.adminTab) })
+    document.querySelector('h1').textContent = 'Curadoria do Observar.IA'
+  }
+  const curadoriaLink = $('[data-curadoria-users]')
+  if (curadoriaLink) curadoriaLink.hidden = state.curador
   await renderTable()
 }
 catch (error) { if (message) showMessage(message, error.message, 'error') }
