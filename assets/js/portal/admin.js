@@ -1,6 +1,6 @@
 import { requireRole, supabase, showMessage } from './supabase.js'
 import { publicationDateFromURL } from './publication-date.js'
-import { validateFeedDraft } from './radar-model.js'
+import { validateFeedDraft } from './radar-model.js?v=20261016-fontes-uso'
 
 const IMAGE_BUCKET = 'ecossistema-imagens'
 const IMAGE_MAX_BYTES = 3 * 1024 * 1024
@@ -22,14 +22,16 @@ const initiativeDefinition = (title, eixo) => ({
 })
 
 const definitions = {
-  observatorio_feeds: { title: 'Fontes do Radar', description: 'Cadastre feeds RSS/Atom em HTTPS. Escopo: ia = especializado; tecnologia/geral = aplica filtro. Prioridade: 1 alta, 2 média, 3 baixa. Desativar preserva o cadastro e as publicações. O último processamento aparece na lista; salvar não executa coleta.', order: 'prioridade', pk: ['id'],
-    columns: ['nome','codigo','escopo','prioridade','ativo','ultima_execucao','ultimo_status','ultimo_erro','quantidade_lida','quantidade_relevante'], fields: [
+  observatorio_feeds: { title: 'Fontes do Radar', description: 'Cadastre feeds RSS/Atom em HTTPS e escolha se participam da busca manual, automática ou de ambas. Fontes inativas não são consultadas. Escopo: ia = especializado; tecnologia/geral = aplica filtro. Prioridade: 1 alta, 2 média, 3 baixa. Salvar não executa coleta nem altera os horários e limites do agendamento.', order: 'prioridade', pk: ['id'],
+    columns: ['nome','codigo','escopo','prioridade','ativo','busca_manual','busca_automatica','ultima_execucao','ultimo_status','ultimo_erro','quantidade_lida','quantidade_relevante'], fields: [
       ['nome','Nome da fonte','text',true], ['codigo','Código único (ex.: minha-fonte)','text',true],
       ['url_feed','URL HTTPS do feed RSS/Atom','url',true], ['instituicao','Instituição','text',false],
       ['categoria','Categoria','select-static',true,['pesquisa','noticia','aplicacao','regulacao']],
       ['escopo','Escopo','select-static',true,['ia','tecnologia','geral']],
       ['idioma','Idioma (ex.: pt-BR, en)','text',false], ['pais','País (ex.: BR, US)','text',false],
       ['prioridade','Prioridade: 1 alta, 2 média, 3 baixa','number',true], ['ativo','Fonte ativa','checkbox',false,true],
+      ['busca_manual','Disponível na busca manual','checkbox',false,true],
+      ['busca_automatica','Incluir na busca automática','checkbox',false,true],
     ] },
   ecossistema_eixos: { title: 'Configuração dos eixos', description: 'Edite identidade, descrição, destaques e chamada pública dos quatro eixos.', pk: ['id'], order: 'ordem', columns: ['id','ordem','nome','rotulo','status','revisao_humana'], fields: [
     ['id','Identificador técnico','text',true], ['ordem','Ordem','number',true], ['nome','Nome público','text',true],
@@ -278,12 +280,12 @@ const findRow = key => state.rows.find(row => keyOf(row) === key)
 
 function renderFeedTable() {
   $('[data-new-record]').textContent = 'Cadastrar fonte'
-  const labels = ['Fonte / código','Escopo / prioridade','Situação','Último processamento','Lidos / relevantes','Ações']
+  const labels = ['Fonte / código','Escopo / prioridade','Situação / uso','Último processamento','Lidos / relevantes','Ações']
   $('[data-admin-head]').innerHTML = `<tr>${labels.map(label => `<th>${label}</th>`).join('')}</tr>`
   $('[data-admin-body]').innerHTML = state.rows.map(row => {
     const last = row.ultima_execucao ? new Date(row.ultima_execucao).toLocaleString('pt-BR') : 'Ainda não executada'
     return `<tr><td><strong>${escapeHtml(row.nome)}</strong><br><small>${escapeHtml(row.codigo)}</small></td>
-      <td>${escapeHtml(row.escopo)} / ${escapeHtml(row.prioridade)}</td><td>${row.ativo ? 'Ativa' : 'Inativa'}</td>
+      <td>${escapeHtml(row.escopo)} / ${escapeHtml(row.prioridade)}</td><td>${row.ativo ? 'Ativa' : 'Inativa'}<br><small>${typeof row.busca_manual !== 'boolean' || typeof row.busca_automatica !== 'boolean' ? 'Execute a migration radar_fontes_uso' : !row.ativo ? 'Nenhuma busca' : [row.busca_manual && 'Manual', row.busca_automatica && 'Automática'].filter(Boolean).join(' e ') || 'Nenhuma busca'}</small></td>
       <td>${escapeHtml(last)}<br>${escapeHtml(row.ultimo_status || '—')}<small class="feed-error">${escapeHtml(row.ultimo_erro || '')}</small></td>
       <td>${escapeHtml(row.quantidade_lida)} / ${escapeHtml(row.quantidade_relevante)}</td>
       <td><div class="admin-table-actions"><button data-edit-feed="${escapeHtml(row.id)}">Editar</button><button data-toggle-feed="${escapeHtml(row.id)}">${row.ativo ? 'Desativar' : 'Ativar'}</button></div></td></tr>`
@@ -305,7 +307,8 @@ function renderFeedTable() {
 }
 
 async function openDialog(row = null, options = {}) {
-  if (!row && state.table === 'observatorio_feeds') { row = { prioridade: 2, ativo: true, categoria: 'pesquisa', escopo: 'ia' }; options = { ...options, asNew: true } }
+  if (!row && state.table === 'observatorio_feeds') { row = { prioridade: 2, ativo: true, busca_manual: true, busca_automatica: true, categoria: 'pesquisa', escopo: 'ia' }; options = { ...options, asNew: true } }
+  if (state.table === 'observatorio_feeds' && (typeof row.busca_manual !== 'boolean' || typeof row.busca_automatica !== 'boolean')) return showMessage(message, 'Execute a migration radar_fontes_uso antes de editar as fontes.', 'error')
   if (!row && state.table === 'observatorio_conteudos') { row = { ...manualDraft(), url: '' }; options = { ...options, asNew: true } }
   state.editing = options.asNew ? null : row
   const def = definitions[state.table]
@@ -348,7 +351,7 @@ async function openDialog(row = null, options = {}) {
     Object.assign(form.elements.codigo, { maxLength: 100, pattern: '[a-z0-9][a-z0-9-]{0,99}' })
     form.elements.nome.maxLength = 200
     form.elements.url_feed.maxLength = 2048
-    form.elements.ativo.parentElement.classList.add('radar-choice')
+    for (const name of ['ativo', 'busca_manual', 'busca_automatica']) form.elements[name].parentElement.classList.add('radar-choice')
   }
   $('[data-dialog-message]').hidden = true
   dialog.showModal()

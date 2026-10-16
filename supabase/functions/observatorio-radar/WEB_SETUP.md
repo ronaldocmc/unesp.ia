@@ -289,3 +289,19 @@ Se funcionar, a resposta terá:
 ```
 
 `inseridos` pode ser `0` se os links encontrados já existirem no banco.
+
+# Fontes separadas para busca manual e automática
+
+Após a curadoria em prévia, execute o **conteúdo** de `supabase/migrations/202610160004_radar_fontes_uso.sql` no SQL Editor. Depois atualize `observatorio-radar` com o conteúdo completo de `index.web.ts` e publique o painel. Não cole apenas os nomes dos arquivos.
+
+Em **Administração do Observar.IA → Fontes do Radar → Editar fonte**, configure:
+
+- **Fonte ativa**: desligada, exclui a fonte de todas as buscas.
+- **Disponível na busca manual**: aparece na seleção do painel.
+- **Incluir na busca automática**: participa das execuções autenticadas pelo token da agenda.
+
+As duas últimas opções são independentes. Ambas desmarcadas preservam o cadastro, mas não consultam a fonte. A migration inicia ambas como `true` para preservar o funcionamento anterior; reexecutá-la não sobrescreve as escolhas administrativas. Não altera conteúdos, políticas RLS, horários ou limites.
+
+O contexto é determinado pela autenticação: sessão da equipe = manual; `RADAR_AGENT_TOKEN` = automática. O corpo não pode trocar esse contexto. A listagem do painel retorna somente fontes manuais. Se o Cron já enviar `fontes`, ele consultará apenas a interseção dessa seleção com as fontes automáticas ativas; para usar todas as automáticas configuradas, remova `fontes` do corpo ou envie `[]`. Confira isso no comando de cada job antes de considerar a configuração aplicada a todas as fontes. Seleção sem fontes elegíveis retorna erro explícito, sem recorrer às outras fontes.
+
+Essas configurações se aplicam ao modo **Feeds RSS**, não à pesquisa web livre do Gemini. Limites continuam definidos por execução: os controles do painel não alteram o corpo do Cron. Buscas automáticas continuam salvando em revisão, nunca publicando automaticamente. A função anterior não reconhece as novas opções; portanto, só considere a separação ativa após atualizar também a função. O novo painel exige essa capacidade para habilitar a busca.

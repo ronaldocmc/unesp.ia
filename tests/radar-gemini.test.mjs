@@ -74,7 +74,7 @@ function setup({ role = 'observatorio_curador', existing = [], key = 'gemini-sec
     select: () => ({ eq: () => ({ range: async () => ({ data: [], error: null }) }) }),
   } : table === 'observatorio_feeds' ? {
     select: (_cols, opts) => opts?.head ? Promise.resolve({ count: 1, error: null }) : ({ eq: () => ({ order: () => ({ order: async () => ({ data: [
-      { id: 'f1', codigo: 'openai-news', nome: 'OpenAI', url_feed: 'https://openai.com/news/rss.xml', categoria: 'pesquisa', escopo: 'ia', ativo: true, prioridade: 1 },
+      { id: 'f1', codigo: 'openai-news', nome: 'OpenAI', url_feed: 'https://openai.com/news/rss.xml', categoria: 'pesquisa', escopo: 'ia', ativo: true, busca_manual: true, busca_automatica: true, prioridade: 1 },
     ], error: null }) }) }) }),
     update: () => ({ eq: async () => ({ error: null }) }),
   } : ({

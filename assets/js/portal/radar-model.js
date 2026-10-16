@@ -15,6 +15,9 @@ export function validateFeedDraft(draft) {
   if (!['ia','tecnologia','geral'].includes(value.escopo)) throw new Error('Escolha um escopo válido.')
   if (!['pesquisa','noticia','aplicacao','regulacao'].includes(value.categoria)) throw new Error('Escolha uma categoria válida.')
   value.prioridade = Number(value.prioridade)
+  for (const name of ['busca_manual', 'busca_automatica']) {
+    if (typeof value[name] !== 'boolean') throw new Error('Configure as opções de busca manual e automática da fonte.')
+  }
   if (!Number.isInteger(value.prioridade) || value.prioridade < 1 || value.prioridade > 3) throw new Error('Prioridade: use 1 (alta), 2 (média) ou 3 (baixa).')
   return value
 }

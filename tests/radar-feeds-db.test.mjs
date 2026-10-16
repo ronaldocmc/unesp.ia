@@ -6,7 +6,7 @@ import { createRadarHandler } from '../supabase/functions/observatorio-radar/han
 import { avaliarRelevanciaIA, scoreIA, classificarRelevancia } from '../supabase/functions/observatorio-radar/relevance.mjs'
 import { carregarFeeds } from '../supabase/functions/observatorio-radar/feeds.mjs'
 
-const general = { id: 'g', codigo: 'geral', nome: 'Geral', url_feed: 'https://news.example.org/feed', categoria: 'noticia', escopo: 'tecnologia', ativo: true, prioridade: 2 }
+const general = { id: 'g', codigo: 'geral', nome: 'Geral', url_feed: 'https://news.example.org/feed', categoria: 'noticia', escopo: 'tecnologia', ativo: true, busca_manual: true, busca_automatica: true, prioridade: 2 }
 const ai = { ...general, id: 'a', codigo: 'ia', nome: 'Especializada', escopo: 'ia', prioridade: 1 }
 const xml = titles => `<rss>${titles.map((title, i) => `<item><title>${title}</title><link>https://news.example.org/${i}</link><description>Resumo</description></item>`).join('')}</rss>`
 function setup({ feeds = [general], failCatalog = false, failUpdate = false, existing = [], discards = [], download = async () => xml(['Receita de bolo','OpenAI apresenta recurso','Inteligência artificial na educação']) } = {}) {
@@ -22,8 +22,10 @@ function setup({ feeds = [general], failCatalog = false, failUpdate = false, exi
     select: () => ({ in: async () => ({ data: existing.map((entry, id) => typeof entry === 'string' ? { id, url: entry } : entry), error: null }) }),
     insert: rows => { calls.saved.push(...rows); return { select: async () => ({ data: rows, error: null }) } },
   } }
-  const handler = createRadarHandler({ createClient: () => db,
-    env: { SUPABASE_URL: 'https://project.supabase.co', SUPABASE_SERVICE_ROLE_KEY: 'private', RADAR_AGENT_TOKEN: 'test' },
+  const caller = { auth: { getUser: async () => ({ data: { user: { id: 'curador' } } }) },
+    from: () => ({ select: () => ({ eq: () => ({ maybeSingle: async () => ({ data: { papel: 'observatorio_curador' } }) }) }) }) }
+  const handler = createRadarHandler({ createClient: (_url, key) => key === 'private' ? db : caller,
+    env: { SUPABASE_URL: 'https://project.supabase.co', SUPABASE_ANON_KEY: 'anon', SUPABASE_SERVICE_ROLE_KEY: 'private', RADAR_AGENT_TOKEN: 'test' },
     now: () => new Date('2026-10-16T15:00:00Z'),
     download: async (...args) => { calls.urls.push(args[0]); return download(...args) },
   })
@@ -31,6 +33,27 @@ function setup({ feeds = [general], failCatalog = false, failUpdate = false, exi
 }
 const req = body => new Request('https://project.supabase.co/functions/v1/observatorio-radar', {
   method: 'POST', headers: { 'x-radar-token': 'test', 'content-type': 'application/json' }, body: JSON.stringify(body),
+})
+
+test('credencial define modalidade, sem permitir troca pelo corpo ou pelas fontes pedidas', async () => {
+  const feeds = [
+    { ...general, codigo: 'manual', busca_automatica: false },
+    { ...ai, codigo: 'automatica', busca_manual: false },
+  ]
+  const { handler } = setup({ feeds })
+  const auto = await (await handler(req({ contexto: 'manual' }))).json()
+  assert.equal(auto.contexto_fontes, 'automatica')
+  assert.deepEqual(auto.feeds.map(feed => feed.codigo), ['automatica'])
+  const manualReq = body => new Request('https://project.supabase.co/radar', { method: 'POST',
+    headers: { Authorization: 'Bearer session', 'Content-Type': 'application/json' }, body: JSON.stringify(body) })
+  const manual = await (await handler(manualReq({ previa: true, contexto: 'automatica' }))).json()
+  assert.equal(manual.contexto_fontes, 'manual')
+  assert.deepEqual(manual.feeds.map(feed => feed.codigo), ['manual'])
+  assert.equal((await handler(req({ fontes: ['manual'] }))).status, 400)
+  assert.equal((await handler(manualReq({ fontes: ['automatica'] }))).status, 400)
+  const list = await (await handler(manualReq({ acao: 'listar_fontes' }))).json()
+  assert.deepEqual(list.fontes.map(feed => feed.codigo), ['manual'])
+  assert.equal(list.capacidades.fontes_por_uso, 1)
 })
 
 test('score: acentos, limites de palavra, contexto e maior peso no título', () => {

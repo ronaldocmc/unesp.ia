@@ -1,5 +1,5 @@
 import { requireRole, supabase, showMessage } from './supabase.js'
-import { radarSourceSelection } from './radar-model.js'
+import { radarSourceSelection } from './radar-model.js?v=20261016-fontes-uso'
 import { initRadarCuradoria } from './radar-curadoria.js'
 
 const form = document.querySelector('[data-radar-form]')
@@ -40,7 +40,7 @@ function syncSources() {
   form.querySelectorAll('[name="selecao_fontes"]').forEach(input => { input.disabled = gemini })
   inputs.forEach(input => { input.disabled = gemini || all })
   document.querySelector('[data-radar-source-count]').textContent = all
-    ? `${inputs.length} fontes ativas serão consultadas. Não é necessário marcar cada uma.`
+    ? `${inputs.length} fontes ativas habilitadas para busca manual serão consultadas. A seleção automática é configurada em Fontes do Radar.`
     : `${inputs.filter(input => input.checked).length} de ${inputs.length} fontes selecionadas. Marque pelo menos uma.`
 }
 
@@ -175,6 +175,7 @@ try {
   const { data, error } = await supabase.functions.invoke('observatorio-radar', { body: { acao: 'listar_fontes' } })
   if (error || !Array.isArray(data?.fontes)) throw new Error('Não foi possível carregar as fontes do banco. Atualize a função e execute a migration observatorio_feeds no Supabase.')
   if (data.capacidades?.previa_curadoria !== 1) throw new Error('Antes de usar esta tela, atualize observatorio-radar e execute a migration radar_curadoria. A função anterior gravava a busca automaticamente.')
+  if (data.capacidades?.fontes_por_uso !== 1) throw new Error('Atualize observatorio-radar e execute a migration radar_fontes_uso para separar as fontes manuais das automáticas.')
   const sources = data.fontes
   const container = document.querySelector('[data-radar-sources]')
   for (const source of sources) {

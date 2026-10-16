@@ -4,7 +4,7 @@ import { readFileSync } from 'node:fs'
 import { validateFeedDraft, radarSourceSelection } from '../assets/js/portal/radar-model.js'
 
 const draft = { codigo: 'nova-fonte', nome: 'Nova fonte', url_feed: 'https://news.example.org/rss.xml',
-  categoria: 'noticia', escopo: 'tecnologia', prioridade: 2, ativo: true }
+  categoria: 'noticia', escopo: 'tecnologia', prioridade: 2, ativo: true, busca_manual: true, busca_automatica: true }
 const read = path => readFileSync(new URL(`../${path}`, import.meta.url), 'utf8')
 
 test('cadastro de fonte normaliza espaços e URL sem alterar o original', () => {
@@ -15,6 +15,7 @@ test('cadastro de fonte normaliza espaços e URL sem alterar o original', () => 
 test('fonte rejeita campos inválidos antes de gravar', () => {
   for (const patch of [{ codigo: 'Fonte com espaços' }, { codigo: '' }, { nome: '' }, { nome: 'a'.repeat(201) },
     { categoria: 'qualquer' }, { escopo: 'qualquer' }, { prioridade: 0 }, { prioridade: 4 }, { prioridade: 1.5 },
+    { busca_manual: undefined }, { busca_automatica: 'false' },
     { url_feed: 'http://news.example.org/rss' }, { url_feed: 'javascript:alert(1)' }, { url_feed: 'https://127.0.0.1/rss' },
     { url_feed: 'https://localhost/rss' }, { url_feed: 'https://a.internal/rss' }, { url_feed: 'https://user:senha@news.example.org/rss' },
     { url_feed: 'https://news.example.org:444/rss' }]) assert.throws(() => validateFeedDraft({ ...draft, ...patch }), JSON.stringify(patch))
@@ -35,6 +36,7 @@ test('admin reutiliza seção protegida e não oferece exclusão de fontes', () 
   const renderer = source.slice(source.indexOf('function renderFeedTable()'), source.indexOf('async function openDialog'))
   assert.doesNotMatch(renderer, /data-delete/)
   assert.match(renderer, /escapeHtml\(row.ultimo_erro/)
+  for (const field of ['busca_manual', 'busca_automatica']) assert.ok(source.includes(`['${field}',`))
   const definition = source.slice(source.indexOf('observatorio_feeds: {'), source.indexOf('ecossistema_eixos: {'))
   assert.doesNotMatch(definition, /\['ultima_execucao'.*'datetime|\['ultimo_erro'.*'text'/)
   for (const page of ['administracao.html','administracao-observatorio.html']) assert.match(read(page), /data-admin-tab="observatorio_feeds"/)

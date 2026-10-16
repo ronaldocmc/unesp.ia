@@ -11,7 +11,7 @@ const json = (body, status = 200) => Response.json(body, { status, headers: cors
 
 async function authorize(req, env, createClient) {
   const jobToken = req.headers.get('x-radar-token') || req.headers.get('authorization')?.replace(/^Bearer\s+/i, '')
-  if (env.RADAR_AGENT_TOKEN && jobToken === env.RADAR_AGENT_TOKEN) return
+  if (env.RADAR_AGENT_TOKEN && jobToken === env.RADAR_AGENT_TOKEN) return 'automatica'
   const authorization = req.headers.get('authorization') || ''
   if (!/^Bearer \S+$/i.test(authorization)) throw new RadarError('Execução não autorizada.', 401)
   if (!env.SUPABASE_URL || !env.SUPABASE_ANON_KEY) throw new RadarError('Autenticação do Supabase não configurada.', 503)
@@ -24,6 +24,7 @@ async function authorize(req, env, createClient) {
   if (result.error || !['administrador', 'observatorio_admin', 'observatorio_curador'].includes(result.data?.papel)) {
     throw new RadarError('Acesso restrito à equipe de curadoria do Observatório.', 403)
   }
+  return 'manual'
 }
 
 async function readBody(req) {
@@ -63,7 +64,7 @@ export function createRadarHandler({ createClient, env, fetchImpl = fetch, downl
     if (req.method === 'OPTIONS') return new Response(null, { status: 204, headers: cors })
     if (req.method !== 'POST') return json({ error: 'Método não permitido.' }, 405)
     try {
-      await authorize(req, env, createClient)
+      const contexto = await authorize(req, env, createClient)
       const body = await readBody(req)
       const options = radarOptions(body)
       if (!env.SUPABASE_URL || !env.SUPABASE_SERVICE_ROLE_KEY) throw new RadarError('Credenciais do Supabase não configuradas.', 503)
@@ -81,10 +82,11 @@ export function createRadarHandler({ createClient, env, fetchImpl = fetch, downl
         const { items, ...metadata } = result
         details = { ...metadata, modelo: env.GEMINI_MODEL }
       } else {
-        const { feeds, ativos, catalogados } = await carregarFeeds(db, body.fontes)
+        const contextoFontes = body.acao === 'listar_fontes' ? 'manual' : contexto
+        const { feeds, ativos, catalogados } = await carregarFeeds(db, body.fontes, contextoFontes)
         // Consulta autenticada usada pelo painel; não acessa feeds nem grava dados.
-        if (body.acao === 'listar_fontes') return json({ ok: true, capacidades: { previa_curadoria: 1 }, fontes: feeds.map(feed => ({ codigo: feed.codigo, nome: feed.nome, categoria: feed.categoria, escopo: feed.escopo, prioridade: feed.prioridade })) })
-        if (!feeds.length) throw new RadarError('Nenhuma fonte corresponde à seleção.', 400)
+        if (body.acao === 'listar_fontes') return json({ ok: true, capacidades: { previa_curadoria: 1, fontes_por_uso: 1 }, fontes: feeds.map(feed => ({ codigo: feed.codigo, nome: feed.nome, categoria: feed.categoria, escopo: feed.escopo, prioridade: feed.prioridade })) })
+        if (!feeds.length) throw new RadarError(`Nenhuma fonte habilitada para busca ${contextoFontes} corresponde à seleção. Confira Fontes do Radar e o campo fontes do agendamento.`, 400)
         const configured = Number(env.RADAR_SCORE_MINIMO_IA ?? SCORE_MINIMO_IA)
         if (!Number.isInteger(configured) || configured < 1 || configured > 100) throw new RadarError('RADAR_SCORE_MINIMO_IA deve ser inteiro entre 1 e 100.', 503)
         const results = []
@@ -120,7 +122,7 @@ export function createRadarHandler({ createClient, env, fetchImpl = fetch, downl
           } catch { warnings.push(`Não foi possível atualizar o diagnóstico de ${result.feed.codigo}.`) }
         }
         candidates = accepted.slice(0, options.limite_total)
-        details = { feeds_catalogados: catalogados, feeds_ativos: ativos, feeds_processados: feeds.length,
+        details = { contexto_fontes: contextoFontes, feeds_catalogados: catalogados, feeds_ativos: ativos, feeds_processados: feeds.length,
           feeds_com_erro: results.filter(result => !result.ok).map(result => ({ origem: result.feed.origem, erro: result.error })),
           quantidade_feeds_com_erro: results.filter(result => !result.ok).length,
           itens_lidos: stats.reduce((sum, stat) => sum + stat.lidos, 0),
