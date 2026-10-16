@@ -1,4 +1,5 @@
 import { requireRole, supabase, showMessage } from './supabase.js'
+import { publicationDateFromURL } from './publication-date.js'
 
 const IMAGE_BUCKET = 'ecossistema-imagens'
 const IMAGE_MAX_BYTES = 3 * 1024 * 1024
@@ -185,8 +186,17 @@ async function importLink(event) {
       throw new Error(detail || 'A importação está indisponível. Tente novamente ou use “Preencher manualmente”.')
     }
     if (!data?.draft?.url) throw new Error('A fonte não retornou dados. Use “Preencher manualmente”.')
+    // Mantém a sugestão pelo link disponível mesmo antes de atualizar a Edge Function.
+    if (!data.draft.data_publicacao) {
+      const date = publicationDateFromURL(data.draft.url)
+      if (date) {
+        data.draft.data_publicacao = date
+        data.date_source = 'url'
+        data.warnings = [...(data.warnings || []), 'Data sugerida a partir do endereço da matéria. Confira a data de publicação na fonte antes de salvar.']
+      }
+    }
     existing = await existingPublication(data.draft.url)
-    await openDialog(existing || data.draft, { asNew: !existing })
+    await openDialog(existing || data.draft, { asNew: !existing, dateSuggested: !existing && data.date_source === 'url' })
     showMessage($('[data-dialog-message]'), existing ? 'O endereço final já está cadastrado. Edite a publicação existente.' : (data.warnings || []).join(' '), 'info')
     showMessage(linkMessage, 'Dados carregados para revisão. Nada foi salvo ou publicado automaticamente.', 'success')
   } catch (error) { showMessage(linkMessage, error.message, 'error') }
@@ -284,6 +294,9 @@ async function openDialog(row = null, options = {}) {
       const options = await loadLookup(source)
       control = `<select name="${name}" ${required ? 'required' : ''}><option value="">Selecione</option>${options.map(o => `<option value="${escapeHtml(o.nome)}" ${value === o.nome ? 'selected' : ''}>${escapeHtml(lookupLabel(source, o))}</option>`).join('')}</select>`
     } else control = `<input type="${type}" name="${name}" value="${escapeHtml(value)}" ${required ? 'required' : ''} ${disabled ? 'disabled' : ''}>${disabled ? `<input type="hidden" name="${name}" value="${escapeHtml(value)}">` : ''}`
+    if (name === 'data_publicacao' && options.dateSuggested) {
+      control += '<small>Data sugerida pelo endereço do link. Confira na matéria antes de salvar.</small>'
+    }
     container.insertAdjacentHTML('beforeend', `<label>${label}${control}</label>`)
   }
   container.querySelectorAll('[data-image-upload]').forEach(input => input.addEventListener('change', uploadImageField))

@@ -2,6 +2,7 @@ import { resolve4 } from 'node:dns/promises'
 import { request } from 'node:https'
 import { isIP } from 'node:net'
 import { Buffer } from 'node:buffer'
+import { selectPublicationDate } from '../../../assets/js/portal/publication-date.js'
 
 export class ImportError extends Error {
   constructor(message, status = 422) { super(message); this.status = status }
@@ -126,21 +127,21 @@ export function extractMetadata(html, inputURL) {
     if (key && !metadata[key]) metadata[key] = attr.content || ''
   }
   const title = metadata['og:title'] || metadata['twitter:title'] || /<title\b[^>]*>([\s\S]*?)<\/title>/i.exec(head)?.[1]
-  const rawDate = metadata['article:published_time'] || metadata.datepublished || metadata.date || metadata.pubdate || ''
-  const date = /^\d{4}-\d{2}-\d{2}/.exec(rawDate)?.[0] || ''
-  const validDate = date && !Number.isNaN(Date.parse(date)) && new Date(date).toISOString().slice(0, 10) === date ? date : ''
+  const publicationDate = selectPublicationDate(html, url.href, metadata)
   let image = ''
   try { if (metadata['og:image'] || metadata['twitter:image']) image = publicURL(decode(metadata['og:image'] || metadata['twitter:image']), url).href } catch { /* Optional preview only. */ }
   const draft = {
     colecao: 'Observatório', tipo: 'Notícia monitorada', categoria: 'Atualidades',
     titulo: plain(title, 300), resumo: plain(metadata['og:description'] || metadata.description || metadata['twitter:description'], 1200),
     fonte: plain(metadata['og:site_name'] || url.hostname.replace(/^www\./, ''), 200),
-    data_publicacao: validDate, url: url.href, imagem_url: image,
+    data_publicacao: publicationDate.date, url: url.href, imagem_url: image,
     origem: 'Importação', status: 'rascunho', destaque: false, revisao_humana: false,
   }
   const warnings = ['Confira título, resumo, data, fonte e direitos de uso da imagem antes de publicar. O resumo foi extraído da página, não gerado por IA.']
+  if (publicationDate.source === 'url') warnings.push('Data sugerida a partir do endereço da matéria. Confira a data de publicação na fonte antes de salvar.')
+  if (publicationDate.conflict) warnings.push('A fonte apresenta datas diferentes nos metadados. Foi usada a data de publicação dos dados estruturados; confira na matéria.')
   if (!draft.titulo || !draft.resumo || !draft.data_publicacao) warnings.push('A fonte não informou todos os campos. Complete os dados ausentes manualmente.')
-  return { draft, warnings }
+  return { draft, warnings, date_source: publicationDate.source }
 }
 
 const cors = { 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type', 'Access-Control-Allow-Methods': 'POST, OPTIONS', 'Cache-Control': 'no-store' }
