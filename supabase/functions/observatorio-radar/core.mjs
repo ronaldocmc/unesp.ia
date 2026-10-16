@@ -101,13 +101,14 @@ export function toConteudo(item) {
     url: item.link,
     fonte: fonte.origem,
     origem: 'Agente Radar',
-    agente_origem: 'radar',
+    agente_origem: item.agente_origem || 'radar',
     agente_processado_em: new Date().toISOString(),
     status: 'revisao',
     destaque: false,
     revisao_humana: false,
     aprovado_curadoria: false,
     palavras_chave: `radar, ${fonte.categoria}, ${fonte.origem}`,
+    ...(item.observacao_colaborador ? { observacao_colaborador: item.observacao_colaborador } : {}),
   }
 }
 
