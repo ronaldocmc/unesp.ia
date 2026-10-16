@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Administração | unesp.IA</title>
-  <link rel="stylesheet" href="assets/css/style.css?v=20261016-gestao-fontes">
+  <link rel="stylesheet" href="assets/css/style.css?v=20261016-menu-radar">
 </head>
 <body data-admin-scope="portal">
   <div class="topbar">
@@ -26,8 +26,13 @@
           <button data-admin-tab="inovar_ia">Inovar.IA</button>
           <p class="admin-nav-label">Observar.IA</p>
           <button data-admin-tab="observatorio_conteudos">Publicações do Observatório</button>
-          <a href="radar.html">Executar Radar</a>
-          <button data-admin-tab="observatorio_feeds">Fontes do Radar</button>
+          <details class="admin-nav-group" data-radar-menu>
+            <summary>Agente Radar</summary>
+            <div class="admin-nav-submenu">
+              <a href="radar.html">Executar Radar</a>
+              <button data-admin-tab="observatorio_feeds">Fontes Radar</button>
+            </div>
+          </details>
           <button data-admin-tab="observatorio_categorias">Categorias</button>
           <button data-admin-tab="observatorio_veiculos">Veículos de comunicação</button>
           <button data-admin-tab="observatorio_downloads">Downloads</button>
@@ -77,6 +82,6 @@
     </div>
   </dialog>
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-  <script type="module" src="assets/js/portal/admin.js?v=20261016-fontes-uso"></script>
+  <script type="module" src="assets/js/portal/admin.js?v=20261016-menu-radar"></script>
 </body>
 </html>

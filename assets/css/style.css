@@ -604,6 +604,12 @@ a.axis-initiative:hover{background:color-mix(in srgb,var(--axis) 6%,white);text-
 .admin-nav-label:first-child{margin-top:0}
 .admin-nav a{display:block;padding:11px;text-align:left;border:1px solid var(--border);border-radius:9px;background:#fff;color:inherit;text-decoration:none}
 .admin-nav a:hover{background:#f0f7ff}
+.admin-nav-group{min-width:0}
+.admin-nav-group>summary{padding:11px;border:1px solid var(--border);border-radius:9px;background:#fff;cursor:pointer;color:inherit}
+.admin-nav-group>summary:hover{background:#f0f7ff}
+.admin-nav-group>summary:focus-visible{outline:2px solid #006bff;outline-offset:2px}
+.admin-nav-submenu{display:grid;gap:8px;margin:8px 0 0 12px;padding-left:10px;border-left:2px solid #c9deec}
+.admin-nav-submenu>button,.admin-nav-submenu>a{width:100%;box-sizing:border-box;font:inherit;font-size:14px}
 .portal-dialog{width:min(920px,calc(100% - 24px))}
 .portal-dialog-inner{max-height:min(88vh,900px);overflow:auto}
 .admin-link-import{padding:22px;margin:20px 0;border:1px solid #c9e1f3;border-radius:16px;background:#f4faff}

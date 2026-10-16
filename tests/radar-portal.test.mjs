@@ -7,6 +7,21 @@ const draft = { codigo: 'nova-fonte', nome: 'Nova fonte', url_feed: 'https://new
   categoria: 'noticia', escopo: 'tecnologia', prioridade: 2, ativo: true, busca_manual: true, busca_automatica: true }
 const read = path => readFileSync(new URL(`../${path}`, import.meta.url), 'utf8')
 
+test('menu Agente Radar agrupa execução e fontes, mantendo o controle de acesso', () => {
+  for (const page of ['administracao.html', 'administracao-observatorio.html']) {
+    const html = read(page)
+    const group = html.match(/<details class="admin-nav-group" data-radar-menu>[\s\S]*?<\/details>/)?.[0]
+    assert.ok(group)
+    assert.match(group, /<summary>Agente Radar<\/summary>/)
+    assert.match(group, /href="radar.html">Executar Radar<\/a>/)
+    assert.match(group, /data-admin-tab="observatorio_feeds">Fontes Radar<\/button>/)
+    assert.equal((html.match(/href="radar.html"/g) || []).length, 1)
+  }
+  const js = read('assets/js/portal/admin.js')
+  assert.match(js, /state.table === 'observatorio_feeds'\) radarMenu.open = true/)
+  assert.match(js, /button.hidden = !allowedSections.includes\(button.dataset.adminTab\)/)
+})
+
 test('cadastro de fonte normaliza espaços e URL sem alterar o original', () => {
   const result = validateFeedDraft({ ...draft, nome: ' Nova fonte ', url_feed: `${draft.url_feed}#topo` })
   assert.equal(result.nome, 'Nova fonte'); assert.equal(result.url_feed, draft.url_feed)

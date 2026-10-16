@@ -243,6 +243,8 @@ function lookupLabel(table, row) {
 }
 
 async function renderTable() {
+  const radarMenu = document.querySelector('[data-radar-menu]')
+  if (radarMenu && state.table === 'observatorio_feeds') radarMenu.open = true
   const def = definitions[state.table]
   if (!allowedSections.includes(state.table)) {
     state.table = allowedSections[0]
