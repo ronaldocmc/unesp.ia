@@ -1,5 +1,17 @@
 # Agente Radar com feeds RSS e busca Gemini
 
+## Transporte padrão com `fetch()`
+
+Se a coleta exibir `Not implemented: ClientRequest.options.lookup`, o feed não foi lido: é uma incompatibilidade da API Node de rede no Edge Runtime, não falta de notícias nem problema no filtro.
+
+Atualize a função `observatorio-radar` colando novamente o conteúdo **completo e atual** de `index.web.ts` como `index.ts` e publique. Não requer migration, mudança de secrets nem recadastro de fontes.
+
+O downloader usa o `fetch()` padrão, sem `node:https`, `lookup` de ClientRequest, socket TCP ou TLS manual. A verificação normal de certificados HTTPS fica a cargo do runtime. Timeout cobre DNS, resposta e leitura do corpo. Os redirecionamentos são manuais e revalidados, no máximo três; o corpo é lido em streaming com limite de 2 MB, inclusive após descompressão feita pelo fetch.
+
+Segurança e limite conhecido: URLs exigem HTTPS público, sem credenciais, IP literal ou porta personalizada, e há uma consulta DNS IPv4 prévia que recusa endereços privados/mistos. **Isso não fixa o IP usado pelo fetch**, que pode resolver novamente e usar outro endereço ou IPv6. Não é garantia contra DNS rebinding; somente administradores confiáveis devem cadastrar fontes. Não exponha o cadastro a visitantes/curadores nem aceite URLs arbitrárias no corpo da execução. Se for necessária proteção SSRF forte com pinning, use um proxy de saída controlado em vez de afirmar que a checagem prévia garante isso.
+
+Os testes cobrem streaming, limite, timeout de DNS/rede/corpo, status HTTP e revalidação de redirects. Uma leitura real com fetch no Deno portátil 2.1.4 retornou 20 itens do Google AI, após redirecionamento 301 e resposta 200. Houve também uma tentativa com timeout local; a disponibilidade de rede varia. A ativação no runtime hospedado deve ser confirmada após o deploy manual pelo Dashboard; testes locais não alteram o banco.
+
 ## Atualizar uma função existente
 
 **Primeiro o banco, depois a função e por último o site.** No SQL Editor, cole o conteúdo completo (não o nome do arquivo) e execute, nesta ordem:
@@ -81,7 +93,7 @@ As 24 fontes anteriores são cadastradas pela migration, sem sobrescrever ediç�
 
 Somente `ativo = true` é processado, em ordem de prioridade e nome, com até quatro downloads simultâneos. Prioridade define a ordem de candidatos quando o limite total é atingido, não uma frequência de execução. Nenhum agendamento é criado ou alterado nesta etapa. Um catálogo grande pode exceder o tempo disponível da Edge Function; divida a agenda em grupos pelo parâmetro `fontes` se necessário.
 
-O downloader valida HTTPS, DNS público e cada redirecionamento, fixa o IP validado na conexão, aplica timeout e limita a resposta a 2 MB. Usa a mesma validação de URL/IP do importador. Respostas comprimidas que ignoram `Accept-Encoding: identity` são recusadas, assim como páginas HTML em vez de RSS/Atom. Os erros aparecem por feed; não se assume que todos os endpoints preservados estejam disponíveis.
+O downloader usa fetch com validação HTTPS/DNS IPv4 prévia, redirecionamentos manuais, timeout e corpo limitado a 2 MB. Não fixa IP na conexão; veja a limitação de segurança no início deste guia. Compressão HTTP fica a cargo do fetch; páginas HTML em vez de RSS/Atom são recusadas pelo processamento. Os erros aparecem por feed; não se assume que todos os endpoints preservados estejam disponíveis.
 
 Regras locais, sem API ou LLM no modo RSS:
 
@@ -144,6 +156,14 @@ update public.observatorio_feeds set ativo = false where codigo = 'nova-fonte';
 Para testar esse cadastro: `{"fontes":["nova-fonte"],"debug":true,"limite_por_feed":10}`. Escolha `ia` somente para feeds realmente exclusivos de IA; buscas por “observatório” são `geral`, e tecnologia ampla usa `tecnologia`.
 
 RLS: acesso anônimo negado. Administradores (`administrador`/`observatorio_admin`, pela função existente) podem consultar e administrar; curadores somente leem fontes ativas. O serviço interno tem SELECT/UPDATE para carregar fontes e atualizar diagnóstico. Não se concede escrita pública nem chave de serviço ao navegador.
+
+### Relação dos resultados
+
+O resultado tem duas listas: **Novos registros** (`itens`, mantido para compatibilidade) e **Já cadastrados no banco** (`itens_ja_cadastrados`, com id, título, URL e fonte). Quando todos os candidatos já existem, `inseridos` será zero, mas a segunda lista continua mostrando os links. O título/fonte da curadoria são preservados; não há atualização nem reinserção desses registros.
+
+Cada URL já cadastrada aparece uma só vez na lista, mesmo se encontrada em várias fontes. O contador `duplicados` continua contando as ocorrências descartadas. `repetidos_na_coleta` informa repetições de links novos na própria coleta, que não devem ser confundidas com registros anteriores do banco. Os limites por feed e total, a ordem e a deduplicação não foram alterados.
+
+Para ativar esta relação, atualize a função com o novo `index.web.ts` **e** publique `radar.html`/`radar.js`. Não exige SQL. Se só o painel for atualizado, uma função antiga pode continuar coletando, mas a tela avisará que precisa atualizar a função para mostrar os links anteriores.
 
 ### Gestão pelo portal
 

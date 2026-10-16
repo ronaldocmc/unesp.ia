@@ -49,3 +49,14 @@ test('Radar oferece seleção com controles acessíveis e valida antes de invoca
   assert.match(js, /input.disabled = gemini \|\| all/)
   assert.match(js, /data-radar-manage.*hidden = !\['administrador','observatorio_admin'\]/)
 })
+
+test('resultado separa novos e já cadastrados, informa vazio e versão antiga da função', () => {
+  const html = read('radar.html'); const js = read('assets/js/portal/radar.js')
+  assert.match(html, /<h3>Novos registros<\/h3>/)
+  assert.match(html, /<h3>Já cadastrados no banco<\/h3>/)
+  assert.match(html, /data-radar-existing/)
+  assert.match(html, /data-radar-new-empty/)
+  assert.match(js, /result.itens_ja_cadastrados \|\| \[\]/)
+  assert.match(js, /Atualize observatorio-radar no Supabase/)
+  assert.match(js, /sourceLink\(existingList, item.titulo, item.url\)/)
+})

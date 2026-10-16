@@ -192,58 +192,90 @@ async function carregarFeeds(db, requested) {
 }
 
 import { resolve4 } from 'node:dns/promises'
-import { request } from 'node:https'
-import { Buffer } from 'node:buffer'
-// Reutiliza a validação SSRF do importador já existente no projeto.
+// Reutiliza validação de URL e DNS do importador; fetch não fixa o IP na conexão.
 
-function readFeed(url, address, signal) {
-  return new Promise((resolve, reject) => {
-    const req = request(url, { signal, agent: false, headers: {
-      Accept: 'application/rss+xml, application/atom+xml, application/xml, text/xml;q=0.9, */*;q=0.8',
-      'Accept-Encoding': 'identity', 'User-Agent': 'ObservarIA-Radar/2.0 (+https://ia.fct.unesp.br/observatorio.html)',
-    }, lookup: (_host, options, callback) => options?.all
-      ? callback(null, [{ address, family: 4 }]) : callback(null, address, 4),
-    }, response => {
-      const status = response.statusCode || 0
-      if ([301,302,303,307,308].includes(status) && response.headers.location) {
-        response.destroy(); resolve({ location: response.headers.location }); return
-      }
-      if (status < 200 || status >= 300) { response.destroy(); reject(new Error(`HTTP ${status}`)); return }
-      if (response.headers['content-encoding'] && response.headers['content-encoding'] !== 'identity') {
-        response.destroy(); reject(new Error('Compressão não suportada; use feed com resposta identity.')); return
-      }
-      const chunks = []; let size = 0
-      response.on('data', chunk => {
-        size += chunk.length
-        if (size > 2000000) { response.destroy(new Error('Feed muito grande (máximo 2 MB).')); return }
-        chunks.push(chunk)
-      })
-      response.on('end', () => {
-        const charset = /charset\s*=\s*["']?([^;\s"']+)/i.exec(response.headers['content-type'] || '')?.[1] || 'utf-8'
-        const bytes = Buffer.concat(chunks)
-        try { resolve({ xml: new TextDecoder(charset).decode(bytes) }) } catch { resolve({ xml: bytes.toString('utf8') }) }
-      })
-      response.on('error', reject)
-    })
-    req.on('error', reject); req.end()
-  })
+const FEED_MAX_BYTES = 2000000
+
+async function readFeedResponse(response, signal) {
+  const length = response.headers.get('content-length')
+  if (length && /^\d+$/.test(length) && Number(length) > FEED_MAX_BYTES) {
+    response.body?.cancel().catch(() => {})
+    throw new Error('Feed muito grande (máximo 2 MB).')
+  }
+  const reader = response.body?.getReader()
+  if (!reader) return ''
+  const abort = () => { reader.cancel().catch(() => {}) }
+  signal.addEventListener('abort', abort, { once: true })
+  if (signal.aborted) abort()
+  const chunks = []; let size = 0
+  try {
+    while (true) {
+      const { done, value } = await reader.read()
+      if (done) break
+      size += value.byteLength
+      if (size > FEED_MAX_BYTES) throw new Error('Feed muito grande (máximo 2 MB).')
+      chunks.push(value)
+    }
+  } finally {
+    signal.removeEventListener('abort', abort)
+    try { await reader.cancel() } catch { /* Pode já estar encerrado/abortado. */ }
+    reader.releaseLock()
+  }
+  const bytes = new Uint8Array(size)
+  let offset = 0
+  for (const chunk of chunks) { bytes.set(chunk, offset); offset += chunk.byteLength }
+  const charset = /charset\s*=\s*["']?([^;\s"']+)/i.exec(response.headers.get('content-type') || '')?.[1] || 'utf-8'
+  try { return new TextDecoder(charset).decode(bytes) } catch { return new TextDecoder().decode(bytes) }
 }
 
-async function downloadFeed(input, timeoutMs, { lookup = resolve4, read = readFeed } = {}) {
+async function downloadFeed(input, timeoutMs, {
+  lookup = globalThis.Deno?.resolveDns ? host => globalThis.Deno.resolveDns(host, 'A') : resolve4,
+  fetchImpl = fetch,
+} = {}) {
   const controller = new AbortController()
+  const timeout = new Error('Tempo limite ao acessar feed.')
   const timer = setTimeout(() => controller.abort(), timeoutMs)
-  const aborted = new Promise((_, reject) => controller.signal.addEventListener('abort', () => reject(new Error('Tempo limite ao acessar feed.')), { once: true }))
+  let abortListener
+  const aborted = new Promise((_, reject) => {
+    abortListener = () => reject(timeout)
+    controller.signal.addEventListener('abort', abortListener, { once: true })
+  })
   try {
     let url = publicURL(input)
     for (let redirects = 0; redirects <= 3; redirects++) {
+      // Defesa prévia IPv4; o fetch ainda pode fazer sua própria resolução DNS.
       const addresses = await Promise.race([lookup(url.hostname), aborted])
       if (!addresses.length || addresses.some(address => !publicIPv4(address))) throw new Error('Endereço do feed não é público.')
-      const result = await Promise.race([read(url, addresses[0], controller.signal), aborted])
-      if (!result.location) return result.xml
-      url = publicURL(result.location, url)
+      const response = await Promise.race([fetchImpl(url.href, {
+        signal: controller.signal, redirect: 'manual',
+        headers: {
+          Accept: 'application/rss+xml, application/atom+xml, application/xml, text/xml;q=0.9, */*;q=0.8',
+          'User-Agent': 'ObservarIA-Radar/2.2 (+https://ia.fct.unesp.br/observatorio.html)',
+        },
+      }), aborted])
+      if ([301,302,303,307,308].includes(response.status)) {
+        const location = response.headers.get('location')
+        response.body?.cancel().catch(() => {})
+        if (!location) throw new Error('Redirecionamento do feed sem destino.')
+        if (redirects === 3) throw new Error('Muitos redirecionamentos no feed.')
+        url = publicURL(location, url)
+        continue
+      }
+      if (!response.ok) {
+        response.body?.cancel().catch(() => {})
+        throw new Error(`HTTP ${response.status}`)
+      }
+      return await Promise.race([readFeedResponse(response, controller.signal), aborted])
     }
     throw new Error('Muitos redirecionamentos no feed.')
-  } finally { clearTimeout(timer) }
+  } catch (error) {
+    if (controller.signal.aborted) throw timeout
+    throw error
+  } finally {
+    clearTimeout(timer)
+    controller.signal.removeEventListener('abort', abortListener)
+    controller.abort()
+  }
 }
 
 
@@ -472,11 +504,21 @@ function createRadarHandler({ createClient, env, fetchImpl = fetch, download = d
       }
       let inserted = []
       let unique = []
+      let alreadySaved = []
+      let repeatedInBatch = 0
       if (candidates.length) {
         const links = [...new Set(candidates.map(item => item.link))]
-        const { data: existing, error: selectError } = await db.from('observatorio_conteudos').select('url').in('url', links)
+        const { data: existing, error: selectError } = await db.from('observatorio_conteudos').select('id,titulo,url,fonte').in('url', links)
         if (selectError) throw new RadarError('Não foi possível conferir links existentes. Verifique as permissões do Radar no banco.', 500)
         unique = dedupeByLink(candidates, (existing || []).map(row => row.url))
+        const existingByLink = new Map((existing || []).map(row => [String(row.url).trim().toLowerCase(), row]))
+        const existingCandidates = candidates.filter(item => existingByLink.has(String(item.link).trim().toLowerCase()))
+        alreadySaved = dedupeByLink(existingCandidates).map(item => {
+          const row = existingByLink.get(String(item.link).trim().toLowerCase())
+          return { id: row.id, titulo: row.titulo || item.titulo, url: row.url, fonte: row.fonte || item.fonte.origem }
+        })
+        // Nem toda duplicata já existia no banco: pode ser repetição entre feeds nesta coleta.
+        repeatedInBatch = candidates.length - unique.length - existingCandidates.length
         if (unique.length) {
           const { data, error } = await db.from('observatorio_conteudos').insert(unique.map(toConteudo)).select('id,titulo,url,fonte')
           if (error) throw new RadarError('Não foi possível salvar a coleta para curadoria. Verifique as permissões e o esquema do banco.', 500)
@@ -484,7 +526,8 @@ function createRadarHandler({ createClient, env, fetchImpl = fetch, download = d
         }
       }
       return json({ ok: true, agente: 'radar', modo: options.modo, ...details,
-        candidatos: candidates.length, duplicados: candidates.length - unique.length, inseridos: inserted.length, itens: inserted })
+        candidatos: candidates.length, duplicados: candidates.length - unique.length, inseridos: inserted.length, itens: inserted,
+        itens_ja_cadastrados: alreadySaved, repetidos_na_coleta: repeatedInBatch })
     } catch (error) {
       return json({ error: error instanceof RadarError ? error.message : 'Falha ao executar Agente Radar.' }, error instanceof RadarError ? error.status : 500)
     }

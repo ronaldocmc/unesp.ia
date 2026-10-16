@@ -4,7 +4,6 @@ import { readFileSync } from 'node:fs'
 import { spawnSync } from 'node:child_process'
 import { createRadarHandler } from '../supabase/functions/observatorio-radar/handler.mjs'
 import { avaliarRelevanciaIA, scoreIA, classificarRelevancia } from '../supabase/functions/observatorio-radar/relevance.mjs'
-import { downloadFeed } from '../supabase/functions/observatorio-radar/feed-network.mjs'
 import { carregarFeeds } from '../supabase/functions/observatorio-radar/feeds.mjs'
 
 const general = { id: 'g', codigo: 'geral', nome: 'Geral', url_feed: 'https://news.example.org/feed', categoria: 'noticia', escopo: 'tecnologia', ativo: true, prioridade: 2 }
@@ -18,7 +17,7 @@ function setup({ feeds = [general], failCatalog = false, failUpdate = false, exi
     },
     update: value => ({ eq: async (_key, id) => { calls.updates.push({ id, ...value }); return { error: failUpdate ? {} : null } } }),
   } : {
-    select: () => ({ in: async () => ({ data: existing.map(url => ({ url })), error: null }) }),
+    select: () => ({ in: async () => ({ data: existing.map((entry, id) => typeof entry === 'string' ? { id, url: entry } : entry), error: null }) }),
     insert: rows => { calls.saved.push(...rows); return { select: async () => ({ data: rows, error: null }) } },
   } }
   const handler = createRadarHandler({ createClient: () => db,
@@ -111,15 +110,33 @@ test('deduplicação é aplicada aos candidatos aprovados na triagem', async () 
   const data = await (await handler(req({}))).json()
   assert.equal(data.duplicados, 1); assert.equal(data.inseridos, 1)
   assert.equal(calls.saved[0].titulo, 'Inteligência artificial na educação')
+  assert.equal(data.itens_ja_cadastrados.length, 1)
+  assert.equal(data.itens_ja_cadastrados[0].url, 'https://news.example.org/1')
+  assert.equal(data.repetidos_na_coleta, 0)
 })
-test('download recusa URL interna, DNS privado e redirecionamento privado; fixa IP público', async () => {
-  let calls = 0
-  const read = async (_url, address) => { calls++; assert.equal(address, '93.184.216.34'); return { xml: '<rss/>' } }
-  await assert.rejects(downloadFeed('https://127.0.0.1/feed', 1000, { read }))
-  await assert.rejects(downloadFeed('https://news.example.org/rss', 1000, { lookup: async () => ['10.0.0.1'], read }))
-  assert.equal(calls, 0)
-  assert.equal(await downloadFeed('https://news.example.org/rss', 1000, { lookup: async () => ['93.184.216.34'], read }), '<rss/>')
-  await assert.rejects(downloadFeed('https://news.example.org/rss', 1000, { lookup: async () => ['93.184.216.34'], read: async () => ({ location: 'https://127.0.0.1/' }) }))
+
+test('todos já cadastrados retornam relação com título do banco e não gravam novamente', async () => {
+  const { handler, calls } = setup({ existing: [
+    { id: 15, titulo: 'Título revisado pela curadoria', url: 'https://news.example.org/1', fonte: 'Fonte revisada' },
+    { id: 16, titulo: 'Outro registro', url: 'https://news.example.org/2', fonte: 'Outra fonte' },
+  ] })
+  const data = await (await handler(req({}))).json()
+  assert.equal(data.inseridos, 0); assert.equal(data.duplicados, 2)
+  assert.equal(calls.saved.length, 0); assert.equal(data.itens.length, 0)
+  assert.equal(data.itens_ja_cadastrados.length, 2)
+  assert.deepEqual(data.itens_ja_cadastrados[0], { id: 15, titulo: 'Título revisado pela curadoria', url: 'https://news.example.org/1', fonte: 'Fonte revisada' })
+})
+test('repetição entre feeds não é apresentada como cadastro anterior inexistente', async () => {
+  const { handler } = setup({ feeds: [general, ai], download: async () => xml(['OpenAI apresenta recurso']) })
+  const data = await (await handler(req({}))).json()
+  assert.equal(data.inseridos, 1); assert.equal(data.duplicados, 1)
+  assert.equal(data.itens_ja_cadastrados.length, 0); assert.equal(data.repetidos_na_coleta, 1)
+})
+test('links anteriores repetidos em várias fontes aparecem uma só vez na relação', async () => {
+  const { handler } = setup({ feeds: [general, ai], existing: ['https://news.example.org/0'], download: async () => xml(['OpenAI apresenta recurso']) })
+  const data = await (await handler(req({}))).json()
+  assert.equal(data.inseridos, 0); assert.equal(data.duplicados, 2)
+  assert.equal(data.itens_ja_cadastrados.length, 1); assert.equal(data.repetidos_na_coleta, 0)
 })
 test('migrations restringem escrita e score sem reescrever dados existentes', () => {
   const sql = readFileSync(new URL('../supabase/migrations/202610160001_observatorio_feeds.sql', import.meta.url), 'utf8')

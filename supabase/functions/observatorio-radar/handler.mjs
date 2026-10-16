@@ -118,11 +118,21 @@ export function createRadarHandler({ createClient, env, fetchImpl = fetch, downl
       }
       let inserted = []
       let unique = []
+      let alreadySaved = []
+      let repeatedInBatch = 0
       if (candidates.length) {
         const links = [...new Set(candidates.map(item => item.link))]
-        const { data: existing, error: selectError } = await db.from('observatorio_conteudos').select('url').in('url', links)
+        const { data: existing, error: selectError } = await db.from('observatorio_conteudos').select('id,titulo,url,fonte').in('url', links)
         if (selectError) throw new RadarError('Não foi possível conferir links existentes. Verifique as permissões do Radar no banco.', 500)
         unique = dedupeByLink(candidates, (existing || []).map(row => row.url))
+        const existingByLink = new Map((existing || []).map(row => [String(row.url).trim().toLowerCase(), row]))
+        const existingCandidates = candidates.filter(item => existingByLink.has(String(item.link).trim().toLowerCase()))
+        alreadySaved = dedupeByLink(existingCandidates).map(item => {
+          const row = existingByLink.get(String(item.link).trim().toLowerCase())
+          return { id: row.id, titulo: row.titulo || item.titulo, url: row.url, fonte: row.fonte || item.fonte.origem }
+        })
+        // Nem toda duplicata já existia no banco: pode ser repetição entre feeds nesta coleta.
+        repeatedInBatch = candidates.length - unique.length - existingCandidates.length
         if (unique.length) {
           const { data, error } = await db.from('observatorio_conteudos').insert(unique.map(toConteudo)).select('id,titulo,url,fonte')
           if (error) throw new RadarError('Não foi possível salvar a coleta para curadoria. Verifique as permissões e o esquema do banco.', 500)
@@ -130,7 +140,8 @@ export function createRadarHandler({ createClient, env, fetchImpl = fetch, downl
         }
       }
       return json({ ok: true, agente: 'radar', modo: options.modo, ...details,
-        candidatos: candidates.length, duplicados: candidates.length - unique.length, inseridos: inserted.length, itens: inserted })
+        candidatos: candidates.length, duplicados: candidates.length - unique.length, inseridos: inserted.length, itens: inserted,
+        itens_ja_cadastrados: alreadySaved, repetidos_na_coleta: repeatedInBatch })
     } catch (error) {
       return json({ error: error instanceof RadarError ? error.message : 'Falha ao executar Agente Radar.' }, error instanceof RadarError ? error.status : 500)
     }

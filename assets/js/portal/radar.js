@@ -85,6 +85,18 @@ function render(result) {
   const list = document.querySelector('[data-radar-items]')
   list.replaceChildren()
   for (const item of result.itens || []) sourceLink(list, item.titulo, item.url)
+  document.querySelector('[data-radar-new-empty]').hidden = Boolean(result.itens?.length)
+  const existingList = document.querySelector('[data-radar-existing]')
+  existingList.replaceChildren()
+  for (const item of result.itens_ja_cadastrados || []) sourceLink(existingList, item.titulo, item.url)
+  const existingEmpty = document.querySelector('[data-radar-existing-empty]')
+  existingEmpty.hidden = Boolean(result.itens_ja_cadastrados?.length)
+  existingEmpty.textContent = !Array.isArray(result.itens_ja_cadastrados) && result.duplicados > 0
+    ? 'A função não retornou os links já cadastrados. Atualize observatorio-radar no Supabase para exibir esta relação.'
+    : 'Nenhum candidato desta execução já estava cadastrado no banco.'
+  const batchRepeated = document.querySelector('[data-radar-batch-repeated]')
+  batchRepeated.hidden = !result.repetidos_na_coleta
+  batchRepeated.textContent = `${result.repetidos_na_coleta || 0} repetição(ões) adicional(is) de links novos entre os candidatos da própria coleta foram ignoradas.`
   const citations = document.querySelector('[data-radar-citation-list]')
   citations.replaceChildren()
   for (const source of result.fontes_gemini || []) sourceLink(citations, source.titulo, source.url)
@@ -133,7 +145,9 @@ form.addEventListener('submit', async event => {
     }
     if (!data?.ok || data.modo !== body.modo) throw new Error('Atualize a função observatorio-radar no Supabase para habilitar os dois modos.')
     render(data)
-    showMessage(message, 'Execução concluída. Os novos registros aguardam curadoria.', 'success')
+    showMessage(message, data.inseridos > 0
+      ? 'Execução concluída. Os novos registros aguardam curadoria.'
+      : 'Execução concluída sem novos registros. Consulte abaixo os resultados e os links já cadastrados.', 'success')
   } catch (error) { showMessage(message, error.message, 'error') }
   finally { busy = false; controls.forEach(control => { control.disabled = false }); syncMode() }
 })
