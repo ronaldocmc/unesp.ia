@@ -38,7 +38,8 @@ function render(result) {
   document.querySelector('[data-radar-summary]').textContent = `${result.candidatos} candidatos, ${result.duplicados} duplicados e ${result.inseridos} novos registros para revisão.`
   const reasons = result.descartados || {}
   document.querySelector('[data-radar-discarded]').textContent = Object.keys(reasons).length
-    ? `Descartados: ${reasons.sem_fonte_verificavel || 0} sem fonte verificável, ${reasons.sem_data_valida || 0} sem data válida, ${reasons.fora_do_periodo || 0} fora do período e ${reasons.incompletos || 0} incompletos.` : ''
+    ? `Descartados: ${reasons.sem_fonte_verificavel || 0} sem fonte verificável, ${reasons.sem_data_valida || 0} sem data válida, ${reasons.fora_do_periodo || 0} fora do período e ${reasons.incompletos || 0} incompletos.`
+    : `${result.itens_lidos || 0} itens lidos; ${result.itens_relevantes_ia || 0} relacionados a IA; ${result.itens_descartados_nao_ia || 0} descartados pelo filtro; ${result.itens_fora_limites || 0} fora dos limites da execução.`
   const errors = document.querySelector('[data-radar-errors]')
   errors.replaceChildren()
   for (const failure of result.feeds_com_erro || []) {
@@ -46,6 +47,19 @@ function render(result) {
     li.textContent = `${failure.origem}: ${failure.erro}`
     errors.append(li)
   }
+  for (const warning of result.avisos || []) {
+    const li = document.createElement('li'); li.textContent = warning; errors.append(li)
+  }
+  const feedStats = document.querySelector('[data-radar-feed-stats]')
+  feedStats.replaceChildren()
+  for (const feed of result.feeds || []) {
+    const li = document.createElement('li')
+    li.textContent = `${feed.nome}: ${feed.status}; ${feed.lidos} lidos, ${feed.relevantes_ia} relevantes e ${feed.descartados_nao_ia} descartados.`
+    feedStats.append(li)
+  }
+  const debug = document.querySelector('[data-radar-debug-results]')
+  debug.hidden = !result.exemplos_descartados?.length
+  debug.textContent = (result.exemplos_descartados || []).map(item => `${item.codigo}: ${item.titulo} — bruto ${item.score_bruto}, relevância ${item.relevancia_ia}/100 (${item.motivo})`).join('\n')
   const list = document.querySelector('[data-radar-items]')
   list.replaceChildren()
   for (const item of result.itens || []) sourceLink(list, item.titulo, item.url)
@@ -76,6 +90,7 @@ form.addEventListener('submit', async event => {
     body.dias = Number(form.elements.dias.value)
   } else {
     body.limite_por_feed = Number(form.elements.limite_por_feed.value)
+    body.debug = form.elements.debug.checked
     body.fontes = [...form.querySelectorAll('[name="fonte"]:checked')].map(input => input.value)
   }
   busy = true
@@ -106,16 +121,16 @@ document.querySelector('[data-logout]').addEventListener('click', async () => {
 for (const control of form.querySelectorAll('input, select, button')) control.disabled = true
 try {
   await requireRole(['administrador', 'observatorio_admin', 'observatorio_curador'], { message: 'Esta área é exclusiva da equipe de curadoria do Observatório.' })
-  // O catálogo público contém apenas URLs de feeds, sem credenciais de execução.
-  const response = await fetch('assets/data/radar-fontes.json?v=20261016')
-  if (!response.ok) throw new Error('Não foi possível carregar o catálogo de fontes.')
-  const sources = await response.json()
+  // A mesma função consulta o catálogo do banco sem executar a coleta.
+  const { data, error } = await supabase.functions.invoke('observatorio-radar', { body: { acao: 'listar_fontes' } })
+  if (error || !Array.isArray(data?.fontes)) throw new Error('Não foi possível carregar as fontes do banco. Atualize a função e execute a migration observatorio_feeds no Supabase.')
+  const sources = data.fontes
   const container = document.querySelector('[data-radar-sources]')
   for (const source of sources) {
     const label = document.createElement('label')
     const input = document.createElement('input')
-    input.type = 'checkbox'; input.name = 'fonte'; input.value = source.origem
-    label.append(input, document.createTextNode(source.origem))
+    input.type = 'checkbox'; input.name = 'fonte'; input.value = source.codigo
+    label.append(input, document.createTextNode(`${source.nome} (${source.escopo})`))
     container.append(label)
   }
   authorized = true

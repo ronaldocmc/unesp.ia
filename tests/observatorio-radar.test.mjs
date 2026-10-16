@@ -1,12 +1,13 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
-import { CATALOGO_FEEDS, dedupeByLink, parseFeed, toConteudo } from '../supabase/functions/observatorio-radar/core.mjs'
+import { dedupeByLink, parseFeed, toConteudo } from '../supabase/functions/observatorio-radar/core.mjs'
 
 test('catálogo do Agente Radar contém fontes oficiais e nacionais', () => {
-  assert.ok(CATALOGO_FEEDS.length >= 20)
+  const migration = readFileSync(new URL('../supabase/migrations/202610160001_observatorio_feeds.sql', import.meta.url), 'utf8')
+  assert.equal((migration.match(/,true\)/g) || []).length, 24)
   for (const origem of ['OpenAI', 'Google AI', 'TechCrunch', 'UNESP (IA)', 'USP (IA)']) {
-    assert.ok(CATALOGO_FEEDS.some(feed => feed.origem === origem), origem)
+    assert.ok(migration.includes(`'${origem}'`), origem)
   }
 })
 
@@ -49,7 +50,8 @@ test('schema e função do Radar têm campos de curadoria e execução segura', 
   assert.match(migration, /aprovado_curadoria boolean not null default false/)
   assert.match(index, /RADAR_AGENT_TOKEN/)
   assert.match(webIndex, /Versão arquivo único/)
-  assert.match(webIndex, /CATALOGO_FEEDS/)
+  assert.doesNotMatch(webIndex, /CATALOGO_FEEDS/)
+  assert.match(webIndex, /observatorio_feeds/)
   assert.match(index, /SUPABASE_SERVICE_ROLE_KEY/)
   assert.match(config, /\[functions\.observatorio-radar\]\s+verify_jwt = false/)
 })

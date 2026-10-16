@@ -14,7 +14,10 @@ export function newsURL(value) {
 
 export function radarOptions(body = {}) {
   if (!body || Array.isArray(body) || typeof body !== 'object') throw new RadarError('Informe um objeto JSON.', 400)
+  if (body.acao !== undefined && body.acao !== 'listar_fontes') throw new RadarError('Ação inválida.', 400)
+  if (body.debug !== undefined && typeof body.debug !== 'boolean') throw new RadarError('debug deve ser booleano.', 400)
   const modo = body.modo ?? 'feeds'
+  if (body.acao === 'listar_fontes' && modo !== 'feeds') throw new RadarError('A listagem de fontes pertence ao modo feeds.', 400)
   if (!['feeds', 'gemini'].includes(modo)) throw new RadarError('Escolha modo feeds ou gemini.', 400)
   const number = (key, fallback, max) => {
     const value = body[key] ?? fallback

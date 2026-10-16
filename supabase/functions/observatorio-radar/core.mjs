@@ -1,30 +1,3 @@
-export const CATALOGO_FEEDS = [
-  { url: 'https://huggingface.co/blog/feed.xml', origem: 'Hugging Face', categoria: 'pesquisa' },
-  { url: 'https://blog.google/technology/ai/rss/', origem: 'Google AI', categoria: 'pesquisa' },
-  { url: 'https://openai.com/news/rss.xml', origem: 'OpenAI', categoria: 'pesquisa' },
-  { url: 'https://news.mit.edu/rss/topic/artificial-intelligence', origem: 'MIT News', categoria: 'pesquisa' },
-  { url: 'https://bair.berkeley.edu/blog/feed.xml', origem: 'BAIR (Berkeley)', categoria: 'pesquisa' },
-  { url: 'https://www.anthropic.com/feed.xml', origem: 'Anthropic News', categoria: 'pesquisa' },
-  { url: 'https://www.anthropic.com/engineering/feed.xml', origem: 'Anthropic Engineering', categoria: 'pesquisa' },
-  { url: 'https://github.com/deepseek-ai.atom', origem: 'DeepSeek Releases', categoria: 'pesquisa' },
-  { url: 'https://techcrunch.com/category/artificial-intelligence/feed/', origem: 'TechCrunch', categoria: 'noticia' },
-  { url: 'https://www.theverge.com/rss/ai-artificial-intelligence/index.xml', origem: 'The Verge', categoria: 'noticia' },
-  { url: 'https://venturebeat.com/category/ai/feed/', origem: 'VentureBeat', categoria: 'noticia' },
-  { url: 'https://feeds.arstechnica.com/arstechnica/technology-lab', origem: 'Ars Technica', categoria: 'noticia' },
-  { url: 'https://www.technologyreview.com/topic/artificial-intelligence/feed/', origem: 'MIT Tech Review', categoria: 'noticia' },
-  { url: 'https://simonwillison.net/atom/everything/', origem: 'Simon Willison', categoria: 'aplicacao' },
-  { url: 'https://www.latent.space/feed', origem: 'Latent Space', categoria: 'aplicacao' },
-  { url: 'https://www.marktechpost.com/feed/', origem: 'MarkTechPost', categoria: 'pesquisa' },
-  { url: 'https://tecnoblog.net/feed/', origem: 'Tecnoblog', categoria: 'noticia' },
-  { url: 'https://canaltech.com.br/rss/', origem: 'Canaltech', categoria: 'noticia' },
-  { url: 'https://g1.globo.com/rss/g1/tecnologia/', origem: 'G1 Tecnologia', categoria: 'noticia' },
-  { url: 'https://jornal.usp.br/?s=observatorio&feed=rss2', origem: 'USP (Observatório)', categoria: 'regulacao' },
-  { url: 'https://jornal.usp.br/tag/inteligencia-artificial/feed/', origem: 'USP (IA)', categoria: 'pesquisa' },
-  { url: 'https://jornal.unesp.br/?s=observatorio&feed=rss2', origem: 'UNESP (Observatório)', categoria: 'regulacao' },
-  { url: 'https://jornal.unesp.br/tag/inteligencia-artificial/feed/', origem: 'UNESP (IA)', categoria: 'pesquisa' },
-  { url: 'https://www.unicamp.br/noticias/?s=observatorio&feed=rss2', origem: 'UNICAMP (Observatório)', categoria: 'regulacao' },
-]
-
 export class RadarError extends Error {
   constructor(message, status = 422) { super(message); this.status = status }
 }
@@ -108,6 +81,7 @@ export function toConteudo(item) {
     revisao_humana: false,
     aprovado_curadoria: false,
     palavras_chave: `radar, ${fonte.categoria}, ${fonte.origem}`,
+    ...(Number.isInteger(item.relevancia_ia) ? { relevancia_ia: item.relevancia_ia } : {}),
     ...(item.observacao_colaborador ? { observacao_colaborador: item.observacao_colaborador } : {}),
   }
 }
@@ -124,8 +98,11 @@ export function dedupeByLink(items, existingLinks = []) {
   return result
 }
 
-export function selectCatalog(requested) {
-  if (!Array.isArray(requested) || !requested.length) return CATALOGO_FEEDS
+export function selectCatalog(catalog, requested) {
+  if (requested !== undefined && (!Array.isArray(requested) || requested.some(value => typeof value !== 'string'))) {
+    throw new RadarError('fontes deve ser uma lista de códigos, nomes, categorias ou URLs.', 400)
+  }
+  if (!requested?.length) return catalog
   const wanted = new Set(requested.map(value => String(value).toLowerCase()))
-  return CATALOGO_FEEDS.filter(feed => wanted.has(feed.origem.toLowerCase()) || wanted.has(feed.categoria.toLowerCase()) || wanted.has(feed.url.toLowerCase()))
+  return catalog.filter(feed => [feed.codigo, feed.origem, feed.categoria, feed.url].some(value => wanted.has(String(value).toLowerCase())))
 }

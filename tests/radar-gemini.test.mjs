@@ -70,7 +70,12 @@ test('cota e chave ausente falham sem repetição automática ou vazamento', asy
 
 function setup({ role = 'observatorio_curador', existing = [], key = 'gemini-secret', feed = false } = {}) {
   const calls = { fetches: 0, saved: [] }
-  const db = { from: () => ({
+  const db = { from: table => table === 'observatorio_feeds' ? {
+    select: (_cols, opts) => opts?.head ? Promise.resolve({ count: 1, error: null }) : ({ eq: () => ({ order: () => ({ order: async () => ({ data: [
+      { id: 'f1', codigo: 'openai-news', nome: 'OpenAI', url_feed: 'https://openai.com/news/rss.xml', categoria: 'pesquisa', escopo: 'ia', ativo: true, prioridade: 1 },
+    ], error: null }) }) }) }),
+    update: () => ({ eq: async () => ({ error: null }) }),
+  } : ({
     select: () => ({ in: async () => ({ data: existing.map(url => ({ url })), error: null }) }),
     insert: rows => { calls.saved.push(...rows); return { select: async () => ({ data: rows.map((row, id) => ({ id, titulo: row.titulo, url: row.url, fonte: row.fonte })), error: null }) } },
   }) }
@@ -78,6 +83,7 @@ function setup({ role = 'observatorio_curador', existing = [], key = 'gemini-sec
     from: () => ({ select: () => ({ eq: () => ({ maybeSingle: async () => ({ data: { papel: role }, error: null }) }) }) }),
   }
   const handler = createRadarHandler({ now: () => now, createClient: (_url, key) => key === 'service-key' ? db : caller,
+    download: async () => { calls.fetches++; return `<rss><item><title>Matéria</title><link>${url}</link></item></rss>` },
     env: { SUPABASE_URL: 'https://project.supabase.co', SUPABASE_ANON_KEY: 'anon-key', SUPABASE_SERVICE_ROLE_KEY: 'service-key', RADAR_AGENT_TOKEN: 'job-secret', GEMINI_API_KEY: key, GEMINI_MODEL: 'gemini-3.8-flash' },
     fetchImpl: async () => { calls.fetches++; return feed ? new Response(`<rss><item><title>Matéria</title><link>${url}</link><pubDate>Fri, 16 Oct 2026 10:00:00 GMT</pubDate></item></rss>`) : Response.json(grounded()) },
   })

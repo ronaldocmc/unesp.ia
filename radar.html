@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Executar Agente Radar | Observar.IA</title>
-  <link rel="stylesheet" href="assets/css/style.css?v=20261016-radar">
+  <link rel="stylesheet" href="assets/css/style.css?v=20261016-feeds-banco">
 </head>
 <body>
   <div class="topbar">
@@ -21,6 +21,7 @@
         <p>Consulta os feeds cadastrados no catálogo do Radar. Sem chamadas à API do Gemini.</p>
         <label>Máximo por feed<input name="limite_por_feed" type="number" min="1" max="20" value="3" required></label>
         <details><summary>Selecionar fontes (sem seleção, usar todas)</summary><div data-radar-sources></div></details>
+        <label><input name="debug" type="checkbox"> Diagnóstico: mostrar até 20 exemplos descartados pelo filtro de IA</label>
       </div>
       <div data-radar-gemini hidden>
         <p>Pesquisa fontes na web com Google Search e organiza notícias com Gemini. Usa a chave configurada no servidor e pode gerar cobrança na conta Google AI.</p>
@@ -36,11 +37,13 @@
       <p data-radar-summary></p>
       <p data-radar-discarded></p>
       <ul data-radar-errors></ul>
+      <ul data-radar-feed-stats></ul>
+      <pre data-radar-debug-results hidden style="white-space:pre-wrap"></pre>
       <ul data-radar-items></ul>
       <div data-radar-citations hidden><h3>Fontes retornadas pela busca Google</h3><ul data-radar-citation-list></ul><div data-radar-search-suggestions></div></div>
       <a class="btn" href="administracao-observatorio.html">Revisar publicações</a>
     </section>
   </main>
-  <script type="module" src="assets/js/portal/radar.js?v=20261016-radar"></script>
+  <script type="module" src="assets/js/portal/radar.js?v=20261016-feeds-banco"></script>
 </body>
 </html>

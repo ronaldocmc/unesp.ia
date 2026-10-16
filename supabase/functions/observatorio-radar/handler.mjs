@@ -1,5 +1,8 @@
-import { CATALOGO_FEEDS, RadarError, dedupeByLink, parseFeed, selectCatalog, toConteudo } from './core.mjs'
+import { RadarError, dedupeByLink, parseFeed, toConteudo } from './core.mjs'
 import { radarOptions, searchGemini } from './gemini.mjs'
+import { carregarFeeds } from './feeds.mjs'
+import { avaliarRelevanciaIA, SCORE_MINIMO_IA } from './relevance.mjs'
+import { downloadFeed } from './feed-network.mjs'
 
 const cors = { 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type, x-radar-token',
   'Access-Control-Allow-Methods': 'POST, OPTIONS', 'Cache-Control': 'no-store' }
@@ -45,23 +48,16 @@ async function readBody(req) {
   try { return JSON.parse(text) } catch { throw new RadarError('JSON inválido.', 400) }
 }
 
-async function fetchFeed(feed, timeoutMs, fetchImpl) {
-  const controller = new AbortController()
-  const timer = setTimeout(() => controller.abort(), timeoutMs)
+export async function fetchFeed(feed, timeoutMs, download = downloadFeed) {
   try {
-    const response = await fetchImpl(feed.url, { signal: controller.signal, headers: {
-      Accept: 'application/rss+xml, application/atom+xml, application/xml, text/xml;q=0.9, */*;q=0.8',
-      'User-Agent': 'ObservarIA-Radar/1.0 (+https://ia.fct.unesp.br/observatorio.html)',
-    } })
-    if (!response.ok) throw new Error(`HTTP ${response.status}`)
-    const xml = await response.text()
+    const xml = await download(feed.url, timeoutMs)
     if (xml.length > 2000000) throw new Error('Feed muito grande')
+    if (!/<(?:[\w-]+:)?(?:rss|feed|RDF)\b/i.test(xml)) throw new Error('Resposta não é um feed RSS/Atom.')
     return { ok: true, feed, items: parseFeed(xml, feed) }
   } catch (error) { return { ok: false, feed, error: error instanceof Error ? error.message : 'Falha ao ler feed', items: [] } }
-  finally { clearTimeout(timer) }
 }
 
-export function createRadarHandler({ createClient, env, fetchImpl = fetch, now = () => new Date() }) {
+export function createRadarHandler({ createClient, env, fetchImpl = fetch, download = downloadFeed, now = () => new Date() }) {
   return async req => {
     if (req.method === 'OPTIONS') return new Response(null, { status: 204, headers: cors })
     if (req.method !== 'POST') return json({ error: 'Método não permitido.' }, 405)
@@ -70,6 +66,7 @@ export function createRadarHandler({ createClient, env, fetchImpl = fetch, now =
       const body = await readBody(req)
       const options = radarOptions(body)
       if (!env.SUPABASE_URL || !env.SUPABASE_SERVICE_ROLE_KEY) throw new RadarError('Credenciais do Supabase não configuradas.', 503)
+      const db = createClient(env.SUPABASE_URL, env.SUPABASE_SERVICE_ROLE_KEY, { auth: { persistSession: false, autoRefreshToken: false } })
       let candidates
       let details
       if (options.modo === 'gemini') {
@@ -78,17 +75,50 @@ export function createRadarHandler({ createClient, env, fetchImpl = fetch, now =
         const { items, ...metadata } = result
         details = { ...metadata, modelo: env.GEMINI_MODEL }
       } else {
-        const feeds = selectCatalog(body.fontes)
+        const { feeds, ativos, catalogados } = await carregarFeeds(db, body.fontes)
+        // Consulta autenticada usada pelo painel; não acessa feeds nem grava dados.
+        if (body.acao === 'listar_fontes') return json({ ok: true, fontes: feeds.map(feed => ({ codigo: feed.codigo, nome: feed.nome, categoria: feed.categoria, escopo: feed.escopo, prioridade: feed.prioridade })) })
         if (!feeds.length) throw new RadarError('Nenhuma fonte corresponde à seleção.', 400)
-        const results = await Promise.all(feeds.map(feed => fetchFeed(feed, options.timeout_ms, fetchImpl)))
-        candidates = results.flatMap(result => result.items.slice(0, options.limite_por_feed)).slice(0, options.limite_total)
-        details = { feeds_catalogados: CATALOGO_FEEDS.length, feeds_processados: feeds.length,
-          feeds_com_erro: results.filter(result => !result.ok).map(result => ({ origem: result.feed.origem, erro: result.error })) }
+        const configured = Number(env.RADAR_SCORE_MINIMO_IA ?? SCORE_MINIMO_IA)
+        if (!Number.isInteger(configured) || configured < 1 || configured > 100) throw new RadarError('RADAR_SCORE_MINIMO_IA deve ser inteiro entre 1 e 100.', 503)
+        const results = []
+        // Lotes limitam conexões simultâneas; a ordem original de prioridade é preservada.
+        for (let offset = 0; offset < feeds.length; offset += 4) results.push(...await Promise.all(feeds.slice(offset, offset + 4).map(feed => fetchFeed(feed, options.timeout_ms, download))))
+        const stats = []; const discarded = []; const accepted = []; const warnings = []
+        for (const result of results) {
+          const relevant = []
+          for (const item of result.items) {
+            const evaluation = avaliarRelevanciaIA(item, result.feed, configured)
+            if (evaluation.aceito) relevant.push({ ...item, relevancia_ia: evaluation.relevancia_ia })
+            else if (body.debug === true && discarded.length < 20) discarded.push({ codigo: result.feed.codigo, titulo: item.titulo,
+              score_bruto: evaluation.score_bruto, relevancia_ia: evaluation.relevancia_ia, motivo: 'pontuação abaixo do limite' })
+          }
+          const status = result.ok ? 'ok' : 'erro'
+          const stat = { codigo: result.feed.codigo, nome: result.feed.nome, status, lidos: result.items.length,
+            relevantes_ia: relevant.length, descartados_nao_ia: result.items.length - relevant.length, candidatos: Math.min(relevant.length, options.limite_por_feed),
+            ...(result.error ? { erro: result.error } : {}) }
+          stats.push(stat)
+          accepted.push(...relevant.slice(0, options.limite_por_feed))
+          // Falha no diagnóstico de uma fonte não impede a coleta das demais.
+          try {
+            const { error } = await db.from('observatorio_feeds').update({ ultima_execucao: now().toISOString(), ultimo_status: status,
+              ultimo_erro: result.error?.slice(0, 500) || null, quantidade_lida: stat.lidos, quantidade_relevante: stat.relevantes_ia }).eq('id', result.feed.id)
+            if (error) warnings.push(`Não foi possível atualizar o diagnóstico de ${result.feed.codigo}.`)
+          } catch { warnings.push(`Não foi possível atualizar o diagnóstico de ${result.feed.codigo}.`) }
+        }
+        candidates = accepted.slice(0, options.limite_total)
+        details = { feeds_catalogados: catalogados, feeds_ativos: ativos, feeds_processados: feeds.length,
+          feeds_com_erro: results.filter(result => !result.ok).map(result => ({ origem: result.feed.origem, erro: result.error })),
+          quantidade_feeds_com_erro: results.filter(result => !result.ok).length,
+          itens_lidos: stats.reduce((sum, stat) => sum + stat.lidos, 0),
+          itens_relevantes_ia: stats.reduce((sum, stat) => sum + stat.relevantes_ia, 0),
+          itens_descartados_nao_ia: stats.reduce((sum, stat) => sum + stat.descartados_nao_ia, 0),
+          itens_fora_limites: stats.reduce((sum, stat) => sum + stat.relevantes_ia, 0) - candidates.length,
+          feeds: stats, avisos: warnings, ...(body.debug === true ? { exemplos_descartados: discarded } : {}) }
       }
       let inserted = []
       let unique = []
       if (candidates.length) {
-        const db = createClient(env.SUPABASE_URL, env.SUPABASE_SERVICE_ROLE_KEY, { auth: { persistSession: false, autoRefreshToken: false } })
         const links = [...new Set(candidates.map(item => item.link))]
         const { data: existing, error: selectError } = await db.from('observatorio_conteudos').select('url').in('url', links)
         if (selectError) throw new RadarError('Não foi possível conferir links existentes. Verifique as permissões do Radar no banco.', 500)

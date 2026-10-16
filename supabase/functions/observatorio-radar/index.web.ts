@@ -1,31 +1,35 @@
 // Versão arquivo único para colar no Supabase Web como index.ts da função observatorio-radar.
 // Gerado por scripts/bundle_observatorio_radar.mjs.
-const CATALOGO_FEEDS = [
-  { url: 'https://huggingface.co/blog/feed.xml', origem: 'Hugging Face', categoria: 'pesquisa' },
-  { url: 'https://blog.google/technology/ai/rss/', origem: 'Google AI', categoria: 'pesquisa' },
-  { url: 'https://openai.com/news/rss.xml', origem: 'OpenAI', categoria: 'pesquisa' },
-  { url: 'https://news.mit.edu/rss/topic/artificial-intelligence', origem: 'MIT News', categoria: 'pesquisa' },
-  { url: 'https://bair.berkeley.edu/blog/feed.xml', origem: 'BAIR (Berkeley)', categoria: 'pesquisa' },
-  { url: 'https://www.anthropic.com/feed.xml', origem: 'Anthropic News', categoria: 'pesquisa' },
-  { url: 'https://www.anthropic.com/engineering/feed.xml', origem: 'Anthropic Engineering', categoria: 'pesquisa' },
-  { url: 'https://github.com/deepseek-ai.atom', origem: 'DeepSeek Releases', categoria: 'pesquisa' },
-  { url: 'https://techcrunch.com/category/artificial-intelligence/feed/', origem: 'TechCrunch', categoria: 'noticia' },
-  { url: 'https://www.theverge.com/rss/ai-artificial-intelligence/index.xml', origem: 'The Verge', categoria: 'noticia' },
-  { url: 'https://venturebeat.com/category/ai/feed/', origem: 'VentureBeat', categoria: 'noticia' },
-  { url: 'https://feeds.arstechnica.com/arstechnica/technology-lab', origem: 'Ars Technica', categoria: 'noticia' },
-  { url: 'https://www.technologyreview.com/topic/artificial-intelligence/feed/', origem: 'MIT Tech Review', categoria: 'noticia' },
-  { url: 'https://simonwillison.net/atom/everything/', origem: 'Simon Willison', categoria: 'aplicacao' },
-  { url: 'https://www.latent.space/feed', origem: 'Latent Space', categoria: 'aplicacao' },
-  { url: 'https://www.marktechpost.com/feed/', origem: 'MarkTechPost', categoria: 'pesquisa' },
-  { url: 'https://tecnoblog.net/feed/', origem: 'Tecnoblog', categoria: 'noticia' },
-  { url: 'https://canaltech.com.br/rss/', origem: 'Canaltech', categoria: 'noticia' },
-  { url: 'https://g1.globo.com/rss/g1/tecnologia/', origem: 'G1 Tecnologia', categoria: 'noticia' },
-  { url: 'https://jornal.usp.br/?s=observatorio&feed=rss2', origem: 'USP (Observatório)', categoria: 'regulacao' },
-  { url: 'https://jornal.usp.br/tag/inteligencia-artificial/feed/', origem: 'USP (IA)', categoria: 'pesquisa' },
-  { url: 'https://jornal.unesp.br/?s=observatorio&feed=rss2', origem: 'UNESP (Observatório)', categoria: 'regulacao' },
-  { url: 'https://jornal.unesp.br/tag/inteligencia-artificial/feed/', origem: 'UNESP (IA)', categoria: 'pesquisa' },
-  { url: 'https://www.unicamp.br/noticias/?s=observatorio&feed=rss2', origem: 'UNICAMP (Observatório)', categoria: 'regulacao' },
-]
+import { isIP } from 'node:net'
+class ImportError extends Error {
+  constructor(message, status = 422) { super(message); this.status = status }
+}
+
+function publicURL(input, base) {
+  if (typeof input !== 'string' || input.length > 2048) throw new ImportError('Informe um link HTTPS público válido.')
+  let url
+  try { url = new URL(input, base) } catch { throw new ImportError('Informe um link HTTPS público válido.') }
+  const host = url.hostname.toLowerCase()
+  if (url.protocol !== 'https:' || url.username || url.password || url.port || isIP(host) ||
+      host.includes(':') || !host.includes('.') || /(^|\.)(localhost|local|internal|lan|test|invalid|example)$/.test(host) ||
+      host.endsWith('.') || !/^[a-z0-9.-]+$/.test(host)) {
+    throw new ImportError('Use uma página pública HTTPS, sem senha, endereço IP ou porta personalizada.')
+  }
+  url.hash = ''
+  return url
+}
+
+function publicIPv4(ip) {
+  if (isIP(ip) !== 4) return false
+  const [a, b, c] = ip.split('.').map(Number)
+  return !(a === 0 || a === 10 || a === 127 || a >= 224 ||
+    (a === 100 && b >= 64 && b <= 127) || (a === 169 && b === 254) ||
+    (a === 172 && b >= 16 && b <= 31) || (a === 192 && b === 168) ||
+    (a === 192 && b === 0 && (c === 0 || c === 2)) || (a === 192 && b === 88 && c === 99) ||
+    (a === 198 && (b === 18 || b === 19 || (b === 51 && c === 100))) ||
+    (a === 203 && b === 0 && c === 113))
+}
+
 
 class RadarError extends Error {
   constructor(message, status = 422) { super(message); this.status = status }
@@ -110,6 +114,7 @@ function toConteudo(item) {
     revisao_humana: false,
     aprovado_curadoria: false,
     palavras_chave: `radar, ${fonte.categoria}, ${fonte.origem}`,
+    ...(Number.isInteger(item.relevancia_ia) ? { relevancia_ia: item.relevancia_ia } : {}),
     ...(item.observacao_colaborador ? { observacao_colaborador: item.observacao_colaborador } : {}),
   }
 }
@@ -126,10 +131,119 @@ function dedupeByLink(items, existingLinks = []) {
   return result
 }
 
-function selectCatalog(requested) {
-  if (!Array.isArray(requested) || !requested.length) return CATALOGO_FEEDS
+function selectCatalog(catalog, requested) {
+  if (requested !== undefined && (!Array.isArray(requested) || requested.some(value => typeof value !== 'string'))) {
+    throw new RadarError('fontes deve ser uma lista de códigos, nomes, categorias ou URLs.', 400)
+  }
+  if (!requested?.length) return catalog
   const wanted = new Set(requested.map(value => String(value).toLowerCase()))
-  return CATALOGO_FEEDS.filter(feed => wanted.has(feed.origem.toLowerCase()) || wanted.has(feed.categoria.toLowerCase()) || wanted.has(feed.url.toLowerCase()))
+  return catalog.filter(feed => [feed.codigo, feed.origem, feed.categoria, feed.url].some(value => wanted.has(String(value).toLowerCase())))
+}
+
+
+// Pontos por conceito e campo, não por repetição. A escala indica pertinência temática,
+// nunca qualidade editorial, veracidade ou confiança na fonte.
+const SCORE_MINIMO_IA = 4
+const strong = [
+  'inteligencia artificial', 'artificial intelligence', 'generative ai', 'genai',
+  'machine learning', 'deep learning', 'large language models?', 'language models?', 'llms?',
+  'transformers?', 'neural networks?', 'redes? neurais?', 'ai agents?', 'agentes? de ia', 'agentic ai',
+]
+const iaEntities = ['openai', 'chatgpt', 'gpt(?:[- .]?\\d[\\w.-]*)?', 'anthropic', 'claude', 'gemini',
+  'google deepmind', 'deepseek', 'mistral', 'llama', 'hugging face', 'copilot', 'perplexity', 'grok']
+const normalize = value => cleanText(value).normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase()
+const matches = (text, term) => new RegExp(`(^|[^a-z0-9])(?:${term})(?=$|[^a-z0-9])`, 'i').test(text)
+
+function scoreIA(item) {
+  const title = normalize(item.titulo || '')
+  const summary = normalize(item.resumo || '')
+  let score = 0
+  for (const term of strong) score += (matches(title, term) ? 5 : 0) + (matches(summary, term) ? 2 : 0)
+  for (const term of iaEntities) score += (matches(title, term) ? 4 : 0) + (matches(summary, term) ? 1 : 0)
+  // Siglas somente como palavras inteiras, acompanhadas de contexto tecnológico.
+  const context = /\b(modelos?|models?|chatbots?|generativ\w*|algoritm\w*|automatiz\w*|intelig\w*|comput\w*|agents?|agentes?|tecnolog\w*)\b/
+  if (context.test(`${title} ${summary}`)) score += (matches(title, 'ai|ia') ? 5 : 0) + (matches(summary, 'ai|ia') ? 2 : 0)
+  return score
+}
+
+function classificarRelevancia(score) {
+  return score >= 80 ? 'alta' : score >= 60 ? 'relevante' : score >= 40 ? 'revisar' : 'baixa'
+}
+
+function avaliarRelevanciaIA(item, fonte, minimo = SCORE_MINIMO_IA) {
+  const score_bruto = scoreIA(item)
+  const valid = Boolean(item.titulo?.trim() && item.link?.trim())
+  const relevancia_ia = fonte.escopo === 'ia' ? Math.max(90, Math.min(100, score_bruto * 10)) : Math.min(100, score_bruto * 10)
+  const threshold = fonte.escopo === 'geral' ? minimo + 1 : minimo
+  return { aceito: valid && (fonte.escopo === 'ia' || score_bruto >= threshold), score_bruto,
+    relevancia_ia, classificacao: classificarRelevancia(relevancia_ia) }
+}
+
+
+async function carregarFeeds(db, requested) {
+  const { data, error } = await db.from('observatorio_feeds').select('*').eq('ativo', true).order('prioridade').order('nome')
+  if (error) throw new RadarError('Não foi possível carregar observatorio_feeds. Execute a migration de feeds e confira as permissões.', 503)
+  const catalog = (data || []).filter(row => row.ativo === true)
+    .sort((a, b) => a.prioridade - b.prioridade || a.nome.localeCompare(b.nome))
+    .map(row => ({ ...row, url: row.url_feed, origem: row.nome }))
+  const { count, error: countError } = await db.from('observatorio_feeds').select('id', { count: 'exact', head: true })
+  if (countError) throw new RadarError('Não foi possível consultar o catálogo de feeds.', 503)
+  return { feeds: selectCatalog(catalog, requested), ativos: catalog.length, catalogados: count }
+}
+
+import { resolve4 } from 'node:dns/promises'
+import { request } from 'node:https'
+import { Buffer } from 'node:buffer'
+// Reutiliza a validação SSRF do importador já existente no projeto.
+
+function readFeed(url, address, signal) {
+  return new Promise((resolve, reject) => {
+    const req = request(url, { signal, agent: false, headers: {
+      Accept: 'application/rss+xml, application/atom+xml, application/xml, text/xml;q=0.9, */*;q=0.8',
+      'Accept-Encoding': 'identity', 'User-Agent': 'ObservarIA-Radar/2.0 (+https://ia.fct.unesp.br/observatorio.html)',
+    }, lookup: (_host, options, callback) => options?.all
+      ? callback(null, [{ address, family: 4 }]) : callback(null, address, 4),
+    }, response => {
+      const status = response.statusCode || 0
+      if ([301,302,303,307,308].includes(status) && response.headers.location) {
+        response.destroy(); resolve({ location: response.headers.location }); return
+      }
+      if (status < 200 || status >= 300) { response.destroy(); reject(new Error(`HTTP ${status}`)); return }
+      if (response.headers['content-encoding'] && response.headers['content-encoding'] !== 'identity') {
+        response.destroy(); reject(new Error('Compressão não suportada; use feed com resposta identity.')); return
+      }
+      const chunks = []; let size = 0
+      response.on('data', chunk => {
+        size += chunk.length
+        if (size > 2000000) { response.destroy(new Error('Feed muito grande (máximo 2 MB).')); return }
+        chunks.push(chunk)
+      })
+      response.on('end', () => {
+        const charset = /charset\s*=\s*["']?([^;\s"']+)/i.exec(response.headers['content-type'] || '')?.[1] || 'utf-8'
+        const bytes = Buffer.concat(chunks)
+        try { resolve({ xml: new TextDecoder(charset).decode(bytes) }) } catch { resolve({ xml: bytes.toString('utf8') }) }
+      })
+      response.on('error', reject)
+    })
+    req.on('error', reject); req.end()
+  })
+}
+
+async function downloadFeed(input, timeoutMs, { lookup = resolve4, read = readFeed } = {}) {
+  const controller = new AbortController()
+  const timer = setTimeout(() => controller.abort(), timeoutMs)
+  const aborted = new Promise((_, reject) => controller.signal.addEventListener('abort', () => reject(new Error('Tempo limite ao acessar feed.')), { once: true }))
+  try {
+    let url = publicURL(input)
+    for (let redirects = 0; redirects <= 3; redirects++) {
+      const addresses = await Promise.race([lookup(url.hostname), aborted])
+      if (!addresses.length || addresses.some(address => !publicIPv4(address))) throw new Error('Endereço do feed não é público.')
+      const result = await Promise.race([read(url, addresses[0], controller.signal), aborted])
+      if (!result.location) return result.xml
+      url = publicURL(result.location, url)
+    }
+    throw new Error('Muitos redirecionamentos no feed.')
+  } finally { clearTimeout(timer) }
 }
 
 
@@ -147,7 +261,10 @@ function newsURL(value) {
 
 function radarOptions(body = {}) {
   if (!body || Array.isArray(body) || typeof body !== 'object') throw new RadarError('Informe um objeto JSON.', 400)
+  if (body.acao !== undefined && body.acao !== 'listar_fontes') throw new RadarError('Ação inválida.', 400)
+  if (body.debug !== undefined && typeof body.debug !== 'boolean') throw new RadarError('debug deve ser booleano.', 400)
   const modo = body.modo ?? 'feeds'
+  if (body.acao === 'listar_fontes' && modo !== 'feeds') throw new RadarError('A listagem de fontes pertence ao modo feeds.', 400)
   if (!['feeds', 'gemini'].includes(modo)) throw new RadarError('Escolha modo feeds ou gemini.', 400)
   const number = (key, fallback, max) => {
     const value = body[key] ?? fallback
@@ -285,23 +402,16 @@ async function readBody(req) {
   try { return JSON.parse(text) } catch { throw new RadarError('JSON inválido.', 400) }
 }
 
-async function fetchFeed(feed, timeoutMs, fetchImpl) {
-  const controller = new AbortController()
-  const timer = setTimeout(() => controller.abort(), timeoutMs)
+async function fetchFeed(feed, timeoutMs, download = downloadFeed) {
   try {
-    const response = await fetchImpl(feed.url, { signal: controller.signal, headers: {
-      Accept: 'application/rss+xml, application/atom+xml, application/xml, text/xml;q=0.9, */*;q=0.8',
-      'User-Agent': 'ObservarIA-Radar/1.0 (+https://ia.fct.unesp.br/observatorio.html)',
-    } })
-    if (!response.ok) throw new Error(`HTTP ${response.status}`)
-    const xml = await response.text()
+    const xml = await download(feed.url, timeoutMs)
     if (xml.length > 2000000) throw new Error('Feed muito grande')
+    if (!/<(?:[\w-]+:)?(?:rss|feed|RDF)\b/i.test(xml)) throw new Error('Resposta não é um feed RSS/Atom.')
     return { ok: true, feed, items: parseFeed(xml, feed) }
   } catch (error) { return { ok: false, feed, error: error instanceof Error ? error.message : 'Falha ao ler feed', items: [] } }
-  finally { clearTimeout(timer) }
 }
 
-function createRadarHandler({ createClient, env, fetchImpl = fetch, now = () => new Date() }) {
+function createRadarHandler({ createClient, env, fetchImpl = fetch, download = downloadFeed, now = () => new Date() }) {
   return async req => {
     if (req.method === 'OPTIONS') return new Response(null, { status: 204, headers: cors })
     if (req.method !== 'POST') return json({ error: 'Método não permitido.' }, 405)
@@ -310,6 +420,7 @@ function createRadarHandler({ createClient, env, fetchImpl = fetch, now = () => 
       const body = await readBody(req)
       const options = radarOptions(body)
       if (!env.SUPABASE_URL || !env.SUPABASE_SERVICE_ROLE_KEY) throw new RadarError('Credenciais do Supabase não configuradas.', 503)
+      const db = createClient(env.SUPABASE_URL, env.SUPABASE_SERVICE_ROLE_KEY, { auth: { persistSession: false, autoRefreshToken: false } })
       let candidates
       let details
       if (options.modo === 'gemini') {
@@ -318,17 +429,50 @@ function createRadarHandler({ createClient, env, fetchImpl = fetch, now = () => 
         const { items, ...metadata } = result
         details = { ...metadata, modelo: env.GEMINI_MODEL }
       } else {
-        const feeds = selectCatalog(body.fontes)
+        const { feeds, ativos, catalogados } = await carregarFeeds(db, body.fontes)
+        // Consulta autenticada usada pelo painel; não acessa feeds nem grava dados.
+        if (body.acao === 'listar_fontes') return json({ ok: true, fontes: feeds.map(feed => ({ codigo: feed.codigo, nome: feed.nome, categoria: feed.categoria, escopo: feed.escopo, prioridade: feed.prioridade })) })
         if (!feeds.length) throw new RadarError('Nenhuma fonte corresponde à seleção.', 400)
-        const results = await Promise.all(feeds.map(feed => fetchFeed(feed, options.timeout_ms, fetchImpl)))
-        candidates = results.flatMap(result => result.items.slice(0, options.limite_por_feed)).slice(0, options.limite_total)
-        details = { feeds_catalogados: CATALOGO_FEEDS.length, feeds_processados: feeds.length,
-          feeds_com_erro: results.filter(result => !result.ok).map(result => ({ origem: result.feed.origem, erro: result.error })) }
+        const configured = Number(env.RADAR_SCORE_MINIMO_IA ?? SCORE_MINIMO_IA)
+        if (!Number.isInteger(configured) || configured < 1 || configured > 100) throw new RadarError('RADAR_SCORE_MINIMO_IA deve ser inteiro entre 1 e 100.', 503)
+        const results = []
+        // Lotes limitam conexões simultâneas; a ordem original de prioridade é preservada.
+        for (let offset = 0; offset < feeds.length; offset += 4) results.push(...await Promise.all(feeds.slice(offset, offset + 4).map(feed => fetchFeed(feed, options.timeout_ms, download))))
+        const stats = []; const discarded = []; const accepted = []; const warnings = []
+        for (const result of results) {
+          const relevant = []
+          for (const item of result.items) {
+            const evaluation = avaliarRelevanciaIA(item, result.feed, configured)
+            if (evaluation.aceito) relevant.push({ ...item, relevancia_ia: evaluation.relevancia_ia })
+            else if (body.debug === true && discarded.length < 20) discarded.push({ codigo: result.feed.codigo, titulo: item.titulo,
+              score_bruto: evaluation.score_bruto, relevancia_ia: evaluation.relevancia_ia, motivo: 'pontuação abaixo do limite' })
+          }
+          const status = result.ok ? 'ok' : 'erro'
+          const stat = { codigo: result.feed.codigo, nome: result.feed.nome, status, lidos: result.items.length,
+            relevantes_ia: relevant.length, descartados_nao_ia: result.items.length - relevant.length, candidatos: Math.min(relevant.length, options.limite_por_feed),
+            ...(result.error ? { erro: result.error } : {}) }
+          stats.push(stat)
+          accepted.push(...relevant.slice(0, options.limite_por_feed))
+          // Falha no diagnóstico de uma fonte não impede a coleta das demais.
+          try {
+            const { error } = await db.from('observatorio_feeds').update({ ultima_execucao: now().toISOString(), ultimo_status: status,
+              ultimo_erro: result.error?.slice(0, 500) || null, quantidade_lida: stat.lidos, quantidade_relevante: stat.relevantes_ia }).eq('id', result.feed.id)
+            if (error) warnings.push(`Não foi possível atualizar o diagnóstico de ${result.feed.codigo}.`)
+          } catch { warnings.push(`Não foi possível atualizar o diagnóstico de ${result.feed.codigo}.`) }
+        }
+        candidates = accepted.slice(0, options.limite_total)
+        details = { feeds_catalogados: catalogados, feeds_ativos: ativos, feeds_processados: feeds.length,
+          feeds_com_erro: results.filter(result => !result.ok).map(result => ({ origem: result.feed.origem, erro: result.error })),
+          quantidade_feeds_com_erro: results.filter(result => !result.ok).length,
+          itens_lidos: stats.reduce((sum, stat) => sum + stat.lidos, 0),
+          itens_relevantes_ia: stats.reduce((sum, stat) => sum + stat.relevantes_ia, 0),
+          itens_descartados_nao_ia: stats.reduce((sum, stat) => sum + stat.descartados_nao_ia, 0),
+          itens_fora_limites: stats.reduce((sum, stat) => sum + stat.relevantes_ia, 0) - candidates.length,
+          feeds: stats, avisos: warnings, ...(body.debug === true ? { exemplos_descartados: discarded } : {}) }
       }
       let inserted = []
       let unique = []
       if (candidates.length) {
-        const db = createClient(env.SUPABASE_URL, env.SUPABASE_SERVICE_ROLE_KEY, { auth: { persistSession: false, autoRefreshToken: false } })
         const links = [...new Set(candidates.map(item => item.link))]
         const { data: existing, error: selectError } = await db.from('observatorio_conteudos').select('url').in('url', links)
         if (selectError) throw new RadarError('Não foi possível conferir links existentes. Verifique as permissões do Radar no banco.', 500)
@@ -356,6 +500,7 @@ Deno.serve(createRadarHandler({
     SUPABASE_ANON_KEY: Deno.env.get('SUPABASE_ANON_KEY'),
     SUPABASE_SERVICE_ROLE_KEY: Deno.env.get('SUPABASE_SERVICE_ROLE_KEY'),
     RADAR_AGENT_TOKEN: Deno.env.get('RADAR_AGENT_TOKEN'),
+    RADAR_SCORE_MINIMO_IA: Deno.env.get('RADAR_SCORE_MINIMO_IA'),
     GEMINI_API_KEY: Deno.env.get('GEMINI_API_KEY'),
     GEMINI_MODEL: Deno.env.get('GEMINI_MODEL'),
   },

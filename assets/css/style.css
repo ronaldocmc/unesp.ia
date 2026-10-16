@@ -577,6 +577,7 @@ a.axis-initiative:hover{background:color-mix(in srgb,var(--axis) 6%,white);text-
 .portal-form [data-radar-sources]{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px;margin-top:12px}
 .portal-form [data-radar-sources] label{display:flex;align-items:center;gap:8px;font-weight:400}
 .portal-form [data-radar-sources] input{width:16px;height:16px;padding:0;margin:0;flex:0 0 16px}
+.portal-form input[name="debug"]{width:16px;height:16px;padding:0;margin:0 8px 0 0;vertical-align:middle}
 .portal-message{margin:14px 0;padding:11px 13px;border-radius:10px;background:#EAF4FF}.portal-message.error{background:#FDECEC;color:#8B1E1E}.portal-message.success{background:#E8F7EF;color:#176438}
 .admin-shell{display:grid;grid-template-columns:230px minmax(0,1fr);gap:24px}.admin-nav{display:grid;align-content:start;gap:8px;position:sticky;top:12px}
 .admin-nav button{padding:11px;text-align:left;border:1px solid var(--border);border-radius:9px;background:#fff;cursor:pointer}.admin-nav button.active{background:#003B71;color:#fff}
