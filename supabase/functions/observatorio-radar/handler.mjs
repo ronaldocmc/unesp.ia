@@ -3,6 +3,7 @@ import { radarOptions, searchGemini } from './gemini.mjs'
 import { carregarFeeds } from './feeds.mjs'
 import { avaliarRelevanciaIA, SCORE_MINIMO_IA } from './relevance.mjs'
 import { downloadFeed } from './feed-network.mjs'
+import { carregarDescartes, radarLinkKey } from './curadoria.mjs'
 
 const cors = { 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type, x-radar-token',
   'Access-Control-Allow-Methods': 'POST, OPTIONS', 'Cache-Control': 'no-store' }
@@ -67,17 +68,22 @@ export function createRadarHandler({ createClient, env, fetchImpl = fetch, downl
       const options = radarOptions(body)
       if (!env.SUPABASE_URL || !env.SUPABASE_SERVICE_ROLE_KEY) throw new RadarError('Credenciais do Supabase não configuradas.', 503)
       const db = createClient(env.SUPABASE_URL, env.SUPABASE_SERVICE_ROLE_KEY, { auth: { persistSession: false, autoRefreshToken: false } })
+      const knownDiscards = body.acao === 'listar_fontes' ? new Set() : await carregarDescartes(db)
+      let discardedPreviously = 0
       let candidates
       let details
       if (options.modo === 'gemini') {
         const result = await searchGemini({ apiKey: env.GEMINI_API_KEY, model: env.GEMINI_MODEL, options, fetchImpl, now: now() })
-        candidates = result.items
+        candidates = result.items.filter(item => {
+          if (knownDiscards.has(radarLinkKey(item.link))) { discardedPreviously++; return false }
+          return true
+        })
         const { items, ...metadata } = result
         details = { ...metadata, modelo: env.GEMINI_MODEL }
       } else {
         const { feeds, ativos, catalogados } = await carregarFeeds(db, body.fontes)
         // Consulta autenticada usada pelo painel; não acessa feeds nem grava dados.
-        if (body.acao === 'listar_fontes') return json({ ok: true, fontes: feeds.map(feed => ({ codigo: feed.codigo, nome: feed.nome, categoria: feed.categoria, escopo: feed.escopo, prioridade: feed.prioridade })) })
+        if (body.acao === 'listar_fontes') return json({ ok: true, capacidades: { previa_curadoria: 1 }, fontes: feeds.map(feed => ({ codigo: feed.codigo, nome: feed.nome, categoria: feed.categoria, escopo: feed.escopo, prioridade: feed.prioridade })) })
         if (!feeds.length) throw new RadarError('Nenhuma fonte corresponde à seleção.', 400)
         const configured = Number(env.RADAR_SCORE_MINIMO_IA ?? SCORE_MINIMO_IA)
         if (!Number.isInteger(configured) || configured < 1 || configured > 100) throw new RadarError('RADAR_SCORE_MINIMO_IA deve ser inteiro entre 1 e 100.', 503)
@@ -87,15 +93,22 @@ export function createRadarHandler({ createClient, env, fetchImpl = fetch, downl
         const stats = []; const discarded = []; const accepted = []; const warnings = []
         for (const result of results) {
           const relevant = []
+          let relevantCount = 0
+          let discardedInFeed = 0
           for (const item of result.items) {
             const evaluation = avaliarRelevanciaIA(item, result.feed, configured)
-            if (evaluation.aceito) relevant.push({ ...item, relevancia_ia: evaluation.relevancia_ia })
+            if (evaluation.aceito) {
+              relevantCount++
+              if (knownDiscards.has(radarLinkKey(item.link))) { discardedPreviously++; discardedInFeed++ }
+              else relevant.push({ ...item, relevancia_ia: evaluation.relevancia_ia })
+            }
             else if (body.debug === true && discarded.length < 20) discarded.push({ codigo: result.feed.codigo, titulo: item.titulo,
               score_bruto: evaluation.score_bruto, relevancia_ia: evaluation.relevancia_ia, motivo: 'pontuação abaixo do limite' })
           }
           const status = result.ok ? 'ok' : 'erro'
           const stat = { codigo: result.feed.codigo, nome: result.feed.nome, status, lidos: result.items.length,
-            relevantes_ia: relevant.length, descartados_nao_ia: result.items.length - relevant.length, candidatos: Math.min(relevant.length, options.limite_por_feed),
+            relevantes_ia: relevantCount, descartados_anteriores: discardedInFeed,
+            descartados_nao_ia: result.items.length - relevantCount, candidatos: Math.min(relevant.length, options.limite_por_feed),
             ...(result.error ? { erro: result.error } : {}) }
           stats.push(stat)
           accepted.push(...relevant.slice(0, options.limite_por_feed))
@@ -113,7 +126,7 @@ export function createRadarHandler({ createClient, env, fetchImpl = fetch, downl
           itens_lidos: stats.reduce((sum, stat) => sum + stat.lidos, 0),
           itens_relevantes_ia: stats.reduce((sum, stat) => sum + stat.relevantes_ia, 0),
           itens_descartados_nao_ia: stats.reduce((sum, stat) => sum + stat.descartados_nao_ia, 0),
-          itens_fora_limites: stats.reduce((sum, stat) => sum + stat.relevantes_ia, 0) - candidates.length,
+          itens_fora_limites: stats.reduce((sum, stat) => sum + stat.relevantes_ia, 0) - discardedPreviously - candidates.length,
           feeds: stats, avisos: warnings, ...(body.debug === true ? { exemplos_descartados: discarded } : {}) }
       }
       let inserted = []
@@ -133,13 +146,15 @@ export function createRadarHandler({ createClient, env, fetchImpl = fetch, downl
         })
         // Nem toda duplicata já existia no banco: pode ser repetição entre feeds nesta coleta.
         repeatedInBatch = candidates.length - unique.length - existingCandidates.length
-        if (unique.length) {
+        if (unique.length && !options.previa) {
           const { data, error } = await db.from('observatorio_conteudos').insert(unique.map(toConteudo)).select('id,titulo,url,fonte')
           if (error) throw new RadarError('Não foi possível salvar a coleta para curadoria. Verifique as permissões e o esquema do banco.', 500)
           inserted = data || []
         }
       }
       return json({ ok: true, agente: 'radar', modo: options.modo, ...details,
+        previa: options.previa, previas: options.previa ? unique.map(toConteudo) : [],
+        itens_descartados_anteriormente: discardedPreviously,
         candidatos: candidates.length, duplicados: candidates.length - unique.length, inseridos: inserted.length, itens: inserted,
         itens_ja_cadastrados: alreadySaved, repetidos_na_coleta: repeatedInBatch })
     } catch (error) {

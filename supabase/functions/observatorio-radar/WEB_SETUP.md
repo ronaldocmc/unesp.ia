@@ -1,5 +1,35 @@
 # Agente Radar com feeds RSS e busca Gemini
 
+## Curadoria no resultado da busca manual
+
+**Ativação, nesta ordem:**
+
+1. Execute o conteúdo de `supabase/migrations/202610160003_radar_curadoria.sql` no SQL Editor. Requer as migrations anteriores de curadores, sugestões, Radar, feeds e relevância. Não apaga nem republica registros existentes.
+2. Substitua a função `observatorio-radar` pelo `index.web.ts` atual e publique. Nenhum secret novo é necessário.
+3. Publique `radar.html`, `radar.js`, `radar-curadoria.js` e o CSS atual. O painel antigo ainda tem comportamento de gravação; use o painel atualizado para a prévia.
+
+A busca manual envia `"previa": true`: retorna `previas` com título, resumo, data, fonte e link, sem INSERT em `observatorio_conteudos`. Atualiza somente o diagnóstico de leitura das fontes. Não existe fila escondida de prévias no banco: elas ficam na tela até a decisão e se perdem ao sair/recarregar. O painel avisa se há pendências antes de sair ou iniciar outra busca.
+
+O painel verifica `capacidades.previa_curadoria` na listagem de fontes **antes de habilitar a busca**. Se a função anterior estiver instalada, bloqueia o uso para não gravar acidentalmente uma coleta que deveria ser apenas prévia.
+
+Por candidato:
+
+- **Revisar e publicar:** abre editor de título, resumo, data, fonte e categoria. O link original permanece fixo. O botão **Confirmar e publicar** exige a confirmação humana, no formulário e novamente no banco. Grava `publicado`, revisão humana e aprovação verdadeiras, sem destaque automático, e audita pessoa/data em `curadoria_por`/`curadoria_em`.
+- **Salvar para revisão:** grava `revisao`, sem aprovação nem revisão humana concluída; também pode ser escolhido depois de editar o conteúdo no diálogo. A pessoa responsável fica em `submetido_por`, sem copiar seu e-mail para o conteúdo público.
+- **Descartar:** registra URL, título, fonte, motivo opcional, pessoa e data em `observatorio_radar_descartes`, não no acervo. Um descarte ativo é ignorado por buscas manuais e automáticas, antes dos limites por feed.
+
+As decisões usam `observatorio_radar_decidir`, autenticada e restrita a administradores/curadores. Visitantes, instrutores e o token da agenda não podem usar essa RPC para publicar. Campos de status/aprovação enviados pelo cliente não determinam o estado: a função SQL o define pela ação e confirmação. Registrar decisões não faz download de URLs nem usa LLM.
+
+Se outra pessoa/agenda já salvou o link enquanto a prévia estava aberta, a decisão retorna **já cadastrado** e não sobrescreve o registro. Para alterar um registro existente, use Publicações. Repetir uma decisão não cria outra publicação. A migration serializa decisões e inserções do Radar por URL e usa um trigger para bloquear reinclusão de descartes/duplicatas, inclusive em inserções automáticas concorrentes. Isso não cria uma restrição universal de URL para cadastros não originados do Radar.
+
+**Buscas automáticas:** os jobs atuais continuam funcionando sem alterar o body. Sem `previa: true`, novos itens entram no acervo com `status = revisao`, sem publicação automática, constituindo a fila persistente em **Publicações do Observatório**. O token da agenda permanece válido. Não foram criados nem alterados horários de Cron nesta implementação. Gemini manual também usa prévia; cobranças de busca/geração continuam existindo mesmo que você descarte depois.
+
+**Restaurar um descarte:** somente a administração pode definir `ativo = false` na tabela `observatorio_radar_descartes` no Supabase. Os curadores podem ler os descartes, mas não apagar nem reativar diretamente. Não há escrita pública. O serviço interno apenas consulta a tabela; as decisões são feitas pela RPC com a sessão humana.
+
+**Compatibilidade:** aplique a migration antes da função. Sem a tabela de descartes, a coleta falha com instrução de atualização, sem voltar silenciosamente para uma coleta sem filtro de descartes. `itens` continua sendo a relação de registros efetivamente inseridos pelas chamadas automáticas; `previas` contém apenas os novos candidatos manuais ainda não salvos. Nada da nova tela retroage sobre os itens coletados anteriormente.
+
+Validação: testes da função com banco/rede simulados, teste dos controles da tela e teste SQL em PostgreSQL/PGlite em memória (papéis/Auth simulados, sem acesso ao Supabase real). O teste SQL opcional é `tests/radar-curadoria-db.test.mjs`, com `RADAR_PGLITE_MODULE` apontando para `dist/index.js` de PGlite 0.3.7. Ele verifica migration, RLS, publicação sem confirmação, descarte, trigger e reexecução da migration; não substitui um teste no ambiente hospedado nem um teste de concorrência real com múltiplas conexões.
+
 ## Transporte padrão com `fetch()`
 
 Se a coleta exibir `Not implemented: ClientRequest.options.lookup`, o feed não foi lido: é uma incompatibilidade da API Node de rede no Edge Runtime, não falta de notícias nem problema no filtro.
@@ -18,6 +48,7 @@ Os testes cobrem streaming, limite, timeout de DNS/rede/corpo, status HTTP e rev
 
 1. `supabase/migrations/202610160001_observatorio_feeds.sql`
 2. `supabase/migrations/202610160002_observatorio_relevancia.sql`
+3. `supabase/migrations/202610160003_radar_curadoria.sql`
 
 Pré-requisitos: migrations anteriores de administração/curadoria, Radar e sugestões, inclusive as funções `private.is_observatorio_admin()` e `private.is_observatorio_curador()`. As novas migrations não corrigem instalações parcialmente criadas. Não foram executadas remotamente pelo assistente.
 
@@ -64,7 +95,7 @@ Gemini usa a API Interactions com Google Search e saída estruturada, em uma cha
 
 São aceitas até 20 notícias no modo Gemini, com período de até 30 dias, incluindo hoje. Só são salvas URLs também citadas nas fontes da resposta de busca. Datas desconhecidas, inválidas, futuras ou fora do período são descartadas, sem usar a data de coleta como publicação. Se a busca não retornar fontes verificáveis, a execução falha sem salvar conteúdos.
 
-Os itens Gemini são identificados por `agente_origem = radar_gemini`; os feeds mantêm `radar`. Os dois modos usam `status = revisao`, `aprovado_curadoria = false` e `revisao_humana = false`. O resumo Gemini é preparado por IA, e a data ainda exige conferência na publicação original. A presença de uma citação não é validação humana dos fatos. A deduplicação compara os links com os já cadastrados, sem substituir publicações existentes.
+Os itens Gemini são identificados por `agente_origem = radar_gemini`; os feeds mantêm `radar`. Coletas automáticas e a ação Salvar para revisão usam `status = revisao`, `aprovado_curadoria = false` e `revisao_humana = false`. Somente a decisão humana Confirmar e publicar muda esses valores. O resumo Gemini é preparado por IA, e a data ainda exige conferência na publicação original. A presença de uma citação não é validação humana dos fatos. A deduplicação compara os links com os já cadastrados, sem substituir publicações existentes.
 
 As fontes citadas e as sugestões Google retornam à interface; as sugestões são exibidas em um iframe isolado. Notícias descartadas e feeds que falharam são apresentados no resultado da execução.
 
@@ -115,7 +146,7 @@ No **Test** da função, POST, com `x-radar-token` configurado (ou sessão do cu
 {"modo":"feeds","fontes":["tecnoblog"],"limite_por_feed":10,"limite_total":20,"debug":true}
 ```
 
-Confira `feeds[0].status`, `lidos`, `relevantes_ia`, `descartados_nao_ia`, e `exemplos_descartados` (máximo 20, com score bruto e normalizado). Sem `debug: true`, os exemplos não são retornados. O painel oferece a mesma opção e mostra estatísticas por fonte. **Não é dry-run:** os candidatos são salvos em revisão. Repetir a coleta pode resultar em zero inserções por deduplicação.
+Confira `feeds[0].status`, `lidos`, `relevantes_ia`, `descartados_nao_ia`, e `exemplos_descartados` (máximo 20, com score bruto e normalizado). Sem `debug: true`, os exemplos não são retornados. Este JSON sem `previa` representa uma coleta automática: candidatos são salvos em revisão. Para testar sem inserir no acervo, acrescente `"previa": true`; o painel manual já envia essa opção e mostra estatísticas por fonte. Repetir uma coleta pode resultar em zero inserções por deduplicação.
 
 Requisição normal (todos os ativos):
 
@@ -159,7 +190,7 @@ RLS: acesso anônimo negado. Administradores (`administrador`/`observatorio_admi
 
 ### Relação dos resultados
 
-O resultado tem duas listas: **Novos registros** (`itens`, mantido para compatibilidade) e **Já cadastrados no banco** (`itens_ja_cadastrados`, com id, título, URL e fonte). Quando todos os candidatos já existem, `inseridos` será zero, mas a segunda lista continua mostrando os links. O título/fonte da curadoria são preservados; não há atualização nem reinserção desses registros.
+Na tela manual, o resultado mostra **Novos conteúdos — prévia** (`previas`) e **Já cadastrados no banco** (`itens_ja_cadastrados`, com id, título, URL e fonte). A busca manual mantém `inseridos = 0`; só uma decisão humana grava um novo conteúdo. Quando todos os candidatos já existem, a segunda lista continua mostrando os links. O título/fonte da curadoria são preservados; não há atualização nem reinserção desses registros. Chamadas automáticas ainda retornam `itens` com os registros efetivamente inseridos.
 
 Cada URL já cadastrada aparece uma só vez na lista, mesmo se encontrada em várias fontes. O contador `duplicados` continua contando as ocorrências descartadas. `repetidos_na_coleta` informa repetições de links novos na própria coleta, que não devem ser confundidas com registros anteriores do banco. Os limites por feed e total, a ordem e a deduplicação não foram alterados.
 

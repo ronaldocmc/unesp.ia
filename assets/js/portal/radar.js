@@ -1,10 +1,22 @@
 import { requireRole, supabase, showMessage } from './supabase.js'
 import { radarSourceSelection } from './radar-model.js'
+import { initRadarCuradoria } from './radar-curadoria.js'
 
 const form = document.querySelector('[data-radar-form]')
 const message = document.querySelector('[data-radar-message]')
 let authorized = false
 let busy = false
+let curadoria
+function setBusy(value) {
+  busy = value
+  form.querySelectorAll('input,select,button').forEach(control => { control.disabled = value })
+  if (!value) syncMode()
+  curadoria?.sync()
+}
+curadoria = initRadarCuradoria({ canDecide: () => authorized && !busy, isBusy: () => busy, setBusy, sourceLink })
+window.addEventListener('beforeunload', event => {
+  if (curadoria.hasPending()) { event.preventDefault(); event.returnValue = '' }
+})
 
 function syncMode() {
   const gemini = form.elements.modo.value === 'gemini'
@@ -57,11 +69,11 @@ function sourceLink(list, label, value) {
 
 function render(result) {
   document.querySelector('[data-radar-results]').hidden = false
-  document.querySelector('[data-radar-summary]').textContent = `${result.candidatos} candidatos, ${result.duplicados} duplicados e ${result.inseridos} novos registros para revisão.`
+  document.querySelector('[data-radar-summary]').textContent = `${result.candidatos} candidatos, ${result.duplicados} duplicados e ${result.previas?.length || 0} novos conteúdos em prévia. Nenhum foi salvo no acervo pela busca.`
   const reasons = result.descartados || {}
   document.querySelector('[data-radar-discarded]').textContent = Object.keys(reasons).length
     ? `Descartados: ${reasons.sem_fonte_verificavel || 0} sem fonte verificável, ${reasons.sem_data_valida || 0} sem data válida, ${reasons.fora_do_periodo || 0} fora do período e ${reasons.incompletos || 0} incompletos.`
-    : `${result.itens_lidos || 0} itens lidos; ${result.itens_relevantes_ia || 0} relacionados a IA; ${result.itens_descartados_nao_ia || 0} descartados pelo filtro; ${result.itens_fora_limites || 0} fora dos limites da execução.`
+    : `${result.itens_lidos || 0} itens lidos; ${result.itens_relevantes_ia || 0} relacionados a IA; ${result.itens_descartados_nao_ia || 0} descartados pelo filtro; ${result.itens_descartados_anteriormente || 0} descartados pela curadoria anteriormente; ${result.itens_fora_limites || 0} fora dos limites da execução.`
   const errors = document.querySelector('[data-radar-errors]')
   errors.replaceChildren()
   for (const failure of result.feeds_com_erro || []) {
@@ -82,10 +94,8 @@ function render(result) {
   const debug = document.querySelector('[data-radar-debug-results]')
   debug.hidden = !result.exemplos_descartados?.length
   debug.textContent = (result.exemplos_descartados || []).map(item => `${item.codigo}: ${item.titulo} — bruto ${item.score_bruto}, relevância ${item.relevancia_ia}/100 (${item.motivo})`).join('\n')
-  const list = document.querySelector('[data-radar-items]')
-  list.replaceChildren()
-  for (const item of result.itens || []) sourceLink(list, item.titulo, item.url)
-  document.querySelector('[data-radar-new-empty]').hidden = Boolean(result.itens?.length)
+  curadoria.render(result.previas || [])
+  document.querySelector('[data-radar-new-empty]').hidden = Boolean(result.previas?.length)
   const existingList = document.querySelector('[data-radar-existing]')
   existingList.replaceChildren()
   for (const item of result.itens_ja_cadastrados || []) sourceLink(existingList, item.titulo, item.url)
@@ -118,7 +128,8 @@ form.elements.modo.addEventListener('change', syncMode)
 form.addEventListener('submit', async event => {
   event.preventDefault()
   if (!authorized || busy) return
-  const body = { modo: form.elements.modo.value, limite_total: Number(form.elements.limite_total.value) }
+  if (curadoria.hasPending() && !confirm('Há conteúdos pendentes nesta prévia. Iniciar outra busca sem salvar essas pendências?')) return
+  const body = { modo: form.elements.modo.value, previa: true, limite_total: Number(form.elements.limite_total.value) }
   if (body.modo === 'gemini') {
     body.consulta = form.elements.consulta.value.trim()
     body.dias = Number(form.elements.dias.value)
@@ -129,9 +140,7 @@ form.addEventListener('submit', async event => {
       body.fontes = radarSourceSelection(form.elements.selecao_fontes.value, [...form.querySelectorAll('[name="fonte"]:checked')].map(input => input.value))
     } catch (error) { showMessage(message, error.message, 'error'); return }
   }
-  busy = true
-  const controls = [...form.querySelectorAll('input, select, button')]
-  controls.forEach(control => { control.disabled = true })
+  setBusy(true)
   document.querySelector('[data-radar-results]').hidden = true
   showMessage(message, 'Buscando conteúdos para curadoria. Aguarde a conclusão...', 'info')
   try {
@@ -143,13 +152,14 @@ form.addEventListener('submit', async event => {
       }
       throw new Error(detail || 'Não foi possível executar o Radar. Confira se a função foi atualizada no Supabase.')
     }
-    if (!data?.ok || data.modo !== body.modo) throw new Error('Atualize a função observatorio-radar no Supabase para habilitar os dois modos.')
+    if (!data?.ok || data.modo !== body.modo || data.previa !== true) throw new Error('Atualize a função observatorio-radar no Supabase para habilitar a prévia sem gravação.')
     render(data)
-    showMessage(message, data.inseridos > 0
-      ? 'Execução concluída. Os novos registros aguardam curadoria.'
-      : 'Execução concluída sem novos registros. Consulte abaixo os resultados e os links já cadastrados.', 'success')
-  } catch (error) { showMessage(message, error.message, 'error') }
-  finally { busy = false; controls.forEach(control => { control.disabled = false }); syncMode() }
+    showMessage(message, 'Prévia concluída. Escolha o que salvar, revisar e publicar ou descartar. A busca não salvou novos conteúdos no acervo.', 'success')
+  } catch (error) {
+    if (curadoria.hasPending()) document.querySelector('[data-radar-results]').hidden = false
+    showMessage(message, error.message + (curadoria.hasPending() ? ' A prévia anterior foi preservada.' : ''), 'error')
+  }
+  finally { setBusy(false) }
 })
 document.querySelector('[data-logout]').addEventListener('click', async () => {
   await supabase.auth.signOut()
@@ -164,6 +174,7 @@ try {
   // A mesma função consulta o catálogo do banco sem executar a coleta.
   const { data, error } = await supabase.functions.invoke('observatorio-radar', { body: { acao: 'listar_fontes' } })
   if (error || !Array.isArray(data?.fontes)) throw new Error('Não foi possível carregar as fontes do banco. Atualize a função e execute a migration observatorio_feeds no Supabase.')
+  if (data.capacidades?.previa_curadoria !== 1) throw new Error('Antes de usar esta tela, atualize observatorio-radar e execute a migration radar_curadoria. A função anterior gravava a busca automaticamente.')
   const sources = data.fontes
   const container = document.querySelector('[data-radar-sources]')
   for (const source of sources) {

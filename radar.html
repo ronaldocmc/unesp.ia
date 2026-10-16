@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Executar Agente Radar | Observar.IA</title>
-  <link rel="stylesheet" href="assets/css/style.css?v=20261016-gestao-fontes">
+  <link rel="stylesheet" href="assets/css/style.css?v=20261016-previa-curadoria">
 </head>
 <body>
   <div class="topbar">
@@ -13,7 +13,7 @@
   </div>
   <main class="container content">
     <h1>Executar Agente Radar</h1>
-    <p>Escolha como buscar conteúdos. Os resultados são salvos em revisão, sem aprovação ou publicação automática.</p>
+    <p>Busque uma prévia e decida o que salvar, revisar e publicar ou descartar. A busca manual não grava novos conteúdos no acervo.</p>
     <a href="administracao-observatorio.html?secao=observatorio_feeds" data-radar-manage hidden>Gerenciar fontes do Radar →</a>
     <p data-radar-message role="status" aria-live="polite" hidden></p>
     <form class="portal-form admin-link-import" data-radar-form>
@@ -42,7 +42,7 @@
         <p>Matérias sem fonte citada ou sem data de publicação válida são descartadas. Datas e resumos extraídos por IA devem ser conferidos na curadoria.</p>
       </div>
       <label>Máximo de resultados por execução<input name="limite_total" type="number" min="1" max="300" value="20" required></label>
-      <div class="portal-form-actions"><button class="btn" type="submit">Buscar para curadoria</button></div>
+      <div class="portal-form-actions"><button class="btn" type="submit">Buscar prévia para curadoria</button></div>
     </form>
     <section data-radar-results hidden aria-labelledby="radar-results-title">
       <h2 id="radar-results-title">Resultado da execução</h2>
@@ -51,9 +51,11 @@
       <ul data-radar-errors></ul>
       <ul data-radar-feed-stats></ul>
       <pre data-radar-debug-results hidden style="white-space:pre-wrap"></pre>
-      <h3>Novos registros</h3>
-      <p data-radar-new-empty hidden>Nenhum novo registro foi inserido nesta execução.</p>
-      <ul data-radar-items></ul>
+      <h3>Novos conteúdos — prévia</h3>
+      <p>Confira título, resumo, data e fonte antes de decidir. Nada desta prévia é publicado automaticamente. Pendências não salvas serão perdidas ao sair.</p>
+      <p data-radar-decisions role="status" aria-live="polite"></p>
+      <p data-radar-new-empty hidden>Nenhum conteúdo novo nesta prévia.</p>
+      <div data-radar-preview></div>
       <h3>Já cadastrados no banco</h3>
       <p>Estes conteúdos não foram inseridos novamente. Os links abrem a fonte original.</p>
       <p data-radar-existing-empty hidden></p>
@@ -63,6 +65,23 @@
       <a class="btn" href="administracao-observatorio.html">Revisar publicações</a>
     </section>
   </main>
-  <script type="module" src="assets/js/portal/radar.js?v=20261016-relacao-itens"></script>
+  <dialog class="portal-dialog" data-radar-editor aria-labelledby="radar-editor-title">
+    <div class="portal-dialog-inner">
+      <h2 id="radar-editor-title">Revisar conteúdo</h2>
+      <p>Confira a matéria original, a data, o resumo e os créditos. Salvar para revisão não publica o conteúdo.</p>
+      <form class="portal-form" data-radar-editor-form novalidate>
+        <label>Título<input name="titulo" maxlength="300" required></label>
+        <label>Resumo<textarea name="resumo" maxlength="1200" required></textarea></label>
+        <label>Data de publicação<input name="data_publicacao" type="date" required></label>
+        <label>Fonte<input name="fonte" maxlength="200" required></label>
+        <label>Link original<input name="url" type="url" readonly required></label>
+        <label>Categoria<select name="categoria"><option value="noticia">Notícia</option><option value="pesquisa">Pesquisa</option><option value="aplicacao">Aplicação</option><option value="regulacao">Regulação</option></select></label>
+        <label class="radar-choice"><input name="confirmacao" type="checkbox"> Revisei a fonte, a data e os dados e confirmo a publicação deste conteúdo.</label>
+        <p data-radar-editor-message role="status" hidden></p>
+        <div class="portal-form-actions"><button class="btn secondary" type="submit" value="revisao">Salvar para revisão</button><button class="btn" type="submit" value="publicar">Confirmar e publicar</button><button class="btn secondary" type="button" data-radar-editor-close>Cancelar</button></div>
+      </form>
+    </div>
+  </dialog>
+  <script type="module" src="assets/js/portal/radar.js?v=20261016-previa-curadoria"></script>
 </body>
 </html>

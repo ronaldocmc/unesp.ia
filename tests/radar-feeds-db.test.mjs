@@ -9,9 +9,11 @@ import { carregarFeeds } from '../supabase/functions/observatorio-radar/feeds.mj
 const general = { id: 'g', codigo: 'geral', nome: 'Geral', url_feed: 'https://news.example.org/feed', categoria: 'noticia', escopo: 'tecnologia', ativo: true, prioridade: 2 }
 const ai = { ...general, id: 'a', codigo: 'ia', nome: 'Especializada', escopo: 'ia', prioridade: 1 }
 const xml = titles => `<rss>${titles.map((title, i) => `<item><title>${title}</title><link>https://news.example.org/${i}</link><description>Resumo</description></item>`).join('')}</rss>`
-function setup({ feeds = [general], failCatalog = false, failUpdate = false, existing = [], download = async () => xml(['Receita de bolo','OpenAI apresenta recurso','Inteligência artificial na educação']) } = {}) {
+function setup({ feeds = [general], failCatalog = false, failUpdate = false, existing = [], discards = [], download = async () => xml(['Receita de bolo','OpenAI apresenta recurso','Inteligência artificial na educação']) } = {}) {
   const calls = { saved: [], updates: [], urls: [] }
-  const db = { from: table => table === 'observatorio_feeds' ? {
+  const db = { from: table => table === 'observatorio_radar_descartes' ? {
+    select: () => ({ eq: () => ({ range: async () => ({ data: discards.map(url_key => ({ url_key })), error: null }) }) }),
+  } : table === 'observatorio_feeds' ? {
     select: (_columns, opts) => opts?.head ? Promise.resolve({ count: feeds.length, error: null }) : {
       eq: () => ({ order: () => ({ order: async () => ({ data: feeds, error: failCatalog ? { code: '42501' } : null }) }) }),
     },
@@ -113,6 +115,24 @@ test('deduplicação é aplicada aos candidatos aprovados na triagem', async () 
   assert.equal(data.itens_ja_cadastrados.length, 1)
   assert.equal(data.itens_ja_cadastrados[0].url, 'https://news.example.org/1')
   assert.equal(data.repetidos_na_coleta, 0)
+})
+
+test('prévia manual retorna rascunhos sem inserir no acervo, mesmo se cliente pedir publicação', async () => {
+  const { handler, calls } = setup()
+  const data = await (await handler(req({ previa: true, status: 'publicado', aprovado_curadoria: true }))).json()
+  assert.equal(data.previa, true); assert.equal(data.previas.length, 2)
+  assert.equal(data.inseridos, 0); assert.equal(calls.saved.length, 0)
+  assert.equal(data.previas[0].status, 'revisao'); assert.equal(data.previas[0].revisao_humana, false)
+  assert.equal(data.previas[0].aprovado_curadoria, false)
+})
+test('descarte persistente é filtrado antes dos limites em prévias e agendas', async () => {
+  for (const previa of [true, false]) {
+    const { handler, calls } = setup({ discards: ['https://news.example.org/1'] })
+    const data = await (await handler(req({ previa, limite_por_feed: 1 }))).json()
+    assert.equal(data.itens_descartados_anteriormente, 1)
+    assert.equal(data.candidatos, 1)
+    assert.equal((previa ? data.previas : calls.saved)[0].url, 'https://news.example.org/2')
+  }
 })
 
 test('todos já cadastrados retornam relação com título do banco e não gravam novamente', async () => {

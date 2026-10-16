@@ -586,6 +586,9 @@ a.axis-initiative:hover{background:color-mix(in srgb,var(--axis) 6%,white);text-
 .radar-source-selector [data-radar-source-count]{margin:12px 0 0;color:#526a80;font-size:14px}
 .radar-source-selector [data-radar-source-options]{margin-top:14px;border-top:1px solid #e0eaf3;padding-top:14px}
 .feed-error{display:block;max-width:280px;overflow-wrap:anywhere;color:#8b1e1e}
+.radar-preview-card{padding:18px;margin:14px 0;border:1px solid #c9deec;border-radius:12px;background:#fff;overflow-wrap:anywhere}
+.radar-preview-card h4{margin:0 0 10px;font-size:20px;color:#003b71}
+.radar-preview-meta{color:#526a80;font-size:14px}
 .portal-message{margin:14px 0;padding:11px 13px;border-radius:10px;background:#EAF4FF}.portal-message.error{background:#FDECEC;color:#8B1E1E}.portal-message.success{background:#E8F7EF;color:#176438}
 .admin-shell{display:grid;grid-template-columns:230px minmax(0,1fr);gap:24px}.admin-nav{display:grid;align-content:start;gap:8px;position:sticky;top:12px}
 .admin-nav button{padding:11px;text-align:left;border:1px solid var(--border);border-radius:9px;background:#fff;cursor:pointer}.admin-nav button.active{background:#003B71;color:#fff}

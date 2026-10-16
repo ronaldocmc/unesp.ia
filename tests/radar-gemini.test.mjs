@@ -17,7 +17,7 @@ const options = radarOptions({ modo: 'gemini', consulta: 'IA no Brasil' })
 test('opções preservam feeds como padrão e limitam Gemini a 20 resultados', () => {
   assert.equal(radarOptions({}).modo, 'feeds')
   assert.equal(radarOptions({ modo: 'gemini', consulta: 'IA', limite_total: 200 }).limite_total, 20)
-  for (const body of [{ modo: 'outro' }, { modo: 'gemini' }, { limite_total: '20' }, { dias: -1 }, []]) assert.throws(() => radarOptions(body))
+  for (const body of [{ modo: 'outro' }, { modo: 'gemini' }, { previa: 'true' }, { limite_total: '20' }, { dias: -1 }, []]) assert.throws(() => radarOptions(body))
 })
 
 test('Gemini aceita apenas fontes citadas, datas reais e período solicitado', () => {
@@ -70,7 +70,9 @@ test('cota e chave ausente falham sem repetição automática ou vazamento', asy
 
 function setup({ role = 'observatorio_curador', existing = [], key = 'gemini-secret', feed = false } = {}) {
   const calls = { fetches: 0, saved: [] }
-  const db = { from: table => table === 'observatorio_feeds' ? {
+  const db = { from: table => table === 'observatorio_radar_descartes' ? {
+    select: () => ({ eq: () => ({ range: async () => ({ data: [], error: null }) }) }),
+  } : table === 'observatorio_feeds' ? {
     select: (_cols, opts) => opts?.head ? Promise.resolve({ count: 1, error: null }) : ({ eq: () => ({ order: () => ({ order: async () => ({ data: [
       { id: 'f1', codigo: 'openai-news', nome: 'OpenAI', url_feed: 'https://openai.com/news/rss.xml', categoria: 'pesquisa', escopo: 'ia', ativo: true, prioridade: 1 },
     ], error: null }) }) }) }),
@@ -102,6 +104,13 @@ test('curador autenticado pesquisa, e o resultado é salvo exclusivamente em rev
   assert.equal(calls.saved[0].revisao_humana, false)
   assert.equal(calls.saved[0].aprovado_curadoria, false)
   assert.equal(calls.saved[0].agente_origem, 'radar_gemini')
+})
+
+test('Gemini também oferece prévia sem gravar no acervo', async () => {
+  const { handler, calls } = setup()
+  const data = await (await handler(req({ modo: 'gemini', consulta: 'IA', previa: true }))).json()
+  assert.equal(data.previa, true); assert.equal(data.previas.length, 1)
+  assert.equal(data.inseridos, 0); assert.equal(calls.saved.length, 0)
 })
 
 test('sessão ausente e perfil não autorizado não consomem Gemini nem escrevem', async () => {

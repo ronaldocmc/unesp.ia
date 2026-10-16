@@ -16,6 +16,7 @@ export function radarOptions(body = {}) {
   if (!body || Array.isArray(body) || typeof body !== 'object') throw new RadarError('Informe um objeto JSON.', 400)
   if (body.acao !== undefined && body.acao !== 'listar_fontes') throw new RadarError('Ação inválida.', 400)
   if (body.debug !== undefined && typeof body.debug !== 'boolean') throw new RadarError('debug deve ser booleano.', 400)
+  if (body.previa !== undefined && typeof body.previa !== 'boolean') throw new RadarError('previa deve ser booleano.', 400)
   const modo = body.modo ?? 'feeds'
   if (body.acao === 'listar_fontes' && modo !== 'feeds') throw new RadarError('A listagem de fontes pertence ao modo feeds.', 400)
   if (!['feeds', 'gemini'].includes(modo)) throw new RadarError('Escolha modo feeds ou gemini.', 400)
@@ -26,7 +27,7 @@ export function radarOptions(body = {}) {
   }
   const consulta = typeof body.consulta === 'string' ? body.consulta.trim() : ''
   if (modo === 'gemini' && (!consulta || consulta.length > 500)) throw new RadarError('Informe um tema de busca com até 500 caracteres.', 400)
-  return { modo, consulta, dias: number('dias', 7, 30), limite_total: number('limite_total', modo === 'gemini' ? 10 : 80, modo === 'gemini' ? 20 : 300),
+  return { modo, consulta, previa: body.previa === true, dias: number('dias', 7, 30), limite_total: number('limite_total', modo === 'gemini' ? 10 : 80, modo === 'gemini' ? 20 : 300),
     limite_por_feed: number('limite_por_feed', 5, 20), timeout_ms: Math.max(3000, number('timeout_ms', 12000, 30000)) }
 }
 
