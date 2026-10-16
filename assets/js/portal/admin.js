@@ -1,5 +1,6 @@
 import { requireRole, supabase, showMessage } from './supabase.js'
 import { publicationDateFromURL } from './publication-date.js'
+import { validateFeedDraft } from './radar-model.js'
 
 const IMAGE_BUCKET = 'ecossistema-imagens'
 const IMAGE_MAX_BYTES = 3 * 1024 * 1024
@@ -21,6 +22,15 @@ const initiativeDefinition = (title, eixo) => ({
 })
 
 const definitions = {
+  observatorio_feeds: { title: 'Fontes do Radar', description: 'Cadastre feeds RSS/Atom em HTTPS. Escopo: ia = especializado; tecnologia/geral = aplica filtro. Prioridade: 1 alta, 2 média, 3 baixa. Desativar preserva o cadastro e as publicações. O último processamento aparece na lista; salvar não executa coleta.', order: 'prioridade', pk: ['id'],
+    columns: ['nome','codigo','escopo','prioridade','ativo','ultima_execucao','ultimo_status','ultimo_erro','quantidade_lida','quantidade_relevante'], fields: [
+      ['nome','Nome da fonte','text',true], ['codigo','Código único (ex.: minha-fonte)','text',true],
+      ['url_feed','URL HTTPS do feed RSS/Atom','url',true], ['instituicao','Instituição','text',false],
+      ['categoria','Categoria','select-static',true,['pesquisa','noticia','aplicacao','regulacao']],
+      ['escopo','Escopo','select-static',true,['ia','tecnologia','geral']],
+      ['idioma','Idioma (ex.: pt-BR, en)','text',false], ['pais','País (ex.: BR, US)','text',false],
+      ['prioridade','Prioridade: 1 alta, 2 média, 3 baixa','number',true], ['ativo','Fonte ativa','checkbox',false,true],
+    ] },
   ecossistema_eixos: { title: 'Configuração dos eixos', description: 'Edite identidade, descrição, destaques e chamada pública dos quatro eixos.', pk: ['id'], order: 'ordem', columns: ['id','ordem','nome','rotulo','status','revisao_humana'], fields: [
     ['id','Identificador técnico','text',true], ['ordem','Ordem','number',true], ['nome','Nome público','text',true],
     ['rotulo','Subtítulo','text',true], ['descricao','Descrição','textarea',true],
@@ -92,7 +102,7 @@ const definitions = {
 
 const requestedSection = new URLSearchParams(location.search).get('secao')
 const adminScope = document.body.dataset.adminScope || 'portal'
-const observatorioSections = ['observatorio_conteudos', 'observatorio_categorias', 'observatorio_veiculos', 'observatorio_downloads']
+const observatorioSections = ['observatorio_conteudos', 'observatorio_feeds', 'observatorio_categorias', 'observatorio_veiculos', 'observatorio_downloads']
 let allowedSections = adminScope === 'observatorio' ? observatorioSections : Object.keys(definitions).filter(key => key !== 'candidatos_observatorio')
 const initialTable = allowedSections.includes(requestedSection) ? requestedSection : (adminScope === 'observatorio' ? 'observatorio_conteudos' : 'ecossistema_eixos')
 const state = { table: initialTable, rows: [], editing: null, lookups: {}, saving: false, importing: false, curador: false }
@@ -242,6 +252,7 @@ async function renderTable() {
   $('[data-admin-description]').textContent = def.description
   $('[data-import-button]').hidden = !def.import
   $('[data-new-record]').hidden = Boolean(def.virtual)
+  $('[data-new-record]').textContent = 'Novo cadastro'
   if (def.virtual) return renderCandidateQueue()
   $('[data-admin-head]').innerHTML = ''
   $('[data-admin-body]').innerHTML = ''
@@ -249,9 +260,11 @@ async function renderTable() {
   let query = supabase.from(sourceTableOf(def)).select('*').limit(1000)
   for (const [column, value] of Object.entries(def.filter || {})) query = query.eq(column, value)
   if (def.order) query = query.order(def.order, { ascending: !def.descending })
+  if (state.table === 'observatorio_feeds') query = query.order('nome')
   const { data, error } = await query
   if (error) return showMessage(message, error.message, 'error')
   state.rows = data ?? []
+  if (state.table === 'observatorio_feeds') return renderFeedTable()
   const columns = def.columns || [...new Set([...def.pk, ...def.fields.map(f => f[0])])]
   $('[data-admin-head]').innerHTML = `<tr>${columns.map(c => `<th>${escapeHtml(c)}</th>`).join('')}<th>Ações</th></tr>`
   $('[data-admin-body]').innerHTML = state.rows.map(row => `<tr>${columns.map(c => `<td>${escapeHtml(formatValue(row[c]))}</td>`).join('')}<td><div class="admin-table-actions"><button data-edit="${escapeHtml(keyOf(row))}">Editar</button>${state.curador ? '' : `<button data-delete="${escapeHtml(keyOf(row))}">Excluir</button>`}</div></td></tr>`).join('') || `<tr><td colspan="${columns.length + 1}">Nenhum registro.</td></tr>`
@@ -263,7 +276,36 @@ async function renderTable() {
 const formatValue = value => typeof value === 'boolean' ? (value ? 'Sim' : 'Não') : (value ?? '')
 const findRow = key => state.rows.find(row => keyOf(row) === key)
 
+function renderFeedTable() {
+  $('[data-new-record]').textContent = 'Cadastrar fonte'
+  const labels = ['Fonte / código','Escopo / prioridade','Situação','Último processamento','Lidos / relevantes','Ações']
+  $('[data-admin-head]').innerHTML = `<tr>${labels.map(label => `<th>${label}</th>`).join('')}</tr>`
+  $('[data-admin-body]').innerHTML = state.rows.map(row => {
+    const last = row.ultima_execucao ? new Date(row.ultima_execucao).toLocaleString('pt-BR') : 'Ainda não executada'
+    return `<tr><td><strong>${escapeHtml(row.nome)}</strong><br><small>${escapeHtml(row.codigo)}</small></td>
+      <td>${escapeHtml(row.escopo)} / ${escapeHtml(row.prioridade)}</td><td>${row.ativo ? 'Ativa' : 'Inativa'}</td>
+      <td>${escapeHtml(last)}<br>${escapeHtml(row.ultimo_status || '—')}<small class="feed-error">${escapeHtml(row.ultimo_erro || '')}</small></td>
+      <td>${escapeHtml(row.quantidade_lida)} / ${escapeHtml(row.quantidade_relevante)}</td>
+      <td><div class="admin-table-actions"><button data-edit-feed="${escapeHtml(row.id)}">Editar</button><button data-toggle-feed="${escapeHtml(row.id)}">${row.ativo ? 'Desativar' : 'Ativar'}</button></div></td></tr>`
+  }).join('') || '<tr><td colspan="6">Nenhuma fonte cadastrada. Clique em Cadastrar fonte.</td></tr>'
+  $('[data-admin-body]').querySelectorAll('[data-edit-feed]').forEach(button => button.addEventListener('click', () => openDialog(findRow(button.dataset.editFeed))))
+  $('[data-admin-body]').querySelectorAll('[data-toggle-feed]').forEach(button => button.addEventListener('click', async () => {
+    if (state.curador || state.saving) return
+    const row = findRow(button.dataset.toggleFeed)
+    if (!row || !confirm(`${row.ativo ? 'Desativar' : 'Ativar'} a fonte ${row.nome}? Isso não altera publicações existentes.`)) return
+    state.saving = true; button.disabled = true
+    try {
+      const { error } = await supabase.from('observatorio_feeds').update({ ativo: !row.ativo }).eq('id', row.id).select('id').single()
+      if (error) throw error
+      await renderTable()
+    } catch (error) { showMessage(message, error.message, 'error') }
+    finally { state.saving = false; button.disabled = false }
+  }))
+  showMessage(message, `${state.rows.length} fontes cadastradas; ${state.rows.filter(row => row.ativo).length} ativas.`, 'success')
+}
+
 async function openDialog(row = null, options = {}) {
+  if (!row && state.table === 'observatorio_feeds') { row = { prioridade: 2, ativo: true, categoria: 'pesquisa', escopo: 'ia' }; options = { ...options, asNew: true } }
   if (!row && state.table === 'observatorio_conteudos') { row = { ...manualDraft(), url: '' }; options = { ...options, asNew: true } }
   state.editing = options.asNew ? null : row
   const def = definitions[state.table]
@@ -301,6 +343,13 @@ async function openDialog(row = null, options = {}) {
   }
   container.querySelectorAll('[data-image-upload]').forEach(input => input.addEventListener('change', uploadImageField))
   container.querySelectorAll('[data-file-upload]').forEach(input => input.addEventListener('change', uploadDownloadField))
+  if (state.table === 'observatorio_feeds') {
+    Object.assign(form.elements.prioridade, { min: '1', max: '3', step: '1' })
+    Object.assign(form.elements.codigo, { maxLength: 100, pattern: '[a-z0-9][a-z0-9-]{0,99}' })
+    form.elements.nome.maxLength = 200
+    form.elements.url_feed.maxLength = 2048
+    form.elements.ativo.parentElement.classList.add('radar-choice')
+  }
   $('[data-dialog-message]').hidden = true
   dialog.showModal()
 }
@@ -418,10 +467,11 @@ async function saveRecord(event) {
   const formButtons = form.querySelectorAll('button')
   formButtons.forEach(button => { button.disabled = true })
   const def = definitions[state.table]
-  const payload = formPayload(def)
+  let payload = formPayload(def)
   const dialogMessage = $('[data-dialog-message]')
   showMessage(dialogMessage, 'Salvando...', 'info')
   try {
+    if (state.table === 'observatorio_feeds') payload = validateFeedDraft(payload)
     if (state.table === 'observatorio_conteudos') {
       if (payload.status === 'publicado' && !payload.revisao_humana) throw new Error('Confirme “Revisão humana concluída” antes de publicar.')
       payload.url = normalizeLink(payload.url)
@@ -444,10 +494,12 @@ async function saveRecord(event) {
       }
       let query = state.editing ? supabase.from(sourceTableOf(def)).update(payload) : supabase.from(sourceTableOf(def)).insert(payload)
       if (state.editing) for (const pk of def.pk) query = query.eq(pk, state.editing[pk])
+      if (state.table === 'observatorio_feeds') query = query.select('id').single()
       const { error } = await query
       if (error) throw error
     }
     dialog.close(); state.lookups = {}; await renderTable()
+    if (state.table === 'observatorio_feeds') showMessage(message, 'Fonte salva. Recarregue o Radar para atualizar a seleção de fontes. Nenhuma coleta foi executada.', 'success')
     if (state.table === 'observatorio_conteudos') showMessage(message, payload.status === 'publicado'
       ? 'Publicação salva no banco e disponível no Observatório. Atualize a página pública para vê-la.'
       : 'Cadastro salvo no banco. Este conteúdo ainda não está publicado no Observatório.', 'success')
@@ -456,6 +508,7 @@ async function saveRecord(event) {
 }
 
 async function deleteRecord(row) {
+  if (state.table === 'observatorio_feeds') return showMessage(message, 'Desative a fonte para preservar o cadastro e seu diagnóstico.', 'info')
   if (state.curador) return showMessage(message, 'A curadoria pode arquivar publicações. A exclusão permanente é exclusiva da administração.', 'error')
   if (!confirm('Confirma a exclusão deste registro? Relações dependentes poderão ser removidas.')) return
   try {

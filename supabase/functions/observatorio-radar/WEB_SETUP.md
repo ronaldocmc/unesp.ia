@@ -143,7 +143,15 @@ update public.observatorio_feeds set ativo = false where codigo = 'nova-fonte';
 
 Para testar esse cadastro: `{"fontes":["nova-fonte"],"debug":true,"limite_por_feed":10}`. Escolha `ia` somente para feeds realmente exclusivos de IA; buscas por “observatório” são `geral`, e tecnologia ampla usa `tecnologia`.
 
-RLS: acesso anônimo negado. Administradores (`administrador`/`observatorio_admin`, pela função existente) podem consultar e administrar; curadores somente leem fontes ativas. O serviço interno tem SELECT/UPDATE para carregar fontes e atualizar diagnóstico. Não se concede escrita pública nem chave de serviço ao navegador. A interface visual de cadastro fica para uma etapa posterior; o painel de execução já consulta o banco.
+RLS: acesso anônimo negado. Administradores (`administrador`/`observatorio_admin`, pela função existente) podem consultar e administrar; curadores somente leem fontes ativas. O serviço interno tem SELECT/UPDATE para carregar fontes e atualizar diagnóstico. Não se concede escrita pública nem chave de serviço ao navegador.
+
+### Gestão pelo portal
+
+Acesse **Administração do Observar.IA → Fontes do Radar** ou `administracao-observatorio.html?secao=observatorio_feeds`. Administradores podem cadastrar, editar e ativar/desativar. A lista mostra a última execução, erro e quantidades lida/relevante, somente para consulta. Não há exclusão na interface: desativar preserva o cadastro. Salvar não executa a coleta.
+
+O formulário usa o editor administrativo existente e grava com a sessão do administrador, protegido pelas mesmas políticas RLS desta migration. Não exige nova migration nem outra função. Recarregue o Radar depois de salvar para atualizar as opções. O link de gestão no Radar é exibido somente para administradores.
+
+No Radar, **Todas as fontes ativas** é o padrão explícito. **Escolher fontes** abre os checkboxes com contador, **Marcar todas** e **Desmarcar todas**. Seleção personalizada vazia bloqueia a execução, em vez de consultar todas acidentalmente. Gemini continua independente dessa seleção.
 
 Não publique a função nova antes das duas migrations. Sem tabela/permissão, a coleta RSS falha com instrução de correção; não há fallback silencioso para lista fixa. Guarde a versão anterior da função antes da troca. Para voltar o código, deixe as novas colunas/tabela no banco: elas não exigem apagar dados nem desfazer as migrations.
 

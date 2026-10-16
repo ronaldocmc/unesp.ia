@@ -1,4 +1,5 @@
 import { requireRole, supabase, showMessage } from './supabase.js'
+import { radarSourceSelection } from './radar-model.js'
 
 const form = document.querySelector('[data-radar-form]')
 const message = document.querySelector('[data-radar-message]')
@@ -15,7 +16,28 @@ function syncMode() {
   form.elements.limite_por_feed.disabled = gemini
   form.elements.limite_total.max = gemini ? '20' : '300'
   if (Number(form.elements.limite_total.value) > Number(form.elements.limite_total.max)) form.elements.limite_total.value = form.elements.limite_total.max
-  form.querySelectorAll('[name="fonte"]').forEach(input => { input.disabled = gemini })
+  syncSources()
+  form.elements.debug.disabled = gemini
+}
+
+function syncSources() {
+  const gemini = form.elements.modo.value === 'gemini'
+  const all = form.elements.selecao_fontes.value === 'todas'
+  const inputs = [...form.querySelectorAll('[name="fonte"]')]
+  document.querySelector('[data-radar-source-options]').hidden = all
+  form.querySelectorAll('[name="selecao_fontes"]').forEach(input => { input.disabled = gemini })
+  inputs.forEach(input => { input.disabled = gemini || all })
+  document.querySelector('[data-radar-source-count]').textContent = all
+    ? `${inputs.length} fontes ativas serão consultadas. Não é necessário marcar cada uma.`
+    : `${inputs.filter(input => input.checked).length} de ${inputs.length} fontes selecionadas. Marque pelo menos uma.`
+}
+
+form.querySelectorAll('[name="selecao_fontes"]').forEach(input => input.addEventListener('change', syncSources))
+for (const [selector, checked] of [['[data-radar-select-all]', true], ['[data-radar-clear]', false]]) {
+  document.querySelector(selector).addEventListener('click', () => {
+    form.querySelectorAll('[name="fonte"]').forEach(input => { input.checked = checked })
+    syncSources()
+  })
 }
 
 function sourceLink(list, label, value) {
@@ -91,7 +113,9 @@ form.addEventListener('submit', async event => {
   } else {
     body.limite_por_feed = Number(form.elements.limite_por_feed.value)
     body.debug = form.elements.debug.checked
-    body.fontes = [...form.querySelectorAll('[name="fonte"]:checked')].map(input => input.value)
+    try {
+      body.fontes = radarSourceSelection(form.elements.selecao_fontes.value, [...form.querySelectorAll('[name="fonte"]:checked')].map(input => input.value))
+    } catch (error) { showMessage(message, error.message, 'error'); return }
   }
   busy = true
   const controls = [...form.querySelectorAll('input, select, button')]
@@ -120,7 +144,9 @@ document.querySelector('[data-logout]').addEventListener('click', async () => {
 
 for (const control of form.querySelectorAll('input, select, button')) control.disabled = true
 try {
-  await requireRole(['administrador', 'observatorio_admin', 'observatorio_curador'], { message: 'Esta área é exclusiva da equipe de curadoria do Observatório.' })
+  const session = await requireRole(['administrador', 'observatorio_admin', 'observatorio_curador'], { message: 'Esta área é exclusiva da equipe de curadoria do Observatório.' })
+  const { data: role } = await supabase.from('papeis_usuario').select('papel').eq('user_id', session.user.id).single()
+  document.querySelector('[data-radar-manage]').hidden = !['administrador','observatorio_admin'].includes(role?.papel)
   // A mesma função consulta o catálogo do banco sem executar a coleta.
   const { data, error } = await supabase.functions.invoke('observatorio-radar', { body: { acao: 'listar_fontes' } })
   if (error || !Array.isArray(data?.fontes)) throw new Error('Não foi possível carregar as fontes do banco. Atualize a função e execute a migration observatorio_feeds no Supabase.')
@@ -130,6 +156,7 @@ try {
     const label = document.createElement('label')
     const input = document.createElement('input')
     input.type = 'checkbox'; input.name = 'fonte'; input.value = source.codigo
+    input.addEventListener('change', syncSources)
     label.append(input, document.createTextNode(`${source.nome} (${source.escopo})`))
     container.append(label)
   }
