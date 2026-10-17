@@ -2,6 +2,7 @@ import test from 'node:test'
 import assert from 'node:assert/strict'
 import { parseFeed, toConteudo } from '../supabase/functions/observatorio-radar/core.mjs'
 import { decodeGoogleNewsID, resolveGoogleNewsLink, resolveGoogleNewsItems } from '../supabase/functions/observatorio-radar/google-news.mjs'
+import { createRadarHandler } from '../supabase/functions/observatorio-radar/handler.mjs'
 
 function legacy(url) {
   const bytes = Buffer.from(url)
@@ -96,4 +97,34 @@ test('diagnóstico distingue bloqueio, timeout e formato sem expor erro bruto', 
   const items = [{ link: opaque }]
   await resolveGoogleNewsItems(items, { readPage: async () => ({ url: opaque, html: 'Consent' }) })
   assert.match(items[0].observacao_colaborador, /sem parâmetros/)
+})
+
+test('conversão individual autenticada independe do lote e não consulta feeds nem grava banco', async () => {
+  let reads = 0
+  const caller = {
+    auth: { getUser: async () => ({ data: { user: { id: 'curator' } } }) },
+    from: table => {
+      assert.equal(table, 'papeis_usuario')
+      return { select: () => ({ eq: () => ({ maybeSingle: async () => ({ data: { papel: 'observatorio_curador' } }) }) }) }
+    },
+  }
+  const handler = createRadarHandler({
+    createClient: () => caller,
+    env: { SUPABASE_URL: 'https://project.supabase.co', SUPABASE_ANON_KEY: 'anon', RADAR_AGENT_TOKEN: 'job' },
+    download() { throw new Error('Não deve ler feeds') },
+    fetchImpl() { throw new Error('Não deve chamar modelos ou RPC') },
+    readPage: async () => { reads++; return { url: article, html: '' } },
+  })
+  const request = (body, token = 'session') => new Request('https://project.supabase.co/radar', {
+    method: 'POST', headers: { 'Content-Type': 'application/json', ...(token ? { Authorization: `Bearer ${token}` } : {}) }, body: JSON.stringify(body),
+  })
+  const body = { acao: 'resolver_link_google', url: opaque, previa: true }
+  assert.equal((await handler(request(body, ''))).status, 401)
+  assert.equal((await handler(request(body, 'job'))).status, 403)
+  assert.equal((await handler(request({ ...body, url: 'https://127.0.0.1/private' }))).status, 400)
+  assert.equal(reads, 0)
+  const response = await handler(request(body)); assert.equal(response.status, 200)
+  const data = await response.json()
+  assert.equal(data.acao, 'resolver_link_google'); assert.equal(data.resolvido, true); assert.equal(data.url, article)
+  assert.equal(reads, 1)
 })

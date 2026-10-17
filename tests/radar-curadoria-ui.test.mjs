@@ -80,6 +80,37 @@ test('tela: prévia não grava, publicação exige confirmação, revisão e des
     assert.equal(requests.length, 4)
     release(); await first; gate = null
     assert.equal(controller.hasPending(), false)
+
+    // A candidate skipped by the bulk limit is resolved only when the curator opens it.
+    const google = { ...item, url: 'https://news.google.com/rss/articles/opaque',
+      observacao_colaborador: 'Link do Google Notícias — limite de lote atingido' }
+    let conversions = 0
+    globalThis.__radarUiTest.supabase.functions = { invoke: async (name, options) => {
+      conversions++; assert.equal(name, 'observatorio-radar'); assert.equal(options.body.previa, true)
+      assert.equal(options.body.acao, 'resolver_link_google'); assert.equal(busy, true)
+      return { data: { acao: 'resolver_link_google', resolvido: true, url: 'https://obia.nic.br/ceticbr' } }
+    } }
+    controller.render([google])
+    const beforeReview = requests.length
+    await buttons()[0].fire('click')
+    assert.equal(conversions, 1); assert.equal(requests.length, beforeReview)
+    assert.equal(editor.elements.url.value, 'https://obia.nic.br/ceticbr')
+    assert.equal(busy, false)
+    await editor.fire('submit', { submitter: { value: 'revisao' } })
+    assert.equal(conversions, 1)
+    assert.equal(requests.at(-1).args.p_conteudo.url, 'https://obia.nic.br/ceticbr')
+    assert.equal(requests.at(-1).args.p_conteudo.observacao_colaborador, undefined)
+
+    // A failed individual lookup remains explicit and does not publish or write on opening.
+    globalThis.__radarUiTest.supabase.functions.invoke = async () => ({ data: {
+      acao: 'resolver_link_google', resolvido: false, diagnostico: 'pagina: HTTP 429',
+    } })
+    controller.render([{ ...item, url: 'https://news.google.com/rss/articles/failure' }])
+    const beforeFailure = requests.length
+    await buttons()[0].fire('click')
+    assert.equal(requests.length, beforeFailure)
+    assert.match(editor.elements.url.value, /news.google.com/)
+    assert.match(selectors['[data-radar-editor-message]'].textContent, /HTTP 429/)
   } finally {
     globalThis.document = originalDocument; globalThis.prompt = originalPrompt; delete globalThis.__radarUiTest
   }

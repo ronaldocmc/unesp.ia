@@ -5,7 +5,7 @@ import { avaliarRelevanciaIA, SCORE_MINIMO_IA } from './relevance.mjs'
 import { downloadFeed } from './feed-network.mjs'
 import { carregarDescartes, radarLinkKey } from './curadoria.mjs'
 import { searchGroq } from './groq.mjs'
-import { resolveGoogleNewsItems } from './google-news.mjs'
+import { isGoogleNewsLink, resolveGoogleNewsItems, resolveGoogleNewsLink } from './google-news.mjs'
 
 const cors = { 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type, x-radar-token',
   'Access-Control-Allow-Methods': 'POST, OPTIONS', 'Cache-Control': 'no-store' }
@@ -68,6 +68,16 @@ export function createRadarHandler({ createClient, env, fetchImpl = fetch, downl
     try {
       const contexto = await authorize(req, env, createClient)
       const body = await readBody(req)
+      if (body.acao === 'resolver_link_google') {
+        if (contexto !== 'manual') throw new RadarError('Conversão individual restrita à curadoria autenticada.', 403)
+        if (typeof body.url !== 'string' || body.url.length > 2048 || !body.url.startsWith('https://') || !isGoogleNewsLink(body.url)) {
+          throw new RadarError('Informe um link HTTPS do Google Notícias.', 400)
+        }
+        let diagnostico = 'conversão não concluída'
+        const url = await resolveGoogleNewsLink(body.url, { readPage, fetchImpl, timeoutMs: 8000, onDiagnostic: value => { diagnostico = value } })
+        // Read-only: no feed collection, model calls, or database writes.
+        return json({ ok: true, acao: 'resolver_link_google', resolvido: !!url, url: url || body.url, diagnostico: url ? null : diagnostico })
+      }
       const options = radarOptions(body)
       if (!env.SUPABASE_URL || !env.SUPABASE_SERVICE_ROLE_KEY) throw new RadarError('Credenciais do Supabase não configuradas.', 503)
       const db = createClient(env.SUPABASE_URL, env.SUPABASE_SERVICE_ROLE_KEY, { auth: { persistSession: false, autoRefreshToken: false } })
