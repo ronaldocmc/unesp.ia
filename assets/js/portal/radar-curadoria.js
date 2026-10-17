@@ -47,7 +47,8 @@ export function initRadarCuradoria({ canDecide, setBusy, isBusy, sourceLink }) {
     editor.elements.confirmacao.checked = false
     editor.elements.confirmacao.required = false
     editorMessage.hidden = true
-    if (googleNews(entry.draft.url)) showMessage(editorMessage, 'Link do Google Notícias — endereço original não identificado. Abra a notícia e confira o veículo antes de publicar.', 'info')
+    if (googleNews(entry.draft.url)) showMessage(editorMessage, entry.draft.observacao_colaborador?.startsWith('Link do Google Notícias')
+      ? entry.draft.observacao_colaborador : 'Link do Google Notícias — endereço original não identificado. Abra a notícia e confira o veículo antes de publicar.', 'info')
     dialog.showModal()
   }
   editor.addEventListener('submit', async event => {

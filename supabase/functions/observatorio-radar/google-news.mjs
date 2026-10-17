@@ -47,22 +47,25 @@ export function decodeGoogleNewsID(link) {
   return null
 }
 
-export async function resolveGoogleNewsLink(link, { readPage = downloadRadarPage, fetchImpl = fetch, timeoutMs = 5000 } = {}) {
+export async function resolveGoogleNewsLink(link, { readPage = downloadRadarPage, fetchImpl = fetch, timeoutMs = 5000, onDiagnostic = () => {} } = {}) {
+  let stage = 'pagina'
+  const fail = reason => { onDiagnostic(reason); return null }
   if (!isGoogleNewsLink(link)) return link
   const legacy = decodeGoogleNewsID(link)
   if (legacy) return legacy
   const id = new URL(link).pathname.match(/\/(?:articles|read)\/([A-Za-z0-9_-]{1,4096})$/)?.[1]
-  if (!id) return null
+  if (!id) return fail('identificador inválido')
   try {
     const page = await readPage(`https://news.google.com/articles/${id}`, timeoutMs)
-    if (!isGoogleNewsLink(page.url)) return publisherURL(page.url)
+    if (!isGoogleNewsLink(page.url)) return publisherURL(page.url) || fail('redirecionamento sem endereço original válido')
     // This is an undocumented Google endpoint: fail safely if its format changes.
     // No cookies, credentials, consent bypass, or retries on blocking responses.
     const signature = decode(page.html.match(/data-n-a-sg=["']([^"']{1,1024})["']/)?.[1] || '')
     const timestamp = page.html.match(/data-n-a-ts=["'](\d{1,12})["']/)?.[1]
-    if (!signature || !timestamp) return null
+    if (!signature || !timestamp) return fail('página do Google sem parâmetros de conversão (possível consentimento ou bloqueio)')
     const context = [['X','X',['X','X'],null,null,1,1,'US:en',null,1,null,null,null,null,null,0,1], 'X','X',1,[1,1,1],1,1,null,0,0,null,0]
     const request = JSON.stringify(['garturlreq', context, id, Number(timestamp), signature])
+    stage = 'conversao'
     const controller = new AbortController()
     const timer = setTimeout(() => controller.abort(), timeoutMs)
     try {
@@ -71,7 +74,7 @@ export async function resolveGoogleNewsLink(link, { readPage = downloadRadarPage
         headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8' },
         body: new URLSearchParams({ 'f.req': JSON.stringify([[['Fbv4je', request, null, 'generic']]]) }).toString(),
       })
-      if (!response.ok) { await response.body?.cancel(); return null }
+      if (!response.ok) { await response.body?.cancel(); return fail(`conversão Google HTTP ${response.status}`) }
       const text = await readFeedResponse(response, controller.signal)
       for (const line of text.split('\n')) {
         if (!line.startsWith('[[')) continue
@@ -80,13 +83,19 @@ export async function resolveGoogleNewsLink(link, { readPage = downloadRadarPage
           for (const row of rows) {
             if (row[0] !== 'wrb.fr' || row[1] !== 'Fbv4je' || typeof row[2] !== 'string') continue
             const result = JSON.parse(row[2])
-            if (result[0] === 'garturlres') return publisherURL(result[1])
+            if (result[0] === 'garturlres') return publisherURL(result[1]) || fail('resposta sem endereço original válido')
           }
         } catch { /* Ignore unrelated or malformed frames. */ }
       }
     } finally { clearTimeout(timer); controller.abort() }
-  } catch { /* Preserve the aggregator link with an explicit warning. */ }
-  return null
+  } catch (error) {
+    // Only expose controlled diagnostics, never raw response bodies or stack traces.
+    const message = String(error?.message || '')
+    const status = /^HTTP (\d{3})$/.exec(message)?.[1]
+    return fail(status ? `${stage}: HTTP ${status}` : /abort|tempo limite|timed? ?out/i.test(message) || error?.name === 'AbortError'
+      ? `${stage}: tempo limite` : /grande|2 MB/i.test(message) ? `${stage}: página excede 2 MB` : `${stage}: falha de rede ou validação`)
+  }
+  return fail('Google retornou um formato de conversão não reconhecido')
 }
 
 export async function resolveGoogleNewsItems(items, { resolve = resolveGoogleNewsLink, ...dependencies } = {}) {
@@ -96,15 +105,19 @@ export async function resolveGoogleNewsItems(items, { resolve = resolveGoogleNew
   for (const item of items) {
     if (!isGoogleNewsLink(item.link)) continue
     const original = item.link
+    let reason = 'limite de 10 conversões ou tempo total de 20 segundos atingido'
     const legacy = decodeGoogleNewsID(original)
     if (legacy) { item.link = legacy; item.google_news_url = original; continue }
     if (!cache.has(original) && cache.size < 10 && Date.now() < deadline) {
-      try { cache.set(original, await resolve(original, { ...dependencies, timeoutMs: Math.max(1, Math.min(3000, deadline - Date.now())) })) }
-      catch { cache.set(original, null) }
+      reason = 'conversão não concluída'
+      try {
+        const link = await resolve(original, { ...dependencies, timeoutMs: Math.max(1, Math.min(3000, deadline - Date.now())), onDiagnostic: value => { reason = value } })
+        cache.set(original, { link, reason })
+      } catch { cache.set(original, { link: null, reason: 'falha no resolvedor' }) }
     }
     const resolved = cache.get(original)
-    if (resolved) { item.link = resolved; item.google_news_url = original }
-    else item.observacao_colaborador = 'Link do Google Notícias — endereço original não identificado. Confira a matéria antes de publicar.'
+    if (resolved?.link) { item.link = resolved.link; item.google_news_url = original }
+    else item.observacao_colaborador = `Link do Google Notícias — endereço original não identificado. Diagnóstico: ${resolved?.reason || reason}. Confira a matéria antes de publicar.`
   }
   return items
 }

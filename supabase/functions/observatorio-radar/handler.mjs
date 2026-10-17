@@ -183,7 +183,7 @@ export function createRadarHandler({ createClient, env, fetchImpl = fetch, downl
           inserted = data || []
         }
       }
-      return json({ ok: true, agente: 'radar', modo: options.modo, ...details,
+      return json({ ok: true, agente: 'radar', versao_radar: '20261017-google-news-diag', modo: options.modo, ...details,
         previa: options.previa, previas: options.previa ? unique.map(toConteudo) : [],
         itens_descartados_anteriormente: discardedPreviously,
         candidatos: candidates.length, duplicados: candidates.length - unique.length, inseridos: inserted.length, itens: inserted,

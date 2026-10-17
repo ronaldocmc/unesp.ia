@@ -85,3 +85,15 @@ test('falha do resolvedor não interrompe o lote e leitura comum não usa rede e
   assert.match(items[0].observacao_colaborador, /não identificado/)
   assert.equal(items[1].link, article)
 })
+
+test('diagnóstico distingue bloqueio, timeout e formato sem expor erro bruto', async () => {
+  for (const [message, expected] of [['HTTP 429', /pagina: HTTP 429/], ['Tempo limite ao acessar feed.', /pagina: tempo limite/], ['secret-private-token stack https://internal.test', /pagina: falha de rede ou validação/]]) {
+    const items = [{ link: opaque }]
+    await resolveGoogleNewsItems(items, { readPage: async () => { throw new Error(message) } })
+    assert.match(items[0].observacao_colaborador, expected)
+    assert.doesNotMatch(items[0].observacao_colaborador, /secret-private-token|internal\.test|stack/)
+  }
+  const items = [{ link: opaque }]
+  await resolveGoogleNewsItems(items, { readPage: async () => ({ url: opaque, html: 'Consent' }) })
+  assert.match(items[0].observacao_colaborador, /sem parâmetros/)
+})
