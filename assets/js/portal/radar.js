@@ -19,21 +19,28 @@ window.addEventListener('beforeunload', event => {
 })
 
 function syncMode() {
-  const gemini = form.elements.modo.value === 'gemini'
+  const gemini = form.elements.modo.value !== 'feeds'
+  const groq = form.elements.modo.value === 'groq'
+  document.querySelector('[data-radar-provider-description]').textContent = groq
+    ? 'Groq descobre até 3 links com browser_search. O Radar extrai título, descrição e data das páginas, sem pedir resumo à IA. A disponibilidade da busca e os custos dependem do seu plano Groq.'
+    : 'Pesquisa fontes na web com Google Search e organiza notícias com Gemini. Usa a chave configurada no servidor e pode gerar cobrança na conta Google AI.'
+  document.querySelector('[data-radar-provider-help]').textContent = groq
+    ? 'Links sem metadados completos ou data confirmada ficam apenas na relação de links descobertos para conferência manual. Nenhum conteúdo é publicado automaticamente.'
+    : 'Matérias sem fonte citada ou sem data de publicação válida são descartadas. Datas e resumos extraídos por IA devem ser conferidos na curadoria.'
   document.querySelector('[data-radar-feeds]').hidden = gemini
   document.querySelector('[data-radar-gemini]').hidden = !gemini
   form.elements.consulta.required = gemini
   form.elements.consulta.disabled = !gemini
   form.elements.dias.disabled = !gemini
   form.elements.limite_por_feed.disabled = gemini
-  form.elements.limite_total.max = gemini ? '20' : '300'
+  form.elements.limite_total.max = groq ? '3' : gemini ? '20' : '300'
   if (Number(form.elements.limite_total.value) > Number(form.elements.limite_total.max)) form.elements.limite_total.value = form.elements.limite_total.max
   syncSources()
   form.elements.debug.disabled = gemini
 }
 
 function syncSources() {
-  const gemini = form.elements.modo.value === 'gemini'
+  const gemini = form.elements.modo.value !== 'feeds'
   const all = form.elements.selecao_fontes.value === 'todas'
   const inputs = [...form.querySelectorAll('[name="fonte"]')]
   document.querySelector('[data-radar-source-options]').hidden = all
@@ -71,7 +78,9 @@ function render(result) {
   document.querySelector('[data-radar-results]').hidden = false
   document.querySelector('[data-radar-summary]').textContent = `${result.candidatos} candidatos, ${result.duplicados} duplicados e ${result.previas?.length || 0} novos conteúdos em prévia. Nenhum foi salvo no acervo pela busca.`
   const reasons = result.descartados || {}
-  document.querySelector('[data-radar-discarded]').textContent = Object.keys(reasons).length
+  document.querySelector('[data-radar-discarded]').textContent = result.modo === 'groq'
+    ? `${result.links_descobertos || 0} links descobertos; ${result.itens_descartados_anteriormente || 0} descartados anteriormente pela curadoria. Os candidatos usam metadados das páginas; consulte os avisos e os links para conferência manual.`
+    : Object.keys(reasons).length
     ? `Descartados: ${reasons.sem_fonte_verificavel || 0} sem fonte verificável, ${reasons.sem_data_valida || 0} sem data válida, ${reasons.fora_do_periodo || 0} fora do período e ${reasons.incompletos || 0} incompletos.`
     : `${result.itens_lidos || 0} itens lidos; ${result.itens_relevantes_ia || 0} relacionados a IA; ${result.itens_descartados_nao_ia || 0} descartados pelo filtro; ${result.itens_descartados_anteriormente || 0} descartados pela curadoria anteriormente; ${result.itens_fora_limites || 0} fora dos limites da execução.`
   const errors = document.querySelector('[data-radar-errors]')
@@ -109,8 +118,10 @@ function render(result) {
   batchRepeated.textContent = `${result.repetidos_na_coleta || 0} repetição(ões) adicional(is) de links novos entre os candidatos da própria coleta foram ignoradas.`
   const citations = document.querySelector('[data-radar-citation-list]')
   citations.replaceChildren()
-  for (const source of result.fontes_gemini || []) sourceLink(citations, source.titulo, source.url)
-  document.querySelector('[data-radar-citations]').hidden = !(result.fontes_gemini || []).length
+  const sources = result.fontes_groq || result.fontes_gemini || []
+  for (const source of sources) sourceLink(citations, source.titulo, source.url)
+  document.querySelector('[data-radar-citations]').hidden = !sources.length
+  document.querySelector('[data-radar-citation-title]').textContent = result.modo === 'groq' ? 'Links descobertos pela Groq — confira na fonte' : 'Fontes retornadas pela busca Google'
   const suggestions = document.querySelector('[data-radar-search-suggestions]')
   suggestions.replaceChildren()
   for (const html of result.sugestoes_busca || []) {
@@ -130,7 +141,7 @@ form.addEventListener('submit', async event => {
   if (!authorized || busy) return
   if (curadoria.hasPending() && !confirm('Há conteúdos pendentes nesta prévia. Iniciar outra busca sem salvar essas pendências?')) return
   const body = { modo: form.elements.modo.value, previa: true, limite_total: Number(form.elements.limite_total.value) }
-  if (body.modo === 'gemini') {
+  if (body.modo !== 'feeds') {
     body.consulta = form.elements.consulta.value.trim()
     body.dias = Number(form.elements.dias.value)
   } else {
@@ -177,6 +188,7 @@ try {
   if (data.capacidades?.previa_curadoria !== 1) throw new Error('Antes de usar esta tela, atualize observatorio-radar e execute a migration radar_curadoria. A função anterior gravava a busca automaticamente.')
   if (data.capacidades?.fontes_por_uso !== 1) throw new Error('Atualize observatorio-radar e execute a migration radar_fontes_uso para separar as fontes manuais das automáticas.')
   const sources = data.fontes
+  form.elements.modo.querySelector('option[value="groq"]').disabled = data.capacidades?.groq_links !== 1
   const container = document.querySelector('[data-radar-sources]')
   for (const source of sources) {
     const label = document.createElement('label')

@@ -1,7 +1,7 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
 import { createRadarHandler } from '../supabase/functions/observatorio-radar/handler.mjs'
-import { parseGeminiNews, radarOptions, searchGemini } from '../supabase/functions/observatorio-radar/gemini.mjs'
+import { parseGeminiNews, radarOptions, searchGemini, requestGeminiWithRetry, geminiErrorDiagnostic } from '../supabase/functions/observatorio-radar/gemini.mjs'
 
 const now = new Date('2026-10-16T15:00:00Z')
 const url = 'https://news.example.org/noticia'
@@ -13,6 +13,37 @@ function grounded(items = [noticia]) {
   ] }
 }
 const options = radarOptions({ modo: 'gemini', consulta: 'IA no Brasil' })
+
+test('diagnóstico 404 mostra modelo e mensagem real sem repetir chamada', async () => {
+  let calls = 0
+  await assert.rejects(searchGemini({ apiKey: 'secret', model: 'gemini-2.5-flash', options,
+    fetchImpl: async () => { calls++; return Response.json({ error: { status: 'NOT_FOUND', message: 'Model gemini-2.5-flash is not available for this project.' } }, { status: 404 }) },
+  }), error => /modelo=gemini-2.5-flash/.test(error.message) && /NOT_FOUND/.test(error.message)
+    && /not available/.test(error.message) && !error.message.includes('secret'))
+  assert.equal(calls, 1)
+})
+
+test('diagnóstico filtra chave, credenciais, URLs, identificadores e e-mail; permite só detalhes de cota', () => {
+  const apiKey = 'credential/with+chars'
+  const diagnostic = geminiErrorDiagnostic({ apiKey, model: 'gemini-3.8-flash', status: 429, attempts: 5, data: { error: {
+    status: 'RESOURCE_EXHAUSTED', message: `Limit for ${apiKey} and ${encodeURIComponent(apiKey)}, Bearer abcdef, AIzaTestKey123 AQ.OtherKey https://example.org/?key=abc person@example.org projects/my-private-project 123456789012 <script>bad</script>`,
+    details: [
+      { '@type': 'type.googleapis.com/google.rpc.QuotaFailure', violations: [{ quotaMetric: 'generativelanguage.googleapis.com/requests', quotaId: 'SearchRequestsPerDay', quotaValue: '0', quotaDimensions: { project: 'private-id' } }] },
+      { '@type': 'type.googleapis.com/google.rpc.RetryInfo', retryDelay: '60s' },
+      { '@type': 'type.googleapis.com/google.rpc.DebugInfo', stackEntries: ['private-stack'] },
+    ],
+  } } })
+  for (const value of [apiKey, encodeURIComponent(apiKey), 'abcdef', 'AIzaTestKey123', 'AQ.OtherKey', 'example.org', 'person@', 'my-private-project', '123456789012', '<script>', 'private-id', 'private-stack']) assert.ok(!diagnostic.includes(value), value)
+  for (const value of ['RESOURCE_EXHAUSTED', 'tentativas=5', 'SearchRequestsPerDay', 'limite=0', '60s']) assert.ok(diagnostic.includes(value), value)
+  assert.ok(diagnostic.length < 1600)
+})
+
+test('diagnóstico não devolve texto bruto nem campos inesperados; limita mensagens e ignora details inválido', () => {
+  const diagnostic = geminiErrorDiagnostic({ apiKey: 'secret', model: 'gemini-2.5-flash', status: 404, attempts: 1,
+    data: { error: { message: 'x'.repeat(10000), status: 'invalid secret', details: 'secret', prompt: 'private prompt' } } })
+  assert.ok(diagnostic.length < 600)
+  assert.ok(!diagnostic.includes('private prompt')); assert.ok(!diagnostic.includes('secret'))
+})
 
 test('opções preservam feeds como padrão e limitam Gemini a 20 resultados', () => {
   assert.equal(radarOptions({}).modo, 'feeds')
@@ -60,15 +91,83 @@ test('request Gemini mantém chave no header, ativa busca Google e saída estrut
   assert.ok(!request.body.includes('server-only-key'))
 })
 
-test('cota e chave ausente falham sem repetição automática ou vazamento', async () => {
+test('cota recebe backoff limitado e chave ausente falha sem chamada ou vazamento', async () => {
   let calls = 0
+  const delays = []
   await assert.rejects(searchGemini({ apiKey: '', model: 'gemini-3.8-flash', options, fetchImpl: async () => { calls++ } }), /GEMINI_API_KEY/)
   await assert.rejects(searchGemini({ apiKey: 'secret', model: 'gemini-3.8-flash', options,
-    fetchImpl: async () => { calls++; return new Response('secret', { status: 429 }) } }), /cota ou limite/)
-  assert.equal(calls, 1)
+    sleep: async ms => { delays.push(ms) },
+    fetchImpl: async () => { calls++; return new Response('secret', { status: 429 }) } }), error => error.status === 429 && /5 tentativas/.test(error.message) && !error.message.includes('secret'))
+  assert.equal(calls, 5)
+  assert.deepEqual(delays, [4000, 8000, 16000, 32000])
 })
 
-function setup({ role = 'observatorio_curador', existing = [], key = 'gemini-secret', feed = false } = {}) {
+test('retentativas recuperam 429 e RESOURCE_EXHAUSTED sem mudar corpo ou credenciais', async () => {
+  let calls = 0; const delays = []; const requests = []
+  const result = await searchGemini({ apiKey: 'secret', model: 'gemini-3.8-flash', options, now,
+    sleep: async ms => { delays.push(ms) }, fetchImpl: async (_url, init) => {
+      requests.push(init); calls++
+      if (calls === 1) return new Response('busy', { status: 429 })
+      if (calls === 2) return Response.json({ error: { status: 'RESOURCE_EXHAUSTED' } }, { status: 503 })
+      return Response.json(grounded())
+    } })
+  assert.equal(result.items.length, 1); assert.equal(calls, 3)
+  assert.deepEqual(delays, [4000, 8000])
+  assert.equal(new Set(requests.map(req => req.body)).size, 1)
+  assert.equal(new Set(requests.map(req => req.signal)).size, 3)
+  assert.ok(requests.every(req => req.headers['x-goog-api-key'] === 'secret'))
+})
+
+test('não repete erros comuns, JSON inválido, falhas de rede ou conteúdo grande', async () => {
+  for (const fetchImpl of [
+    async () => new Response('secret', { status: 400 }),
+    async () => new Response('secret', { status: 401 }),
+    async () => new Response('secret', { status: 403 }),
+    async () => new Response('busy', { status: 503 }),
+    async () => new Response('invalid-json'),
+    async () => new Response('x'.repeat(1000001)),
+    async () => { throw new Error('network secret') },
+  ]) {
+    let calls = 0
+    await assert.rejects(requestGeminiWithRetry({ apiKey: 'secret', body: '{}',
+      sleep: async () => { assert.fail('Não deveria repetir') },
+      fetchImpl: async (...args) => { calls++; return fetchImpl(...args) } }), error => !error.message.includes('secret'))
+    assert.equal(calls, 1)
+  }
+})
+
+test('respeita Retry-After e encerra antes do prazo seguro sem repetir prematuramente', async () => {
+  let time = 0; let calls = 0; const delays = []
+  await assert.rejects(requestGeminiWithRetry({ apiKey: 'secret', body: '{}', clock: () => time,
+    sleep: async ms => { delays.push(ms); time += ms },
+    fetchImpl: async () => { calls++; return new Response('busy', { status: 429, headers: { 'Retry-After': '70' } }) },
+  }), error => error.status === 429 && /prazo seguro/.test(error.message))
+  assert.equal(calls, 2); assert.deepEqual(delays, [70000])
+})
+
+test('RESOURCE_EXHAUSTED em corpo HTTP 200 é repetido e a quinta tentativa pode ter sucesso', async () => {
+  let calls = 0; let time = 0; const delays = []
+  const result = await requestGeminiWithRetry({ apiKey: 'secret', body: '{}', clock: () => time,
+    sleep: async ms => { delays.push(ms); time += ms },
+    fetchImpl: async () => {
+      calls++
+      return calls < 5 ? Response.json({ error: { status: 'RESOURCE_EXHAUSTED' } }) : Response.json(grounded())
+    },
+  })
+  assert.equal(calls, 5); assert.deepEqual(delays, [4000, 8000, 16000, 32000])
+  assert.ok(result.steps)
+})
+
+test('prazo acumulado encerra antes de uma próxima retentativa sem novos pedidos', async () => {
+  let calls = 0; let time = 0
+  await assert.rejects(requestGeminiWithRetry({ apiKey: 'secret', body: '{}', clock: () => time,
+    sleep: async ms => { time += ms },
+    fetchImpl: async () => { calls++; time += 59000; return new Response('', { status: 429 }) },
+  }), error => error.status === 429 && /prazo seguro/.test(error.message))
+  assert.equal(calls, 2)
+})
+
+function setup({ role = 'observatorio_curador', existing = [], key = 'gemini-secret', feed = false, quota = false } = {}) {
   const calls = { fetches: 0, saved: [] }
   const db = { from: table => table === 'observatorio_radar_descartes' ? {
     select: () => ({ eq: () => ({ range: async () => ({ data: [], error: null }) }) }),
@@ -87,7 +186,8 @@ function setup({ role = 'observatorio_curador', existing = [], key = 'gemini-sec
   const handler = createRadarHandler({ now: () => now, createClient: (_url, key) => key === 'service-key' ? db : caller,
     download: async () => { calls.fetches++; return `<rss><item><title>Matéria</title><link>${url}</link></item></rss>` },
     env: { SUPABASE_URL: 'https://project.supabase.co', SUPABASE_ANON_KEY: 'anon-key', SUPABASE_SERVICE_ROLE_KEY: 'service-key', RADAR_AGENT_TOKEN: 'job-secret', GEMINI_API_KEY: key, GEMINI_MODEL: 'gemini-3.8-flash' },
-    fetchImpl: async () => { calls.fetches++; return feed ? new Response(`<rss><item><title>Matéria</title><link>${url}</link><pubDate>Fri, 16 Oct 2026 10:00:00 GMT</pubDate></item></rss>`) : Response.json(grounded()) },
+    sleep: async () => {},
+    fetchImpl: async () => { calls.fetches++; return quota ? Response.json({ error: { status: 'RESOURCE_EXHAUSTED', message: key } }, { status: 429 }) : feed ? new Response(`<rss><item><title>Matéria</title><link>${url}</link><pubDate>Fri, 16 Oct 2026 10:00:00 GMT</pubDate></item></rss>`) : Response.json(grounded()) },
   })
   return { handler, calls }
 }
@@ -145,4 +245,15 @@ test('Gemini sem chave configurada não volta silenciosamente para os feeds', as
   assert.equal((await handler(req())).status, 503)
   assert.equal(calls.fetches, 0)
   assert.equal(calls.saved.length, 0)
+})
+
+test('falha de cota após backoff retorna JSON 429 ao painel e não grava', async () => {
+  const { handler, calls } = setup({ quota: true })
+  const response = await handler(req())
+  assert.equal(response.status, 429)
+  assert.match(response.headers.get('content-type'), /application\/json/)
+  const data = await response.json()
+  assert.match(data.error, /5 tentativas/)
+  assert.ok(!JSON.stringify(data).includes('gemini-secret'))
+  assert.equal(calls.fetches, 5); assert.equal(calls.saved.length, 0)
 })

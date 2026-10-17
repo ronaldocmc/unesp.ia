@@ -4,6 +4,7 @@ import { carregarFeeds } from './feeds.mjs'
 import { avaliarRelevanciaIA, SCORE_MINIMO_IA } from './relevance.mjs'
 import { downloadFeed } from './feed-network.mjs'
 import { carregarDescartes, radarLinkKey } from './curadoria.mjs'
+import { searchGroq } from './groq.mjs'
 
 const cors = { 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type, x-radar-token',
   'Access-Control-Allow-Methods': 'POST, OPTIONS', 'Cache-Control': 'no-store' }
@@ -59,7 +60,7 @@ export async function fetchFeed(feed, timeoutMs, download = downloadFeed) {
   } catch (error) { return { ok: false, feed, error: error instanceof Error ? error.message : 'Falha ao ler feed', items: [] } }
 }
 
-export function createRadarHandler({ createClient, env, fetchImpl = fetch, download = downloadFeed, now = () => new Date() }) {
+export function createRadarHandler({ createClient, env, fetchImpl = fetch, download = downloadFeed, now = () => new Date(), sleep, clock, readPage }) {
   return async req => {
     if (req.method === 'OPTIONS') return new Response(null, { status: 204, headers: cors })
     if (req.method !== 'POST') return json({ error: 'Método não permitido.' }, 405)
@@ -73,8 +74,24 @@ export function createRadarHandler({ createClient, env, fetchImpl = fetch, downl
       let discardedPreviously = 0
       let candidates
       let details
-      if (options.modo === 'gemini') {
-        const result = await searchGemini({ apiKey: env.GEMINI_API_KEY, model: env.GEMINI_MODEL, options, fetchImpl, now: now() })
+      if (options.modo === 'groq') {
+        const result = await searchGroq({ apiKey: env.GROQ_API_KEY, model: env.GROQ_MODEL || undefined, options, fetchImpl, now: now(), readPage,
+          prepareLinks: async found => {
+            const links = found.filter(link => {
+              if (knownDiscards.has(radarLinkKey(link))) { discardedPreviously++; return false }
+              return true
+            })
+            if (!links.length) return { links, existing: new Set() }
+            const { data, error } = await db.from('observatorio_conteudos').select('url').in('url', links)
+            if (error) throw new RadarError('Não foi possível conferir links existentes antes da extração Groq.', 500)
+            return { links, existing: new Set((data || []).map(row => row.url)) }
+          },
+        })
+        candidates = result.items
+        const { items, ...metadata } = result
+        details = metadata
+      } else if (options.modo === 'gemini') {
+        const result = await searchGemini({ apiKey: env.GEMINI_API_KEY, model: env.GEMINI_MODEL, options, fetchImpl, now: now(), sleep, clock })
         candidates = result.items.filter(item => {
           if (knownDiscards.has(radarLinkKey(item.link))) { discardedPreviously++; return false }
           return true
@@ -85,7 +102,7 @@ export function createRadarHandler({ createClient, env, fetchImpl = fetch, downl
         const contextoFontes = body.acao === 'listar_fontes' ? 'manual' : contexto
         const { feeds, ativos, catalogados } = await carregarFeeds(db, body.fontes, contextoFontes)
         // Consulta autenticada usada pelo painel; não acessa feeds nem grava dados.
-        if (body.acao === 'listar_fontes') return json({ ok: true, capacidades: { previa_curadoria: 1, fontes_por_uso: 1 }, fontes: feeds.map(feed => ({ codigo: feed.codigo, nome: feed.nome, categoria: feed.categoria, escopo: feed.escopo, prioridade: feed.prioridade })) })
+        if (body.acao === 'listar_fontes') return json({ ok: true, capacidades: { previa_curadoria: 1, fontes_por_uso: 1, groq_links: 1 }, fontes: feeds.map(feed => ({ codigo: feed.codigo, nome: feed.nome, categoria: feed.categoria, escopo: feed.escopo, prioridade: feed.prioridade })) })
         if (!feeds.length) throw new RadarError(`Nenhuma fonte habilitada para busca ${contextoFontes} corresponde à seleção. Confira Fontes do Radar e o campo fontes do agendamento.`, 400)
         const configured = Number(env.RADAR_SCORE_MINIMO_IA ?? SCORE_MINIMO_IA)
         if (!Number.isInteger(configured) || configured < 1 || configured > 100) throw new RadarError('RADAR_SCORE_MINIMO_IA deve ser inteiro entre 1 e 100.', 503)

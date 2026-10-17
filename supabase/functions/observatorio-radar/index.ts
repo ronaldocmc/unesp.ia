@@ -11,5 +11,7 @@ Deno.serve(createRadarHandler({
     RADAR_SCORE_MINIMO_IA: Deno.env.get('RADAR_SCORE_MINIMO_IA'),
     GEMINI_API_KEY: Deno.env.get('GEMINI_API_KEY'),
     GEMINI_MODEL: Deno.env.get('GEMINI_MODEL'),
+    GROQ_API_KEY: Deno.env.get('GROQ_API_KEY'),
+    GROQ_MODEL: Deno.env.get('GROQ_MODEL'),
   },
 }))

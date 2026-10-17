@@ -39,6 +39,7 @@ async function readFeedResponse(response, signal) {
 export async function downloadFeed(input, timeoutMs, {
   lookup = globalThis.Deno?.resolveDns ? host => globalThis.Deno.resolveDns(host, 'A') : resolve4,
   fetchImpl = fetch,
+  pageMode = false,
 } = {}) {
   const controller = new AbortController()
   const timeout = new Error('Tempo limite ao acessar feed.')
@@ -57,7 +58,7 @@ export async function downloadFeed(input, timeoutMs, {
       const response = await Promise.race([fetchImpl(url.href, {
         signal: controller.signal, redirect: 'manual',
         headers: {
-          Accept: 'application/rss+xml, application/atom+xml, application/xml, text/xml;q=0.9, */*;q=0.8',
+          Accept: pageMode ? 'text/html,application/xhtml+xml' : 'application/rss+xml, application/atom+xml, application/xml, text/xml;q=0.9, */*;q=0.8',
           'User-Agent': 'ObservarIA-Radar/2.2 (+https://ia.fct.unesp.br/observatorio.html)',
         },
       }), aborted])
@@ -73,7 +74,12 @@ export async function downloadFeed(input, timeoutMs, {
         response.body?.cancel().catch(() => {})
         throw new Error(`HTTP ${response.status}`)
       }
-      return await Promise.race([readFeedResponse(response, controller.signal), aborted])
+      if (pageMode && !/^(text\/html|application\/xhtml\+xml)\b/i.test(response.headers.get('content-type') || '')) {
+        response.body?.cancel().catch(() => {})
+        throw new Error('A fonte não retornou uma página HTML.')
+      }
+      const content = await Promise.race([readFeedResponse(response, controller.signal), aborted])
+      return pageMode ? { html: content, url: url.href } : content
     }
     throw new Error('Muitos redirecionamentos no feed.')
   } catch (error) {
@@ -85,3 +91,5 @@ export async function downloadFeed(input, timeoutMs, {
     controller.abort()
   }
 }
+
+export const downloadRadarPage = (input, timeoutMs = 8000, dependencies = {}) => downloadFeed(input, timeoutMs, { ...dependencies, pageMode: true })

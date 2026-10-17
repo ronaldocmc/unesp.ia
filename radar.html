@@ -17,7 +17,7 @@
     <a href="administracao-observatorio.html?secao=observatorio_feeds" data-radar-manage hidden>Gerenciar fontes do Radar →</a>
     <p data-radar-message role="status" aria-live="polite" hidden></p>
     <form class="portal-form admin-link-import" data-radar-form>
-      <label>Modo de busca<select name="modo"><option value="feeds">Feeds RSS — fontes do catálogo</option><option value="gemini">Gemini — pesquisa de notícias na web</option></select></label>
+      <label>Modo de busca<select name="modo"><option value="feeds">Feeds RSS — fontes do catálogo</option><option value="gemini">Gemini — pesquisa de notícias na web</option><option value="groq">Groq — descobrir links e extrair dados das páginas</option></select></label>
       <div data-radar-feeds>
         <p>Consulta os feeds cadastrados no catálogo do Radar. Sem chamadas à API do Gemini.</p>
         <label>Máximo por feed<input name="limite_por_feed" type="number" min="1" max="20" value="3" required></label>
@@ -36,10 +36,10 @@
         <label class="radar-choice"><input name="debug" type="checkbox"> Diagnóstico: mostrar até 20 exemplos descartados pelo filtro de IA</label>
       </div>
       <div data-radar-gemini hidden>
-        <p>Pesquisa fontes na web com Google Search e organiza notícias com Gemini. Usa a chave configurada no servidor e pode gerar cobrança na conta Google AI.</p>
+        <p data-radar-provider-description>Pesquisa fontes na web com Google Search e organiza notícias com Gemini. Usa a chave configurada no servidor e pode gerar cobrança na conta Google AI.</p>
         <label>Tema da pesquisa<input name="consulta" type="text" maxlength="500" placeholder="Ex.: inteligência artificial na educação brasileira"></label>
         <label>Período, incluindo hoje<select name="dias"><option value="1">Hoje</option><option value="7" selected>Últimos 7 dias</option><option value="30">Últimos 30 dias</option></select></label>
-        <p>Matérias sem fonte citada ou sem data de publicação válida são descartadas. Datas e resumos extraídos por IA devem ser conferidos na curadoria.</p>
+        <p data-radar-provider-help>Matérias sem fonte citada ou sem data de publicação válida são descartadas. Datas e resumos extraídos por IA devem ser conferidos na curadoria.</p>
       </div>
       <label>Máximo de resultados por execução<input name="limite_total" type="number" min="1" max="300" value="20" required></label>
       <div class="portal-form-actions"><button class="btn" type="submit">Buscar prévia para curadoria</button></div>
@@ -61,7 +61,7 @@
       <p data-radar-existing-empty hidden></p>
       <ul data-radar-existing></ul>
       <p data-radar-batch-repeated hidden></p>
-      <div data-radar-citations hidden><h3>Fontes retornadas pela busca Google</h3><ul data-radar-citation-list></ul><div data-radar-search-suggestions></div></div>
+      <div data-radar-citations hidden><h3 data-radar-citation-title>Fontes retornadas pela busca Google</h3><ul data-radar-citation-list></ul><div data-radar-search-suggestions></div></div>
       <a class="btn" href="administracao-observatorio.html">Revisar publicações</a>
     </section>
   </main>
@@ -82,6 +82,6 @@
       </form>
     </div>
   </dialog>
-  <script type="module" src="assets/js/portal/radar.js?v=20261016-fontes-uso"></script>
+  <script type="module" src="assets/js/portal/radar.js?v=20261016-groq-links"></script>
 </body>
 </html>
