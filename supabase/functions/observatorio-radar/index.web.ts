@@ -200,7 +200,8 @@ function parseFeed(xml, fonte) {
     const titulo = cleanText(tagValue(block, 'title'), 300)
     const resumo = cleanText(tagValue(block, 'description') || tagValue(block, 'summary') || tagValue(block, 'content'), 1200)
     const data = normalizeDate(tagValue(block, 'pubDate') || tagValue(block, 'published') || tagValue(block, 'updated'))
-    return { link, titulo, resumo, data, fonte }
+    const veiculo = cleanText(tagValue(block, 'source'), 200)
+    return { link, titulo, resumo, data, fonte: veiculo && /^https:\/\/news\.google\.com\//i.test(link) ? { ...fonte, origem: veiculo } : fonte }
   }).filter(item => item.link && item.titulo)
 }
 
@@ -686,6 +687,114 @@ async function searchGroq({ apiKey, model = GROQ_DEFAULT_MODEL, options, fetchIm
 }
 
 
+function isGoogleNewsLink(value) {
+  try { return new URL(value).hostname === 'news.google.com' } catch { return false }
+}
+
+function publisherURL(value) {
+  try {
+    const url = publicURL(value)
+    if (/(^|\.)google\.[a-z.]+$/.test(url.hostname) || url.pathname === '/') return null
+    return url.href
+  } catch { return null }
+}
+
+// Older Google News IDs contain a protobuf length-delimited publisher URL.
+// Read its length rather than matching arbitrary URL substrings in opaque IDs.
+function decodeGoogleNewsID(link) {
+  try {
+    if (!isGoogleNewsLink(link)) return null
+    const id = new URL(link).pathname.match(/\/(?:articles|read)\/([A-Za-z0-9_-]{1,4096})$/)?.[1]
+    if (!id) return null
+    const binary = atob(id.replace(/-/g, '+').replace(/_/g, '/'))
+    let offset = 0
+    const integer = () => {
+      let value = 0, shift = 0
+      for (let n = 0; n < 5 && offset < binary.length; n++) {
+        const byte = binary.charCodeAt(offset++)
+        value += (byte & 127) * 2 ** shift
+        if (!(byte & 128)) return value
+        shift += 7
+      }
+      throw new Error('Invalid protobuf')
+    }
+    while (offset < binary.length) {
+      const key = integer(), wire = key & 7
+      if (wire === 0) integer()
+      else if (wire === 2) {
+        const length = integer(), end = offset + length
+        if (end > binary.length) return null
+        const value = binary.slice(offset, end); offset = end
+        if ((key >>> 3) === 4) return publisherURL(value)
+      } else return null
+    }
+  } catch { /* Not a legacy ID. Try the public article page instead. */ }
+  return null
+}
+
+async function resolveGoogleNewsLink(link, { readPage = downloadRadarPage, fetchImpl = fetch, timeoutMs = 5000 } = {}) {
+  if (!isGoogleNewsLink(link)) return link
+  const legacy = decodeGoogleNewsID(link)
+  if (legacy) return legacy
+  const id = new URL(link).pathname.match(/\/(?:articles|read)\/([A-Za-z0-9_-]{1,4096})$/)?.[1]
+  if (!id) return null
+  try {
+    const page = await readPage(`https://news.google.com/articles/${id}`, timeoutMs)
+    if (!isGoogleNewsLink(page.url)) return publisherURL(page.url)
+    // This is an undocumented Google endpoint: fail safely if its format changes.
+    // No cookies, credentials, consent bypass, or retries on blocking responses.
+    const signature = decode(page.html.match(/data-n-a-sg=["']([^"']{1,1024})["']/)?.[1] || '')
+    const timestamp = page.html.match(/data-n-a-ts=["'](\d{1,12})["']/)?.[1]
+    if (!signature || !timestamp) return null
+    const context = [['X','X',['X','X'],null,null,1,1,'US:en',null,1,null,null,null,null,null,0,1], 'X','X',1,[1,1,1],1,1,null,0,0,null,0]
+    const request = JSON.stringify(['garturlreq', context, id, Number(timestamp), signature])
+    const controller = new AbortController()
+    const timer = setTimeout(() => controller.abort(), timeoutMs)
+    try {
+      const response = await fetchImpl('https://news.google.com/_/DotsSplashUi/data/batchexecute?rpcids=Fbv4je', {
+        method: 'POST', redirect: 'error', signal: controller.signal,
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8' },
+        body: new URLSearchParams({ 'f.req': JSON.stringify([[['Fbv4je', request, null, 'generic']]]) }).toString(),
+      })
+      if (!response.ok) { await response.body?.cancel(); return null }
+      const text = await readFeedResponse(response, controller.signal)
+      for (const line of text.split('\n')) {
+        if (!line.startsWith('[[')) continue
+        try {
+          const rows = JSON.parse(line)
+          for (const row of rows) {
+            if (row[0] !== 'wrb.fr' || row[1] !== 'Fbv4je' || typeof row[2] !== 'string') continue
+            const result = JSON.parse(row[2])
+            if (result[0] === 'garturlres') return publisherURL(result[1])
+          }
+        } catch { /* Ignore unrelated or malformed frames. */ }
+      }
+    } finally { clearTimeout(timer); controller.abort() }
+  } catch { /* Preserve the aggregator link with an explicit warning. */ }
+  return null
+}
+
+async function resolveGoogleNewsItems(items, { resolve = resolveGoogleNewsLink, ...dependencies } = {}) {
+  const cache = new Map()
+  const deadline = Date.now() + 20000
+  // Bound extra work per execution; remaining candidates stay explicitly unresolved.
+  for (const item of items) {
+    if (!isGoogleNewsLink(item.link)) continue
+    const original = item.link
+    const legacy = decodeGoogleNewsID(original)
+    if (legacy) { item.link = legacy; item.google_news_url = original; continue }
+    if (!cache.has(original) && cache.size < 10 && Date.now() < deadline) {
+      try { cache.set(original, await resolve(original, { ...dependencies, timeoutMs: Math.max(1, Math.min(3000, deadline - Date.now())) })) }
+      catch { cache.set(original, null) }
+    }
+    const resolved = cache.get(original)
+    if (resolved) { item.link = resolved; item.google_news_url = original }
+    else item.observacao_colaborador = 'Link do Google Notícias — endereço original não identificado. Confira a matéria antes de publicar.'
+  }
+  return items
+}
+
+
 const cors = { 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type, x-radar-token',
   'Access-Control-Allow-Methods': 'POST, OPTIONS', 'Cache-Control': 'no-store' }
 const json = (body, status = 200) => Response.json(body, { status, headers: cors })
@@ -819,6 +928,12 @@ function createRadarHandler({ createClient, env, fetchImpl = fetch, download = d
           } catch { warnings.push(`Não foi possível atualizar o diagnóstico de ${result.feed.codigo}.`) }
         }
         candidates = accepted.slice(0, options.limite_total)
+        await resolveGoogleNewsItems(candidates, { readPage, fetchImpl })
+        candidates = candidates.filter(item => {
+          if (knownDiscards.has(radarLinkKey(item.link))) { discardedPreviously++; return false }
+          return true
+        })
+        if (candidates.some(item => item.observacao_colaborador?.startsWith('Link do Google Notícias'))) warnings.push('Alguns links do Google Notícias não puderam ser convertidos para o endereço original. Confira os avisos na curadoria.')
         details = { contexto_fontes: contextoFontes, feeds_catalogados: catalogados, feeds_ativos: ativos, feeds_processados: feeds.length,
           feeds_com_erro: results.filter(result => !result.ok).map(result => ({ origem: result.feed.origem, erro: result.error })),
           quantidade_feeds_com_erro: results.filter(result => !result.ok).length,
@@ -833,11 +948,16 @@ function createRadarHandler({ createClient, env, fetchImpl = fetch, download = d
       let alreadySaved = []
       let repeatedInBatch = 0
       if (candidates.length) {
-        const links = [...new Set(candidates.map(item => item.link))]
+        // Match previously saved Google intermediaries too; never overwrite curated rows.
+        const links = [...new Set(candidates.flatMap(item => [item.link, ...(item.google_news_url ? [item.google_news_url] : [])]))]
         const { data: existing, error: selectError } = await db.from('observatorio_conteudos').select('id,titulo,url,fonte').in('url', links)
         if (selectError) throw new RadarError('Não foi possível conferir links existentes. Verifique as permissões do Radar no banco.', 500)
-        unique = dedupeByLink(candidates, (existing || []).map(row => row.url))
         const existingByLink = new Map((existing || []).map(row => [String(row.url).trim().toLowerCase(), row]))
+        for (const item of candidates) {
+          const previous = item.google_news_url && existingByLink.get(item.google_news_url.trim().toLowerCase())
+          if (previous) existingByLink.set(item.link.trim().toLowerCase(), previous)
+        }
+        unique = dedupeByLink(candidates, [...existingByLink.keys()])
         const existingCandidates = candidates.filter(item => existingByLink.has(String(item.link).trim().toLowerCase()))
         alreadySaved = dedupeByLink(existingCandidates).map(item => {
           const row = existingByLink.get(String(item.link).trim().toLowerCase())

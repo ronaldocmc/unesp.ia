@@ -57,7 +57,8 @@ export function parseFeed(xml, fonte) {
     const titulo = cleanText(tagValue(block, 'title'), 300)
     const resumo = cleanText(tagValue(block, 'description') || tagValue(block, 'summary') || tagValue(block, 'content'), 1200)
     const data = normalizeDate(tagValue(block, 'pubDate') || tagValue(block, 'published') || tagValue(block, 'updated'))
-    return { link, titulo, resumo, data, fonte }
+    const veiculo = cleanText(tagValue(block, 'source'), 200)
+    return { link, titulo, resumo, data, fonte: veiculo && /^https:\/\/news\.google\.com\//i.test(link) ? { ...fonte, origem: veiculo } : fonte }
   }).filter(item => item.link && item.titulo)
 }
 

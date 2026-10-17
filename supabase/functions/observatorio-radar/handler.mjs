@@ -5,6 +5,7 @@ import { avaliarRelevanciaIA, SCORE_MINIMO_IA } from './relevance.mjs'
 import { downloadFeed } from './feed-network.mjs'
 import { carregarDescartes, radarLinkKey } from './curadoria.mjs'
 import { searchGroq } from './groq.mjs'
+import { resolveGoogleNewsItems } from './google-news.mjs'
 
 const cors = { 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type, x-radar-token',
   'Access-Control-Allow-Methods': 'POST, OPTIONS', 'Cache-Control': 'no-store' }
@@ -139,6 +140,12 @@ export function createRadarHandler({ createClient, env, fetchImpl = fetch, downl
           } catch { warnings.push(`Não foi possível atualizar o diagnóstico de ${result.feed.codigo}.`) }
         }
         candidates = accepted.slice(0, options.limite_total)
+        await resolveGoogleNewsItems(candidates, { readPage, fetchImpl })
+        candidates = candidates.filter(item => {
+          if (knownDiscards.has(radarLinkKey(item.link))) { discardedPreviously++; return false }
+          return true
+        })
+        if (candidates.some(item => item.observacao_colaborador?.startsWith('Link do Google Notícias'))) warnings.push('Alguns links do Google Notícias não puderam ser convertidos para o endereço original. Confira os avisos na curadoria.')
         details = { contexto_fontes: contextoFontes, feeds_catalogados: catalogados, feeds_ativos: ativos, feeds_processados: feeds.length,
           feeds_com_erro: results.filter(result => !result.ok).map(result => ({ origem: result.feed.origem, erro: result.error })),
           quantidade_feeds_com_erro: results.filter(result => !result.ok).length,
@@ -153,11 +160,16 @@ export function createRadarHandler({ createClient, env, fetchImpl = fetch, downl
       let alreadySaved = []
       let repeatedInBatch = 0
       if (candidates.length) {
-        const links = [...new Set(candidates.map(item => item.link))]
+        // Match previously saved Google intermediaries too; never overwrite curated rows.
+        const links = [...new Set(candidates.flatMap(item => [item.link, ...(item.google_news_url ? [item.google_news_url] : [])]))]
         const { data: existing, error: selectError } = await db.from('observatorio_conteudos').select('id,titulo,url,fonte').in('url', links)
         if (selectError) throw new RadarError('Não foi possível conferir links existentes. Verifique as permissões do Radar no banco.', 500)
-        unique = dedupeByLink(candidates, (existing || []).map(row => row.url))
         const existingByLink = new Map((existing || []).map(row => [String(row.url).trim().toLowerCase(), row]))
+        for (const item of candidates) {
+          const previous = item.google_news_url && existingByLink.get(item.google_news_url.trim().toLowerCase())
+          if (previous) existingByLink.set(item.link.trim().toLowerCase(), previous)
+        }
+        unique = dedupeByLink(candidates, [...existingByLink.keys()])
         const existingCandidates = candidates.filter(item => existingByLink.has(String(item.link).trim().toLowerCase()))
         alreadySaved = dedupeByLink(existingCandidates).map(item => {
           const row = existingByLink.get(String(item.link).trim().toLowerCase())

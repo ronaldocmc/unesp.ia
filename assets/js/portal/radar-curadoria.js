@@ -8,6 +8,7 @@ export function initRadarCuradoria({ canDecide, setBusy, isBusy, sourceLink }) {
   const editorMessage = document.querySelector('[data-radar-editor-message]')
   let entries = []
   let editing = null
+  const googleNews = url => { try { return new URL(url).hostname === 'news.google.com' } catch { return false } }
   const labels = { revisao: 'Salvo para revisão — ainda não publicado.', publicado: 'Publicado após confirmação da revisão humana.',
     descartado: 'Descartado — não será oferecido nas próximas buscas.', ja_cadastrado: 'Já cadastrado por outra execução ou pessoa. Nenhum dado foi alterado.' }
 
@@ -46,6 +47,7 @@ export function initRadarCuradoria({ canDecide, setBusy, isBusy, sourceLink }) {
     editor.elements.confirmacao.checked = false
     editor.elements.confirmacao.required = false
     editorMessage.hidden = true
+    if (googleNews(entry.draft.url)) showMessage(editorMessage, 'Link do Google Notícias — endereço original não identificado. Abra a notícia e confira o veículo antes de publicar.', 'info')
     dialog.showModal()
   }
   editor.addEventListener('submit', async event => {
@@ -72,7 +74,8 @@ export function initRadarCuradoria({ canDecide, setBusy, isBusy, sourceLink }) {
         const metadata = document.createElement('p'); metadata.className = 'radar-preview-meta'
         metadata.textContent = `${draft.fonte || 'Fonte não informada'} · Publicação: ${draft.data_publicacao || 'Confira a data'} · ${draft.categoria}`
         const summary = document.createElement('p'); summary.textContent = draft.resumo
-        const links = document.createElement('ul'); sourceLink(links, 'Abrir fonte original', draft.url)
+        const links = document.createElement('ul'); sourceLink(links, googleNews(draft.url) ? 'Abrir no Google Notícias — original não identificado' : 'Abrir fonte original', draft.url)
+        if (googleNews(draft.url)) metadata.textContent += ' · Endereço original não identificado'
         const actions = document.createElement('div'); actions.className = 'portal-form-actions'
         const message = document.createElement('p'); message.hidden = true; message.setAttribute('role','status')
         const entry = { draft, heading, message, buttons: [], status: 'pendente' }

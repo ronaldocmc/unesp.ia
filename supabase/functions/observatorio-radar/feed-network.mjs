@@ -4,7 +4,7 @@ import { publicURL, publicIPv4 } from '../observatorio-link/core.mjs'
 
 const FEED_MAX_BYTES = 2000000
 
-async function readFeedResponse(response, signal) {
+export async function readFeedResponse(response, signal) {
   const length = response.headers.get('content-length')
   if (length && /^\d+$/.test(length) && Number(length) > FEED_MAX_BYTES) {
     response.body?.cancel().catch(() => {})

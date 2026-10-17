@@ -74,7 +74,7 @@
         <label>Resumo<textarea name="resumo" maxlength="1200" required></textarea></label>
         <label>Data de publicação<input name="data_publicacao" type="date" required></label>
         <label>Fonte<input name="fonte" maxlength="200" required></label>
-        <label>Link original<input name="url" type="url" readonly required></label>
+        <label>Link da matéria (pode ser intermediário do Google Notícias)<input name="url" type="url" readonly required></label>
         <label>Categoria<select name="categoria"><option value="noticia">Notícia</option><option value="pesquisa">Pesquisa</option><option value="aplicacao">Aplicação</option><option value="regulacao">Regulação</option></select></label>
         <label class="radar-choice"><input name="confirmacao" type="checkbox"> Revisei a fonte, a data e os dados e confirmo a publicação deste conteúdo.</label>
         <p data-radar-editor-message role="status" hidden></p>
@@ -82,6 +82,6 @@
       </form>
     </div>
   </dialog>
-  <script type="module" src="assets/js/portal/radar.js?v=20261016-groq-links"></script>
+  <script type="module" src="assets/js/portal/radar.js?v=20261017-google-news"></script>
 </body>
 </html>
