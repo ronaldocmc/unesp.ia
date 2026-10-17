@@ -9,6 +9,21 @@ export function initRadarCuradoria({ canDecide, setBusy, isBusy, sourceLink }) {
   let entries = []
   let editing = null
   const googleNews = url => { try { return new URL(url).hostname === 'news.google.com' } catch { return false } }
+  function validatedSourceURL(value) {
+    const url = new URL(value)
+    if (value.length > 2048 || url.protocol !== 'https:' || url.username || url.password || url.port
+      || !/^[a-z0-9.-]+\.[a-z]{2,}$/i.test(url.hostname) || /(^|\.)(localhost|local|internal)$/i.test(url.hostname)) {
+      throw new Error('Informe o endereço HTTPS público da matéria, sem senha ou porta personalizada.')
+    }
+    return url.href
+  }
+  function refreshEntryLink(entry) {
+    const draft = entry.draft
+    entry.links.replaceChildren()
+    sourceLink(entry.links, googleNews(draft.url) ? 'Abrir via Google Notícias — copiar endereço final para corrigir' : 'Abrir fonte original', draft.url)
+    entry.metadata.textContent = `${draft.fonte || 'Fonte não informada'} · Publicação: ${draft.data_publicacao || 'Confira a data'} · ${draft.categoria}`
+      + (googleNews(draft.url) ? ' · Link intermediário do Google Notícias' : '')
+  }
   const labels = { revisao: 'Salvo para revisão — ainda não publicado.', publicado: 'Publicado após confirmação da revisão humana.',
     descartado: 'Descartado — não será oferecido nas próximas buscas.', ja_cadastrado: 'Já cadastrado por outra execução ou pessoa. Nenhum dado foi alterado.' }
 
@@ -35,8 +50,7 @@ export function initRadarCuradoria({ canDecide, setBusy, isBusy, sourceLink }) {
       draft.url = url.href
       entry.draft.url = url.href
       for (const value of [draft, entry.draft]) if (value.observacao_colaborador?.startsWith('Link do Google Notícias')) delete value.observacao_colaborador
-      entry.links.replaceChildren(); sourceLink(entry.links, 'Abrir fonte original', url.href)
-      entry.metadata.textContent = entry.metadata.textContent.replace(' · Endereço original não identificado', '')
+      refreshEntryLink(entry)
       if (editing === entry && dialog.open) {
         editor.elements.url.value = url.href
         showMessage(editorMessage, 'Endereço original identificado. Confira os demais dados antes de publicar.', 'success')
@@ -64,6 +78,7 @@ export function initRadarCuradoria({ canDecide, setBusy, isBusy, sourceLink }) {
       entry.status = data.situacao
       entry.draft = draft
       entry.heading.textContent = data.item?.titulo || draft.titulo
+      refreshEntryLink(entry)
       showMessage(entry.message, labels[data.situacao], 'success')
       if (editing === entry && dialog.open) dialog.close()
     } catch (error) {
@@ -95,7 +110,19 @@ export function initRadarCuradoria({ canDecide, setBusy, isBusy, sourceLink }) {
     if (!editor.reportValidity()) return
     const draft = { ...editing.draft }
     for (const name of ['titulo','resumo','data_publicacao','fonte','url','categoria']) draft[name] = editor.elements[name].value.trim()
+    try { draft.url = validatedSourceURL(draft.url) }
+    catch { showMessage(editorMessage, 'Informe um link HTTPS público válido para a matéria.', 'error'); return }
+    // A pasted publisher URL is saved directly; never replace it with the Google intermediary.
+    if (!googleNews(draft.url) && draft.observacao_colaborador?.startsWith('Link do Google Notícias')) delete draft.observacao_colaborador
     await decide(editing, action, draft, editor.elements.confirmacao.checked)
+  })
+  editor.addEventListener('input', event => {
+    if (event.target?.name !== 'url' || !editing || isBusy()) return
+    try {
+      const url = validatedSourceURL(editor.elements.url.value.trim())
+      if (!googleNews(url)) showMessage(editorMessage, 'Endereço original informado manualmente. Clique em Salvar para revisão ou confirme a publicação para gravá-lo.', 'info')
+      else showMessage(editorMessage, 'Este ainda é um link intermediário. Abra a matéria e copie o endereço final da barra do navegador.', 'info')
+    } catch { showMessage(editorMessage, 'Informe um link HTTPS público válido para a matéria.', 'error') }
   })
   document.querySelector('[data-radar-editor-close]').addEventListener('click', () => { if (!isBusy()) dialog.close() })
   dialog.addEventListener('cancel', event => { if (isBusy()) event.preventDefault() })
@@ -111,8 +138,8 @@ export function initRadarCuradoria({ canDecide, setBusy, isBusy, sourceLink }) {
         const metadata = document.createElement('p'); metadata.className = 'radar-preview-meta'
         metadata.textContent = `${draft.fonte || 'Fonte não informada'} · Publicação: ${draft.data_publicacao || 'Confira a data'} · ${draft.categoria}`
         const summary = document.createElement('p'); summary.textContent = draft.resumo
-        const links = document.createElement('ul'); sourceLink(links, googleNews(draft.url) ? 'Abrir no Google Notícias — original não identificado' : 'Abrir fonte original', draft.url)
-        if (googleNews(draft.url)) metadata.textContent += ' · Endereço original não identificado'
+        const links = document.createElement('ul'); sourceLink(links, googleNews(draft.url) ? 'Abrir via Google Notícias — copiar endereço final para corrigir' : 'Abrir fonte original', draft.url)
+        if (googleNews(draft.url)) metadata.textContent += ' · Link intermediário do Google Notícias'
         const actions = document.createElement('div'); actions.className = 'portal-form-actions'
         const message = document.createElement('p'); message.hidden = true; message.setAttribute('role','status')
         const entry = { draft, heading, message, links, metadata, buttons: [], status: 'pendente' }

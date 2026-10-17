@@ -111,7 +111,37 @@ test('tela: prévia não grava, publicação exige confirmação, revisão e des
     assert.equal(requests.length, beforeFailure)
     assert.match(editor.elements.url.value, /news.google.com/)
     assert.match(selectors['[data-radar-editor-message]'].textContent, /HTTP 429/)
+
+    // The curator can paste the URL reached in the other tab despite a Google 429.
+    const ifmg = 'https://www.ifmg.edu.br/portal/noticias/vagas-abertas-em-pos-graduacao-gratuita-em-inteligencia-artificial'
+    globalThis.__radarUiTest.supabase.functions.invoke = async () => { throw new Error('Não consultar Google para URL manual') }
+    for (const invalid of ['javascript:alert(1)', 'http://example.org/noticia', 'https://user:pass@example.org/noticia', 'https://127.0.0.1/noticia']) {
+      editor.elements.url.value = invalid
+      await editor.fire('submit', { submitter: { value: 'revisao' } })
+      assert.equal(requests.length, beforeFailure)
+      assert.match(selectors['[data-radar-editor-message]'].textContent, /HTTPS público válido/)
+    }
+    editor.elements.url.value = ifmg
+    await editor.fire('input', { target: { name: 'url' } })
+    assert.match(selectors['[data-radar-editor-message]'].textContent, /informado manualmente/)
+    assert.equal(requests.length, beforeFailure)
+    await editor.fire('submit', { submitter: { value: 'publicar' } })
+    assert.equal(requests.length, beforeFailure) // Still requires human confirmation.
+    await editor.fire('submit', { submitter: { value: 'revisao' } })
+    assert.equal(requests.length, beforeFailure + 1)
+    assert.equal(requests.at(-1).args.p_conteudo.url, ifmg)
+    assert.equal(requests.at(-1).args.p_conteudo.observacao_colaborador, undefined)
+    assert.equal(requests.at(-1).args.p_confirmacao, false)
+    assert.ok(!selectors['[data-radar-preview]'].children[0].children[1].textContent.includes('Google Notícias'))
   } finally {
     globalThis.document = originalDocument; globalThis.prompt = originalPrompt; delete globalThis.__radarUiTest
   }
+})
+
+test('campo do link original é editável e explica como copiar o destino final', () => {
+  const html = readFileSync(new URL('../radar.html', import.meta.url), 'utf8')
+  const input = html.match(/<input\b[^>]*name="url"[^>]*>/)?.[0]
+  assert.ok(input); assert.doesNotMatch(input, /readonly/)
+  assert.match(input, /maxlength="2048"/)
+  assert.match(html, /copie o endereço final da barra do navegador/)
 })

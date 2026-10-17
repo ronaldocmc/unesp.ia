@@ -1,6 +1,6 @@
 import { requireRole, supabase, showMessage } from './supabase.js'
 import { radarSourceSelection } from './radar-model.js?v=20261016-fontes-uso'
-import { initRadarCuradoria } from './radar-curadoria.js?v=20261017-google-news-item'
+import { initRadarCuradoria } from './radar-curadoria.js?v=20261017-original-edit'
 
 const form = document.querySelector('[data-radar-form]')
 const message = document.querySelector('[data-radar-message]')
