@@ -72,7 +72,10 @@ export async function downloadFeed(input, timeoutMs, {
       }
       if (!response.ok) {
         response.body?.cancel().catch(() => {})
-        throw new Error(`HTTP ${response.status}`)
+        const error = new Error(`HTTP ${response.status}`)
+        error.httpStatus = response.status
+        error.retryAfter = response.headers.get('retry-after')
+        throw error
       }
       if (pageMode && !/^(text\/html|application\/xhtml\+xml)\b/i.test(response.headers.get('content-type') || '')) {
         response.body?.cancel().catch(() => {})

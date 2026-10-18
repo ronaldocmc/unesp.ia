@@ -1,5 +1,5 @@
 // Only controlled values are exported. Never copy raw bodies, headers, tokens or user data.
-const UI_VERSION = '20261018-diagnostico'
+const UI_VERSION = '20261018-cache-pausa'
 
 function publicHost(value) {
   try {
@@ -10,6 +10,10 @@ function publicHost(value) {
 
 function reasonCode(value) {
   if (typeof value !== 'string') return null
+  if (/Pausa compartilhada após/i.test(value)) return 'google_pausa_ativa'
+  if (/intervalo de segurança/i.test(value)) return 'intervalo_entre_conversoes'
+  if (/cache.*indispon|registrar o cache|cache.*inválid/i.test(value)) return 'cache_indisponivel'
+  if (/Conversão pendente/i.test(value)) return 'conversao_sob_demanda'
   if (/HTTP 429/.test(value)) return 'google_limite_de_acessos_429'
   if (/tempo limite/i.test(value)) return 'tempo_limite'
   if (/limite de 10|tempo total de 20/i.test(value)) return 'limite_do_lote'
@@ -27,6 +31,7 @@ export function buildRadarLinkDiagnostic({ inputURL, data, error, httpStatus } =
   const compatible = data?.acao === 'resolver_link_google'
   return {
     versao_tela: UI_VERSION,
+    versao_funcao: data?.versao_radar === '20261018-cache-pausa' ? '20261018-cache-pausa' : null,
     acao_solicitada: 'resolver_link_google',
     estado: error ? (status ? 'erro_http' : 'erro_rede_ou_cors')
       : compatible ? (data.resolvido === true ? 'resolvido' : 'nao_resolvido') : 'resposta_incompativel',
@@ -38,6 +43,8 @@ export function buildRadarLinkDiagnostic({ inputURL, data, error, httpStatus } =
     motivo: status === 401 ? 'autenticacao' : status === 403 ? 'permissao'
       : reasonCode(data?.diagnostico),
     resposta_de_busca: !compatible && (Array.isArray(data?.previas) || Array.isArray(data?.fontes)),
+    origem_resolucao: ['cache','offline','internet','pausa','aguardar','pendente','indisponivel'].includes(data?.origem_resolucao) ? data.origem_resolucao : null,
+    retomar_em: typeof data?.retomar_em === 'string' && Number.isFinite(Date.parse(data.retomar_em)) ? new Date(data.retomar_em).toISOString() : null,
   }
 }
 

@@ -34,3 +34,14 @@ test('lê status HTTP e JSON limitado; aceita resposta inválida sem expor corpo
   assert.deepEqual(await readRadarFunctionError({ context: new Response('not JSON', { status: 500 }) }), { httpStatus: 500, data: null })
   assert.deepEqual(await readRadarFunctionError(new Error('secret')), { httpStatus: null, data: null })
 })
+
+test('diagnóstico distingue pausa compartilhada, cache e leitura sob demanda sem expor lease', () => {
+  const pause = buildRadarLinkDiagnostic({ data: { acao: 'resolver_link_google', resolvido: false,
+    diagnostico: 'Pausa compartilhada após HTTP 429 até 2026-10-18T15:15:00Z', origem_resolucao: 'pausa',
+    retomar_em: '2026-10-18T15:15:00Z', token: 'private-lease' } })
+  assert.equal(pause.motivo, 'google_pausa_ativa')
+  assert.equal(pause.retomar_em, '2026-10-18T15:15:00.000Z')
+  assert.equal(pause.origem_resolucao, 'pausa')
+  assert.doesNotMatch(JSON.stringify(pause), /private-lease|token/)
+  assert.equal(buildRadarLinkDiagnostic({ data: { diagnostico: 'Cache e pausa indisponíveis' } }).motivo, 'cache_indisponivel')
+})

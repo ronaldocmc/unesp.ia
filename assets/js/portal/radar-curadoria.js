@@ -1,5 +1,5 @@
 import { supabase, showMessage } from './supabase.js'
-import { buildRadarLinkDiagnostic, readRadarFunctionError } from './radar-diagnostico.js?v=20261018-diagnostico'
+import { buildRadarLinkDiagnostic, readRadarFunctionError } from './radar-diagnostico.js?v=20261018-cache-pausa'
 
 export function initRadarCuradoria({ canDecide, setBusy, isBusy, sourceLink }) {
   const container = document.querySelector('[data-radar-preview]')
@@ -52,7 +52,11 @@ export function initRadarCuradoria({ canDecide, setBusy, isBusy, sourceLink }) {
         ? `Falha HTTP ${entry.diagnostic.http_status} na conversão. Clique em Copiar diagnóstico.`
         : 'Não foi possível acessar a conversão. Clique em Copiar diagnóstico.')
       if (data?.acao !== 'resolver_link_google') throw new Error('A função não reconheceu a conversão individual. Clique em Copiar diagnóstico.')
-      if (!data.resolvido) throw new Error(`Conversão individual: ${data.diagnostico || 'endereço original não identificado'}.`)
+      if (!data.resolvido) {
+        const retomar = typeof data.retomar_em === 'string' && Number.isFinite(Date.parse(data.retomar_em))
+          ? ` Nova tentativa após ${new Date(data.retomar_em).toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo' })} (Brasília).` : ''
+        throw new Error(`Conversão individual: ${data.diagnostico || 'endereço original não identificado'}.${retomar}`)
+      }
       const url = new URL(data.url)
       if (url.protocol !== 'https:' || googleNews(url.href) || url.username || url.password) throw new Error('A função não retornou um endereço original válido.')
       draft.url = url.href
@@ -61,7 +65,8 @@ export function initRadarCuradoria({ canDecide, setBusy, isBusy, sourceLink }) {
       refreshEntryLink(entry)
       if (editing === entry && dialog.open) {
         editor.elements.url.value = url.href
-        showMessage(editorMessage, 'Endereço original identificado. Confira os demais dados antes de publicar.', 'success')
+        showMessage(editorMessage, data.cache ? 'Endereço original recuperado do cache, sem acessar o Google. Confira os demais dados antes de publicar.'
+          : 'Endereço original identificado. Confira os demais dados antes de publicar.', 'success')
       }
       showMessage(entry.message, 'Endereço original identificado.', 'success')
     } catch (error) {

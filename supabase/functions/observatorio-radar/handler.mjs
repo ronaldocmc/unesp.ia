@@ -5,7 +5,8 @@ import { avaliarRelevanciaIA, SCORE_MINIMO_IA } from './relevance.mjs'
 import { downloadFeed } from './feed-network.mjs'
 import { carregarDescartes, radarLinkKey } from './curadoria.mjs'
 import { searchGroq } from './groq.mjs'
-import { isGoogleNewsLink, resolveGoogleNewsItems, resolveGoogleNewsLink } from './google-news.mjs'
+import { isGoogleNewsLink, resolveGoogleNewsItems } from './google-news.mjs'
+import { createSharedGoogleResolver } from './google-news-cache.mjs'
 
 const cors = { 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type, x-radar-token',
   'Access-Control-Allow-Methods': 'POST, OPTIONS', 'Cache-Control': 'no-store' }
@@ -74,9 +75,14 @@ export function createRadarHandler({ createClient, env, fetchImpl = fetch, downl
           throw new RadarError('Informe um link HTTPS do Google Notícias.', 400)
         }
         let diagnostico = 'conversão não concluída'
-        const url = await resolveGoogleNewsLink(body.url, { readPage, fetchImpl, timeoutMs: 8000, onDiagnostic: value => { diagnostico = value } })
-        // Read-only: no feed collection, model calls, or database writes.
-        return json({ ok: true, acao: 'resolver_link_google', resolvido: !!url, url: url || body.url, diagnostico: url ? null : diagnostico })
+        if (!env.SUPABASE_URL || !env.SUPABASE_SERVICE_ROLE_KEY) throw new RadarError('Cache compartilhado do Radar não configurado no servidor.', 503)
+        const cacheDB = createClient(env.SUPABASE_URL, env.SUPABASE_SERVICE_ROLE_KEY, { auth: { persistSession: false, autoRefreshToken: false } })
+        const resolver = createSharedGoogleResolver({ db: cacheDB, readPage, fetchImpl, now })
+        let state = {}
+        const url = await resolver(body.url, { timeoutMs: 8000, onDiagnostic: value => { diagnostico = value }, onState: value => { state = value } })
+        // Only cache/cooldown writes; never creates or publishes content.
+        return json({ ok: true, versao_radar: '20261018-cache-pausa', acao: 'resolver_link_google', resolvido: !!url, url: url || body.url, diagnostico: url ? null : diagnostico,
+          origem_resolucao: state.origem || 'indisponivel', cache: state.origem === 'cache', retomar_em: state.retomar_em || null })
       }
       const options = radarOptions(body)
       if (!env.SUPABASE_URL || !env.SUPABASE_SERVICE_ROLE_KEY) throw new RadarError('Credenciais do Supabase não configuradas.', 503)
@@ -150,7 +156,8 @@ export function createRadarHandler({ createClient, env, fetchImpl = fetch, downl
           } catch { warnings.push(`Não foi possível atualizar o diagnóstico de ${result.feed.codigo}.`) }
         }
         candidates = accepted.slice(0, options.limite_total)
-        await resolveGoogleNewsItems(candidates, { readPage, fetchImpl })
+        // Bulk searches only reuse cached/offline URLs; new Google requests are on demand.
+        await resolveGoogleNewsItems(candidates, { resolve: createSharedGoogleResolver({ db, readPage, fetchImpl, now }), somenteCache: true })
         candidates = candidates.filter(item => {
           if (knownDiscards.has(radarLinkKey(item.link))) { discardedPreviously++; return false }
           return true
@@ -193,7 +200,7 @@ export function createRadarHandler({ createClient, env, fetchImpl = fetch, downl
           inserted = data || []
         }
       }
-      return json({ ok: true, agente: 'radar', versao_radar: '20261017-google-news-diag', modo: options.modo, ...details,
+      return json({ ok: true, agente: 'radar', versao_radar: '20261018-cache-pausa', modo: options.modo, ...details,
         previa: options.previa, previas: options.previa ? unique.map(toConteudo) : [],
         itens_descartados_anteriormente: discardedPreviously,
         candidatos: candidates.length, duplicados: candidates.length - unique.length, inseridos: inserted.length, itens: inserted,

@@ -379,7 +379,10 @@ async function downloadFeed(input, timeoutMs, {
       }
       if (!response.ok) {
         response.body?.cancel().catch(() => {})
-        throw new Error(`HTTP ${response.status}`)
+        const error = new Error(`HTTP ${response.status}`)
+        error.httpStatus = response.status
+        error.retryAfter = response.headers.get('retry-after')
+        throw error
       }
       if (pageMode && !/^(text\/html|application\/xhtml\+xml)\b/i.test(response.headers.get('content-type') || '')) {
         response.body?.cancel().catch(() => {})
@@ -732,7 +735,7 @@ function decodeGoogleNewsID(link) {
   return null
 }
 
-async function resolveGoogleNewsLink(link, { readPage = downloadRadarPage, fetchImpl = fetch, timeoutMs = 5000, onDiagnostic = () => {} } = {}) {
+async function resolveGoogleNewsLink(link, { readPage = downloadRadarPage, fetchImpl = fetch, timeoutMs = 5000, onDiagnostic = () => {}, onRateLimit = () => {} } = {}) {
   let stage = 'pagina'
   const fail = reason => { onDiagnostic(reason); return null }
   if (!isGoogleNewsLink(link)) return link
@@ -759,7 +762,10 @@ async function resolveGoogleNewsLink(link, { readPage = downloadRadarPage, fetch
         headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8' },
         body: new URLSearchParams({ 'f.req': JSON.stringify([[['Fbv4je', request, null, 'generic']]]) }).toString(),
       })
-      if (!response.ok) { await response.body?.cancel(); return fail(`conversão Google HTTP ${response.status}`) }
+      if (!response.ok) {
+        if (response.status === 429) await onRateLimit(response.headers.get('retry-after'))
+        await response.body?.cancel(); return fail(`conversão Google HTTP ${response.status}`)
+      }
       const text = await readFeedResponse(response, controller.signal)
       for (const line of text.split('\n')) {
         if (!line.startsWith('[[')) continue
@@ -777,6 +783,7 @@ async function resolveGoogleNewsLink(link, { readPage = downloadRadarPage, fetch
     // Only expose controlled diagnostics, never raw response bodies or stack traces.
     const message = String(error?.message || '')
     const status = /^HTTP (\d{3})$/.exec(message)?.[1]
+    if (status === '429' || error?.httpStatus === 429) await onRateLimit(error?.retryAfter)
     return fail(status ? `${stage}: HTTP ${status}` : /abort|tempo limite|timed? ?out/i.test(message) || error?.name === 'AbortError'
       ? `${stage}: tempo limite` : /grande|2 MB/i.test(message) ? `${stage}: página excede 2 MB` : `${stage}: falha de rede ou validação`)
   }
@@ -793,7 +800,7 @@ async function resolveGoogleNewsItems(items, { resolve = resolveGoogleNewsLink, 
     let reason = 'limite de 10 conversões ou tempo total de 20 segundos atingido'
     const legacy = decodeGoogleNewsID(original)
     if (legacy) { item.link = legacy; item.google_news_url = original; continue }
-    if (!cache.has(original) && cache.size < 10 && Date.now() < deadline) {
+    if (!cache.has(original) && (dependencies.somenteCache || cache.size < 10) && Date.now() < deadline) {
       reason = 'conversão não concluída'
       try {
         const link = await resolve(original, { ...dependencies, timeoutMs: Math.max(1, Math.min(3000, deadline - Date.now())), onDiagnostic: value => { reason = value } })
@@ -805,6 +812,80 @@ async function resolveGoogleNewsItems(items, { resolve = resolveGoogleNewsLink, 
     else item.observacao_colaborador = `Link do Google Notícias — endereço original não identificado. Diagnóstico: ${resolved?.reason || reason}. Confira a matéria antes de publicar.`
   }
   return items
+}
+
+
+function googleNewsCacheKey(value) {
+  try {
+    const url = new URL(value)
+    if (url.protocol !== 'https:' || url.hostname !== 'news.google.com' || url.username || url.password || url.port) return null
+    const id = url.pathname.match(/^\/(?:rss\/)?(?:articles|read)\/([A-Za-z0-9_-]+)$/)?.[1]
+    const key = id && `https://news.google.com/articles/${id}`
+    return key && key.length <= 2048 ? key : null
+  } catch { return null }
+}
+
+function googleRetrySeconds(value, nowMs = Date.now()) {
+  if (typeof value === 'string' && value.trim()) {
+    const text = value.trim()
+    const seconds = /^\d+$/.test(text) ? Number(text) : (Date.parse(text) - nowMs) / 1000
+    if (Number.isFinite(seconds) && seconds >= 0) return Math.min(2147483647, Math.max(1, Math.ceil(seconds)))
+  }
+  return 900
+}
+
+function createSharedGoogleResolver({ db, readPage, fetchImpl, now = () => new Date(), resolve = resolveGoogleNewsLink }) {
+  return async (link, { onDiagnostic = () => {}, onState = () => {}, somenteCache = false, timeoutMs = 8000 } = {}) => {
+    if (!isGoogleNewsLink(link)) return link
+    const fail = (reason, state = {}) => { onDiagnostic(reason); onState(state); return null }
+    const key = googleNewsCacheKey(link)
+    if (!key) return fail('identificador inválido')
+    // Offline IDs do not contact Google and need no shared network slot.
+    const legacy = decodeGoogleNewsID(link)
+    if (legacy) { onState({ origem: 'offline' }); return legacy }
+    let started
+    try {
+      const result = await db.rpc('observatorio_google_link_iniciar', { p_chave: key, p_somente_cache: somenteCache })
+      if (result.error || !result.data) throw new Error('Cache unavailable')
+      started = result.data
+    } catch { return fail('Cache e pausa indisponíveis. Execute a migration radar_google_cache antes de converter novos links.') }
+    if (started.situacao === 'cache') {
+      const cached = publisherURL(started.url)
+      if (!cached) return fail('Cache retornou um endereço original inválido.')
+      onState({ origem: 'cache' }); return cached
+    }
+    if (started.situacao === 'pausa' || started.situacao === 'aguardar') {
+      const retomar = typeof started.retomar_em === 'string' && Number.isFinite(Date.parse(started.retomar_em))
+        ? new Date(started.retomar_em).toISOString() : null
+      return fail(started.situacao === 'pausa'
+        ? `Pausa compartilhada após HTTP 429${retomar ? ` até ${retomar}` : ''}. Nenhum novo acesso ao Google foi feito.`
+        : 'Aguarde o intervalo de segurança ou a conversão em andamento. Nenhum novo acesso ao Google foi feito.',
+      { origem: started.situacao, retomar_em: retomar })
+    }
+    if (somenteCache || started.situacao === 'pendente') return fail('Conversão pendente: abra a revisão para identificar o endereço original.', { origem: 'pendente' })
+    if (started.situacao !== 'consultar' || typeof started.token !== 'string') return fail('Cache e pausa retornaram uma resposta inválida.')
+    let original = null, reason = 'conversão não concluída', wait = null
+    try {
+      original = await resolve(link, { readPage, fetchImpl, timeoutMs,
+        onDiagnostic: value => { reason = value },
+        onRateLimit: value => { wait = googleRetrySeconds(value, now().getTime()) },
+      })
+      original = original && publisherURL(original)
+    } catch { reason = 'rede ou validação: falha no resolvedor' }
+    // Never retry a 429. Persist its cooldown before handling the next request.
+    if (wait !== null) original = null
+    try {
+      const finished = await db.rpc('observatorio_google_link_finalizar', {
+        p_chave: key, p_token: started.token, p_url: original || null, p_espera_segundos: wait,
+      })
+      if (finished.error || finished.data?.ok !== true) throw new Error('Cache unavailable')
+      if (wait !== null) return fail('Google HTTP 429: pausa compartilhada registrada. Nenhuma retentativa automática foi feita.',
+        { origem: 'pausa', retomar_em: finished.data.retomar_em || null })
+    } catch { return fail('Não foi possível registrar o cache ou a pausa compartilhada. Nenhuma retentativa foi feita.') }
+    onState({ origem: 'internet' })
+    if (!original) onDiagnostic(reason)
+    return original || null
+  }
 }
 
 
@@ -875,9 +956,14 @@ function createRadarHandler({ createClient, env, fetchImpl = fetch, download = d
           throw new RadarError('Informe um link HTTPS do Google Notícias.', 400)
         }
         let diagnostico = 'conversão não concluída'
-        const url = await resolveGoogleNewsLink(body.url, { readPage, fetchImpl, timeoutMs: 8000, onDiagnostic: value => { diagnostico = value } })
-        // Read-only: no feed collection, model calls, or database writes.
-        return json({ ok: true, acao: 'resolver_link_google', resolvido: !!url, url: url || body.url, diagnostico: url ? null : diagnostico })
+        if (!env.SUPABASE_URL || !env.SUPABASE_SERVICE_ROLE_KEY) throw new RadarError('Cache compartilhado do Radar não configurado no servidor.', 503)
+        const cacheDB = createClient(env.SUPABASE_URL, env.SUPABASE_SERVICE_ROLE_KEY, { auth: { persistSession: false, autoRefreshToken: false } })
+        const resolver = createSharedGoogleResolver({ db: cacheDB, readPage, fetchImpl, now })
+        let state = {}
+        const url = await resolver(body.url, { timeoutMs: 8000, onDiagnostic: value => { diagnostico = value }, onState: value => { state = value } })
+        // Only cache/cooldown writes; never creates or publishes content.
+        return json({ ok: true, versao_radar: '20261018-cache-pausa', acao: 'resolver_link_google', resolvido: !!url, url: url || body.url, diagnostico: url ? null : diagnostico,
+          origem_resolucao: state.origem || 'indisponivel', cache: state.origem === 'cache', retomar_em: state.retomar_em || null })
       }
       const options = radarOptions(body)
       if (!env.SUPABASE_URL || !env.SUPABASE_SERVICE_ROLE_KEY) throw new RadarError('Credenciais do Supabase não configuradas.', 503)
@@ -951,7 +1037,8 @@ function createRadarHandler({ createClient, env, fetchImpl = fetch, download = d
           } catch { warnings.push(`Não foi possível atualizar o diagnóstico de ${result.feed.codigo}.`) }
         }
         candidates = accepted.slice(0, options.limite_total)
-        await resolveGoogleNewsItems(candidates, { readPage, fetchImpl })
+        // Bulk searches only reuse cached/offline URLs; new Google requests are on demand.
+        await resolveGoogleNewsItems(candidates, { resolve: createSharedGoogleResolver({ db, readPage, fetchImpl, now }), somenteCache: true })
         candidates = candidates.filter(item => {
           if (knownDiscards.has(radarLinkKey(item.link))) { discardedPreviously++; return false }
           return true
@@ -994,7 +1081,7 @@ function createRadarHandler({ createClient, env, fetchImpl = fetch, download = d
           inserted = data || []
         }
       }
-      return json({ ok: true, agente: 'radar', versao_radar: '20261017-google-news-diag', modo: options.modo, ...details,
+      return json({ ok: true, agente: 'radar', versao_radar: '20261018-cache-pausa', modo: options.modo, ...details,
         previa: options.previa, previas: options.previa ? unique.map(toConteudo) : [],
         itens_descartados_anteriormente: discardedPreviously,
         candidatos: candidates.length, duplicados: candidates.length - unique.length, inseridos: inserted.length, itens: inserted,

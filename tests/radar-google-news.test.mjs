@@ -99,7 +99,7 @@ test('diagnóstico distingue bloqueio, timeout e formato sem expor erro bruto', 
   assert.match(items[0].observacao_colaborador, /sem parâmetros/)
 })
 
-test('conversão individual autenticada independe do lote e não consulta feeds nem grava banco', async () => {
+test('conversão individual autenticada usa cache privado e não consulta feeds nem grava publicações', async () => {
   let reads = 0
   const caller = {
     auth: { getUser: async () => ({ data: { user: { id: 'curator' } } }) },
@@ -108,9 +108,11 @@ test('conversão individual autenticada independe do lote e não consulta feeds 
       return { select: () => ({ eq: () => ({ maybeSingle: async () => ({ data: { papel: 'observatorio_curador' } }) }) }) }
     },
   }
+  const cacheDB = { rpc: async name => ({ data: name === 'observatorio_google_link_iniciar'
+    ? { situacao: 'consultar', token: '00000000-0000-0000-0000-000000000001' } : { ok: true } }) }
   const handler = createRadarHandler({
-    createClient: () => caller,
-    env: { SUPABASE_URL: 'https://project.supabase.co', SUPABASE_ANON_KEY: 'anon', RADAR_AGENT_TOKEN: 'job' },
+    createClient: (_url, key) => key === 'service' ? cacheDB : caller,
+    env: { SUPABASE_URL: 'https://project.supabase.co', SUPABASE_ANON_KEY: 'anon', SUPABASE_SERVICE_ROLE_KEY: 'service', RADAR_AGENT_TOKEN: 'job' },
     download() { throw new Error('Não deve ler feeds') },
     fetchImpl() { throw new Error('Não deve chamar modelos ou RPC') },
     readPage: async () => { reads++; return { url: article, html: '' } },

@@ -335,3 +335,23 @@ Antes de baixar as páginas, remove descartes conhecidos e consulta links já ca
 O fluxo de decisão mantém o RPC e as políticas de curadoria existentes. Para compatibilidade sem novo SQL, `agente_origem` permanece `radar`; `observacao_colaborador` identifica explicitamente Groq e o modelo. Os modos feeds e Gemini, horários de Cron, limites RSS e seus descartes não são alterados. O modo Groq não implementa ainda controle financeiro diário de R$ 1, registro persistente de consumo ou cobrança por usuário.
 
 Os testes locais simulam a API e as páginas: não validam a chave do usuário, a disponibilidade de browser_search no plano, as cotas, os custos ou o funcionamento final no runtime hospedado. Nenhuma chamada real Groq foi feita.
+
+## Google Notícias: cache persistente e pausa compartilhada (18/10/2026)
+
+Ordem de implantação:
+
+1. Execute o **conteúdo completo** de `supabase/migrations/202610180001_radar_google_cache.sql` no SQL Editor. Não cole apenas o caminho do arquivo.
+2. Substitua `observatorio-radar → Code → index.ts` pelo conteúdo completo do `index.web.ts` regenerado e clique em **Deploy updates**.
+3. Atualize o painel publicado e use Ctrl+F5. Nenhum Secret novo é necessário.
+
+As tabelas ficam no schema `private`, sem leitura/escrita direta para usuários ou para a chave pública. Somente a Edge Function com service role executa os dois RPCs de cache/controle. As permissões de curadoria continuam sendo verificadas antes da conversão individual.
+
+- Conversões novas bem-sucedidas ficam em cache por 30 dias. Variantes `/rss/articles/`, `/articles/` e `/read/` do mesmo ID compartilham a chave, ignorando parâmetros como `oc` e `hl`.
+- A busca RSS em lote só consulta esse cache ou decodifica IDs antigos offline. Novas consultas Google ocorrem sob demanda, ao revisar/salvar um item. Não há retries automáticos de 429.
+- O banco permite uma conversão externa por vez no projeto. Uma reserva expira em 45 segundos se a execução morrer; há intervalo de 5 segundos após a conclusão antes de consultar outro link novo.
+- Ao receber 429 na página ou na conversão RPC, respeita `Retry-After` (segundos ou data HTTP); sem indicação válida, pausa por 15 minutos. Essa pausa é uma precaução local, não uma estimativa de desbloqueio do Google.
+- A pausa vale entre usuários, sessões e instâncias da função. Links em cache continuam disponíveis durante a pausa. Depois dela, uma nova tentativa depende de uma ação do usuário; não é criado agendamento nem tarefa em segundo plano.
+- Se a migration estiver ausente ou o controle não puder ser consultado, não acessa o Google como fallback: mostra aviso de cache indisponível. Nenhuma publicação, fonte, descarte ou job Cron é alterado pela migration.
+- Cache novo não recupera retroativamente conversões antigas nem aprende automaticamente endereços colados manualmente. Bloqueios do Google não são contornados; não há garantia de resolver links novos durante um bloqueio.
+
+O botão **Copiar diagnóstico** informa `origem_resolucao`, motivo da pausa e `retomar_em`, sem copiar leases privados, chaves, cabeçalhos ou o corpo bruto da resposta. Os testes usam rede simulada e PostgreSQL local em memória; não exercitam o Supabase real nem o Google durante o bloqueio.

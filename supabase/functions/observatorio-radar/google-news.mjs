@@ -6,7 +6,7 @@ export function isGoogleNewsLink(value) {
   try { return new URL(value).hostname === 'news.google.com' } catch { return false }
 }
 
-function publisherURL(value) {
+export function publisherURL(value) {
   try {
     const url = publicURL(value)
     if (/(^|\.)google\.[a-z.]+$/.test(url.hostname) || url.pathname === '/') return null
@@ -47,7 +47,7 @@ export function decodeGoogleNewsID(link) {
   return null
 }
 
-export async function resolveGoogleNewsLink(link, { readPage = downloadRadarPage, fetchImpl = fetch, timeoutMs = 5000, onDiagnostic = () => {} } = {}) {
+export async function resolveGoogleNewsLink(link, { readPage = downloadRadarPage, fetchImpl = fetch, timeoutMs = 5000, onDiagnostic = () => {}, onRateLimit = () => {} } = {}) {
   let stage = 'pagina'
   const fail = reason => { onDiagnostic(reason); return null }
   if (!isGoogleNewsLink(link)) return link
@@ -74,7 +74,10 @@ export async function resolveGoogleNewsLink(link, { readPage = downloadRadarPage
         headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8' },
         body: new URLSearchParams({ 'f.req': JSON.stringify([[['Fbv4je', request, null, 'generic']]]) }).toString(),
       })
-      if (!response.ok) { await response.body?.cancel(); return fail(`conversão Google HTTP ${response.status}`) }
+      if (!response.ok) {
+        if (response.status === 429) await onRateLimit(response.headers.get('retry-after'))
+        await response.body?.cancel(); return fail(`conversão Google HTTP ${response.status}`)
+      }
       const text = await readFeedResponse(response, controller.signal)
       for (const line of text.split('\n')) {
         if (!line.startsWith('[[')) continue
@@ -92,6 +95,7 @@ export async function resolveGoogleNewsLink(link, { readPage = downloadRadarPage
     // Only expose controlled diagnostics, never raw response bodies or stack traces.
     const message = String(error?.message || '')
     const status = /^HTTP (\d{3})$/.exec(message)?.[1]
+    if (status === '429' || error?.httpStatus === 429) await onRateLimit(error?.retryAfter)
     return fail(status ? `${stage}: HTTP ${status}` : /abort|tempo limite|timed? ?out/i.test(message) || error?.name === 'AbortError'
       ? `${stage}: tempo limite` : /grande|2 MB/i.test(message) ? `${stage}: página excede 2 MB` : `${stage}: falha de rede ou validação`)
   }
@@ -108,7 +112,7 @@ export async function resolveGoogleNewsItems(items, { resolve = resolveGoogleNew
     let reason = 'limite de 10 conversões ou tempo total de 20 segundos atingido'
     const legacy = decodeGoogleNewsID(original)
     if (legacy) { item.link = legacy; item.google_news_url = original; continue }
-    if (!cache.has(original) && cache.size < 10 && Date.now() < deadline) {
+    if (!cache.has(original) && (dependencies.somenteCache || cache.size < 10) && Date.now() < deadline) {
       reason = 'conversão não concluída'
       try {
         const link = await resolve(original, { ...dependencies, timeoutMs: Math.max(1, Math.min(3000, deadline - Date.now())), onDiagnostic: value => { reason = value } })
