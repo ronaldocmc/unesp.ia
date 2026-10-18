@@ -1,4 +1,5 @@
 import { supabase, showMessage } from './supabase.js'
+import { buildRadarLinkDiagnostic, readRadarFunctionError } from './radar-diagnostico.js?v=20261018-diagnostico'
 
 export function initRadarCuradoria({ canDecide, setBusy, isBusy, sourceLink }) {
   const container = document.querySelector('[data-radar-preview]')
@@ -6,6 +7,7 @@ export function initRadarCuradoria({ canDecide, setBusy, isBusy, sourceLink }) {
   const dialog = document.querySelector('[data-radar-editor]')
   const editor = document.querySelector('[data-radar-editor-form]')
   const editorMessage = document.querySelector('[data-radar-editor-message]')
+  const diagnosticOutput = document.querySelector('[data-radar-diagnostic-output]')
   let entries = []
   let editing = null
   const googleNews = url => { try { return new URL(url).hostname === 'news.google.com' } catch { return false } }
@@ -36,14 +38,20 @@ export function initRadarCuradoria({ canDecide, setBusy, isBusy, sourceLink }) {
 
   async function resolveEntryLink(entry, draft = entry.draft) {
     if (!googleNews(draft.url)) return
+    entry.diagnostic = null
     showMessage(entry.message, 'Identificando endereço original desta matéria...', 'info')
     if (editing === entry && dialog.open) showMessage(editorMessage, 'Identificando endereço original desta matéria...', 'info')
     try {
-      const { data, error } = await supabase.functions.invoke('observatorio-radar', {
+      const { data, error, response } = await supabase.functions.invoke('observatorio-radar', {
         // previa also prevents writes if an older function does not know this action.
         body: { acao: 'resolver_link_google', url: draft.url, previa: true, limite_total: 1 },
       })
-      if (error || data?.acao !== 'resolver_link_google') throw new Error('Atualize a função observatorio-radar para habilitar a conversão individual.')
+      const details = error ? await readRadarFunctionError(error) : { data, httpStatus: response?.status }
+      entry.diagnostic = buildRadarLinkDiagnostic({ inputURL: draft.url, data: details.data, error, httpStatus: details.httpStatus })
+      if (error) throw new Error(entry.diagnostic.http_status
+        ? `Falha HTTP ${entry.diagnostic.http_status} na conversão. Clique em Copiar diagnóstico.`
+        : 'Não foi possível acessar a conversão. Clique em Copiar diagnóstico.')
+      if (data?.acao !== 'resolver_link_google') throw new Error('A função não reconheceu a conversão individual. Clique em Copiar diagnóstico.')
       if (!data.resolvido) throw new Error(`Conversão individual: ${data.diagnostico || 'endereço original não identificado'}.`)
       const url = new URL(data.url)
       if (url.protocol !== 'https:' || googleNews(url.href) || url.username || url.password) throw new Error('A função não retornou um endereço original válido.')
@@ -57,6 +65,7 @@ export function initRadarCuradoria({ canDecide, setBusy, isBusy, sourceLink }) {
       }
       showMessage(entry.message, 'Endereço original identificado.', 'success')
     } catch (error) {
+      if (!entry.diagnostic) entry.diagnostic = buildRadarLinkDiagnostic({ inputURL: draft.url, error })
       const text = `Link do Google Notícias — endereço original não identificado. ${error.message}`
       draft.observacao_colaborador = text; entry.draft.observacao_colaborador = text
       showMessage(entry.message, text, 'info')
@@ -94,6 +103,7 @@ export function initRadarCuradoria({ canDecide, setBusy, isBusy, sourceLink }) {
     editor.elements.confirmacao.checked = false
     editor.elements.confirmacao.required = false
     editorMessage.hidden = true
+    diagnosticOutput.hidden = true; diagnosticOutput.value = ''
     if (googleNews(entry.draft.url)) showMessage(editorMessage, entry.draft.observacao_colaborador?.startsWith('Link do Google Notícias')
       ? entry.draft.observacao_colaborador : 'Link do Google Notícias — endereço original não identificado. Abra a notícia e confira o veículo antes de publicar.', 'info')
     dialog.showModal()
@@ -125,6 +135,20 @@ export function initRadarCuradoria({ canDecide, setBusy, isBusy, sourceLink }) {
     } catch { showMessage(editorMessage, 'Informe um link HTTPS público válido para a matéria.', 'error') }
   })
   document.querySelector('[data-radar-editor-close]').addEventListener('click', () => { if (!isBusy()) dialog.close() })
+  document.querySelector('[data-radar-copy-diagnostic]').addEventListener('click', async () => {
+    if (!editing || isBusy()) return
+    const diagnostic = editing.diagnostic || buildRadarLinkDiagnostic({ inputURL: editing.draft.url })
+    if (!editing.diagnostic) diagnostic.estado = 'conversao_individual_nao_executada'
+    diagnosticOutput.value = JSON.stringify(diagnostic, null, 2)
+    diagnosticOutput.hidden = false
+    try {
+      await navigator.clipboard.writeText(diagnosticOutput.value)
+      showMessage(editorMessage, 'Diagnóstico copiado. Cole o texto na conversa para analisarmos.', 'success')
+    } catch {
+      diagnosticOutput.focus(); diagnosticOutput.select()
+      showMessage(editorMessage, 'Selecione o texto do diagnóstico abaixo e pressione Ctrl+C para copiar.', 'info')
+    }
+  })
   dialog.addEventListener('cancel', event => { if (isBusy()) event.preventDefault() })
 
   return {

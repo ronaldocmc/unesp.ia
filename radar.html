@@ -79,10 +79,12 @@
         <label>Categoria<select name="categoria"><option value="noticia">Notícia</option><option value="pesquisa">Pesquisa</option><option value="aplicacao">Aplicação</option><option value="regulacao">Regulação</option></select></label>
         <label class="radar-choice"><input name="confirmacao" type="checkbox"> Revisei a fonte, a data e os dados e confirmo a publicação deste conteúdo.</label>
         <p data-radar-editor-message role="status" hidden></p>
+        <button class="btn secondary" type="button" data-radar-copy-diagnostic>Copiar diagnóstico</button>
+        <textarea data-radar-diagnostic-output aria-label="Diagnóstico seguro da conversão do link" rows="12" readonly hidden></textarea>
         <div class="portal-form-actions"><button class="btn secondary" type="submit" value="revisao">Salvar para revisão</button><button class="btn" type="submit" value="publicar">Confirmar e publicar</button><button class="btn secondary" type="button" data-radar-editor-close>Cancelar</button></div>
       </form>
     </div>
   </dialog>
-  <script type="module" src="assets/js/portal/radar.js?v=20261017-original-edit"></script>
+  <script type="module" src="assets/js/portal/radar.js?v=20261018-diagnostico"></script>
 </body>
 </html>

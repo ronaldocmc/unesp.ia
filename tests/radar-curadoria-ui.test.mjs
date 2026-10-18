@@ -1,6 +1,7 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
+import { buildRadarLinkDiagnostic, readRadarFunctionError } from '../assets/js/portal/radar-diagnostico.js'
 
 class Element {
   constructor(tag = 'div') { this.tag = tag; this.children = []; this.listeners = {}; this.hidden = false; this.disabled = false; this.open = false; this.textContent = '' }
@@ -17,13 +18,18 @@ class Element {
   }
   showModal() { this.open = true }
   close() { this.open = false }
+  focus() { this.focused = true }
+  select() { this.selected = true }
 }
 const item = { titulo: '<img src=x> Estudo', resumo: 'Resumo da notícia', data_publicacao: '2026-10-16', fonte: 'Fonte',
   categoria: 'pesquisa', url: 'https://news.example.org/artigo', agente_origem: 'radar', relevancia_ia: 90 }
 
 test('tela: prévia não grava, publicação exige confirmação, revisão e descarte são ações explícitas', async () => {
   const originalDocument = globalThis.document; const originalPrompt = globalThis.prompt
-  const selectors = Object.fromEntries(['preview','decisions','editor','editor-form','editor-message','editor-close'].map(key => [`[data-radar-${key}]`, new Element()]))
+  const originalNavigator = Object.getOwnPropertyDescriptor(globalThis, 'navigator')
+  let copied = ''
+  Object.defineProperty(globalThis, 'navigator', { configurable: true, value: { clipboard: { writeText: async value => { copied = value } } } })
+  const selectors = Object.fromEntries(['preview','decisions','editor','editor-form','editor-message','editor-close','copy-diagnostic','diagnostic-output'].map(key => [`[data-radar-${key}]`, new Element()]))
   const editor = selectors['[data-radar-editor-form]']; const dialog = selectors['[data-radar-editor]']
   editor.elements = Object.fromEntries(['titulo','resumo','data_publicacao','fonte','url','categoria','confirmacao'].map(name => [name, { value: '', checked: false, required: false }]))
   editor.reportValidity = () => !editor.elements.confirmacao.required || editor.elements.confirmacao.checked
@@ -31,6 +37,7 @@ test('tela: prévia não grava, publicação exige confirmação, revisão e des
   let reason = ''; globalThis.prompt = () => reason
   let busy = false; const requests = []; let gate = null
   globalThis.__radarUiTest = {
+    buildRadarLinkDiagnostic, readRadarFunctionError,
     supabase: { rpc: async (name, args) => {
       requests.push({ name, args })
       if (gate) await gate
@@ -41,6 +48,7 @@ test('tela: prévia não grava, publicação exige confirmação, revisão e des
   try {
     let source = readFileSync(new URL('../assets/js/portal/radar-curadoria.js', import.meta.url), 'utf8')
     source = source.replace(/^import .*\r?\n/, 'const { supabase, showMessage } = globalThis.__radarUiTest\n')
+    source = source.replace(/^import .*radar-diagnostico[^\r\n]*\r?\n/m, 'const { buildRadarLinkDiagnostic, readRadarFunctionError } = globalThis.__radarUiTest\n')
     const { initRadarCuradoria } = await import(`data:text/javascript,${encodeURIComponent(source)}`)
     const controller = initRadarCuradoria({ canDecide: () => !busy, isBusy: () => busy, setBusy: value => { busy = value }, sourceLink() {} })
     controller.render([item])
@@ -111,6 +119,15 @@ test('tela: prévia não grava, publicação exige confirmação, revisão e des
     assert.equal(requests.length, beforeFailure)
     assert.match(editor.elements.url.value, /news.google.com/)
     assert.match(selectors['[data-radar-editor-message]'].textContent, /HTTP 429/)
+    await selectors['[data-radar-copy-diagnostic]'].fire('click')
+    assert.equal(JSON.parse(copied).motivo, 'google_limite_de_acessos_429')
+    assert.equal(JSON.parse(copied).estado, 'nao_resolvido')
+    assert.equal(requests.length, beforeFailure)
+    assert.equal(selectors['[data-radar-diagnostic-output]'].hidden, false)
+    globalThis.navigator.clipboard.writeText = async () => { throw new Error('Permission denied') }
+    await selectors['[data-radar-copy-diagnostic]'].fire('click')
+    assert.equal(selectors['[data-radar-diagnostic-output]'].selected, true)
+    assert.match(selectors['[data-radar-editor-message]'].textContent, /Ctrl\+C/)
 
     // The curator can paste the URL reached in the other tab despite a Google 429.
     const ifmg = 'https://www.ifmg.edu.br/portal/noticias/vagas-abertas-em-pos-graduacao-gratuita-em-inteligencia-artificial'
@@ -133,8 +150,22 @@ test('tela: prévia não grava, publicação exige confirmação, revisão e des
     assert.equal(requests.at(-1).args.p_conteudo.observacao_colaborador, undefined)
     assert.equal(requests.at(-1).args.p_confirmacao, false)
     assert.ok(!selectors['[data-radar-preview]'].children[0].children[1].textContent.includes('Google Notícias'))
+    // Real HTTP errors retain their status without copying raw error bodies.
+    controller.render([{ ...item, url: 'https://news.google.com/rss/articles/http-error' }])
+    globalThis.__radarUiTest.supabase.functions.invoke = async () => ({ error: {
+      context: Response.json({ error: 'Invalid JWT', token: 'private-token' }, { status: 401 }),
+    } })
+    await buttons()[0].fire('click')
+    assert.match(selectors['[data-radar-editor-message]'].textContent, /HTTP 401/)
+    await selectors['[data-radar-copy-diagnostic]'].fire('click')
+    const httpDiagnostic = JSON.parse(selectors['[data-radar-diagnostic-output]'].value)
+    assert.equal(httpDiagnostic.http_status, 401)
+    assert.equal(httpDiagnostic.motivo, 'autenticacao')
+    assert.doesNotMatch(JSON.stringify(httpDiagnostic), /private-token|Invalid JWT/)
   } finally {
     globalThis.document = originalDocument; globalThis.prompt = originalPrompt; delete globalThis.__radarUiTest
+    if (originalNavigator) Object.defineProperty(globalThis, 'navigator', originalNavigator)
+    else delete globalThis.navigator
   }
 })
 
