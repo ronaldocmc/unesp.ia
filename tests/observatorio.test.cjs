@@ -29,7 +29,10 @@ test('modal Radar explica modalidades, tokens, fontes dinâmicas, horário com f
   assert.match(text, /acionada manualmente, consome tokens/);
   assert.match(text, /08h UTC, equivalente a 05h no horário de Brasília/);
   assert.match(text, /banco de dados/);
-  assert.match(text, /buscas manuais e automáticas, sem alterar o código/);
+  assert.match(text, /sem alterar o código do agente/);
+  assert.match(text, /opções independentes para busca automática e busca manual/);
+  assert.match(text, /duas modalidades, somente de uma delas ou de nenhuma/);
+  assert.match(text, /Fontes desativadas não são consultadas em nenhuma modalidade/);
   assert.match(text, /sem publicação automática/);
   assert.ok(ids['observatory-dialog'].classes.has('obs-dialog--radar'));
   open('dados');

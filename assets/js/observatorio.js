@@ -181,7 +181,7 @@
     radar: [
       ['1. Coleta por feeds RSS — sem tokens de LLM', 'Consulta os feeds RSS/Atom das fontes cadastradas, sem usar APIs de LLM nem consumir tokens de IA. Pode ser executada manualmente ou pelo agendamento diário. Na configuração atual do Cron, o horário é 08h UTC, equivalente a 05h no horário de Brasília.'],
       ['2. Busca por APIs de LLM — com consumo de tokens', 'Pesquisa conteúdos por tema com provedores como Gemini ou Groq, conforme a configuração e a disponibilidade da API. Essa modalidade é acionada manualmente, consome tokens e está sujeita às cotas e condições de cobrança do provedor. Não integra a coleta diária por RSS.'],
-      ['Fontes RSS configuradas dinamicamente', 'O catálogo de feeds RSS fica salvo no banco de dados. Em Fontes Radar, a equipe pode cadastrar, editar, ativar ou desativar fontes e definir sua participação nas buscas manuais e automáticas, sem alterar o código do agente.'],
+      ['Fontes RSS configuradas dinamicamente', 'O catálogo de feeds RSS fica salvo no banco de dados e pode ser atualizado em Fontes Radar, sem alterar o código do agente. Cada fonte possui opções independentes para busca automática e busca manual: pode participar das duas modalidades, somente de uma delas ou de nenhuma, sem precisar ser excluída do cadastro. Fontes desativadas não são consultadas em nenhuma modalidade.'],
       ['Resultados e curadoria', 'A execução manual mostra uma prévia para revisar os dados, salvar para revisão, publicar após confirmação ou descartar. A coleta automática encaminha itens novos ao banco em revisão, sem publicação automática. O Radar verifica duplicidades e respeita os descartes registrados.']
     ]
   };
