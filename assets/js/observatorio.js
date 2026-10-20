@@ -165,8 +165,8 @@
     options.hidden = !open;
   }
   const dialogs = {
-    agentes: ['Arquitetura em desenvolvimento', 'Agentes Inteligentes do Observar.IA', 'Seis especialidades estão previstas: radar, dados, pesquisa, regulação, avaliação e aplicações. Os agentes poderão apoiar coleta, classificação e preparação de sínteses para a equipe.', 'A estrutura de coleta e curadoria já pode ser aproveitada. Os seis agentes especializados não estão em operação. Toda publicação exige fonte identificada e revisão humana.'],
-    radar: ['Em funcionamento', 'Agente Radar', 'Busca diariamente notícias, pesquisas, ferramentas e outras publicações relevantes sobre Inteligência Artificial, organizando os conteúdos encontrados para análise.', 'Os conteúdos coletados são encaminhados à curadoria humana antes da publicação. Outros agentes serão incorporados gradualmente para acompanhar pesquisas, dados e indicadores, regulamentações, aplicações e avaliações relacionadas à IA.'],
+    agentes: ['Arquitetura em desenvolvimento', 'Agentes Inteligentes do Observar.IA', 'A arquitetura reúne seis especialidades: radar, dados, pesquisa, regulação, avaliação e aplicações. O Agente Radar já apoia a coleta por RSS e a busca por tema com APIs de LLM. Os demais agentes estão em desenvolvimento.', 'Os agentes apoiam o trabalho da equipe, sem substituir sua responsabilidade editorial. Toda publicação exige fonte identificada e revisão humana.'],
+    radar: ['Em funcionamento', 'Agente Radar', 'Identifica notícias, pesquisas, eventos, ferramentas e outras publicações sobre Inteligência Artificial por duas modalidades de busca: feeds RSS e APIs de modelos de linguagem (LLM).', 'O Radar apoia a descoberta e a organização de conteúdos. A avaliação da relevância, a conferência das fontes e a decisão de publicar continuam sob responsabilidade da curadoria humana.'],
     dados: ['Agente em desenvolvimento', 'Agente Dados', 'Função prevista: organizar bases de múltiplas fontes, registrar sua procedência, identificar atualizações e preparar indicadores comparáveis.', 'Painéis e indicadores só serão apresentados com fonte, período, metodologia e limitações.'],
     pesquisas: ['Agente em desenvolvimento', 'Agente Pesquisa', 'Função prevista: mapear artigos, teses e outras produções científicas; organizar temas e evidências relevantes no Brasil e no mundo.', 'Sínteses devem preservar as referências e distinguir resultados publicados, hipóteses e limitações.'],
     regulacao: ['Agente em desenvolvimento', 'Agente Regulação', 'Função prevista: acompanhar legislações, políticas públicas, recomendações e mudanças regulatórias relacionadas à Inteligência Artificial.', 'Cada registro deverá identificar a jurisdição, a fonte oficial, a data e a situação da norma. O conteúdo não substitui orientação jurídica.'],
@@ -177,12 +177,29 @@
     fontes: ['Fontes e metodologia', 'Fontes abertas, critérios transparentes', 'O Observatório reúne dados e informações de fontes públicas, bases oficiais, estudos científicos, relatórios técnicos, notícias e publicações especializadas, organismos nacionais e internacionais, instituições de pesquisa, empresas de tecnologia e iniciativas, projetos e pesquisas da UNESP.', 'As fontes efetivamente utilizadas são identificadas em cada publicação. A abrangência das fontes não significa que existam integrações automáticas com todas elas: os conteúdos são cadastrados e revisados pela equipe.'],
     contato: ['Equipe e contato', 'Fale com a equipe do Observar.IA', 'O Observar.IA integra o ecossistema unesp.IA Lab, coordenado pelo Prof. Ronaldo Celso Messias Correia, e está articulado às iniciativas do Departamento de Matemática e Computação da FCT/UNESP, Câmpus de Presidente Prudente.', 'Acesse a página própria da equipe do Observatório para acompanhar sua composição editorial, de curadoria, revisão e apoio técnico.', 'equipe-observatorio.html', 'Conhecer a equipe']
   };
+  const dialogSections = {
+    radar: [
+      ['1. Coleta por feeds RSS — sem tokens de LLM', 'Consulta os feeds RSS/Atom das fontes cadastradas, sem usar APIs de LLM nem consumir tokens de IA. Pode ser executada manualmente ou pelo agendamento diário. Na configuração atual do Cron, o horário é 08h UTC, equivalente a 05h no horário de Brasília.'],
+      ['2. Busca por APIs de LLM — com consumo de tokens', 'Pesquisa conteúdos por tema com provedores como Gemini ou Groq, conforme a configuração e a disponibilidade da API. Essa modalidade é acionada manualmente, consome tokens e está sujeita às cotas e condições de cobrança do provedor. Não integra a coleta diária por RSS.'],
+      ['Fontes RSS configuradas dinamicamente', 'O catálogo de feeds RSS fica salvo no banco de dados. Em Fontes Radar, a equipe pode cadastrar, editar, ativar ou desativar fontes e definir sua participação nas buscas manuais e automáticas, sem alterar o código do agente.'],
+      ['Resultados e curadoria', 'A execução manual mostra uma prévia para revisar os dados, salvar para revisão, publicar após confirmação ou descartar. A coleta automática encaminha itens novos ao banco em revisão, sem publicação automática. O Radar verifica duplicidades e respeita os descartes registrados.']
+    ]
+  };
   function openDialog(name) {
     const content = dialogs[name];
     if (!content) return;
     $('dialog-kicker').textContent = content[0];
     $('dialog-title').textContent = content[1];
     $('dialog-description').textContent = content[2];
+    const details = $('dialog-details');
+    details.replaceChildren();
+    details.hidden = !dialogSections[name]?.length;
+    for (const [heading, text] of dialogSections[name] || []) {
+      const section = element('section', 'obs-dialog-detail');
+      section.append(element('h3', '', heading), element('p', '', text));
+      details.append(section);
+    }
+    $('observatory-dialog').classList.toggle('obs-dialog--radar', name === 'radar');
     $('dialog-note').textContent = content[3];
     const link = $('dialog-link');
     link.hidden = !content[4];

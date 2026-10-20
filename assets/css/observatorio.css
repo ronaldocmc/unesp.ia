@@ -182,6 +182,10 @@
 .obs-dialog-close { position: absolute; top: 12px; right: 12px; display: grid; place-items: center; width: 34px; height: 34px; border: 0; background: #edf5ff; border-radius: 50%; color: #365779; }
 .obs-dialog h2 { font-size: 28px; line-height: 1.15; margin: 8px 0 20px; }
 .obs-dialog p { color: var(--obs-muted); }
+.obs-dialog.obs-dialog--radar { width: min(760px,calc(100% - 32px)); overflow-y: auto; overscroll-behavior: contain; }
+.obs-dialog-detail { margin-block: 18px; }
+.obs-dialog-detail h3 { color: var(--obs-ink); font-size: 17px; line-height: 1.35; margin: 0 0 6px; }
+.obs-dialog-detail p { font-size: 15px; line-height: 1.6; margin: 0; }
 .obs-dialog .obs-dialog-kicker { font-size: 12px; letter-spacing: .06em; text-transform: uppercase; color: #0060d7; font-weight: 700; }
 #dialog-note { padding: 14px; border-radius: 8px; background: #f0f7ff; font-size: 14px; }
 

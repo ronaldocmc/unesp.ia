@@ -5,6 +5,41 @@ const path = require('node:path');
 const model = require('../assets/js/observatorio-model.js');
 const root = path.join(__dirname, '..');
 const data = JSON.parse(fs.readFileSync(path.join(root, 'assets/data/observatorio-conteudos.json'), 'utf8'));
+
+test('modal Radar explica modalidades, tokens, fontes dinâmicas, horário com fuso e curadoria', () => {
+  const source = fs.readFileSync(path.join(root, 'assets/js/observatorio.js'), 'utf8');
+  const block = source.slice(source.indexOf('  const dialogs ='), source.indexOf("  document.addEventListener('DOMContentLoaded'"));
+  class Node {
+    constructor(tag = '') { this.tag = tag; this.children = []; this.hidden = false; this.classes = new Set(); this.classList = { toggle: (name, enabled) => enabled ? this.classes.add(name) : this.classes.delete(name) }; }
+    append(...children) { this.children.push(...children); }
+    replaceChildren() { this.children = []; }
+    showModal() { this.open = true; }
+    set innerHTML(_) { throw new Error('Use textContent'); }
+  }
+  const ids = Object.fromEntries(['dialog-kicker','dialog-title','dialog-description','dialog-note','dialog-link','dialog-details','observatory-dialog'].map(id => [id, new Node()]));
+  const element = (tag, className, text) => Object.assign(new Node(tag), { className, textContent: text });
+  const open = new Function('$', 'element', block + '\nreturn openDialog;')(id => ids[id], element);
+  open('radar');
+  assert.equal(ids['dialog-title'].textContent, 'Agente Radar');
+  assert.equal(ids['dialog-details'].hidden, false);
+  assert.equal(ids['dialog-details'].children.length, 4);
+  const text = ids['dialog-details'].children.map(section => section.children.map(child => child.textContent).join(' ')).join('\n');
+  assert.match(text, /RSS\/Atom/);
+  assert.match(text, /sem usar APIs de LLM nem consumir tokens/);
+  assert.match(text, /acionada manualmente, consome tokens/);
+  assert.match(text, /08h UTC, equivalente a 05h no horário de Brasília/);
+  assert.match(text, /banco de dados/);
+  assert.match(text, /buscas manuais e automáticas, sem alterar o código/);
+  assert.match(text, /sem publicação automática/);
+  assert.ok(ids['observatory-dialog'].classes.has('obs-dialog--radar'));
+  open('dados');
+  assert.equal(ids['dialog-details'].hidden, true);
+  assert.equal(ids['dialog-details'].children.length, 0);
+  assert.ok(!ids['observatory-dialog'].classes.has('obs-dialog--radar'));
+  open('agentes');
+  assert.match(ids['dialog-description'].textContent, /demais agentes estão em desenvolvimento/);
+  assert.doesNotMatch(ids['dialog-note'].textContent, /seis agentes especializados não estão em operação/);
+});
 test('exibe todos os oito conteúdos, com os destaques primeiro e sem duplicação', () => {
   assert.equal(data.itens.length, 8);
   const selected = model.orderedContents(data.itens);
