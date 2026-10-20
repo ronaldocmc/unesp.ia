@@ -302,3 +302,19 @@
   .obs-dialog { padding: 30px 22px 24px; }
 }
 @media (prefers-reduced-motion: reduce) { .observatory-page *, .observatory-page *::before { scroll-behavior: auto !important; transition: none !important; } }
+/* Consulta local e conversa com fontes: conteúdo textual, sem HTML gerado por IA. */
+.obs-dialog.obs-conversation { width: min(860px, calc(100vw - 32px)); max-height: 90vh; overflow-y: auto; }
+.obs-conversation-controls { display: flex; flex-wrap: wrap; gap: 12px; margin: 16px 0; }
+.obs-conversation label { display: block; }
+.obs-conversation select, .obs-conversation textarea { display: block; width: 100%; padding: 10px; border: 1px solid #b7cce3; border-radius: 8px; font: inherit; color: #15234e; background: white; }
+.obs-conversation-controls label { flex: 1 1 220px; }
+.obs-conversation textarea { box-sizing: border-box; resize: vertical; }
+.obs-conversation .obs-conversation-consent { padding: 12px; background: #f0f6ff; border-radius: 8px; font-size: .9rem; }
+.obs-conversation-consent input { margin-right: 8px; }
+.obs-conversation-turn { margin: 16px 0; padding: 16px; border: 1px solid #cdddf1; border-radius: 12px; }
+.obs-conversation-turn h3 { margin: 0 0 12px; font-size: 1rem; overflow-wrap: anywhere; }
+.obs-conversation-answer { white-space: pre-wrap; overflow-wrap: anywhere; }
+.obs-conversation-turn small { display: block; color: #4b6080; }
+.obs-conversation-turn li { margin: 10px 0; }
+.obs-conversation [hidden] { display: none !important; }
+.obs-conversation button:disabled { opacity: .6; cursor: wait; }

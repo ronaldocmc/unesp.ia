@@ -3,6 +3,7 @@
   'use strict';
   const model = window.ObservatoryModel;
   const state = { items: [], area: 'Todos', types: [], query: '', sort: 'featured', failed: false };
+  let conversationLoaded = false;
   const $ = id => document.getElementById(id);
   const areaIcons = { 'Radar de Notícias': 'radar', Dados: 'dados', Pesquisas: 'pesquisas', Avaliações: 'avaliacoes', Regulação: 'regulacao', Aplicações: 'casos', Relatórios: 'publicacoes' };
   const colors = { dados: '#008a7e', pesquisas: '#6515ed', avaliacoes: '#9c5900', regulacao: '#df104a', casos: '#006bff', publicacoes: '#6515ed', radar: '#006bff' };
@@ -136,6 +137,7 @@
     const result = await databaseItems();
     state.items = result.items;
     state.failed = !result.available;
+    conversationLoaded = true;
     render();
   }
   function reset() {
@@ -172,7 +174,7 @@
     regulacao: ['Agente em desenvolvimento', 'Agente Regulação', 'Função prevista: acompanhar legislações, políticas públicas, recomendações e mudanças regulatórias relacionadas à Inteligência Artificial.', 'Cada registro deverá identificar a jurisdição, a fonte oficial, a data e a situação da norma. O conteúdo não substitui orientação jurídica.'],
     avaliacoes: ['Agente em desenvolvimento', 'Agente Avaliação', 'Função prevista: apoiar comparações de modelos, agentes e aplicações, documentando tarefas, dados, critérios e resultados.', 'Avaliações deverão ser reproduzíveis e indicar versões, limitações e possíveis conflitos de interesse. Nenhum benchmark próprio está publicado nesta etapa.'],
     casos: ['Agente em desenvolvimento', 'Agente Aplicações', 'Função prevista: identificar e analisar casos de uso da IA em educação, saúde, gestão, meio ambiente e outros setores.', 'A análise deverá distinguir propostas, experimentos e aplicações em operação, sem tratar promessas como resultados comprovados.'],
-    conversa: ['Recurso em desenvolvimento', 'Converse com o Agente Observar.IA', 'Futuramente, será possível consultar o acervo em linguagem natural. O agente deverá responder com base nas fontes do Observatório, citando evidências e limites.', 'Nenhuma resposta automática está ativa. Por enquanto, use a busca e os filtros para explorar os conteúdos publicados.'],
+    conversa: ['Consulta ao acervo', 'Converse com o Agente Observar.IA', 'Consulte conteúdos publicados por regras e filtros, sem LLM, ou solicite uma resposta com Groq ou Gemini a partir das fontes recuperadas.', 'O modo com LLM exige login, confirmação de consumo e configuração da função observatorio-conversa. Confira as respostas nas fontes.'],
     metodologia: ['Sobre o Observatório', 'Informação com contexto e procedência', 'O Observar.IA — Observatório de Inteligência Artificial da FCT/UNESP reúne, organiza e analisa informações para produzir dados organizados, análises, indicadores, evidências e conhecimento acessível, apoiando pesquisa, formação, inovação, disseminação do conhecimento e tomada de decisões baseada em evidências.', 'Publicações devem ter fonte identificada, data e revisão humana. O cadastro e a publicação são realizados pela equipe. Os agentes especializados são recursos previstos e não substituem a análise crítica nem a responsabilidade editorial.'],
     fontes: ['Fontes e metodologia', 'Fontes abertas, critérios transparentes', 'O Observatório reúne dados e informações de fontes públicas, bases oficiais, estudos científicos, relatórios técnicos, notícias e publicações especializadas, organismos nacionais e internacionais, instituições de pesquisa, empresas de tecnologia e iniciativas, projetos e pesquisas da UNESP.', 'As fontes efetivamente utilizadas são identificadas em cada publicação. A abrangência das fontes não significa que existam integrações automáticas com todas elas: os conteúdos são cadastrados e revisados pela equipe.'],
     contato: ['Equipe e contato', 'Fale com a equipe do Observar.IA', 'O Observar.IA integra o ecossistema unesp.IA Lab, coordenado pelo Prof. Ronaldo Celso Messias Correia, e está articulado às iniciativas do Departamento de Matemática e Computação da FCT/UNESP, Câmpus de Presidente Prudente.', 'Acesse a página própria da equipe do Observatório para acompanhar sua composição editorial, de curadoria, revisão e apoio técnico.', 'equipe-observatorio.html', 'Conhecer a equipe']
@@ -186,6 +188,11 @@
     ]
   };
   function openDialog(name) {
+    if (name === 'conversa') {
+      import('./observatorio-conversa.js?v=20261019-conversa').then(module => module.openConversation(() => ({ items: state.items, available: !state.failed && conversationLoaded })))
+        .catch(() => { alert('Não foi possível abrir a conversa. Atualize a página e tente novamente.'); });
+      return;
+    }
     const content = dialogs[name];
     if (!content) return;
     $('dialog-kicker').textContent = content[0];
