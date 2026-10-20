@@ -189,7 +189,7 @@
   };
   function openDialog(name) {
     if (name === 'conversa') {
-      import('./observatorio-conversa.js?v=20261019-conversa').then(module => module.openConversation(() => ({ items: state.items, available: !state.failed && conversationLoaded })))
+      import('./observatorio-conversa.js?v=20261020-conversa-textos').then(module => module.openConversation(() => ({ items: state.items, available: !state.failed && conversationLoaded })))
         .catch(() => { alert('Não foi possível abrir a conversa. Atualize a página e tente novamente.'); });
       return;
     }

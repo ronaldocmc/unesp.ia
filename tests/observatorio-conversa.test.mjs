@@ -12,7 +12,7 @@ test('busca local reconhece tipo, sinônimos, período e não inventa análises'
   assert.equal(result.total, 1); assert.equal(result.filtros.desde, '2026-10-13')
   assert.equal(searchConversation([row], 'Notícias sobre educação', { now }).total, 0)
   assert.equal(searchConversation([row], 'Pesquisas sobre saúde', { now }).total, 0)
-  assert.match(searchConversation([row], 'Compare pesquisas sobre educação', { now }).resposta, /não comparar/)
+  assert.match(searchConversation([row], 'Compare pesquisas sobre educação', { now }).resposta, /não faz comparações/)
   assert.equal(searchConversation([row], 'Pesquisas ontem', { now }).total, 1)
   assert.equal(searchConversation([row], 'Pesquisas hoje', { now }).total, 0)
   assert.equal(searchConversation([row], 'Pesquisas em 2025', { now }).total, 0)

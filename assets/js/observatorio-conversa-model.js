@@ -64,7 +64,7 @@ export function searchConversation(items, question, options = {}) {
   const filters = parseConversationQuestion(question, options)
   const normalized = conversationNormalize(question).trim()
   if (/^(oi|ola|bom dia|boa tarde|boa noite|ajuda)[!?.\s]*$/.test(normalized)) return { filtros: filters, fontes: [], total: 0,
-    resposta: 'Olá! Posso localizar conteúdos publicados do Observatório. Experimente: “Notícias sobre educação nos últimos 7 dias” ou “Pesquisas sobre saúde”. No modo sem LLM, uso regras e filtros, não produzo análises inéditas.', interpretacao: 'Orientação sobre a busca' }
+    resposta: 'Olá! Qual tema você quer explorar no Observatório? Experimente: “Notícias sobre educação nos últimos 7 dias” ou “Pesquisas sobre saúde”.', interpretacao: 'Orientação sobre a busca' }
   if (/\bcomo\b.*\b(funciona|usar)\b.*\bradar\b/.test(normalized)) return { filtros: filters, fontes: [], total: 0,
     resposta: 'O Agente Radar coleta fontes RSS e oferece busca por APIs de LLM. As fontes RSS podem ser habilitadas separadamente para coleta manual e automática. Os conteúdos passam por curadoria humana antes da publicação.', interpretacao: 'Informação sobre o Agente Radar' }
   if (filters.warning) return { filtros: filters, fontes: [], total: 0, resposta: filters.warning, interpretacao: 'Período não reconhecido' }
@@ -81,8 +81,8 @@ export function searchConversation(items, question, options = {}) {
   }).sort((a, b) => b.score - a.score || b.item.data.localeCompare(a.item.data))
   const interpretacao = `${filters.tipo || 'Todos os tipos'} · ${filters.terms.length ? filters.terms.join(', ') : 'Todos os temas'} · ${filters.periodo}`
   const fontes = scored.slice(0, 6).map(({ item }) => item)
-  const explanation = filters.analysis ? 'Sem LLM, posso localizar fontes, mas não comparar ou gerar análises. ' : ''
+  const explanation = filters.analysis ? 'Esta busca encontra conteúdos sobre o tema, mas não faz comparações ou análises. ' : ''
   return { filtros: filters, fontes, total: scored.length, interpretacao,
-    resposta: explanation + (fontes.length ? `Encontrei ${scored.length} conteúdo(s) publicado(s). Mostro até 6 resultados para você conferir.`
-      : 'Não encontrei conteúdo publicado com esses filtros. Tente outro termo ou um período maior. Isso não significa que não existam estudos sobre o tema fora do acervo.') }
+    resposta: explanation + (fontes.length ? `Encontrei ${scored.length} ${scored.length === 1 ? 'conteúdo sobre o tema' : 'conteúdos sobre o tema'}. Confira ${scored.length > 6 ? 'uma seleção de até 6 resultados' : 'os resultados'} abaixo.`
+      : 'Não encontrei resultados no acervo para essa busca. Tente outro termo ou amplie o período.') }
 }
