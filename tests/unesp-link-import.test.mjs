@@ -1,7 +1,7 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
-import { unespArticleRoute, importUnespArticle, publicURL, createHandler, fetchPage, unespReadEndpoint, readUnespEdgePage } from '../supabase/functions/observatorio-link/core.mjs'
+import { unespArticleRoute, importUnespArticle, publicURL, createHandler, fetchPage, unespReadEndpoint, readUnespEdgePage, officialReadEndpoint, extractMetadata } from '../supabase/functions/observatorio-link/core.mjs'
 
 const url = 'https://www2.unesp.br/portal#!/noticias/v/id::43025/ferramenta-de-inteligencia-artificial'
 const title = 'Ferramenta de inteligência artificial generativa desenvolvida na Unesp'
@@ -112,4 +112,22 @@ test('transporte nativo não libera host, comando, parâmetros ou redirecionamen
   await assert.rejects(readUnespEdgePage(target, '', signal, { fetchImpl: async () => new Response('{}', { headers: { 'Content-Type': 'application/json' } }) }), /formato inesperado/)
   const aborted = new AbortController(); aborted.abort()
   await assert.rejects(readUnespEdgePage(target, '', aborted.signal, { fetchImpl: async () => new Response('x', { headers: { 'Content-Type': 'text/html' } }) }), /Tempo limite/)
+})
+
+test('notícia oficial OAB-SP usa transporte nativo e data estruturada, sem liberar outros hosts', async () => {
+  const input = 'https://www.oabsp.org.br/jornaldaadvocacia/26-10-07-1742-oab-sp-aciona-justica-contra-empresa-de-ia'
+  assert.equal(officialReadEndpoint(input), true)
+  assert.equal(unespReadEndpoint(input), false)
+  for (const bad of [input.replace('www.oabsp.org.br', 'www.oabsp.org.br.evil.org'), input + '?redirect=https://evil.org',
+    input.replace('/jornaldaadvocacia/', '/admin/'), input.replace('https:', 'http:')]) assert.equal(officialReadEndpoint(bad), false)
+  let calls = 0
+  const page = await fetchPage(input, { edgeRuntime: true, resolve: async () => ['104.26.4.210'], fetchImpl: async (requested, options) => {
+    calls++; assert.equal(requested, input); assert.equal(options.redirect, 'manual')
+    return new Response('<head><meta property="og:title" content="OAB SP aciona Justiça contra empresa de IA"></head><script type="application/ld+json">{"@type":"NewsArticle","datePublished":"2026-10-07T17:42:00-03:00"}</script>', { headers: { 'Content-Type': 'text/html' } })
+  } })
+  const result = extractMetadata(page.html, page.url)
+  assert.equal(calls, 1); assert.match(result.draft.titulo, /^OAB SP/)
+  assert.equal(result.draft.data_publicacao, '2026-10-07'); assert.equal(result.date_source, 'structured')
+  await assert.rejects(fetchPage(input, { edgeRuntime: true, resolve: async () => ['104.26.4.210'], fetchImpl: async () =>
+    new Response('', { status: 302, headers: { Location: 'https://evil.org' } }) }), /HTTP 302/)
 })

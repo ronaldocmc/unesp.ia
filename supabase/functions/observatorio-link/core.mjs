@@ -44,7 +44,7 @@ export function publicIPv4(ip) {
 
 const MAX_BYTES = 1024 * 1024
 
-// Fetch nativo só para os dois endpoints públicos oficiais do adaptador Unesp.
+// Fetch nativo só para rotas públicas oficiais explicitamente autorizadas abaixo.
 // Não é um fallback para hosts arbitrários: estes continuam com IP fixado no Node.
 export function unespReadEndpoint(input) {
   let url
@@ -59,8 +59,21 @@ export function unespReadEndpoint(input) {
     && /^id::[1-9]\d{0,9}(?:\/[a-z0-9-]{1,400})?$/i.test(args[3])
 }
 
-export async function readUnespEdgePage(url, _address, signal, { allowXML = false, fetchImpl = fetch } = {}) {
+export function officialReadEndpoint(input) {
+  if (unespReadEndpoint(input)) return true
+  let url
+  try { url = publicURL(String(input)) } catch { return false }
+  return url.origin === 'https://www.oabsp.org.br' && !url.search && !url.hash
+    && /^\/jornaldaadvocacia\/[a-z0-9-]{1,700}\/?$/i.test(url.pathname)
+}
+
+export async function readUnespEdgePage(url, address, signal, options = {}) {
   if (!unespReadEndpoint(url.href)) throw new ImportError('Endpoint público Unesp não permitido.')
+  return readOfficialEdgePage(url, address, signal, options)
+}
+
+async function readOfficialEdgePage(url, _address, signal, { allowXML = false, fetchImpl = fetch } = {}) {
+  if (!officialReadEndpoint(url.href)) throw new ImportError('Endpoint público oficial não permitido.')
   const response = await fetchImpl(url.href, { signal, redirect: 'manual', headers: {
     Accept: allowXML ? 'text/xml,application/xml' : 'text/html,application/xhtml+xml',
     'User-Agent': 'ObservarIA-LinkPreview/1.1',
@@ -68,11 +81,11 @@ export async function readUnespEdgePage(url, _address, signal, { allowXML = fals
   // Sem redirecionamento: nunca estende o fetch nativo a outro host ou endpoint.
   if (!response.ok || (response.url && response.url !== url.href)) {
     await response.body?.cancel()
-    throw new ImportError(`O endpoint Unesp não permitiu a leitura (HTTP ${response.status}). Confira a fonte ou tente mais tarde.`)
+    throw new ImportError(`O endpoint oficial não permitiu a leitura (HTTP ${response.status}). Confira a fonte ou tente mais tarde.`)
   }
   const type = response.headers.get('content-type') || ''
   if (!(allowXML ? /^(text\/xml|application\/xml)\b/i : /^(text\/html|application\/xhtml\+xml)\b/i).test(type)) {
-    await response.body?.cancel(); throw new ImportError('O endpoint Unesp retornou um formato inesperado.')
+    await response.body?.cancel(); throw new ImportError('O endpoint oficial retornou um formato inesperado.')
   }
   if (Number(response.headers.get('content-length')) > MAX_BYTES) {
     await response.body?.cancel(); throw new ImportError('Página muito grande para importação.')
@@ -151,8 +164,8 @@ function readPinnedPage(url, address, signal, { allowXML = false } = {}) {
 export async function fetchPage(input, dependencies = {}) {
   const lookup = dependencies.resolve || (globalThis.Deno?.resolveDns ? host => globalThis.Deno.resolveDns(host, 'A') : resolve4)
   const edgeRuntime = dependencies.edgeRuntime ?? !!globalThis.Deno
-  const read = dependencies.read || ((url, address, signal, options) => edgeRuntime && unespReadEndpoint(url.href)
-    ? readUnespEdgePage(url, address, signal, { ...options, fetchImpl: dependencies.fetchImpl || fetch })
+  const read = dependencies.read || ((url, address, signal, options) => edgeRuntime && officialReadEndpoint(url.href)
+    ? readOfficialEdgePage(url, address, signal, { ...options, fetchImpl: dependencies.fetchImpl || fetch })
     : readPinnedPage(url, address, signal, options))
   const controller = new AbortController()
   const timer = setTimeout(() => controller.abort(), 12000)
@@ -220,7 +233,7 @@ export function extractMetadata(html, inputURL) {
 const cors = { 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type', 'Access-Control-Allow-Methods': 'POST, OPTIONS', 'Cache-Control': 'no-store' }
 export function createHandler({ authorize, readPage = fetchPage }) {
   return async req => {
-    const json = (data, status = 200) => Response.json({ ...data, versao_importador: '20261021-unesp-edge' }, { status, headers: cors })
+    const json = (data, status = 200) => Response.json({ ...data, versao_importador: '20261021-fontes-oficiais-edge' }, { status, headers: cors })
     if (req.method === 'OPTIONS') return new Response(null, { status: 204, headers: cors })
     if (req.method !== 'POST') return json({ error: 'Método não permitido.' }, 405)
     try {
