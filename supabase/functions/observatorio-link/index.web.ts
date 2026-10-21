@@ -69,6 +69,15 @@ class ImportError extends Error {
   constructor(message, status = 422) { super(message); this.status = status }
 }
 
+function unespArticleRoute(value) {
+  let url
+  try { url = new URL(value) } catch { return null }
+  if (url.protocol !== 'https:' || url.hostname !== 'www2.unesp.br' || url.port || url.username || url.password
+    || !/^\/portal\/?$/.test(url.pathname) || url.search) return null
+  const match = /^#!\/noticias\/v\/id::([1-9]\d{0,9})(?:\/([a-z0-9-]{1,400}))?\/?$/i.exec(url.hash)
+  return match ? { id: match[1], article: `id::${match[1]}${match[2] ? '/' + match[2] : ''}`, url: url.href } : null
+}
+
 function publicURL(input, base) {
   if (typeof input !== 'string' || input.length > 2048) throw new ImportError('Informe um link HTTPS público válido.')
   let url
@@ -79,7 +88,7 @@ function publicURL(input, base) {
       host.endsWith('.') || !/^[a-z0-9.-]+$/.test(host)) {
     throw new ImportError('Use uma página pública HTTPS, sem senha, endereço IP ou porta personalizada.')
   }
-  url.hash = ''
+  if (!unespArticleRoute(url.href)) url.hash = ''
   return url
 }
 
@@ -96,11 +105,11 @@ function publicIPv4(ip) {
 
 const MAX_BYTES = 1024 * 1024
 // Pin the validated address: a second DNS lookup must never reach an internal service.
-function readPinnedPage(url, address, signal) {
+function readPinnedPage(url, address, signal, { allowXML = false } = {}) {
   return new Promise((resolve, reject) => {
     const req = request(url, {
       method: 'GET', signal, agent: false,
-      headers: { Accept: 'text/html,application/xhtml+xml', 'Accept-Encoding': 'identity', 'User-Agent': 'ObservarIA-LinkPreview/1.0' },
+      headers: { Accept: allowXML ? 'text/xml,application/xml' : 'text/html,application/xhtml+xml', 'Accept-Encoding': 'identity', 'User-Agent': 'ObservarIA-LinkPreview/1.0' },
       lookup: (_host, options, callback) => options?.all
         ? callback(null, [{ address, family: 4 }]) : callback(null, address, 4),
     }, response => {
@@ -112,7 +121,7 @@ function readPinnedPage(url, address, signal) {
       if (status < 200 || status >= 300) {
         response.destroy(); reject(new ImportError('A fonte não permitiu a leitura. Use o cadastro manual.')); return
       }
-      if (!/^(text\/html|application\/xhtml\+xml)\b/i.test(response.headers['content-type'] || '')) {
+      if (!(allowXML ? /^(text\/xml|application\/xml)\b/i : /^(text\/html|application\/xhtml\+xml)\b/i).test(response.headers['content-type'] || '')) {
         response.destroy(); reject(new ImportError('Este link não é uma página HTML. Cadastre PDFs, vídeos e outros arquivos manualmente.')); return
       }
       if (response.headers['content-encoding'] && response.headers['content-encoding'] !== 'identity') {
@@ -150,7 +159,7 @@ async function fetchPage(input, dependencies = {}) {
     for (let redirects = 0; redirects <= 3; redirects++) {
       const addresses = await Promise.race([lookup(url.hostname), aborted])
       if (!addresses.length || addresses.some(address => !publicIPv4(address))) throw new ImportError('O endereço da fonte não é público.')
-      const result = await Promise.race([read(url, addresses[0], controller.signal), aborted])
+      const result = await Promise.race([read(url, addresses[0], controller.signal, { allowXML: dependencies.allowXML === true }), aborted])
       if (!result.location) return { html: result.html, url: url.href }
       url = publicURL(result.location, url)
     }
@@ -231,12 +240,77 @@ function createHandler({ authorize, readPage = fetchPage }) {
       let body
       try { body = JSON.parse(Buffer.concat(chunks).toString('utf8')) } catch { throw new ImportError('Solicitação inválida.', 400) }
       const url = publicURL(body?.url)
+      if (unespArticleRoute(url.href)) return json(await importUnespArticle(url.href, readPage))
       const page = await readPage(url.href)
       return json(extractMetadata(page.html, page.url))
     } catch (error) {
       return json({ error: error instanceof ImportError ? error.message : 'Não foi possível importar o link. Use o cadastro manual.' }, error instanceof ImportError ? error.status : 500)
     }
   }
+}
+
+// Adaptador restrito ao protocolo público do Portal Unesp. Nunca executa comandos xajax.
+async function importUnespArticle(input, readPage = fetchPage) {
+  const route = unespArticleRoute(input)
+  if (!route) throw new ImportError('Endereço de notícia do Portal Unesp inválido.')
+  const sharing = await readPage(`https://www2.unesp.br/sharer.php?post=${route.id}`)
+  if (new URL(sharing.url).origin !== 'https://www2.unesp.br') throw new ImportError('A fonte redirecionou para outro domínio.')
+  const meta = {}
+  for (const [tag] of sharing.html.split(/<\/head\s*>/i)[0].matchAll(/<meta\b[^>]*>/gi)) {
+    const attr = attributes(tag)
+    meta[(attr.property || attr.name || '').toLowerCase()] = decode(attr.content || '')
+  }
+  if (unespArticleRoute(meta['og:url'])?.id !== route.id) throw new ImportError('A fonte não confirmou a notícia solicitada. Use o cadastro manual.')
+  const result = extractMetadata(sharing.html, route.url)
+  if (!result.draft.titulo) throw new ImportError('A fonte não informou o título da notícia.')
+  result.draft.fonte = 'Portal Unesp'
+  result.draft.data_publicacao = ''; result.date_source = null
+  // O menu do CMS vem do caminho oficial da imagem da própria notícia, não do usuário.
+  let menu
+  try {
+    const image = publicURL(meta['og:image'])
+    const match = /^\/Home\/noticias([1-9]\d{0,9})\/\d{4}\/\d{2}\/([1-9]\d{0,9})\//.exec(image.pathname)
+    if (image.origin === 'https://www2.unesp.br' && match?.[2] === route.id) menu = match[1]
+  } catch { /* Sem caminho conhecido não inventa uma rota ou uma data. */ }
+  if (menu) {
+    try {
+      const endpoint = new URL('https://www2.unesp.br/portal')
+      endpoint.searchParams.set('xajax', 'exibeCorpo')
+      for (const arg of [menu, '', '', route.article, '']) endpoint.searchParams.append('xajaxargs[]', arg)
+      const response = await readPage(endpoint.href, { allowXML: true })
+      if (new URL(response.url).origin !== endpoint.origin || response.html.length > MAX_BYTES) throw new ImportError('Resposta inválida.')
+      // Lê só o HTML atribuído a idCorpo; scripts e demais comandos são ignorados.
+      const command = [...response.html.matchAll(/<cmd\b([^>]*)>\s*<!\[CDATA\[([\s\S]*?)\]\]>\s*<\/cmd>/gi)]
+        .find(match => { const a = attributes(match[1]); return a.n === 'as' && a.t === 'idCorpo' && a.p === 'innerHTML' })
+      const html = command?.[2] || ''
+      const opening = new RegExp(`<div\\b[^>]*\\bid=["']pu-wrapper-post-full-view-${route.id}["'][^>]*>`, 'i').exec(html)
+      if (!opening) throw new ImportError('Corpo da notícia não confirmado.')
+      let depth = 1, end = -1
+      const rest = html.slice(opening.index + opening[0].length)
+      for (const token of rest.matchAll(/<div\b[^>]*>|<\/div\s*>/gi)) {
+        depth += /^<\//.test(token[0]) ? -1 : 1
+        if (!depth) { end = token.index; break }
+      }
+      if (end < 0) throw new ImportError('Corpo da notícia incompleto.')
+      const article = rest.slice(0, end)
+      const heading = /<h2\b[^>]*class=["'][^"']*\bpu-titulo-post\b[^"']*["'][^>]*>([\s\S]*?)<\/h2>/i.exec(article)?.[1]
+      if (plain(heading, 300) !== result.draft.titulo) throw new ImportError('Título divergente no corpo da notícia.')
+      const dates = [...article.matchAll(/<div\b[^>]*class=["']col nowrap["'][^>]*>\s*(\d{2})\/(\d{2})\/(\d{4})\s+\d{2}:\d{2}\s*<\/div>/gi)]
+      if (dates.length === 1) {
+        const [, day, month, year] = dates[0]
+        const metadata = { 'article:published_time': `${year}-${month}-${day}` }
+        const publication = selectPublicationDate('', route.url, metadata)
+        result.draft.data_publicacao = publication.date; result.date_source = publication.source
+      }
+    } catch { result.warnings.push('Não foi possível confirmar a data no corpo desta notícia. Confira na fonte e preencha manualmente.') }
+  }
+  if (!result.draft.data_publicacao && !result.warnings.some(w => w.includes('corpo desta notícia'))) {
+    result.warnings.push('A data desta notícia não pôde ser confirmada. Confira na fonte e preencha manualmente.')
+  }
+  if (result.draft.titulo && result.draft.resumo && result.draft.data_publicacao) {
+    result.warnings = result.warnings.filter(w => !w.startsWith('A fonte não informou todos os campos.'))
+  }
+  return result
 }
 
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'

@@ -1,5 +1,9 @@
 # Atualizar a busca por link pelo Supabase Web
 
+Versão `20261021-importador-unesp`: o painel preserva a rota `#!/noticias/v/id::...` do Portal Unesp. O importador lê os metadados oficiais de `sharer.php?post=ID`, confirma o ID e lê o corpo público pelo comando de consulta `exibeCorpo` do portal para obter a data exibida no artigo. O menu do CMS é identificado pelo caminho oficial da imagem da própria notícia. Não executa JavaScript/xajax, não usa IA e não presume que a data da imagem seja a publicação. Ignora datas de notícias relacionadas e de atualização do texto. Se não confirmar a data, mantém o campo vazio com aviso para preenchimento manual. Se o portal mudar o formato, falha de maneira conservadora. Os limites de tamanho, prazo, DNS/IP público e redirecionamentos continuam ativos; XML só é aceito na leitura interna dessa rota.
+
+É necessário publicar **os arquivos do painel e a função observatorio-link**. Não exige SQL nem alteração de tokens. A publicação de arquivos no servidor/GitHub não atualiza a Edge Function.
+
 1. Abra Edge Functions → **observatorio-link** → Code.
 2. Substitua o conteúdo de `index.ts` pelo conteúdo completo de **index.web.ts**, que reúne todos os módulos em um único arquivo.
 3. Publique a atualização da função. Preserve a configuração de autenticação existente.

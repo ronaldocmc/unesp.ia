@@ -163,7 +163,11 @@ function manualDraft() {
 function normalizeLink(value) {
   const url = new URL(value)
   if (!['https:', 'http:'].includes(url.protocol) || url.username || url.password) throw new Error('Informe um link HTTP ou HTTPS válido, sem credenciais.')
-  url.hash = ''
+  // No Portal Unesp, o fragmento identifica a notícia, não apenas uma âncora.
+  const unespArticle = url.protocol === 'https:' && url.hostname === 'www2.unesp.br' && !url.port
+    && /^\/portal\/?$/.test(url.pathname) && !url.search
+    && /^#!\/noticias\/v\/id::[1-9]\d{0,9}(?:\/[a-z0-9-]{1,400})?\/?$/i.test(url.hash)
+  if (!unespArticle) url.hash = ''
   return url.href
 }
 
