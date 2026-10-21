@@ -1,7 +1,8 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
-import { unespArticleRoute, importUnespArticle, publicURL, createHandler, fetchPage, unespReadEndpoint, readUnespEdgePage, officialReadEndpoint, extractMetadata } from '../supabase/functions/observatorio-link/core.mjs'
+import { unespArticleRoute, importUnespArticle, publicURL, createHandler, fetchPage, unespReadEndpoint } from '../supabase/functions/observatorio-link/core.mjs'
+import { mockEdgeNetwork, edgeFixtureResponse } from './helpers/edge-connection.mjs'
 
 const url = 'https://www2.unesp.br/portal#!/noticias/v/id::43025/ferramenta-de-inteligencia-artificial'
 const title = 'Ferramenta de inteligência artificial generativa desenvolvida na Unesp'
@@ -28,6 +29,20 @@ test('fragmento Unesp preserva notícia específica sem aceitar origens/rotas ar
     assert.equal(unespArticleRoute(input), null)
   }
   assert.equal(publicURL('https://site.org/noticia#ancora').hash, '')
+})
+
+test('adaptador Unesp permanece funcional no transporte Edge geral e só aceita XML na rota interna', async () => {
+  const mock = mockEdgeNetwork(async request => request.startsWith('GET /sharer.php')
+    ? edgeFixtureResponse(sharing) : edgeFixtureResponse(xml(article), { 'Content-Type': 'text/xml' }), { packetSize: 31 })
+  const result = await importUnespArticle(url, (input, options) => fetchPage(input, {
+    ...options, edgeRuntime: true, resolve: async () => ['143.106.1.1'], edgeNetwork: mock.network,
+  }))
+  assert.equal(result.draft.titulo, title); assert.equal(result.draft.data_publicacao, '2026-04-14')
+  assert.equal(mock.requests.length, 2)
+  assert.equal(unespReadEndpoint('https://www2.unesp.br/portal?xajax=excluiItem'), false)
+  const external = mockEdgeNetwork(async () => edgeFixtureResponse('<xjx/>', { 'Content-Type': 'text/xml' }))
+  await assert.rejects(fetchPage('https://site.org/xml', { edgeRuntime: true, allowXML: true,
+    resolve: async () => ['93.184.215.14'], edgeNetwork: external.network }), /HTML/)
 })
 
 test('importa título, resumo e data do artigo, ignorando scripts e datas de notícias relacionadas', async () => {
@@ -80,54 +95,4 @@ test('handler e normalização do painel preservam rota; prévia não publica ne
   const normalize = new Function(`${functionSource}; return normalizeLink`)()
   assert.equal(normalize(url), url)
   assert.equal(normalize('https://site.org/a#ancora'), 'https://site.org/a')
-})
-
-test('transporte Edge nativo lê apenas endpoints Unesp validados, sem ClientRequest.lookup', async () => {
-  let count = 0
-  const result = await importUnespArticle(url, (input, options) => fetchPage(input, {
-    ...options, edgeRuntime: true, resolve: async () => ['143.106.1.1'],
-    fetchImpl: async (input, init) => {
-      count++; assert.equal(init.redirect, 'manual'); assert.ok(unespReadEndpoint(input))
-      const isXML = input.includes('xajax=')
-      return new Response(isXML ? xml(article) : sharing, { headers: { 'Content-Type': isXML ? 'text/xml' : 'text/html' } })
-    },
-  }))
-  assert.equal(count, 2); assert.equal(result.draft.data_publicacao, '2026-04-14')
-  assert.equal(result.draft.titulo, title)
-  let network = 0
-  await assert.rejects(fetchPage('https://www2.unesp.br/sharer.php?post=43025', {
-    edgeRuntime: true, resolve: async () => ['127.0.0.1'], fetchImpl: async () => { network++ },
-  }), /não é público/)
-  assert.equal(network, 0)
-})
-
-test('transporte nativo não libera host, comando, parâmetros ou redirecionamentos arbitrários', async () => {
-  for (const input of ['https://evil.org/sharer.php?post=43025', 'https://www2.unesp.br/sharer.php?post=43025&url=https://evil.org',
-    'https://www2.unesp.br/portal', 'https://www2.unesp.br/portal?xajax=excluiItem',
-    'https://www2.unesp.br/sharer.php?post=abc']) assert.equal(unespReadEndpoint(input), false)
-  const target = new URL('https://www2.unesp.br/sharer.php?post=43025')
-  const signal = new AbortController().signal
-  await assert.rejects(readUnespEdgePage(target, '', signal, { fetchImpl: async () => new Response('', { status: 302, headers: { Location: 'https://evil.org' } }) }), /HTTP 302/)
-  await assert.rejects(readUnespEdgePage(target, '', signal, { fetchImpl: async () => new Response('x'.repeat(1048577), { headers: { 'Content-Type': 'text/html' } }) }), /muito grande/)
-  await assert.rejects(readUnespEdgePage(target, '', signal, { fetchImpl: async () => new Response('{}', { headers: { 'Content-Type': 'application/json' } }) }), /formato inesperado/)
-  const aborted = new AbortController(); aborted.abort()
-  await assert.rejects(readUnespEdgePage(target, '', aborted.signal, { fetchImpl: async () => new Response('x', { headers: { 'Content-Type': 'text/html' } }) }), /Tempo limite/)
-})
-
-test('notícia oficial OAB-SP usa transporte nativo e data estruturada, sem liberar outros hosts', async () => {
-  const input = 'https://www.oabsp.org.br/jornaldaadvocacia/26-10-07-1742-oab-sp-aciona-justica-contra-empresa-de-ia'
-  assert.equal(officialReadEndpoint(input), true)
-  assert.equal(unespReadEndpoint(input), false)
-  for (const bad of [input.replace('www.oabsp.org.br', 'www.oabsp.org.br.evil.org'), input + '?redirect=https://evil.org',
-    input.replace('/jornaldaadvocacia/', '/admin/'), input.replace('https:', 'http:')]) assert.equal(officialReadEndpoint(bad), false)
-  let calls = 0
-  const page = await fetchPage(input, { edgeRuntime: true, resolve: async () => ['104.26.4.210'], fetchImpl: async (requested, options) => {
-    calls++; assert.equal(requested, input); assert.equal(options.redirect, 'manual')
-    return new Response('<head><meta property="og:title" content="OAB SP aciona Justiça contra empresa de IA"></head><script type="application/ld+json">{"@type":"NewsArticle","datePublished":"2026-10-07T17:42:00-03:00"}</script>', { headers: { 'Content-Type': 'text/html' } })
-  } })
-  const result = extractMetadata(page.html, page.url)
-  assert.equal(calls, 1); assert.match(result.draft.titulo, /^OAB SP/)
-  assert.equal(result.draft.data_publicacao, '2026-10-07'); assert.equal(result.date_source, 'structured')
-  await assert.rejects(fetchPage(input, { edgeRuntime: true, resolve: async () => ['104.26.4.210'], fetchImpl: async () =>
-    new Response('', { status: 302, headers: { Location: 'https://evil.org' } }) }), /HTTP 302/)
 })

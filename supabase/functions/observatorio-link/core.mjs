@@ -3,6 +3,7 @@ import { request } from 'node:https'
 import { isIP } from 'node:net'
 import { Buffer } from 'node:buffer'
 import { selectPublicationDate } from '../../../assets/js/portal/publication-date.js'
+import { readPinnedEdgePage } from './edge-transport.mjs'
 
 export class ImportError extends Error {
   constructor(message, status = 422) { super(message); this.status = status }
@@ -44,8 +45,7 @@ export function publicIPv4(ip) {
 
 const MAX_BYTES = 1024 * 1024
 
-// Fetch nativo só para rotas públicas oficiais explicitamente autorizadas abaixo.
-// Não é um fallback para hosts arbitrários: estes continuam com IP fixado no Node.
+// Restrição apenas da consulta XML interna do adaptador Unesp, não de sites HTML.
 export function unespReadEndpoint(input) {
   let url
   try { url = publicURL(String(input)) } catch { return false }
@@ -59,63 +59,6 @@ export function unespReadEndpoint(input) {
     && /^id::[1-9]\d{0,9}(?:\/[a-z0-9-]{1,400})?$/i.test(args[3])
 }
 
-export function officialReadEndpoint(input) {
-  if (unespReadEndpoint(input)) return true
-  let url
-  try { url = publicURL(String(input)) } catch { return false }
-  return url.origin === 'https://www.oabsp.org.br' && !url.search && !url.hash
-    && /^\/jornaldaadvocacia\/[a-z0-9-]{1,700}\/?$/i.test(url.pathname)
-}
-
-export async function readUnespEdgePage(url, address, signal, options = {}) {
-  if (!unespReadEndpoint(url.href)) throw new ImportError('Endpoint público Unesp não permitido.')
-  return readOfficialEdgePage(url, address, signal, options)
-}
-
-async function readOfficialEdgePage(url, _address, signal, { allowXML = false, fetchImpl = fetch } = {}) {
-  if (!officialReadEndpoint(url.href)) throw new ImportError('Endpoint público oficial não permitido.')
-  const response = await fetchImpl(url.href, { signal, redirect: 'manual', headers: {
-    Accept: allowXML ? 'text/xml,application/xml' : 'text/html,application/xhtml+xml',
-    'User-Agent': 'ObservarIA-LinkPreview/1.1',
-  } })
-  // Sem redirecionamento: nunca estende o fetch nativo a outro host ou endpoint.
-  if (!response.ok || (response.url && response.url !== url.href)) {
-    await response.body?.cancel()
-    throw new ImportError(`O endpoint oficial não permitiu a leitura (HTTP ${response.status}). Confira a fonte ou tente mais tarde.`)
-  }
-  const type = response.headers.get('content-type') || ''
-  if (!(allowXML ? /^(text\/xml|application\/xml)\b/i : /^(text\/html|application\/xhtml\+xml)\b/i).test(type)) {
-    await response.body?.cancel(); throw new ImportError('O endpoint oficial retornou um formato inesperado.')
-  }
-  if (Number(response.headers.get('content-length')) > MAX_BYTES) {
-    await response.body?.cancel(); throw new ImportError('Página muito grande para importação.')
-  }
-  const reader = response.body?.getReader()
-  if (!reader) throw new ImportError('A fonte retornou uma página vazia.')
-  const chunks = []; let size = 0
-  const abort = () => { reader.cancel().catch(() => {}) }
-  signal.addEventListener('abort', abort, { once: true })
-  try {
-    if (signal.aborted) throw new ImportError('Tempo limite ao consultar a fonte.')
-    while (true) {
-      const { done, value } = await reader.read()
-      if (signal.aborted) throw new ImportError('Tempo limite ao consultar a fonte.')
-      if (done) break
-      size += value.byteLength
-      if (size > MAX_BYTES) throw new ImportError('Página muito grande para importação.')
-      chunks.push(value)
-    }
-  } finally {
-    signal.removeEventListener('abort', abort)
-    try { await reader.cancel() } catch { /* Corpo já encerrado. */ }
-    reader.releaseLock()
-  }
-  const bytes = new Uint8Array(size); let offset = 0
-  for (const chunk of chunks) { bytes.set(chunk, offset); offset += chunk.byteLength }
-  const charset = /charset\s*=\s*["']?([^;\s"']+)/i.exec(type)?.[1] || 'utf-8'
-  try { return { html: new TextDecoder(charset).decode(bytes) } }
-  catch { return { html: new TextDecoder().decode(bytes) } }
-}
 
 // Pin the validated address: a second DNS lookup must never reach an internal service.
 function readPinnedPage(url, address, signal, { allowXML = false } = {}) {
@@ -164,8 +107,8 @@ function readPinnedPage(url, address, signal, { allowXML = false } = {}) {
 export async function fetchPage(input, dependencies = {}) {
   const lookup = dependencies.resolve || (globalThis.Deno?.resolveDns ? host => globalThis.Deno.resolveDns(host, 'A') : resolve4)
   const edgeRuntime = dependencies.edgeRuntime ?? !!globalThis.Deno
-  const read = dependencies.read || ((url, address, signal, options) => edgeRuntime && officialReadEndpoint(url.href)
-    ? readOfficialEdgePage(url, address, signal, { ...options, fetchImpl: dependencies.fetchImpl || fetch })
+  const read = dependencies.read || ((url, address, signal, options) => edgeRuntime
+    ? readPinnedEdgePage(url, address, signal, { ...options, network: dependencies.edgeNetwork || globalThis.Deno })
     : readPinnedPage(url, address, signal, options))
   const controller = new AbortController()
   const timer = setTimeout(() => controller.abort(), 12000)
@@ -175,7 +118,7 @@ export async function fetchPage(input, dependencies = {}) {
     for (let redirects = 0; redirects <= 3; redirects++) {
       const addresses = await Promise.race([lookup(url.hostname), aborted])
       if (!addresses.length || addresses.some(address => !publicIPv4(address))) throw new ImportError('O endereço da fonte não é público.')
-      const result = await Promise.race([read(url, addresses[0], controller.signal, { allowXML: dependencies.allowXML === true }), aborted])
+      const result = await Promise.race([read(url, addresses[0], controller.signal, { allowXML: dependencies.allowXML === true && unespReadEndpoint(url.href) }), aborted])
       if (!result.location) return { html: result.html, url: url.href }
       url = publicURL(result.location, url)
     }
@@ -183,7 +126,7 @@ export async function fetchPage(input, dependencies = {}) {
   } catch (error) {
     if (error instanceof ImportError) throw error
     throw new ImportError('Não foi possível ler esta fonte. Tente outro link ou faça o cadastro manual.')
-  } finally { clearTimeout(timer) }
+  } finally { clearTimeout(timer); controller.abort() }
 }
 
 const entities = { amp: '&', quot: '"', apos: "'", lt: '<', gt: '>', nbsp: ' ' }
@@ -233,7 +176,7 @@ export function extractMetadata(html, inputURL) {
 const cors = { 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type', 'Access-Control-Allow-Methods': 'POST, OPTIONS', 'Cache-Control': 'no-store' }
 export function createHandler({ authorize, readPage = fetchPage }) {
   return async req => {
-    const json = (data, status = 200) => Response.json({ ...data, versao_importador: '20261021-fontes-oficiais-edge' }, { status, headers: cors })
+    const json = (data, status = 200) => Response.json({ ...data, versao_importador: '20261021-geral-edge' }, { status, headers: cors })
     if (req.method === 'OPTIONS') return new Response(null, { status: 204, headers: cors })
     if (req.method !== 'POST') return json({ error: 'Método não permitido.' }, 405)
     try {
