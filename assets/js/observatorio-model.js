@@ -43,7 +43,7 @@
     if (typeof value !== 'string' || !value.trim()) return null;
     try {
       const url = new URL(value, base);
-      return ['http:', 'https:'].includes(url.protocol) ? url.href : null;
+      return ['http:', 'https:'].includes(url.protocol) && !url.username && !url.password ? url.href : null;
     } catch { return null; }
   }
   function fromDatabase(row) {
@@ -51,7 +51,9 @@
       id: 'supabase-' + row.id, colecao: row.colecao, tipo: row.tipo, categoria: row.categoria,
       titulo: row.titulo, resumo: row.resumo, data: row.data_publicacao,
       fonte: row.veiculo ? row.veiculo + ' • ' + (row.fonte || '') : row.fonte,
-      veiculo: row.veiculo, projeto: row.projeto_relacionado, href: row.url,
+      veiculo: row.veiculo, projeto: row.projeto_relacionado,
+      href: safeURL(row.url_original) || row.url || row.url_rss,
+      url_rss: row.url_rss || row.url, link_intermediario: /^https:\/\/news\.google\.com\//i.test(safeURL(row.url_original) || row.url || row.url_rss || ''),
       imagem: row.imagem_url, destaque: row.destaque === true,
       tags: String(row.palavras_chave || '').split(',').map(value => value.trim()).filter(Boolean),
       revisao: 'Revisão humana concluída'

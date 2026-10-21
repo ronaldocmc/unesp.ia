@@ -1,6 +1,6 @@
 import { requireRole, supabase, showMessage } from './supabase.js'
 import { publicationDateFromURL } from './publication-date.js'
-import { validateFeedDraft } from './radar-model.js?v=20261016-fontes-uso'
+import { validateFeedDraft } from './radar-model.js?v=20261020-resolucao-inteligente'
 
 const IMAGE_BUCKET = 'ecossistema-imagens'
 const IMAGE_MAX_BYTES = 3 * 1024 * 1024
@@ -32,6 +32,9 @@ const definitions = {
       ['prioridade','Prioridade: 1 alta, 2 média, 3 baixa','number',true], ['ativo','Fonte ativa','checkbox',false,true],
       ['busca_manual','Disponível na busca manual','checkbox',false,true],
       ['busca_automatica','Incluir na busca automática','checkbox',false,true],
+      ['resolucao_oficial','Feed oficial do veículo para identificar links originais','checkbox',false,false],
+      ['dominio_veiculo','Domínio oficial do veículo (ex.: g1.globo.com, sem https://)','text',false],
+      ['aliases_veiculo','Outros nomes do veículo, separados por vírgulas','text',false],
     ] },
   ecossistema_eixos: { title: 'Configuração dos eixos', description: 'Edite identidade, descrição, destaques e chamada pública dos quatro eixos.', pk: ['id'], order: 'ordem', columns: ['id','ordem','nome','rotulo','status','revisao_humana'], fields: [
     ['id','Identificador técnico','text',true], ['ordem','Ordem','number',true], ['nome','Nome público','text',true],
@@ -319,12 +322,15 @@ async function openDialog(row = null, options = {}) {
   const container = $('[data-dialog-fields]')
   container.innerHTML = ''
   for (const [name, label, type, required, source] of def.fields) {
+    // SELECT * permite detectar o upgrade sem exigir as novas colunas no banco antigo.
+    if (state.table === 'observatorio_feeds' && ['resolucao_oficial','dominio_veiculo','aliases_veiculo'].includes(name)
+      && typeof row?.resolucao_oficial !== 'boolean' && !state.rows.some(item => typeof item.resolucao_oficial === 'boolean')) continue
     const value = row?.[name]
     const disabled = Boolean(row && def.pk.includes(name))
     let control
     if (type === 'fixed') control = `<span class="portal-fixed-value">${escapeHtml(source)}</span><input type="hidden" name="${name}" value="${escapeHtml(source)}">`
     else if (type === 'textarea') control = `<textarea name="${name}" ${required ? 'required' : ''}>${escapeHtml(value)}</textarea>`
-    else if (type === 'checkbox') control = `<input type="checkbox" name="${name}" ${(row ? value !== false : source !== false) ? 'checked' : ''}>`
+    else if (type === 'checkbox') control = `<input type="checkbox" name="${name}" ${(name === 'resolucao_oficial' ? value === true : row ? value !== false : source !== false) ? 'checked' : ''}>`
     else if (type === 'select-static') control = `<select name="${name}" ${required ? 'required' : ''}>${required ? '' : '<option value="">Selecione</option>'}${source.map(v => `<option value="${v}" ${value === v ? 'selected' : ''}>${v}</option>`).join('')}</select>`
     else if (type === 'image-upload') {
       const preview = value ? `<img src="${escapeHtml(value)}" alt="Prévia da imagem do card" loading="lazy">` : ''
@@ -456,6 +462,7 @@ async function uploadDownloadField(event) {
 function formPayload(def) {
   const fd = new FormData(form); const payload = {}
   for (const [name,,type,,source] of def.fields) {
+    if (!form.elements[name] && ['resolucao_oficial','dominio_veiculo','aliases_veiculo'].includes(name)) continue
     if (type === 'checkbox') payload[name] = form.elements[name].checked
     else if (type === 'fixed') payload[name] = source
     else if (['number','select'].includes(type) && fd.get(name) !== '') payload[name] = Number(fd.get(name))

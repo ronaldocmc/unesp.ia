@@ -56,9 +56,15 @@ export function parseFeed(xml, fonte) {
     const link = linkFromEntry(block)
     const titulo = cleanText(tagValue(block, 'title'), 300)
     const resumo = cleanText(tagValue(block, 'description') || tagValue(block, 'summary') || tagValue(block, 'content'), 1200)
-    const data = normalizeDate(tagValue(block, 'pubDate') || tagValue(block, 'published') || tagValue(block, 'updated'))
+    const publishedDate = tagValue(block, 'pubDate') || tagValue(block, 'published')
+    const rawDate = publishedDate || tagValue(block, 'updated')
+    const data = normalizeDate(rawDate)
     const veiculo = cleanText(tagValue(block, 'source'), 200)
-    return { link, titulo, resumo, data, fonte: veiculo && /^https:\/\/news\.google\.com\//i.test(link) ? { ...fonte, origem: veiculo } : fonte }
+    const sourceURL = /<source\b[^>]*\burl=["']([^"']+)["']/i.exec(block)?.[1]
+    let dominio_veiculo = null
+    try { const source = new URL(decode(sourceURL || '')); if (source.protocol === 'https:' && !source.username && !source.password) dominio_veiculo = source.hostname } catch { /* Pista opcional, nunca autorização para baixar feed arbitrário. */ }
+    return { link, titulo, resumo, data, data_confirmada: !!publishedDate && Number.isFinite(Date.parse(cleanText(publishedDate, 200))), dominio_veiculo,
+      fonte: veiculo && /^https:\/\/news\.google\.com\//i.test(link) ? { ...fonte, origem: veiculo } : fonte }
   }).filter(item => item.link && item.titulo)
 }
 

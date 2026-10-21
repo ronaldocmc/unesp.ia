@@ -20,13 +20,13 @@ export function googleRetrySeconds(value, nowMs = Date.now()) {
 }
 
 export function createSharedGoogleResolver({ db, readPage, fetchImpl, now = () => new Date(), resolve = resolveGoogleNewsLink }) {
-  return async (link, { onDiagnostic = () => {}, onState = () => {}, somenteCache = false, timeoutMs = 8000 } = {}) => {
+  return async (link, { onDiagnostic = () => {}, onState = () => {}, onAttempt = () => {}, somenteCache = false, timeoutMs = 8000, persistOriginal = true, allowOffline = true } = {}) => {
     if (!isGoogleNewsLink(link)) return link
     const fail = (reason, state = {}) => { onDiagnostic(reason); onState(state); return null }
     const key = googleNewsCacheKey(link)
     if (!key) return fail('identificador inválido')
     // Offline IDs do not contact Google and need no shared network slot.
-    const legacy = decodeGoogleNewsID(link)
+    const legacy = allowOffline ? decodeGoogleNewsID(link) : null
     if (legacy) { onState({ origem: 'offline' }); return legacy }
     let started
     try {
@@ -51,6 +51,7 @@ export function createSharedGoogleResolver({ db, readPage, fetchImpl, now = () =
     if (started.situacao !== 'consultar' || typeof started.token !== 'string') return fail('Cache e pausa retornaram uma resposta inválida.')
     let original = null, reason = 'conversão não concluída', wait = null
     try {
+      onAttempt()
       original = await resolve(link, { readPage, fetchImpl, timeoutMs,
         onDiagnostic: value => { reason = value },
         onRateLimit: value => { wait = googleRetrySeconds(value, now().getTime()) },
@@ -61,7 +62,7 @@ export function createSharedGoogleResolver({ db, readPage, fetchImpl, now = () =
     if (wait !== null) original = null
     try {
       const finished = await db.rpc('observatorio_google_link_finalizar', {
-        p_chave: key, p_token: started.token, p_url: original || null, p_espera_segundos: wait,
+        p_chave: key, p_token: started.token, p_url: persistOriginal ? original || null : null, p_espera_segundos: wait,
       })
       if (finished.error || finished.data?.ok !== true) throw new Error('Cache unavailable')
       if (wait !== null) return fail('Google HTTP 429: pausa compartilhada registrada. Nenhuma retentativa automática foi feita.',

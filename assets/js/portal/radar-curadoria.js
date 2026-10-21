@@ -1,7 +1,7 @@
 import { supabase, showMessage } from './supabase.js'
-import { buildRadarLinkDiagnostic, readRadarFunctionError } from './radar-diagnostico.js?v=20261018-cache-pausa'
+import { buildRadarLinkDiagnostic, readRadarFunctionError } from './radar-diagnostico.js?v=20261020-resolucao-inteligente'
 
-export function initRadarCuradoria({ canDecide, setBusy, isBusy, sourceLink }) {
+export function initRadarCuradoria({ canDecide, setBusy, isBusy, sourceLink, schedule = setTimeout, cancelSchedule = clearTimeout }) {
   const container = document.querySelector('[data-radar-preview]')
   const counts = document.querySelector('[data-radar-decisions]')
   const dialog = document.querySelector('[data-radar-editor]')
@@ -10,6 +10,20 @@ export function initRadarCuradoria({ canDecide, setBusy, isBusy, sourceLink }) {
   const diagnosticOutput = document.querySelector('[data-radar-diagnostic-output]')
   let entries = []
   let editing = null
+  let pollTimer = null
+  function stopPolling() { if (pollTimer !== null) cancelSchedule(pollTimer); pollTimer = null }
+  function pollQueue(entry, remaining = 60) {
+    stopPolling()
+    if (!remaining || editing !== entry || !dialog.open || entry.status !== 'pendente'
+      || !['pendente','processando'].includes(entry.fila) || !googleNews(entry.draft.url)) return
+    pollTimer = schedule(async () => {
+      pollTimer = null
+      if (editing !== entry || !dialog.open || entry.status !== 'pendente' || editor.elements.url.value !== entry.draft.url) return
+      if (!isBusy()) await resolveEntryLink(entry, entry.draft, { somenteCache: true })
+      pollQueue(entry, remaining - 1)
+    }, 30000)
+    pollTimer?.unref?.()
+  }
   const googleNews = url => { try { return new URL(url).hostname === 'news.google.com' } catch { return false } }
   function validatedSourceURL(value) {
     const url = new URL(value)
@@ -22,7 +36,7 @@ export function initRadarCuradoria({ canDecide, setBusy, isBusy, sourceLink }) {
   function refreshEntryLink(entry) {
     const draft = entry.draft
     entry.links.replaceChildren()
-    sourceLink(entry.links, googleNews(draft.url) ? 'Abrir via Google Notícias — copiar endereço final para corrigir' : 'Abrir fonte original', draft.url)
+    sourceLink(entry.links, googleNews(draft.url) ? 'Abrir matéria via Google Notícias' : 'Abrir fonte original', draft.url)
     entry.metadata.textContent = `${draft.fonte || 'Fonte não informada'} · Publicação: ${draft.data_publicacao || 'Confira a data'} · ${draft.categoria}`
       + (googleNews(draft.url) ? ' · Link intermediário do Google Notícias' : '')
   }
@@ -36,22 +50,29 @@ export function initRadarCuradoria({ canDecide, setBusy, isBusy, sourceLink }) {
     counts.textContent = `${count('pendente')} pendentes; ${count('revisao')} salvos para revisão; ${count('publicado')} publicados; ${count('descartado')} descartados; ${count('ja_cadastrado')} já cadastrados.`
   }
 
-  async function resolveEntryLink(entry, draft = entry.draft) {
+  async function resolveEntryLink(entry, draft = entry.draft, { somenteCache = false } = {}) {
     if (!googleNews(draft.url)) return
-    entry.diagnostic = null
-    showMessage(entry.message, 'Identificando endereço original desta matéria...', 'info')
-    if (editing === entry && dialog.open) showMessage(editorMessage, 'Identificando endereço original desta matéria...', 'info')
+    const requestedURL = draft.url
+    if (!somenteCache) {
+      entry.diagnostic = null
+      showMessage(entry.message, 'Identificando endereço original desta matéria...', 'info')
+      if (editing === entry && dialog.open) showMessage(editorMessage, 'Identificando endereço original desta matéria...', 'info')
+    }
     try {
       const { data, error, response } = await supabase.functions.invoke('observatorio-radar', {
         // previa also prevents writes if an older function does not know this action.
-        body: { acao: 'resolver_link_google', url: draft.url, previa: true, limite_total: 1 },
+        body: { acao: 'resolver_link_google', url: draft.url, previa: true, limite_total: 1, ...(somenteCache ? { somente_cache: true } : {}) },
       })
+      if (somenteCache && (editing !== entry || !dialog.open || editor.elements.url.value !== requestedURL)) return
       const details = error ? await readRadarFunctionError(error) : { data, httpStatus: response?.status }
       entry.diagnostic = buildRadarLinkDiagnostic({ inputURL: draft.url, data: details.data, error, httpStatus: details.httpStatus })
       if (error) throw new Error(entry.diagnostic.http_status
         ? `Falha HTTP ${entry.diagnostic.http_status} na conversão. Clique em Copiar diagnóstico.`
         : 'Não foi possível acessar a conversão. Clique em Copiar diagnóstico.')
       if (data?.acao !== 'resolver_link_google') throw new Error('A função não reconheceu a conversão individual. Clique em Copiar diagnóstico.')
+      entry.fila = data.fila
+      if (entry.retryButton) entry.retryButton.hidden = data.fila !== 'falhou'
+      if (somenteCache && !data.resolvido) return
       if (!data.resolvido) {
         const retomar = typeof data.retomar_em === 'string' && Number.isFinite(Date.parse(data.retomar_em))
           ? ` Nova tentativa após ${new Date(data.retomar_em).toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo' })} (Brasília).` : ''
@@ -69,9 +90,13 @@ export function initRadarCuradoria({ canDecide, setBusy, isBusy, sourceLink }) {
           : 'Endereço original identificado. Confira os demais dados antes de publicar.', 'success')
       }
       showMessage(entry.message, 'Endereço original identificado.', 'success')
+      stopPolling()
     } catch (error) {
+      if (somenteCache) return // Mantém o aviso anterior; a consulta de cache não acessa o Google.
       if (!entry.diagnostic) entry.diagnostic = buildRadarLinkDiagnostic({ inputURL: draft.url, error })
-      const text = `Link do Google Notícias — endereço original não identificado. ${error.message}`
+      const queued = ['pendente','processando'].includes(entry.fila)
+        ? ' O link está na fila automática. Este campo será atualizado quando o endereço ficar disponível; se preferir, você pode informá-lo manualmente.' : ''
+      const text = `Link do Google Notícias — endereço original não identificado. ${error.message}${queued}`
       draft.observacao_colaborador = text; entry.draft.observacao_colaborador = text
       showMessage(entry.message, text, 'info')
       if (editing === entry && dialog.open) showMessage(editorMessage, text, 'info')
@@ -103,7 +128,7 @@ export function initRadarCuradoria({ canDecide, setBusy, isBusy, sourceLink }) {
 
   async function openEditor(entry) {
     if (!canDecide() || entry.status !== 'pendente') return
-    editing = entry
+    stopPolling(); editing = entry
     for (const name of ['titulo','resumo','data_publicacao','fonte','url','categoria']) editor.elements[name].value = entry.draft[name] || ''
     editor.elements.confirmacao.checked = false
     editor.elements.confirmacao.required = false
@@ -114,7 +139,7 @@ export function initRadarCuradoria({ canDecide, setBusy, isBusy, sourceLink }) {
     dialog.showModal()
     if (googleNews(entry.draft.url)) {
       setBusy(true); sync()
-      try { await resolveEntryLink(entry) } finally { setBusy(false); sync() }
+      try { await resolveEntryLink(entry) } finally { setBusy(false); sync(); pollQueue(entry) }
     }
   }
   editor.addEventListener('submit', async event => {
@@ -155,19 +180,23 @@ export function initRadarCuradoria({ canDecide, setBusy, isBusy, sourceLink }) {
     }
   })
   dialog.addEventListener('cancel', event => { if (isBusy()) event.preventDefault() })
+  dialog.addEventListener('close', stopPolling)
 
   return {
     sync,
     hasPending: () => entries.some(entry => entry.status === 'pendente'),
     render(drafts) {
-      container.replaceChildren(); editing = null
+      stopPolling(); container.replaceChildren(); editing = null
       entries = drafts.map(draft => {
+        if (draft.url_original) {
+          try { const original = validatedSourceURL(draft.url_original); if (!googleNews(original)) draft = { ...draft, url: original } } catch { /* Preserva o fallback. */ }
+        }
         const card = document.createElement('article'); card.className = 'radar-preview-card'
         const heading = document.createElement('h4'); heading.textContent = draft.titulo
         const metadata = document.createElement('p'); metadata.className = 'radar-preview-meta'
         metadata.textContent = `${draft.fonte || 'Fonte não informada'} · Publicação: ${draft.data_publicacao || 'Confira a data'} · ${draft.categoria}`
         const summary = document.createElement('p'); summary.textContent = draft.resumo
-        const links = document.createElement('ul'); sourceLink(links, googleNews(draft.url) ? 'Abrir via Google Notícias — copiar endereço final para corrigir' : 'Abrir fonte original', draft.url)
+        const links = document.createElement('ul'); sourceLink(links, googleNews(draft.url) ? 'Abrir matéria via Google Notícias' : 'Abrir fonte original', draft.url)
         if (googleNews(draft.url)) metadata.textContent += ' · Link intermediário do Google Notícias'
         const actions = document.createElement('div'); actions.className = 'portal-form-actions'
         const message = document.createElement('p'); message.hidden = true; message.setAttribute('role','status')
@@ -185,6 +214,23 @@ export function initRadarCuradoria({ canDecide, setBusy, isBusy, sourceLink }) {
           })
           entry.buttons.push(button); actions.append(button)
         }
+        const retry = document.createElement('button'); retry.type = 'button'; retry.className = 'btn-small secondary'
+        retry.textContent = 'Reprocessar link'; retry.hidden = true; entry.retryButton = retry
+        retry.addEventListener('click', async () => {
+          if (!canDecide() || isBusy() || entry.status !== 'pendente' || entry.fila !== 'falhou') return
+          const id = new URL(entry.draft.url).pathname.match(/^\/(?:rss\/)?(?:articles|read)\/([A-Za-z0-9_-]+)$/)?.[1]
+          if (!id) return
+          setBusy(true); sync()
+          try {
+            const { data, error } = await supabase.rpc('observatorio_resolucao_reprocessar', { p_chave: `https://news.google.com/articles/${id}` })
+            if (error || !data?.ok) throw new Error('Não foi possível reabrir este link. Confira se a atualização do banco foi aplicada.')
+            entry.fila = 'pendente'; retry.hidden = true
+            showMessage(entry.message, 'Link recolocado na fila. Os intervalos e bloqueios dos provedores continuam sendo respeitados.', 'info')
+            pollQueue(entry)
+          } catch (error) { showMessage(entry.message, error.message, 'error') }
+          finally { setBusy(false); sync() }
+        })
+        entry.buttons.push(retry); actions.append(retry)
         card.append(heading, metadata, summary, links, actions, message); container.append(card)
         return entry
       })

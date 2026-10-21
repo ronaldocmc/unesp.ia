@@ -96,3 +96,24 @@ export async function downloadFeed(input, timeoutMs, {
 }
 
 export const downloadRadarPage = (input, timeoutMs = 8000, dependencies = {}) => downloadFeed(input, timeoutMs, { ...dependencies, pageMode: true })
+
+// JSON para provedores explicitamente configurados. Nunca segue redirects com credenciais.
+export async function requestRadarJSON(input, init = {}, timeoutMs = 5000, {
+  fetchImpl = fetch, lookup = globalThis.Deno?.resolveDns ? host => globalThis.Deno.resolveDns(host, 'A') : resolve4,
+} = {}) {
+  const url = publicURL(input), controller = new AbortController()
+  const timer = setTimeout(() => controller.abort(), timeoutMs)
+  let abortListener
+  const aborted = new Promise((_, reject) => { abortListener = () => reject(new Error('Tempo limite do provedor.')); controller.signal.addEventListener('abort', abortListener, { once: true }) })
+  try {
+    const addresses = await Promise.race([lookup(url.hostname), aborted])
+    if (!addresses.length || addresses.some(address => !publicIPv4(address))) throw new Error('Provedor não público.')
+    const response = await Promise.race([fetchImpl(url.href, { ...init, redirect: 'error', signal: controller.signal }), aborted])
+    if (!response.ok) {
+      await response.body?.cancel()
+      const error = new Error('Provedor indisponível.'); error.httpStatus = response.status; error.retryAfter = response.headers.get('retry-after'); throw error
+    }
+    if (!/\bjson\b/i.test(response.headers.get('content-type') || '')) { await response.body?.cancel(); throw new Error('Resposta JSON inválida.') }
+    return JSON.parse(await Promise.race([readFeedResponse(response, controller.signal), aborted]))
+  } finally { clearTimeout(timer); controller.signal.removeEventListener('abort', abortListener); controller.abort() }
+}

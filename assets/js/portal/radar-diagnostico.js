@@ -1,5 +1,5 @@
 // Only controlled values are exported. Never copy raw bodies, headers, tokens or user data.
-const UI_VERSION = '20261018-cache-pausa'
+const UI_VERSION = '20261020-resolucao-inteligente'
 
 function publicHost(value) {
   try {
@@ -31,7 +31,7 @@ export function buildRadarLinkDiagnostic({ inputURL, data, error, httpStatus } =
   const compatible = data?.acao === 'resolver_link_google'
   return {
     versao_tela: UI_VERSION,
-    versao_funcao: data?.versao_radar === '20261018-cache-pausa' ? '20261018-cache-pausa' : null,
+    versao_funcao: ['20261018-cache-pausa','20261020-fila-google','20261020-resolucao-inteligente'].includes(data?.versao_radar) ? data.versao_radar : null,
     acao_solicitada: 'resolver_link_google',
     estado: error ? (status ? 'erro_http' : 'erro_rede_ou_cors')
       : compatible ? (data.resolvido === true ? 'resolvido' : 'nao_resolvido') : 'resposta_incompativel',

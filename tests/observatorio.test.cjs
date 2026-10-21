@@ -6,6 +6,15 @@ const model = require('../assets/js/observatorio-model.js');
 const root = path.join(__dirname, '..');
 const data = JSON.parse(fs.readFileSync(path.join(root, 'assets/data/observatorio-conteudos.json'), 'utf8'));
 
+test('URL original tem preferência e Google RSS continua identificado como fallback', () => {
+  const rss = 'https://news.google.com/rss/articles/id';
+  const original = 'https://veiculo.org/noticia';
+  const resolved = model.fromDatabase({ id: 1, url: rss, url_original: original, url_rss: rss });
+  assert.equal(resolved.href, original); assert.equal(resolved.url_rss, rss); assert.equal(resolved.link_intermediario, false);
+  const pending = model.fromDatabase({ id: 2, url: rss, url_original: 'javascript:alert(1)' });
+  assert.equal(pending.href, rss); assert.equal(pending.link_intermediario, true);
+});
+
 test('modal Radar explica modalidades, tokens, fontes dinâmicas, horário com fuso e curadoria', () => {
   const source = fs.readFileSync(path.join(root, 'assets/js/observatorio.js'), 'utf8');
   const block = source.slice(source.indexOf('  const dialogs ='), source.indexOf("  document.addEventListener('DOMContentLoaded'"));

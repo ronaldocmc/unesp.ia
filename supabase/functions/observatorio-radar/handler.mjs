@@ -7,6 +7,8 @@ import { carregarDescartes, radarLinkKey } from './curadoria.mjs'
 import { searchGroq } from './groq.mjs'
 import { isGoogleNewsLink, resolveGoogleNewsItems } from './google-news.mjs'
 import { createSharedGoogleResolver } from './google-news-cache.mjs'
+import { enqueueGoogleLinks, enqueueGoogleItems, processGoogleQueue } from './google-news-queue.mjs'
+import { createURLResolutionService, indexOfficialFeed } from './url-resolution.mjs'
 
 const cors = { 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type, x-radar-token',
   'Access-Control-Allow-Methods': 'POST, OPTIONS', 'Cache-Control': 'no-store' }
@@ -69,6 +71,14 @@ export function createRadarHandler({ createClient, env, fetchImpl = fetch, downl
     try {
       const contexto = await authorize(req, env, createClient)
       const body = await readBody(req)
+      if (body.acao === 'processar_fila_google') {
+        if (contexto !== 'automatica') throw new RadarError('Processamento da fila restrito ao token interno da agenda.', 403)
+        if (!env.SUPABASE_URL || !env.SUPABASE_SERVICE_ROLE_KEY) throw new RadarError('Credenciais da fila não configuradas.', 503)
+        const queueDB = createClient(env.SUPABASE_URL, env.SUPABASE_SERVICE_ROLE_KEY, { auth: { persistSession: false, autoRefreshToken: false } })
+        const result = await processGoogleQueue({ db: queueDB, readPage, fetchImpl, now,
+          smartResolver: createURLResolutionService({ db: queueDB, env, readPage, download, fetchImpl, now }) })
+        return json({ ok: true, acao: 'processar_fila_google', versao_radar: '20261020-resolucao-inteligente', ...result })
+      }
       if (body.acao === 'resolver_link_google') {
         if (contexto !== 'manual') throw new RadarError('Conversão individual restrita à curadoria autenticada.', 403)
         if (typeof body.url !== 'string' || body.url.length > 2048 || !body.url.startsWith('https://') || !isGoogleNewsLink(body.url)) {
@@ -77,12 +87,16 @@ export function createRadarHandler({ createClient, env, fetchImpl = fetch, downl
         let diagnostico = 'conversão não concluída'
         if (!env.SUPABASE_URL || !env.SUPABASE_SERVICE_ROLE_KEY) throw new RadarError('Cache compartilhado do Radar não configurado no servidor.', 503)
         const cacheDB = createClient(env.SUPABASE_URL, env.SUPABASE_SERVICE_ROLE_KEY, { auth: { persistSession: false, autoRefreshToken: false } })
+        if (body.somente_cache !== undefined && typeof body.somente_cache !== 'boolean') throw new RadarError('somente_cache deve ser booleano.', 400)
+        let queue = null
+        try { queue = await enqueueGoogleLinks(cacheDB, [body.url]) } catch { /* Migração pendente não quebra a conversão individual existente. */ }
+        // A revisão consulta apenas o cache/fila: tráfego externo fica no worker único.
         const resolver = createSharedGoogleResolver({ db: cacheDB, readPage, fetchImpl, now })
         let state = {}
-        const url = await resolver(body.url, { timeoutMs: 8000, onDiagnostic: value => { diagnostico = value }, onState: value => { state = value } })
-        // Only cache/cooldown writes; never creates or publishes content.
-        return json({ ok: true, versao_radar: '20261018-cache-pausa', acao: 'resolver_link_google', resolvido: !!url, url: url || body.url, diagnostico: url ? null : diagnostico,
-          origem_resolucao: state.origem || 'indisponivel', cache: state.origem === 'cache', retomar_em: state.retomar_em || null })
+        const url = await resolver(body.url, { somenteCache: true, allowOffline: false, timeoutMs: 8000, onDiagnostic: value => { diagnostico = value }, onState: value => { state = value } })
+        if (url) { try { queue = await enqueueGoogleLinks(cacheDB, [body.url]) } catch { /* Cache continua utilizável. */ } }
+        return json({ ok: true, versao_radar: '20261020-resolucao-inteligente', acao: 'resolver_link_google', resolvido: !!url, url: url || body.url, diagnostico: url ? null : diagnostico,
+          fila: queue?.itens?.[0]?.estado || null, origem_resolucao: state.origem || 'indisponivel', cache: state.origem === 'cache', retomar_em: state.retomar_em || null })
       }
       const options = radarOptions(body)
       if (!env.SUPABASE_URL || !env.SUPABASE_SERVICE_ROLE_KEY) throw new RadarError('Credenciais do Supabase não configuradas.', 503)
@@ -128,6 +142,10 @@ export function createRadarHandler({ createClient, env, fetchImpl = fetch, downl
         for (let offset = 0; offset < feeds.length; offset += 4) results.push(...await Promise.all(feeds.slice(offset, offset + 4).map(feed => fetchFeed(feed, options.timeout_ms, download))))
         const stats = []; const discarded = []; const accepted = []; const warnings = []
         for (const result of results) {
+          if (result.ok) {
+            try { await indexOfficialFeed(db, result.feed, result.items) }
+            catch { warnings.push(`Não foi possível atualizar o índice de links de ${result.feed.codigo}. A coleta foi preservada.`) }
+          }
           const relevant = []
           let relevantCount = 0
           let discardedInFeed = 0
@@ -157,7 +175,13 @@ export function createRadarHandler({ createClient, env, fetchImpl = fetch, downl
         }
         candidates = accepted.slice(0, options.limite_total)
         // Bulk searches only reuse cached/offline URLs; new Google requests are on demand.
-        await resolveGoogleNewsItems(candidates, { resolve: createSharedGoogleResolver({ db, readPage, fetchImpl, now }), somenteCache: true })
+        await resolveGoogleNewsItems(candidates, { resolve: createSharedGoogleResolver({ db, readPage, fetchImpl, now }), somenteCache: true, allowOffline: false })
+        // Guarda links/pistas de resolução; nenhuma prévia é inserida no acervo.
+        try {
+          const queue = await enqueueGoogleItems(db, candidates)
+          if (queue.itens.some(item => item.estado === 'pendente' || item.estado === 'processando')) warnings.push('Links pendentes foram incluídos na fila automática de identificação do endereço original.')
+          if (queue.itens.some(item => item.estado === 'falhou')) warnings.push('Alguns links atingiram o limite de tentativas e precisam de conferência manual.')
+        } catch { warnings.push('Fila automática de links indisponível. Atualize o banco com a migration radar_google_fila.') }
         candidates = candidates.filter(item => {
           if (knownDiscards.has(radarLinkKey(item.link))) { discardedPreviously++; return false }
           return true
@@ -200,7 +224,7 @@ export function createRadarHandler({ createClient, env, fetchImpl = fetch, downl
           inserted = data || []
         }
       }
-      return json({ ok: true, agente: 'radar', versao_radar: '20261018-cache-pausa', modo: options.modo, ...details,
+      return json({ ok: true, agente: 'radar', versao_radar: '20261020-resolucao-inteligente', modo: options.modo, ...details,
         previa: options.previa, previas: options.previa ? unique.map(toConteudo) : [],
         itens_descartados_anteriormente: discardedPreviously,
         candidatos: candidates.length, duplicados: candidates.length - unique.length, inseridos: inserted.length, itens: inserted,

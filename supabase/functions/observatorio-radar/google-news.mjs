@@ -110,7 +110,7 @@ export async function resolveGoogleNewsItems(items, { resolve = resolveGoogleNew
     if (!isGoogleNewsLink(item.link)) continue
     const original = item.link
     let reason = 'limite de 10 conversões ou tempo total de 20 segundos atingido'
-    const legacy = decodeGoogleNewsID(original)
+    const legacy = dependencies.allowOffline === false ? null : decodeGoogleNewsID(original)
     if (legacy) { item.link = legacy; item.google_news_url = original; continue }
     if (!cache.has(original) && (dependencies.somenteCache || cache.size < 10) && Date.now() < deadline) {
       reason = 'conversão não concluída'

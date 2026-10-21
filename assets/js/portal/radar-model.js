@@ -19,6 +19,13 @@ export function validateFeedDraft(draft) {
     if (typeof value[name] !== 'boolean') throw new Error('Configure as opções de busca manual e automática da fonte.')
   }
   if (!Number.isInteger(value.prioridade) || value.prioridade < 1 || value.prioridade > 3) throw new Error('Prioridade: use 1 (alta), 2 (média) ou 3 (baixa).')
+  if (value.resolucao_oficial !== undefined) {
+    value.dominio_veiculo = String(value.dominio_veiculo || '').trim().toLowerCase().replace(/^www\./, '') || null
+    if (value.dominio_veiculo && (!/^[a-z0-9.-]+\.[a-z]{2,}$/.test(value.dominio_veiculo)
+      || /(^|\.)(localhost|local|internal|test|invalid)$/.test(value.dominio_veiculo))) throw new Error('Informe um domínio público válido do veículo, sem caminho ou protocolo.')
+    if (value.resolucao_oficial && !value.dominio_veiculo) throw new Error('Informe o domínio do veículo antes de marcar o feed como oficial.')
+    value.aliases_veiculo = String(value.aliases_veiculo || '').trim().slice(0, 500) || null
+  }
   return value
 }
 

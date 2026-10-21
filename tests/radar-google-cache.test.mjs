@@ -145,7 +145,8 @@ test('429 sem Retry-After aplica 15 minutos sem retentativas', async () => {
 test('handler RSS usa somente cache para link Google e mantém a prévia sem gravar conteúdo', async () => {
   const cached = storage(); cached.rows.set(googleNewsCacheKey(link), original)
   const feed = { id: '1', codigo: 'google', nome: 'Google IA', url_feed: 'https://news.google.com/rss/search?q=IA',
-    ativo: true, busca_manual: true, busca_automatica: true, escopo: 'ia', categoria: 'noticia', prioridade: 1 }
+    ativo: true, busca_manual: true, busca_automatica: true, escopo: 'ia', categoria: 'noticia', prioridade: 1,
+    resolucao_oficial: true, dominio_veiculo: 'veiculo.org' }
   const db = { rpc: cached.db.rpc, from: table => {
     if (table === 'observatorio_radar_descartes') return { select: () => ({ eq: () => ({ range: async () => ({ data: [] }) }) }) }
     if (table === 'observatorio_feeds') return {
@@ -168,6 +169,10 @@ test('handler RSS usa somente cache para link Google e mantém a prévia sem gra
   const data = await result.json()
   assert.equal(data.previas[0].url, original)
   assert.equal(data.inseridos, 0)
-  assert.equal(cached.calls.length, 1)
-  assert.equal(cached.calls[0].args.p_somente_cache, true)
+  const reads = cached.calls.filter(call => call.name === 'observatorio_google_link_iniciar')
+  assert.equal(reads.length, 1)
+  assert.equal(reads[0].args.p_somente_cache, true)
+  assert.equal(cached.calls.filter(call => call.name === 'observatorio_resolucao_registrar').length, 1)
+  assert.equal(cached.calls.filter(call => call.name === 'observatorio_resolucao_documentos').length, 1)
+  assert.ok(data.avisos.some(message => message.includes('índice de links')))
 })

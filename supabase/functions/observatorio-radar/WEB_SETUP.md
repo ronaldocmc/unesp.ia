@@ -1,5 +1,13 @@
 # Agente Radar com feeds RSS e busca Gemini
 
+## Atualização: resolução inteligente de URLs
+
+Consulte **[RESOLUCAO_SETUP.md](RESOLUCAO_SETUP.md)** para a arquitetura, migração, provedores opcionais e limites. O bundle atual exige também essa atualização no banco para o worker de links; a coleta permanece compatível com o esquema anterior, mas a nova resolução não deve ser ativada antes da migração.
+
+## Atualização: fila automática de links (20/10/2026)
+
+A fila persistente e o agendamento de retomada estão documentados em **[FILA_SETUP.md](FILA_SETUP.md)**. Essa versão substitui o comportamento exclusivamente sob demanda descrito na seção histórica de cache de 18/10 abaixo. Requer nova migration, deploy da função e ativação do job separado; publicar somente o frontend não ativa a fila.
+
 ## Curadoria no resultado da busca manual
 
 **Ativação, nesta ordem:**

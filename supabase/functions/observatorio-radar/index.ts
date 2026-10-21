@@ -13,5 +13,9 @@ Deno.serve(createRadarHandler({
     GEMINI_MODEL: Deno.env.get('GEMINI_MODEL'),
     GROQ_API_KEY: Deno.env.get('GROQ_API_KEY'),
     GROQ_MODEL: Deno.env.get('GROQ_MODEL'),
+    RADAR_URL_SEARCH_PROVIDER: Deno.env.get('RADAR_URL_SEARCH_PROVIDER'),
+    BRAVE_SEARCH_API_KEY: Deno.env.get('BRAVE_SEARCH_API_KEY'),
+    RADAR_URL_SEARCH_DAILY_LIMIT: Deno.env.get('RADAR_URL_SEARCH_DAILY_LIMIT'),
+    RADAR_URL_DECODER_PROVIDER: Deno.env.get('RADAR_URL_DECODER_PROVIDER'),
   },
 }))

@@ -15,7 +15,7 @@ if (metadataStart < 0 || metadataEnd <= metadataStart) throw new Error('Extrator
 // Isola nomes locais do extrator sem incluir node:https ou seu lookup incompatível.
 sections.push('const extractRadarPageMetadata = (() => {\n' + dates.replace(/^export /gm, '') + '\n'
   + linkCore.slice(metadataStart, metadataEnd).replace(/^export /gm, '') + '\nreturn extractMetadata\n})()\n')
-for (const file of ['core.mjs', 'relevance.mjs', 'feeds.mjs', 'feed-network.mjs', 'curadoria.mjs', 'gemini.mjs', 'groq.mjs', 'google-news.mjs', 'google-news-cache.mjs', 'handler.mjs', 'index.ts']) {
+for (const file of ['core.mjs', 'relevance.mjs', 'feeds.mjs', 'feed-network.mjs', 'curadoria.mjs', 'gemini.mjs', 'groq.mjs', 'google-news.mjs', 'google-news-cache.mjs', 'url-resolution.mjs', 'google-news-queue.mjs', 'handler.mjs', 'index.ts']) {
   const source = await readFile(new URL(file, root), 'utf8')
   sections.push(source.replace(/^import .* from '\.{1,2}\/[^']+'\r?\n/gm, '').replace(/^export /gm, ''))
 }

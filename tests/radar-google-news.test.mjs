@@ -108,8 +108,14 @@ test('conversão individual autenticada usa cache privado e não consulta feeds 
       return { select: () => ({ eq: () => ({ maybeSingle: async () => ({ data: { papel: 'observatorio_curador' } }) }) }) }
     },
   }
-  const cacheDB = { rpc: async name => ({ data: name === 'observatorio_google_link_iniciar'
-    ? { situacao: 'consultar', token: '00000000-0000-0000-0000-000000000001' } : { ok: true } }) }
+  let cached = true
+  const cacheDB = { rpc: async (name, args) => {
+    if (name === 'observatorio_google_link_iniciar') {
+      assert.equal(args.p_somente_cache, true)
+      return { data: cached ? { situacao: 'cache', url: article } : { situacao: 'pendente' } }
+    }
+    return { data: { ok: true, itens: [{ estado: 'pendente' }] } }
+  } }
   const handler = createRadarHandler({
     createClient: (_url, key) => key === 'service' ? cacheDB : caller,
     env: { SUPABASE_URL: 'https://project.supabase.co', SUPABASE_ANON_KEY: 'anon', SUPABASE_SERVICE_ROLE_KEY: 'service', RADAR_AGENT_TOKEN: 'job' },
@@ -128,5 +134,8 @@ test('conversão individual autenticada usa cache privado e não consulta feeds 
   const response = await handler(request(body)); assert.equal(response.status, 200)
   const data = await response.json()
   assert.equal(data.acao, 'resolver_link_google'); assert.equal(data.resolvido, true); assert.equal(data.url, article)
-  assert.equal(reads, 1)
+  assert.equal(reads, 0)
+  cached = false
+  const pending = await (await handler(request(body))).json()
+  assert.equal(pending.resolvido, false); assert.equal(pending.fila, 'pendente'); assert.equal(reads, 0)
 })

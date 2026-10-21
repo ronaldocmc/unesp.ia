@@ -50,7 +50,9 @@ test('tela: prévia não grava, publicação exige confirmação, revisão e des
     source = source.replace(/^import .*\r?\n/, 'const { supabase, showMessage } = globalThis.__radarUiTest\n')
     source = source.replace(/^import .*radar-diagnostico[^\r\n]*\r?\n/m, 'const { buildRadarLinkDiagnostic, readRadarFunctionError } = globalThis.__radarUiTest\n')
     const { initRadarCuradoria } = await import(`data:text/javascript,${encodeURIComponent(source)}`)
-    const controller = initRadarCuradoria({ canDecide: () => !busy, isBusy: () => busy, setBusy: value => { busy = value }, sourceLink() {} })
+    let scheduledPoll = null
+    const controller = initRadarCuradoria({ canDecide: () => !busy, isBusy: () => busy, setBusy: value => { busy = value }, sourceLink() {},
+      schedule: callback => { scheduledPoll = callback; return 1 }, cancelSchedule: () => { scheduledPoll = null } })
     controller.render([item])
     assert.equal(requests.length, 0); assert.equal(controller.hasPending(), true)
     const buttons = () => selectors['[data-radar-preview]'].querySelectorAll('button')
@@ -150,6 +152,44 @@ test('tela: prévia não grava, publicação exige confirmação, revisão e des
     assert.equal(requests.at(-1).args.p_conteudo.observacao_colaborador, undefined)
     assert.equal(requests.at(-1).args.p_confirmacao, false)
     assert.ok(!selectors['[data-radar-preview]'].children[0].children[1].textContent.includes('Google Notícias'))
+    // A fila atualiza a revisão aberta consultando somente cache, sem criar conteúdo.
+    controller.render([{ ...item, url: 'https://news.google.com/rss/articles/queued' }])
+    const invocations = []
+    globalThis.__radarUiTest.supabase.functions.invoke = async (_name, args) => {
+      invocations.push(args.body)
+      return { data: args.body.somente_cache
+        ? { acao: 'resolver_link_google', resolvido: true, fila: 'resolvido', cache: true, url: 'https://publisher.org/noticia' }
+        : { acao: 'resolver_link_google', resolvido: false, fila: 'pendente', diagnostico: 'Pausa Google 429' } }
+    }
+    await buttons()[0].fire('click')
+    assert.equal(typeof scheduledPoll, 'function')
+    await scheduledPoll()
+    assert.equal(invocations.length, 2); assert.equal(invocations[1].somente_cache, true)
+    assert.equal(editor.elements.url.value, 'https://publisher.org/noticia')
+    assert.equal(requests.length, beforeFailure + 1) // Polling never saves a publication.
+    // Se a pessoa colou outro endereço, nem consulta a fila para sobrescrevê-lo.
+    controller.render([{ ...item, url: 'https://news.google.com/rss/articles/queued-manual' }])
+    await buttons()[0].fire('click')
+    const scheduledBeforeEdit = scheduledPoll
+    editor.elements.url.value = 'https://manual.org/correto'
+    await scheduledBeforeEdit()
+    assert.equal(editor.elements.url.value, 'https://manual.org/correto'); assert.equal(invocations.length, 3)
+    // Reabre apenas uma falha explícita, sem disparar coleta ou zerar bloqueios.
+    controller.render([{ ...item, url: 'https://news.google.com/rss/articles/retry-id?oc=5' }])
+    globalThis.__radarUiTest.supabase.functions.invoke = async () => ({ data: {
+      acao: 'resolver_link_google', resolvido: false, fila: 'falhou', diagnostico: 'Limite de tentativas atingido',
+    } })
+    await buttons()[0].fire('click')
+    const retryButton = buttons().find(button => button.textContent === 'Reprocessar link')
+    assert.equal(retryButton.hidden, false)
+    const oldRPC = globalThis.__radarUiTest.supabase.rpc
+    let retried
+    globalThis.__radarUiTest.supabase.rpc = async (name, args) => { retried = { name, args }; return { data: { ok: true } } }
+    await retryButton.fire('click')
+    assert.equal(retried.name, 'observatorio_resolucao_reprocessar')
+    assert.equal(retried.args.p_chave, 'https://news.google.com/articles/retry-id')
+    assert.equal(retryButton.hidden, true)
+    globalThis.__radarUiTest.supabase.rpc = oldRPC
     // Real HTTP errors retain their status without copying raw error bodies.
     controller.render([{ ...item, url: 'https://news.google.com/rss/articles/http-error' }])
     globalThis.__radarUiTest.supabase.functions.invoke = async () => ({ error: {

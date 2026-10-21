@@ -199,9 +199,15 @@ function parseFeed(xml, fonte) {
     const link = linkFromEntry(block)
     const titulo = cleanText(tagValue(block, 'title'), 300)
     const resumo = cleanText(tagValue(block, 'description') || tagValue(block, 'summary') || tagValue(block, 'content'), 1200)
-    const data = normalizeDate(tagValue(block, 'pubDate') || tagValue(block, 'published') || tagValue(block, 'updated'))
+    const publishedDate = tagValue(block, 'pubDate') || tagValue(block, 'published')
+    const rawDate = publishedDate || tagValue(block, 'updated')
+    const data = normalizeDate(rawDate)
     const veiculo = cleanText(tagValue(block, 'source'), 200)
-    return { link, titulo, resumo, data, fonte: veiculo && /^https:\/\/news\.google\.com\//i.test(link) ? { ...fonte, origem: veiculo } : fonte }
+    const sourceURL = /<source\b[^>]*\burl=["']([^"']+)["']/i.exec(block)?.[1]
+    let dominio_veiculo = null
+    try { const source = new URL(decode(sourceURL || '')); if (source.protocol === 'https:' && !source.username && !source.password) dominio_veiculo = source.hostname } catch { /* Pista opcional, nunca autorização para baixar feed arbitrário. */ }
+    return { link, titulo, resumo, data, data_confirmada: !!publishedDate && Number.isFinite(Date.parse(cleanText(publishedDate, 200))), dominio_veiculo,
+      fonte: veiculo && /^https:\/\/news\.google\.com\//i.test(link) ? { ...fonte, origem: veiculo } : fonte }
   }).filter(item => item.link && item.titulo)
 }
 
@@ -403,6 +409,27 @@ async function downloadFeed(input, timeoutMs, {
 }
 
 const downloadRadarPage = (input, timeoutMs = 8000, dependencies = {}) => downloadFeed(input, timeoutMs, { ...dependencies, pageMode: true })
+
+// JSON para provedores explicitamente configurados. Nunca segue redirects com credenciais.
+async function requestRadarJSON(input, init = {}, timeoutMs = 5000, {
+  fetchImpl = fetch, lookup = globalThis.Deno?.resolveDns ? host => globalThis.Deno.resolveDns(host, 'A') : resolve4,
+} = {}) {
+  const url = publicURL(input), controller = new AbortController()
+  const timer = setTimeout(() => controller.abort(), timeoutMs)
+  let abortListener
+  const aborted = new Promise((_, reject) => { abortListener = () => reject(new Error('Tempo limite do provedor.')); controller.signal.addEventListener('abort', abortListener, { once: true }) })
+  try {
+    const addresses = await Promise.race([lookup(url.hostname), aborted])
+    if (!addresses.length || addresses.some(address => !publicIPv4(address))) throw new Error('Provedor não público.')
+    const response = await Promise.race([fetchImpl(url.href, { ...init, redirect: 'error', signal: controller.signal }), aborted])
+    if (!response.ok) {
+      await response.body?.cancel()
+      const error = new Error('Provedor indisponível.'); error.httpStatus = response.status; error.retryAfter = response.headers.get('retry-after'); throw error
+    }
+    if (!/\bjson\b/i.test(response.headers.get('content-type') || '')) { await response.body?.cancel(); throw new Error('Resposta JSON inválida.') }
+    return JSON.parse(await Promise.race([readFeedResponse(response, controller.signal), aborted]))
+  } finally { clearTimeout(timer); controller.signal.removeEventListener('abort', abortListener); controller.abort() }
+}
 
 
 function radarLinkKey(value) {
@@ -798,7 +825,7 @@ async function resolveGoogleNewsItems(items, { resolve = resolveGoogleNewsLink, 
     if (!isGoogleNewsLink(item.link)) continue
     const original = item.link
     let reason = 'limite de 10 conversões ou tempo total de 20 segundos atingido'
-    const legacy = decodeGoogleNewsID(original)
+    const legacy = dependencies.allowOffline === false ? null : decodeGoogleNewsID(original)
     if (legacy) { item.link = legacy; item.google_news_url = original; continue }
     if (!cache.has(original) && (dependencies.somenteCache || cache.size < 10) && Date.now() < deadline) {
       reason = 'conversão não concluída'
@@ -835,13 +862,13 @@ function googleRetrySeconds(value, nowMs = Date.now()) {
 }
 
 function createSharedGoogleResolver({ db, readPage, fetchImpl, now = () => new Date(), resolve = resolveGoogleNewsLink }) {
-  return async (link, { onDiagnostic = () => {}, onState = () => {}, somenteCache = false, timeoutMs = 8000 } = {}) => {
+  return async (link, { onDiagnostic = () => {}, onState = () => {}, onAttempt = () => {}, somenteCache = false, timeoutMs = 8000, persistOriginal = true, allowOffline = true } = {}) => {
     if (!isGoogleNewsLink(link)) return link
     const fail = (reason, state = {}) => { onDiagnostic(reason); onState(state); return null }
     const key = googleNewsCacheKey(link)
     if (!key) return fail('identificador inválido')
     // Offline IDs do not contact Google and need no shared network slot.
-    const legacy = decodeGoogleNewsID(link)
+    const legacy = allowOffline ? decodeGoogleNewsID(link) : null
     if (legacy) { onState({ origem: 'offline' }); return legacy }
     let started
     try {
@@ -866,6 +893,7 @@ function createSharedGoogleResolver({ db, readPage, fetchImpl, now = () => new D
     if (started.situacao !== 'consultar' || typeof started.token !== 'string') return fail('Cache e pausa retornaram uma resposta inválida.')
     let original = null, reason = 'conversão não concluída', wait = null
     try {
+      onAttempt()
       original = await resolve(link, { readPage, fetchImpl, timeoutMs,
         onDiagnostic: value => { reason = value },
         onRateLimit: value => { wait = googleRetrySeconds(value, now().getTime()) },
@@ -876,7 +904,7 @@ function createSharedGoogleResolver({ db, readPage, fetchImpl, now = () => new D
     if (wait !== null) original = null
     try {
       const finished = await db.rpc('observatorio_google_link_finalizar', {
-        p_chave: key, p_token: started.token, p_url: original || null, p_espera_segundos: wait,
+        p_chave: key, p_token: started.token, p_url: persistOriginal ? original || null : null, p_espera_segundos: wait,
       })
       if (finished.error || finished.data?.ok !== true) throw new Error('Cache unavailable')
       if (wait !== null) return fail('Google HTTP 429: pausa compartilhada registrada. Nenhuma retentativa automática foi feita.',
@@ -886,6 +914,263 @@ function createSharedGoogleResolver({ db, readPage, fetchImpl, now = () => new D
     if (!original) onDiagnostic(reason)
     return original || null
   }
+}
+
+
+const resolutionText = value => cleanText(value, 500).normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim()
+function resolutionDomain(value) {
+  if (typeof value !== 'string') return null
+  try {
+    const input = new URL(value.includes('://') ? value : `https://${value}/news`)
+    input.pathname = '/news'
+    const url = publisherURL(input.href)
+    return url ? new URL(url).hostname.replace(/^www\./, '') : null
+  } catch { return null }
+}
+const inDomain = (url, domain) => {
+  const host = resolutionDomain(url)
+  return !!host && !!domain && (host === domain || host.endsWith('.' + domain))
+}
+const validDay = value => typeof value === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(value) && !Number.isNaN(Date.parse(value)) && new Date(value).toISOString().slice(0, 10) === value
+function titleOf(value, vehicle) {
+  let title = resolutionText(value), suffix = resolutionText(vehicle)
+  if (suffix && title.endsWith(' ' + suffix)) title = title.slice(0, -suffix.length).trim()
+  return title
+}
+function resolutionTitleScore(a, b, vehicle = '') {
+  const x = titleOf(a, vehicle), y = titleOf(b, vehicle)
+  if (!x || !y || x.length < 12 || y.length < 12) return 0
+  if (x === y) return 1
+  const first = new Set(x.split(' ')), second = new Set(y.split(' '))
+  // Evita tratar negação ou números diferentes como mera variação de manchete.
+  const numbers = text => (text.match(/\b\d+\b/g) || []).sort().join('|')
+  if (numbers(x) !== numbers(y) || ['nao','sem','contra'].some(word => first.has(word) !== second.has(word))) return 0
+  if (Math.min(first.size, second.size) < 6) return 0
+  return 2 * [...first].filter(word => second.has(word)).length / (first.size + second.size)
+}
+function matchResolution(item, candidates, domain) {
+  if (!validDay(item.data) || item.data_confirmada === false || !domain) return null
+  const matches = (Array.isArray(candidates) ? candidates : []).filter(candidate => candidate && publisherURL(candidate.url) && inDomain(candidate.url, domain)
+    && validDay(candidate.data) && candidate.data === item.data && resolutionTitleScore(item.titulo, candidate.titulo, item.veiculo) >= .94)
+  const urls = [...new Set(matches.map(candidate => publisherURL(candidate.url)))]
+  return urls.length === 1 ? urls[0] : null // Ambiguidade não vira confirmação.
+}
+function matchingFeeds(feeds, item) {
+  const vehicle = resolutionText(item.veiculo), hint = resolutionDomain(item.dominio_veiculo)
+  return feeds.filter(feed => {
+    const domain = resolutionDomain(feed.dominio)
+    if (!domain || !resolutionDomain(feed.url)) return false
+    if (hint && domain === hint) return true
+    const names = [feed.nome, feed.instituicao, ...(feed.aliases || '').split(',')].map(resolutionText).filter(Boolean)
+    return !!vehicle && names.some(name => name === vehicle || name.startsWith(vehicle + ' '))
+  }).slice(0, 2)
+}
+async function registerResolutionItems(db, items) {
+  const data = items.filter(item => googleNewsCacheKey(item.google_news_url || item.link) || publisherURL(item.link)).slice(0, 300).map(item => ({ url_rss: item.google_news_url || item.link,
+    url_original: item.google_news_url ? publisherURL(item.link) : null,
+    titulo: cleanText(item.titulo, 300), veiculo: cleanText(item.fonte?.origem || item.fonte || '', 200), data: item.data,
+    data_confirmada: item.data_confirmada === true, dominio_veiculo: item.dominio_veiculo || null }))
+  if (!data.length) return
+  const result = await db.rpc('observatorio_resolucao_registrar', { p_itens: data })
+  if (result.error || result.data?.ok !== true) throw new Error('Metadados de resolução indisponíveis.')
+}
+
+// Reaproveita a leitura normal da coleta: indexação nunca faz outra requisição.
+async function indexOfficialFeed(db, feed, items) {
+  const domain = resolutionDomain(feed.dominio_veiculo)
+  if (!feed.resolucao_oficial || !domain || !feed.id) return
+  const docs = items.filter(item => item.data_confirmada && inDomain(item.link, domain)).slice(0, 100)
+    .map(item => ({ url: publisherURL(item.link), titulo: item.titulo, data: item.data, veiculo: feed.nome || feed.origem }))
+  const result = await db.rpc('observatorio_resolucao_documentos', { p_feed: feed.id, p_itens: docs })
+  if (result.error || result.data?.ok !== true) throw new Error('Índice oficial indisponível.')
+}
+
+function createURLResolutionService({ db, env = {}, readPage = downloadRadarPage, download = downloadFeed,
+  jsonRequest = requestRadarJSON, fetchImpl = fetch, now = () => new Date(), googleResolver,
+  log = event => console.info(JSON.stringify({ evento: 'radar_url_resolucao', ...event })) }) {
+  async function metric(method, state, status, start) {
+    const event = { metodo: method, estado: state, http_status: status || null, duracao_ms: Math.max(0, Date.now() - start) }
+    try { await db.rpc('observatorio_resolucao_evento', { p_metodo: method, p_estado: state, p_http: event.http_status, p_duracao: event.duracao_ms }) } catch { /* Métrica não interrompe coleta/resolução. */ }
+    try { log(event) } catch { /* Não loga URLs, títulos, corpos, tokens ou chaves. */ }
+  }
+  return async (input, { onAttempt = () => {}, somenteCache = false, reservationToken = null } = {}) => {
+    const link = typeof input === 'string' ? input : input.link
+    const direct = publisherURL(link)
+    if (!isGoogleNewsLink(link)) return { url: direct, metodo: direct ? 'direto' : 'pendente', status: direct ? 'resolvido' : 'pendente' }
+    const key = googleNewsCacheKey(link), deferred = []
+    let attempted = false, reason = 'Nenhuma correspondência verificável.', context
+    const attempt = () => { attempted = true; onAttempt() }
+    const contextResult = await db.rpc('observatorio_resolucao_contexto', { p_chave: key })
+    if (contextResult.error || contextResult.data?.ok !== true) return { url: null, metodo: 'pendente', status: 'indisponivel', motivo: 'Atualize a migration radar_resolucao_inteligente.' }
+    context = contextResult.data
+    const item = context.contexto || {}, feeds = matchingFeeds(Array.isArray(context.feeds) ? context.feeds : [], item)
+    const domain = resolutionDomain(item.dominio_veiculo) || resolutionDomain(feeds[0]?.dominio)
+    const cached = publisherURL(context.cache)
+    if (cached && (!domain || inDomain(cached, domain))) return { url: cached, metodo: 'cache', status: 'resolvido', consultou: false }
+    if (somenteCache) return { url: null, metodo: 'pendente', status: 'pendente', consultou: false }
+    const deadline = Date.now() + 42000
+    async function guarded(url, method, operation, interval = 900, daily = 100) {
+      const origin = new URL(url).origin, start = Date.now()
+      if (Date.now() >= deadline) return null
+      let result
+      try { result = await db.rpc('observatorio_resolucao_origem_iniciar', { p_origem: origin, p_intervalo: interval, p_limite: daily }) } catch { return null }
+      if (result.error || result.data?.ok !== true) {
+        if (result.data?.retomar_em) deferred.push(result.data.retomar_em)
+        await metric(method, 'aguardar', null, start); return null
+      }
+      const token = result.data.token
+      let status = 200, wait = null
+      try { attempt(); const value = await operation(); await metric(method, 'consultado', 200, start); return value }
+      catch (error) {
+        status = Number.isInteger(error?.httpStatus) ? error.httpStatus : 503
+        wait = googleRetrySeconds(error?.retryAfter, now().getTime())
+        if ([403,429,503].includes(status)) deferred.push(new Date(now().getTime() + Math.max(60, wait) * 1000).toISOString())
+        reason = `${method}: HTTP ${status}; sem resultado confirmado.`
+        await metric(method, 'falha', status, start)
+        return null
+      } finally {
+        try { await db.rpc('observatorio_resolucao_origem_finalizar', { p_origem: origin, p_token: token, p_http: status, p_espera: wait }) } catch { /* Lease expira e continua bloqueando concorrência. */ }
+      }
+    }
+    const resolved = async (url, metodo) => { await metric(metodo, 'resolvido', null, Date.now()); return { url, metodo, status: 'resolvido', consultou: attempted } }
+    // 1. Conteúdo já identificado no banco, por título + veículo/domínio + data.
+    if (domain && validDay(item.data)) {
+      try {
+        const found = await db.rpc('observatorio_resolucao_existentes', { p_data: item.data, p_dominio: domain })
+        const match = matchResolution(item, found.data?.itens || [], domain)
+        if (match) return resolved(match, 'banco')
+      } catch { /* Prossegue sem interromper a coleta. */ }
+    }
+    // 2. Índice de feeds oficiais, depois leitura limitada de até dois feeds cadastrados.
+    for (const feed of feeds) {
+      const feedDomain = resolutionDomain(feed.dominio)
+      let indexed = []
+      try { indexed = (await db.rpc('observatorio_resolucao_documentos', { p_feed: feed.id })).data?.itens || [] } catch { /* Feed pode ainda não estar indexado. */ }
+      let match = matchResolution(item, indexed, feedDomain)
+      if (match) return resolved(match, 'rss_oficial')
+      // Só atualiza o índice após 15 minutos; não repete a leitura em cada item.
+      if (indexed.some(row => Date.parse(row.verificado_em) > now().getTime() - 900000)) continue
+      const xml = await guarded(feed.url, 'rss_oficial', () => download(feed.url, 4000))
+      if (typeof xml !== 'string' || xml.length > 2000000 || !/<(?:[\w-]+:)?(?:rss|feed|RDF)\b/i.test(xml)) continue
+      const docs = parseFeed(xml, { origem: feed.nome }).filter(row => row.data_confirmada && inDomain(row.link, feedDomain))
+        .slice(0, 100).map(row => ({ url: publisherURL(row.link), titulo: row.titulo, data: row.data, veiculo: feed.nome }))
+      try { await db.rpc('observatorio_resolucao_documentos', { p_feed: feed.id, p_itens: docs }) } catch { /* Mantém resolução em memória. */ }
+      match = matchResolution(item, docs, feedDomain)
+      if (match) return resolved(match, 'rss_oficial')
+    }
+    async function verifyPage(url) {
+      const target = publisherURL(url)
+      if (!target || !domain || !inDomain(target, domain)) return null
+      const page = await guarded(target, 'pagina', () => readPage(target, 4000), 10, 200)
+      if (!page || !inDomain(page.url, domain)) return null
+      const extracted = extractRadarPageMetadata(page.html, page.url)
+      if (extracted.date_source === 'url') return null
+      return matchResolution(item, [{ url: page.url, titulo: extracted.draft.titulo, data: extracted.draft.data_publicacao }], domain)
+    }
+    // 3. API opcional, endpoint fixo e chave apenas no header; não usa LLM.
+    if (env.RADAR_URL_SEARCH_PROVIDER === 'brave' && env.BRAVE_SEARCH_API_KEY && domain && item.titulo && validDay(item.data) && item.data_confirmada !== false) {
+      const endpoint = new URL('https://api.search.brave.com/res/v1/web/search')
+      endpoint.searchParams.set('q', `site:${domain} "${cleanText(item.titulo, 200)}"`)
+      endpoint.searchParams.set('count', '3')
+      const daily = Math.max(1, Math.min(100, Math.floor(Number(env.RADAR_URL_SEARCH_DAILY_LIMIT) || 10)))
+      const data = await guarded(endpoint.href, 'busca', () => jsonRequest(endpoint.href, { headers: { Accept: 'application/json', 'X-Subscription-Token': env.BRAVE_SEARCH_API_KEY } }, 4000, { fetchImpl }), 60, daily)
+      const candidates = (Array.isArray(data?.web?.results) ? data.web.results : []).filter(row => row && inDomain(row.url, domain) && resolutionTitleScore(item.titulo, row.title, item.veiculo) >= .94).slice(0, 2)
+      const matches = []
+      for (const candidate of candidates) { const checked = await verifyPage(candidate.url); if (checked) matches.push(checked) }
+      if (new Set(matches).size === 1) return resolved(matches[0], 'busca')
+    }
+    // 4. Último recurso: decoder JavaScript/Deno existente, sem serviço externo adicional.
+    const mode = env.RADAR_URL_DECODER_PROVIDER || 'legacy'
+    // Sem essas evidências não há como confirmar um destino decodificado.
+    const verifiable = !!domain && !!item.titulo && validDay(item.data) && item.data_confirmada !== false
+    let decoded
+    const decoderMethod = 'google_legado'
+    const previousCandidate = publisherURL(context.candidata)
+    if (verifiable && previousCandidate && inDomain(previousCandidate, domain)
+      && context.candidata_metodo === decoderMethod) {
+      // Se só a página do veículo falhou, não repete a decodificação já concluída.
+      decoded = previousCandidate
+    } else if (verifiable && mode === 'legacy' && Date.now() < deadline) {
+      const resolve = googleResolver || createSharedGoogleResolver({ db, readPage, fetchImpl, now })
+      decoded = await guarded('https://news.google.com/articles/resolution', decoderMethod, async () => {
+        let blocked
+        const value = await resolve(link, {
+          timeoutMs: 5000, persistOriginal: false, onDiagnostic: value => { reason = value },
+          onState: state => { if (state.retomar_em) deferred.push(state.retomar_em); if (state.origem === 'pausa') blocked = state.retomar_em },
+        })
+        if (blocked) throw Object.assign(new Error('Pausa Google compartilhada.'), { httpStatus: 429, retryAfter: blocked })
+        return value
+      }, 60, 100)
+    }
+    if (decoded && publisherURL(decoded) && inDomain(decoded, domain)) {
+      if (decoded !== previousCandidate) {
+        try { await db.rpc('observatorio_resolucao_candidata', { p_chave: key, p_url: publisherURL(decoded), p_metodo: decoderMethod, p_token: reservationToken }) } catch { /* A confirmação final ainda precisa persistir o resultado. */ }
+      }
+      const verified = await verifyPage(decoded); if (verified) return resolved(verified, decoderMethod)
+    }
+    const retry = deferred.filter(value => Number.isFinite(Date.parse(value))).sort((a, b) => Date.parse(a) - Date.parse(b))[0]
+    await metric('pendente', 'nao_resolvido', null, Date.now())
+    return { url: null, metodo: 'pendente', status: 'pendente', motivo: reason, consultou: attempted, retomar_em: retry || null }
+  }
+}
+
+
+async function enqueueGoogleLinks(db, links) {
+  const urls = [...new Set(links.filter(isGoogleNewsLink))]
+  if (!urls.length) return { ok: true, itens: [] }
+  const result = await db.rpc('observatorio_google_fila_adicionar', { p_urls: urls.slice(0, 300) })
+  if (result.error || result.data?.ok !== true || !Array.isArray(result.data.itens)) throw new RadarError('Fila de links indisponível. Aplique a migration radar_google_fila.', 503)
+  return result.data
+}
+
+async function enqueueGoogleItems(db, items) {
+  try { await registerResolutionItems(db, items) } catch { /* Migração antiga: coleta e fila anteriores continuam disponíveis. */ }
+  const result = await enqueueGoogleLinks(db, items.map(item => item.link))
+  const mappings = new Map(result.itens.map(item => [item.chave, publisherURL(item.url)]))
+  for (const item of items) {
+    const original = mappings.get(googleNewsCacheKey(item.link))
+    if (!original) continue
+    item.google_news_url = item.link
+    item.link = original
+    if (item.observacao_colaborador?.startsWith('Link do Google Notícias')) delete item.observacao_colaborador
+  }
+  return result
+}
+
+async function processGoogleQueue({ db, readPage, fetchImpl, now, resolver, smartResolver }) {
+  const reserved = await db.rpc('observatorio_google_fila_reservar')
+  if (reserved.error || !reserved.data?.situacao) throw new RadarError('Não foi possível reservar a fila. Confira a migration radar_google_fila.', 503)
+  const job = reserved.data
+  // Não envia tokens de reserva ao chamador; estados sem trabalho não acessam rede.
+  if (job.situacao !== 'processar') return { situacao: job.situacao, processados: 0, retomar_em: job.retomar_em || null }
+  if (!googleNewsCacheKey(job.chave) || typeof job.token !== 'string') throw new RadarError('Reserva de fila inválida.', 503)
+  let consulted = false, state = {}, reason = 'Conversão não concluída.'
+  let method = null
+  let url = publisherURL(job.url_original)
+  if (!url && smartResolver) {
+    try {
+      const result = await smartResolver(job.chave, { reservationToken: job.token, onAttempt: () => { consulted = true } })
+      url = publisherURL(result.url); method = result.metodo || 'pendente'; reason = result.motivo || reason
+      state = { retomar_em: result.retomar_em }
+      // Uma rodada sem evidência/configuração também termina no limite de tentativas;
+      // espera por cota/pausa não consome tentativa adicional.
+      if (!url && !result.retomar_em && result.status !== 'indisponivel') consulted = true
+    } catch { reason = 'Resolução inteligente indisponível; coleta preservada.'; method = 'pendente' }
+  } else if (!url) {
+    const resolve = resolver || createSharedGoogleResolver({ db, readPage, fetchImpl, now })
+    try {
+      url = await resolve(job.chave, { timeoutMs: 8000, onAttempt: () => { consulted = true },
+        onDiagnostic: value => { reason = value }, onState: value => { state = value } })
+      url = publisherURL(url)
+    } catch { reason = 'Falha controlada ao converter o link.' }
+  }
+  const retryAt = typeof state.retomar_em === 'string' && Number.isFinite(Date.parse(state.retomar_em)) ? state.retomar_em : null
+  const finished = await db.rpc(smartResolver ? 'observatorio_resolucao_finalizar' : 'observatorio_google_fila_finalizar', { p_chave: job.chave, p_token: job.token,
+    p_url: url || null, ...(smartResolver ? { p_metodo: method || 'cache' } : {}), p_consultou: consulted, p_retomar: retryAt, p_motivo: String(reason).slice(0, 300) })
+  if (finished.error || finished.data?.ok !== true) throw new RadarError('Não foi possível concluir a reserva da fila. Nenhum conteúdo foi publicado.', 503)
+  return { situacao: finished.data.estado, processados: 1, resolvidos: url ? 1 : 0,
+    atualizados: finished.data.aplicacao?.atualizados || 0, conflitos: finished.data.aplicacao?.conflitos || 0,
+    tentativas: finished.data.tentativas, retomar_em: url ? null : finished.data.proxima_em }
 }
 
 
@@ -950,6 +1235,14 @@ function createRadarHandler({ createClient, env, fetchImpl = fetch, download = d
     try {
       const contexto = await authorize(req, env, createClient)
       const body = await readBody(req)
+      if (body.acao === 'processar_fila_google') {
+        if (contexto !== 'automatica') throw new RadarError('Processamento da fila restrito ao token interno da agenda.', 403)
+        if (!env.SUPABASE_URL || !env.SUPABASE_SERVICE_ROLE_KEY) throw new RadarError('Credenciais da fila não configuradas.', 503)
+        const queueDB = createClient(env.SUPABASE_URL, env.SUPABASE_SERVICE_ROLE_KEY, { auth: { persistSession: false, autoRefreshToken: false } })
+        const result = await processGoogleQueue({ db: queueDB, readPage, fetchImpl, now,
+          smartResolver: createURLResolutionService({ db: queueDB, env, readPage, download, fetchImpl, now }) })
+        return json({ ok: true, acao: 'processar_fila_google', versao_radar: '20261020-resolucao-inteligente', ...result })
+      }
       if (body.acao === 'resolver_link_google') {
         if (contexto !== 'manual') throw new RadarError('Conversão individual restrita à curadoria autenticada.', 403)
         if (typeof body.url !== 'string' || body.url.length > 2048 || !body.url.startsWith('https://') || !isGoogleNewsLink(body.url)) {
@@ -958,12 +1251,16 @@ function createRadarHandler({ createClient, env, fetchImpl = fetch, download = d
         let diagnostico = 'conversão não concluída'
         if (!env.SUPABASE_URL || !env.SUPABASE_SERVICE_ROLE_KEY) throw new RadarError('Cache compartilhado do Radar não configurado no servidor.', 503)
         const cacheDB = createClient(env.SUPABASE_URL, env.SUPABASE_SERVICE_ROLE_KEY, { auth: { persistSession: false, autoRefreshToken: false } })
+        if (body.somente_cache !== undefined && typeof body.somente_cache !== 'boolean') throw new RadarError('somente_cache deve ser booleano.', 400)
+        let queue = null
+        try { queue = await enqueueGoogleLinks(cacheDB, [body.url]) } catch { /* Migração pendente não quebra a conversão individual existente. */ }
+        // A revisão consulta apenas o cache/fila: tráfego externo fica no worker único.
         const resolver = createSharedGoogleResolver({ db: cacheDB, readPage, fetchImpl, now })
         let state = {}
-        const url = await resolver(body.url, { timeoutMs: 8000, onDiagnostic: value => { diagnostico = value }, onState: value => { state = value } })
-        // Only cache/cooldown writes; never creates or publishes content.
-        return json({ ok: true, versao_radar: '20261018-cache-pausa', acao: 'resolver_link_google', resolvido: !!url, url: url || body.url, diagnostico: url ? null : diagnostico,
-          origem_resolucao: state.origem || 'indisponivel', cache: state.origem === 'cache', retomar_em: state.retomar_em || null })
+        const url = await resolver(body.url, { somenteCache: true, allowOffline: false, timeoutMs: 8000, onDiagnostic: value => { diagnostico = value }, onState: value => { state = value } })
+        if (url) { try { queue = await enqueueGoogleLinks(cacheDB, [body.url]) } catch { /* Cache continua utilizável. */ } }
+        return json({ ok: true, versao_radar: '20261020-resolucao-inteligente', acao: 'resolver_link_google', resolvido: !!url, url: url || body.url, diagnostico: url ? null : diagnostico,
+          fila: queue?.itens?.[0]?.estado || null, origem_resolucao: state.origem || 'indisponivel', cache: state.origem === 'cache', retomar_em: state.retomar_em || null })
       }
       const options = radarOptions(body)
       if (!env.SUPABASE_URL || !env.SUPABASE_SERVICE_ROLE_KEY) throw new RadarError('Credenciais do Supabase não configuradas.', 503)
@@ -1009,6 +1306,10 @@ function createRadarHandler({ createClient, env, fetchImpl = fetch, download = d
         for (let offset = 0; offset < feeds.length; offset += 4) results.push(...await Promise.all(feeds.slice(offset, offset + 4).map(feed => fetchFeed(feed, options.timeout_ms, download))))
         const stats = []; const discarded = []; const accepted = []; const warnings = []
         for (const result of results) {
+          if (result.ok) {
+            try { await indexOfficialFeed(db, result.feed, result.items) }
+            catch { warnings.push(`Não foi possível atualizar o índice de links de ${result.feed.codigo}. A coleta foi preservada.`) }
+          }
           const relevant = []
           let relevantCount = 0
           let discardedInFeed = 0
@@ -1038,7 +1339,13 @@ function createRadarHandler({ createClient, env, fetchImpl = fetch, download = d
         }
         candidates = accepted.slice(0, options.limite_total)
         // Bulk searches only reuse cached/offline URLs; new Google requests are on demand.
-        await resolveGoogleNewsItems(candidates, { resolve: createSharedGoogleResolver({ db, readPage, fetchImpl, now }), somenteCache: true })
+        await resolveGoogleNewsItems(candidates, { resolve: createSharedGoogleResolver({ db, readPage, fetchImpl, now }), somenteCache: true, allowOffline: false })
+        // Guarda links/pistas de resolução; nenhuma prévia é inserida no acervo.
+        try {
+          const queue = await enqueueGoogleItems(db, candidates)
+          if (queue.itens.some(item => item.estado === 'pendente' || item.estado === 'processando')) warnings.push('Links pendentes foram incluídos na fila automática de identificação do endereço original.')
+          if (queue.itens.some(item => item.estado === 'falhou')) warnings.push('Alguns links atingiram o limite de tentativas e precisam de conferência manual.')
+        } catch { warnings.push('Fila automática de links indisponível. Atualize o banco com a migration radar_google_fila.') }
         candidates = candidates.filter(item => {
           if (knownDiscards.has(radarLinkKey(item.link))) { discardedPreviously++; return false }
           return true
@@ -1081,7 +1388,7 @@ function createRadarHandler({ createClient, env, fetchImpl = fetch, download = d
           inserted = data || []
         }
       }
-      return json({ ok: true, agente: 'radar', versao_radar: '20261018-cache-pausa', modo: options.modo, ...details,
+      return json({ ok: true, agente: 'radar', versao_radar: '20261020-resolucao-inteligente', modo: options.modo, ...details,
         previa: options.previa, previas: options.previa ? unique.map(toConteudo) : [],
         itens_descartados_anteriormente: discardedPreviously,
         candidatos: candidates.length, duplicados: candidates.length - unique.length, inseridos: inserted.length, itens: inserted,
@@ -1106,5 +1413,9 @@ Deno.serve(createRadarHandler({
     GEMINI_MODEL: Deno.env.get('GEMINI_MODEL'),
     GROQ_API_KEY: Deno.env.get('GROQ_API_KEY'),
     GROQ_MODEL: Deno.env.get('GROQ_MODEL'),
+    RADAR_URL_SEARCH_PROVIDER: Deno.env.get('RADAR_URL_SEARCH_PROVIDER'),
+    BRAVE_SEARCH_API_KEY: Deno.env.get('BRAVE_SEARCH_API_KEY'),
+    RADAR_URL_SEARCH_DAILY_LIMIT: Deno.env.get('RADAR_URL_SEARCH_DAILY_LIMIT'),
+    RADAR_URL_DECODER_PROVIDER: Deno.env.get('RADAR_URL_DECODER_PROVIDER'),
   },
 }))

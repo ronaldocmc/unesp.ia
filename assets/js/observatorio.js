@@ -66,7 +66,8 @@
     const title = element('h3', '', item.titulo);
     content.append(title, element('p', 'obs-story-summary', item.resumo || ''));
     article.append(content);
-    article.append(element('small', 'obs-story-source', 'Fonte: ' + (item.fonte || 'Não informada') + ' · ' + (item.revisao || 'Situação editorial não informada')));
+    article.append(element('small', 'obs-story-source', 'Fonte: ' + (item.fonte || 'Não informada') + ' · ' + (item.revisao || 'Situação editorial não informada')
+      + (item.link_intermediario ? ' · Acesso via Google Notícias; endereço original ainda não identificado' : '')));
     const read = linkTo(item, 'obs-read-more', 'Ler mais ');
     if (read.tagName === 'A') {
       read.setAttribute('aria-label', 'Ler mais: ' + item.titulo);
