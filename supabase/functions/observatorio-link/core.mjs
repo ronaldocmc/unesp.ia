@@ -43,6 +43,67 @@ export function publicIPv4(ip) {
 }
 
 const MAX_BYTES = 1024 * 1024
+
+// Fetch nativo só para os dois endpoints públicos oficiais do adaptador Unesp.
+// Não é um fallback para hosts arbitrários: estes continuam com IP fixado no Node.
+export function unespReadEndpoint(input) {
+  let url
+  try { url = publicURL(String(input)) } catch { return false }
+  if (url.origin !== 'https://www2.unesp.br' || url.hash) return false
+  const keys = [...url.searchParams.keys()]
+  if (url.pathname === '/sharer.php') return keys.length === 1 && keys[0] === 'post' && /^[1-9]\d{0,9}$/.test(url.searchParams.get('post'))
+  const args = url.searchParams.getAll('xajaxargs[]')
+  return url.pathname === '/portal' && keys.length === 6 && keys.every(key => ['xajax','xajaxargs[]'].includes(key))
+    && url.searchParams.getAll('xajax').length === 1 && url.searchParams.get('xajax') === 'exibeCorpo'
+    && args.length === 5 && /^[1-9]\d{0,9}$/.test(args[0]) && args[1] === '' && args[2] === '' && args[4] === ''
+    && /^id::[1-9]\d{0,9}(?:\/[a-z0-9-]{1,400})?$/i.test(args[3])
+}
+
+export async function readUnespEdgePage(url, _address, signal, { allowXML = false, fetchImpl = fetch } = {}) {
+  if (!unespReadEndpoint(url.href)) throw new ImportError('Endpoint público Unesp não permitido.')
+  const response = await fetchImpl(url.href, { signal, redirect: 'manual', headers: {
+    Accept: allowXML ? 'text/xml,application/xml' : 'text/html,application/xhtml+xml',
+    'User-Agent': 'ObservarIA-LinkPreview/1.1',
+  } })
+  // Sem redirecionamento: nunca estende o fetch nativo a outro host ou endpoint.
+  if (!response.ok || (response.url && response.url !== url.href)) {
+    await response.body?.cancel()
+    throw new ImportError(`O endpoint Unesp não permitiu a leitura (HTTP ${response.status}). Confira a fonte ou tente mais tarde.`)
+  }
+  const type = response.headers.get('content-type') || ''
+  if (!(allowXML ? /^(text\/xml|application\/xml)\b/i : /^(text\/html|application\/xhtml\+xml)\b/i).test(type)) {
+    await response.body?.cancel(); throw new ImportError('O endpoint Unesp retornou um formato inesperado.')
+  }
+  if (Number(response.headers.get('content-length')) > MAX_BYTES) {
+    await response.body?.cancel(); throw new ImportError('Página muito grande para importação.')
+  }
+  const reader = response.body?.getReader()
+  if (!reader) throw new ImportError('A fonte retornou uma página vazia.')
+  const chunks = []; let size = 0
+  const abort = () => { reader.cancel().catch(() => {}) }
+  signal.addEventListener('abort', abort, { once: true })
+  try {
+    if (signal.aborted) throw new ImportError('Tempo limite ao consultar a fonte.')
+    while (true) {
+      const { done, value } = await reader.read()
+      if (signal.aborted) throw new ImportError('Tempo limite ao consultar a fonte.')
+      if (done) break
+      size += value.byteLength
+      if (size > MAX_BYTES) throw new ImportError('Página muito grande para importação.')
+      chunks.push(value)
+    }
+  } finally {
+    signal.removeEventListener('abort', abort)
+    try { await reader.cancel() } catch { /* Corpo já encerrado. */ }
+    reader.releaseLock()
+  }
+  const bytes = new Uint8Array(size); let offset = 0
+  for (const chunk of chunks) { bytes.set(chunk, offset); offset += chunk.byteLength }
+  const charset = /charset\s*=\s*["']?([^;\s"']+)/i.exec(type)?.[1] || 'utf-8'
+  try { return { html: new TextDecoder(charset).decode(bytes) } }
+  catch { return { html: new TextDecoder().decode(bytes) } }
+}
+
 // Pin the validated address: a second DNS lookup must never reach an internal service.
 function readPinnedPage(url, address, signal, { allowXML = false } = {}) {
   return new Promise((resolve, reject) => {
@@ -88,8 +149,11 @@ function readPinnedPage(url, address, signal, { allowXML = false } = {}) {
 }
 
 export async function fetchPage(input, dependencies = {}) {
-  const lookup = dependencies.resolve || resolve4
-  const read = dependencies.read || readPinnedPage
+  const lookup = dependencies.resolve || (globalThis.Deno?.resolveDns ? host => globalThis.Deno.resolveDns(host, 'A') : resolve4)
+  const edgeRuntime = dependencies.edgeRuntime ?? !!globalThis.Deno
+  const read = dependencies.read || ((url, address, signal, options) => edgeRuntime && unespReadEndpoint(url.href)
+    ? readUnespEdgePage(url, address, signal, { ...options, fetchImpl: dependencies.fetchImpl || fetch })
+    : readPinnedPage(url, address, signal, options))
   const controller = new AbortController()
   const timer = setTimeout(() => controller.abort(), 12000)
   const aborted = new Promise((_, reject) => controller.signal.addEventListener('abort', () => reject(new ImportError('A fonte demorou para responder. Tente novamente ou cadastre manualmente.')), { once: true }))
@@ -156,7 +220,7 @@ export function extractMetadata(html, inputURL) {
 const cors = { 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type', 'Access-Control-Allow-Methods': 'POST, OPTIONS', 'Cache-Control': 'no-store' }
 export function createHandler({ authorize, readPage = fetchPage }) {
   return async req => {
-    const json = (data, status = 200) => Response.json(data, { status, headers: cors })
+    const json = (data, status = 200) => Response.json({ ...data, versao_importador: '20261021-unesp-edge' }, { status, headers: cors })
     if (req.method === 'OPTIONS') return new Response(null, { status: 204, headers: cors })
     if (req.method !== 'POST') return json({ error: 'Método não permitido.' }, 405)
     try {

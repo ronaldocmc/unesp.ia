@@ -1,7 +1,7 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
-import { unespArticleRoute, importUnespArticle, publicURL, createHandler } from '../supabase/functions/observatorio-link/core.mjs'
+import { unespArticleRoute, importUnespArticle, publicURL, createHandler, fetchPage, unespReadEndpoint, readUnespEdgePage } from '../supabase/functions/observatorio-link/core.mjs'
 
 const url = 'https://www2.unesp.br/portal#!/noticias/v/id::43025/ferramenta-de-inteligencia-artificial'
 const title = 'Ferramenta de inteligência artificial generativa desenvolvida na Unesp'
@@ -80,4 +80,36 @@ test('handler e normalização do painel preservam rota; prévia não publica ne
   const normalize = new Function(`${functionSource}; return normalizeLink`)()
   assert.equal(normalize(url), url)
   assert.equal(normalize('https://site.org/a#ancora'), 'https://site.org/a')
+})
+
+test('transporte Edge nativo lê apenas endpoints Unesp validados, sem ClientRequest.lookup', async () => {
+  let count = 0
+  const result = await importUnespArticle(url, (input, options) => fetchPage(input, {
+    ...options, edgeRuntime: true, resolve: async () => ['143.106.1.1'],
+    fetchImpl: async (input, init) => {
+      count++; assert.equal(init.redirect, 'manual'); assert.ok(unespReadEndpoint(input))
+      const isXML = input.includes('xajax=')
+      return new Response(isXML ? xml(article) : sharing, { headers: { 'Content-Type': isXML ? 'text/xml' : 'text/html' } })
+    },
+  }))
+  assert.equal(count, 2); assert.equal(result.draft.data_publicacao, '2026-04-14')
+  assert.equal(result.draft.titulo, title)
+  let network = 0
+  await assert.rejects(fetchPage('https://www2.unesp.br/sharer.php?post=43025', {
+    edgeRuntime: true, resolve: async () => ['127.0.0.1'], fetchImpl: async () => { network++ },
+  }), /não é público/)
+  assert.equal(network, 0)
+})
+
+test('transporte nativo não libera host, comando, parâmetros ou redirecionamentos arbitrários', async () => {
+  for (const input of ['https://evil.org/sharer.php?post=43025', 'https://www2.unesp.br/sharer.php?post=43025&url=https://evil.org',
+    'https://www2.unesp.br/portal', 'https://www2.unesp.br/portal?xajax=excluiItem',
+    'https://www2.unesp.br/sharer.php?post=abc']) assert.equal(unespReadEndpoint(input), false)
+  const target = new URL('https://www2.unesp.br/sharer.php?post=43025')
+  const signal = new AbortController().signal
+  await assert.rejects(readUnespEdgePage(target, '', signal, { fetchImpl: async () => new Response('', { status: 302, headers: { Location: 'https://evil.org' } }) }), /HTTP 302/)
+  await assert.rejects(readUnespEdgePage(target, '', signal, { fetchImpl: async () => new Response('x'.repeat(1048577), { headers: { 'Content-Type': 'text/html' } }) }), /muito grande/)
+  await assert.rejects(readUnespEdgePage(target, '', signal, { fetchImpl: async () => new Response('{}', { headers: { 'Content-Type': 'application/json' } }) }), /formato inesperado/)
+  const aborted = new AbortController(); aborted.abort()
+  await assert.rejects(readUnespEdgePage(target, '', aborted.signal, { fetchImpl: async () => new Response('x', { headers: { 'Content-Type': 'text/html' } }) }), /Tempo limite/)
 })
