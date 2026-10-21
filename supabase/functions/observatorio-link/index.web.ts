@@ -60,6 +60,9 @@ function selectPublicationDate(html, pageURL, metadata = {}) {
   return { date, source: date ? 'url' : 'none', conflict: false }
 }
 
+// Limite único para Node e Edge; não depende do veículo nem do Content-Length.
+const IMPORT_MAX_BYTES = 4 * 1024 * 1024
+
 import { resolve4 } from 'node:dns/promises'
 import { request } from 'node:https'
 import { isIP } from 'node:net'
@@ -103,7 +106,7 @@ function publicIPv4(ip) {
     (a === 203 && b === 0 && c === 113))
 }
 
-const MAX_BYTES = 1024 * 1024
+const MAX_BYTES = IMPORT_MAX_BYTES
 
 // Restrição apenas da consulta XML interna do adaptador Unesp, não de sites HTML.
 function unespReadEndpoint(input) {
@@ -236,7 +239,7 @@ function extractMetadata(html, inputURL) {
 const cors = { 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type', 'Access-Control-Allow-Methods': 'POST, OPTIONS', 'Cache-Control': 'no-store' }
 function createHandler({ authorize, readPage = fetchPage }) {
   return async req => {
-    const json = (data, status = 200) => Response.json({ ...data, versao_importador: '20261021-geral-edge' }, { status, headers: cors })
+    const json = (data, status = 200) => Response.json({ ...data, versao_importador: '20261021-html-4mb' }, { status, headers: cors })
     if (req.method === 'OPTIONS') return new Response(null, { status: 204, headers: cors })
     if (req.method !== 'POST') return json({ error: 'Método não permitido.' }, 405)
     try {
@@ -333,7 +336,7 @@ async function importUnespArticle(input, readPage = fetchPage) {
 }
 
 
-const EDGE_MAX_BODY = 1024 * 1024
+const EDGE_MAX_BODY = IMPORT_MAX_BYTES
 const EDGE_MAX_HEADERS = 32768
 const EDGE_MAX_WIRE = EDGE_MAX_BODY + 131072
 const edgeLatin = new TextDecoder('iso-8859-1')

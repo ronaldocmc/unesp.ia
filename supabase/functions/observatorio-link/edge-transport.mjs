@@ -1,6 +1,7 @@
 import { ImportError, publicURL, publicIPv4 } from './core.mjs'
+import { IMPORT_MAX_BYTES } from './limits.mjs'
 
-const EDGE_MAX_BODY = 1024 * 1024
+const EDGE_MAX_BODY = IMPORT_MAX_BYTES
 const EDGE_MAX_HEADERS = 32768
 const EDGE_MAX_WIRE = EDGE_MAX_BODY + 131072
 const edgeLatin = new TextDecoder('iso-8859-1')

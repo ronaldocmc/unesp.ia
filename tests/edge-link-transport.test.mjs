@@ -3,6 +3,7 @@ import assert from 'node:assert/strict'
 import { fetchPage, extractMetadata } from '../supabase/functions/observatorio-link/core.mjs'
 import { readPinnedEdgePage, parseEdgeHTTPResponse } from '../supabase/functions/observatorio-link/edge-transport.mjs'
 import { edgeFixtureResponse, mockEdgeNetwork } from './helpers/edge-connection.mjs'
+import { IMPORT_MAX_BYTES } from '../supabase/functions/observatorio-link/limits.mjs'
 
 const bytes = value => new TextEncoder().encode(value)
 const address = '93.184.215.14'
@@ -68,9 +69,27 @@ test('parser rejeita enquadramento ambíguo, corpo truncado, MIME inválido e ex
     header + 'Transfer-Encoding: chunked\r\n\r\nZ\r\nabc\r\n0\r\n\r\n',
     header + 'Transfer-Encoding: chunked\r\n\r\n0\r\n\r\nextra',
     header + 'Transfer-Encoding: gzip\r\n\r\nabc', header + 'Content-Encoding: gzip\r\n\r\nabc',
-    header + 'Content-Length: 1048577\r\n\r\n', header + 'X-Large: ' + 'x'.repeat(32768) + '\r\n\r\n',
+    header + `Content-Length: ${IMPORT_MAX_BYTES + 1}\r\n\r\n`, header + 'X-Large: ' + 'x'.repeat(32768) + '\r\n\r\n',
     'HTTP/1.1 200 OK\r\nContent-Type: application/json\r\n\r\n{}',
   ]) assert.throws(() => parseEdgeHTTPResponse(bytes(bad)))
-  assert.throws(() => parseEdgeHTTPResponse(edgeFixtureResponse('x'.repeat(1048577))), /grande/)
+  assert.throws(() => parseEdgeHTTPResponse(edgeFixtureResponse('x'.repeat(IMPORT_MAX_BYTES + 1))), /grande/)
   assert.throws(() => parseEdgeHTTPResponse(bytes('HTTP/1.1 429 Limited\r\n\r\n')), /HTTP 429/)
+})
+
+test('HTML acima do limite antigo de 1 MB é aceito até 4 MB, com data sugerida identificada', () => {
+  const html = '<head><meta property="og:title" content="Notícia em página extensa"></head>' + ' '.repeat(1151975)
+  const result = parseEdgeHTTPResponse(edgeFixtureResponse(html))
+  const metadata = extractMetadata(result.html, 'https://oglobo.globo.com/noticia/2026/09/29/materia.ghtml')
+  assert.equal(metadata.draft.titulo, 'Notícia em página extensa')
+  assert.equal(metadata.draft.data_publicacao, '2026-09-29'); assert.equal(metadata.date_source, 'url')
+  assert.ok(metadata.warnings.some(w => /Data sugerida/.test(w)))
+  assert.equal(parseEdgeHTTPResponse(edgeFixtureResponse('x'.repeat(IMPORT_MAX_BYTES))).html.length, IMPORT_MAX_BYTES)
+  assert.throws(() => parseEdgeHTTPResponse(bytes('HTTP/1.0 200 OK\r\nContent-Type: text/html\r\n\r\n' + 'x'.repeat(IMPORT_MAX_BYTES + 1))), /grande/)
+})
+
+test('limite de 4 MB encerra leitura Edge antes de baixar corpo declarado excessivo', async () => {
+  const mock = mockEdgeNetwork(async () => `HTTP/1.1 200 OK\r\nContent-Type: text/html\r\nContent-Length: ${IMPORT_MAX_BYTES + 1}\r\n\r\n`)
+  await assert.rejects(fetchPage('https://site.org/materia', { edgeRuntime: true, resolve: async () => [address], edgeNetwork: mock.network }), /grande/)
+  assert.ok(mock.closes > 0)
+  assert.throws(() => parseEdgeHTTPResponse(bytes('HTTP/1.1 200 OK\r\nContent-Type: text/html\r\nTransfer-Encoding: chunked\r\n\r\n' + (IMPORT_MAX_BYTES + 1).toString(16) + '\r\n')), /grande/)
 })

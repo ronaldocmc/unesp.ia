@@ -4,6 +4,7 @@ import { isIP } from 'node:net'
 import { Buffer } from 'node:buffer'
 import { selectPublicationDate } from '../../../assets/js/portal/publication-date.js'
 import { readPinnedEdgePage } from './edge-transport.mjs'
+import { IMPORT_MAX_BYTES } from './limits.mjs'
 
 export class ImportError extends Error {
   constructor(message, status = 422) { super(message); this.status = status }
@@ -43,7 +44,7 @@ export function publicIPv4(ip) {
     (a === 203 && b === 0 && c === 113))
 }
 
-const MAX_BYTES = 1024 * 1024
+const MAX_BYTES = IMPORT_MAX_BYTES
 
 // Restrição apenas da consulta XML interna do adaptador Unesp, não de sites HTML.
 export function unespReadEndpoint(input) {
@@ -176,7 +177,7 @@ export function extractMetadata(html, inputURL) {
 const cors = { 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type', 'Access-Control-Allow-Methods': 'POST, OPTIONS', 'Cache-Control': 'no-store' }
 export function createHandler({ authorize, readPage = fetchPage }) {
   return async req => {
-    const json = (data, status = 200) => Response.json({ ...data, versao_importador: '20261021-geral-edge' }, { status, headers: cors })
+    const json = (data, status = 200) => Response.json({ ...data, versao_importador: '20261021-html-4mb' }, { status, headers: cors })
     if (req.method === 'OPTIONS') return new Response(null, { status: 204, headers: cors })
     if (req.method !== 'POST') return json({ error: 'Método não permitido.' }, 405)
     try {
