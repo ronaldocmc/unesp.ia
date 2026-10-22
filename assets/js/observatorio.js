@@ -4,6 +4,7 @@
   const model = window.ObservatoryModel;
   const state = { items: [], area: 'Todos', types: [], query: '', sort: 'featured', failed: false };
   let conversationLoaded = false;
+  let accessTracking = null;
   const $ = id => document.getElementById(id);
   const areaIcons = { 'Radar de Notícias': 'radar', Dados: 'dados', Pesquisas: 'pesquisas', Avaliações: 'avaliacoes', Regulação: 'regulacao', Aplicações: 'casos', Relatórios: 'publicacoes' };
   const colors = { dados: '#008a7e', pesquisas: '#6515ed', avaliacoes: '#9c5900', regulacao: '#df104a', casos: '#006bff', publicacoes: '#6515ed', radar: '#006bff' };
@@ -32,6 +33,7 @@
     const link = element(href ? 'a' : 'span', className, label);
     if (href) {
       link.href = href;
+      link.dataset.accessClick = item.link_intermediario ? 'clique_fallback' : 'clique_original';
       if (new URL(href).origin !== location.origin) { link.target = '_blank'; link.rel = 'noopener noreferrer'; }
     }
     return link;
@@ -40,6 +42,8 @@
     const area = model.areasFor(item)[0];
     const symbol = areaIcons[area] || 'radar';
     const article = element('article', 'obs-story');
+    const databaseId = /^supabase-([1-9]\d*)$/.exec(String(item.id));
+    if (databaseId) article.dataset.accessId = databaseId[1];
     article.style.setProperty('--story-color', colors[symbol]);
     const meta = element('div', 'obs-story-meta');
     const type = item.colecao === 'unesp.IA na mídia' ? 'Na mídia' : String(item.tipo || 'Publicação');
@@ -90,6 +94,7 @@
     });
     const grid = $('observatory-grid');
     grid.replaceChildren(...items.map(item => card(item, true)));
+    accessTracking?.scan();
     $('observatory-data-note').hidden = state.area !== 'Dados';
     $('observatory-result').textContent = state.failed ? 'Acervo temporariamente indisponível' : items.length + (items.length === 1 ? ' conteúdo encontrado' : ' conteúdos encontrados');
     $('observatory-empty').hidden = items.length > 0;
@@ -140,6 +145,10 @@
     state.failed = !result.available;
     conversationLoaded = true;
     render();
+    try {
+      const { startAccessTracking } = await import('./observatorio-acessos.mjs?v=20261022');
+      accessTracking = await startAccessTracking($('observatory-grid'));
+    } catch { /* Contagem opcional nunca impede o acervo. */ }
   }
   function reset() {
     state.area = 'Todos'; state.types = []; state.query = '';
