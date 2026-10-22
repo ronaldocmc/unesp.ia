@@ -3,7 +3,7 @@
 ## Ativação
 
 1. Execute no SQL Editor do Supabase o arquivo completo `supabase/migrations/202610220001_observatorio_acessos.sql` (pode ser reaplicado).
-2. Publique os arquivos de frontend alterados, incluindo os dois novos módulos `.mjs`. Não requer deploy de Edge Function nem alteração de secrets.
+2. Publique os arquivos de frontend alterados, incluindo os dois novos módulos `.js`. Não requer deploy de Edge Function nem alteração de secrets. A extensão `.js` mantém compatibilidade com o MIME JavaScript do servidor.
 3. Abra `observatorio.html` sem automação, em uma aba visível. Desça até um cartão e mantenha ao menos metade dele visível por um segundo. Clique na fonte.
 4. Como administrador, abra Administração do Observatório → Estatísticas de acesso do Observar.IA → Consultar acessos. Curadores comuns não têm acesso ao relatório.
 5. Recarregue a aba pública e consulte de novo: a mesma sessão não deve duplicar a visita nem o mesmo evento de uma publicação no mesmo dia. Uma nova sessão conta após 30 minutos sem interação registrada. Outra aba pode contar separadamente.

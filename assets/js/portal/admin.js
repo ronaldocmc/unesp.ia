@@ -586,7 +586,7 @@ try {
   await renderTable()
   if (adminScope === 'observatorio' && !state.curador) {
     try {
-      const { mountAccessReport } = await import('./observatorio-acessos-admin.mjs?v=20261022');
+      const { mountAccessReport } = await import('./observatorio-acessos-admin.js?v=20261022');
       mountAccessReport($('[data-admin-workspace]'), supabase)
     } catch { /* Estatísticas opcionais não impedem a administração. */ }
   }

@@ -2,7 +2,7 @@ import test from 'node:test'
 import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
 import { pathToFileURL } from 'node:url'
-import { createTracker, installAccessTracking } from '../assets/js/observatorio-acessos.mjs'
+import { createTracker, installAccessTracking } from '../assets/js/observatorio-acessos.js'
 
 test('acessos: deduplica, expira em 30 min e permite retry após erro', async () => {
   let time = Date.parse('2026-10-22T12:00:00Z'), n = 0, stored = null, fail = false
@@ -49,7 +49,7 @@ test('acessos: integração observa cartões e não bloqueia cliques', () => {
     listeners.auxclick({ ...event, type: 'auxclick', button: 2 })
     listeners.auxclick({ ...event, type: 'auxclick', button: 1 })
     assert.deepEqual(calls, [['clique_original',17], ['clique_original',17]])
-    const source = readFileSync(new URL('../assets/js/observatorio-acessos.mjs', import.meta.url), 'utf8')
+    const source = readFileSync(new URL('../assets/js/observatorio-acessos.js', import.meta.url), 'utf8')
     assert.match(source, /globalPrivacyControl/); assert.match(source, /doNotTrack/)
     assert.match(source, /intersectionRatio >= 0\.5/); assert.match(source, /1000/)
   } finally { globalThis.document = previous }
