@@ -18,7 +18,7 @@ test('monitor não confunde execução, reserva e falta de sinal com conversão'
   assert.match(workerStatus({ultima_execucao:'2026-10-25T03:00:00Z',consultado_em:'2026-10-25T03:10:00Z'}),/Sem sinal recente/)
 })
 
-test('acompanhamento: filtros, paginação, editor existente e restauração da administração', async () => {
+test('acompanhamento: RPC thenable sem catch, filtros, paginação e revisão existente', async () => {
   const oldDocument = globalThis.document
   class Node {
     constructor(tag) { this.tag = tag; this.children = []; this.listeners = {}; this.hidden = false; this.value = ''; this.textContent = ''; this.classList = { add() {}, remove() {} } }
@@ -37,13 +37,18 @@ test('acompanhamento: filtros, paginação, editor existente e restauração da 
     globalThis.document = { createElement: tag => new Node(tag), createTextNode: value => Object.assign(new Node('#text'),{textContent:value}), querySelectorAll: () => [] }
     const workspace = new Node('section'), regular = new Node('div'), hidden = new Node('div'), button = new Node('button')
     hidden.hidden = true; workspace.append(regular,hidden)
-    const calls = [], reviews = []; let fail = false
+    const calls = [], reviews = []; let fail = false, monitorFail = false
     const result = { total:26,aguardando_validacao:26,contadores:{revisao:26},consultado_em:'2026-10-25T03:00:00Z',origens:[],itens:[{
       titulo:'<img src=x onerror=alert(1)>',situacao:'revisao',conteudo_id:7,tentativas:0,estado_link:'pendente',url_evidencia:'javascript:alert(1)'
     }] }
-    const tracking = mountTracking({workspace,button,openReview:async id => reviews.push(id),db:{rpc:async (name,args) => {
-      if (name === 'observatorio_worker_situacao') return {data:{execucoes_hoje:5,tentativas_hoje:2,resolvidos_hoje:1}}
-      calls.push({name,args}); return fail ? {error:new Error('missing')} : {data:result}
+    const thenable = value => ({ then(resolve,reject) { return Promise.resolve(value).then(resolve,reject) } })
+    assert.equal(thenable({}).catch, undefined)
+    const tracking = mountTracking({workspace,button,openReview:async id => reviews.push(id),db:{rpc:(name,args) => {
+      if (name === 'observatorio_worker_situacao') {
+        if (monitorFail) throw new Error('Monitor indisponível')
+        return thenable({data:{execucoes_hoje:5,tentativas_hoje:2,resolvidos_hoje:1}})
+      }
+      calls.push({name,args}); return thenable(fail ? {error:new Error('missing')} : {data:result})
     }}})
     button.listeners.click(); await flush()
     assert.equal(regular.hidden,true); assert.equal(hidden.hidden,true)
@@ -60,6 +65,9 @@ test('acompanhamento: filtros, paginação, editor existente e restauração da 
     const form = walk(panel).find(n => n.tag === 'form'), input = walk(panel).find(n => n.name === 'veiculo')
     input.value = 'Veículo'; form.listeners.submit({preventDefault(){}}); await flush()
     assert.equal(calls.at(-1).args.p_pagina,1); assert.equal(calls.at(-1).args.p_filtros.veiculo,'Veículo')
+    monitorFail = true; form.listeners.submit({preventDefault(){}}); await flush()
+    assert.match(text(panel), /Monitor de execução indisponível/); assert.match(text(panel), /26 aguardando validação/)
+    monitorFail = false
     fail = true; form.listeners.submit({preventDefault(){}}); await flush(); assert.match(text(panel), /migration observatorio_acompanhamento/)
     tracking.hide(); assert.equal(regular.hidden,false); assert.equal(hidden.hidden,true); assert.equal(panel.hidden,true)
   } finally { globalThis.document = oldDocument }

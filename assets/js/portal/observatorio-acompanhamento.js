@@ -77,7 +77,7 @@ export function mountTracking({ workspace, button, db, openReview }) {
     try {
       const [listing, activity] = await Promise.all([
         db.rpc('observatorio_acompanhamento', { p_fila: mode, p_filtros: applied, p_pagina: page, p_tamanho: 25 }),
-        db.rpc('observatorio_worker_situacao').catch(() => ({ error: true }))
+        Promise.resolve().then(() => db.rpc('observatorio_worker_situacao')).catch(() => ({ error: true }))
       ])
       if (version !== request) return
       const { data, error } = listing
