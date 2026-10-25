@@ -111,6 +111,7 @@ const observatorioSections = ['observatorio_conteudos', 'observatorio_feeds', 'o
 let allowedSections = adminScope === 'observatorio' ? observatorioSections : Object.keys(definitions).filter(key => key !== 'candidatos_observatorio')
 const initialTable = allowedSections.includes(requestedSection) ? requestedSection : (adminScope === 'observatorio' ? 'observatorio_conteudos' : 'ecossistema_eixos')
 const state = { table: initialTable, rows: [], editing: null, lookups: {}, saving: false, importing: false, curador: false }
+let trackingPanel = null
 const $ = (selector) => document.querySelector(selector)
 const message = $('[data-admin-message]')
 const dialog = $('[data-record-dialog]')
@@ -250,6 +251,7 @@ function lookupLabel(table, row) {
 }
 
 async function renderTable() {
+  trackingPanel?.hide()
   const radarMenu = document.querySelector('[data-radar-menu]')
   if (radarMenu && state.table === 'observatorio_feeds') radarMenu.open = true
   const def = definitions[state.table]
@@ -589,6 +591,18 @@ try {
       const { mountAccessReport } = await import('./observatorio-acessos-admin.js?v=20261022');
       mountAccessReport($('[data-admin-workspace]'), supabase)
     } catch { /* Estatísticas opcionais não impedem a administração. */ }
+    try {
+      const { mountTracking } = await import('./observatorio-acompanhamento.js?v=20261025')
+      trackingPanel = mountTracking({ workspace: $('[data-admin-workspace]'), button: $('[data-admin-tracking]'), db: supabase,
+        openReview: async id => {
+          const { data, error } = await supabase.from('observatorio_conteudos').select('*').eq('id',id).single()
+          if (error || !data) throw error || new Error('Conteúdo não encontrado')
+          state.table = 'observatorio_conteudos'
+          await renderTable()
+          await openDialog(data)
+        }
+      })
+    } catch { /* Acompanhamento opcional não impede o cadastro existente. */ }
   }
 }
 catch (error) { if (message) showMessage(message, error.message, 'error') }
