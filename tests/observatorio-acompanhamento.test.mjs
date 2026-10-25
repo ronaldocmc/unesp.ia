@@ -2,13 +2,20 @@ import test from 'node:test'
 import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
 import { pathToFileURL } from 'node:url'
-import { evidenceURL, displayDate, mountTracking } from '../assets/js/portal/observatorio-acompanhamento.js'
+import { evidenceURL, displayDate, mountTracking, workerStatus } from '../assets/js/portal/observatorio-acompanhamento.js'
 
 test('acompanhamento: links seguros e datas em Brasília', () => {
   for (const url of ['javascript:alert(1)','data:text/html,foo','https://user:secret@example.org/','not a url']) assert.equal(evidenceURL(url), null)
   assert.equal(evidenceURL('https://example.org/noticia'), 'https://example.org/noticia')
   assert.equal(displayDate(null), 'Não informada'); assert.equal(displayDate('infinity'), 'Não informada')
   assert.match(displayDate('2026-10-25T03:30:00Z'), /25\/10\/2026.*00:30/)
+})
+
+test('monitor não confunde execução, reserva e falta de sinal com conversão', () => {
+  assert.match(workerStatus({em_processamento:1}),/reservado/)
+  assert.match(workerStatus({}),/Nenhuma execução/)
+  assert.match(workerStatus({ultima_execucao:'2026-10-25T03:00:00Z',consultado_em:'2026-10-25T03:02:00Z'}),/recente/)
+  assert.match(workerStatus({ultima_execucao:'2026-10-25T03:00:00Z',consultado_em:'2026-10-25T03:10:00Z'}),/Sem sinal recente/)
 })
 
 test('acompanhamento: filtros, paginação, editor existente e restauração da administração', async () => {
@@ -34,13 +41,18 @@ test('acompanhamento: filtros, paginação, editor existente e restauração da 
     const result = { total:26,aguardando_validacao:26,contadores:{revisao:26},consultado_em:'2026-10-25T03:00:00Z',origens:[],itens:[{
       titulo:'<img src=x onerror=alert(1)>',situacao:'revisao',conteudo_id:7,tentativas:0,estado_link:'pendente',url_evidencia:'javascript:alert(1)'
     }] }
-    const tracking = mountTracking({workspace,button,openReview:async id => reviews.push(id),db:{rpc:async (name,args) => { calls.push({name,args}); return fail ? {error:new Error('missing')} : {data:result} }}})
+    const tracking = mountTracking({workspace,button,openReview:async id => reviews.push(id),db:{rpc:async (name,args) => {
+      if (name === 'observatorio_worker_situacao') return {data:{execucoes_hoje:5,tentativas_hoje:2,resolvidos_hoje:1}}
+      calls.push({name,args}); return fail ? {error:new Error('missing')} : {data:result}
+    }}})
     button.listeners.click(); await flush()
     assert.equal(regular.hidden,true); assert.equal(hidden.hidden,true)
     assert.equal(calls[0].name,'observatorio_acompanhamento')
     assert.equal(calls[0].args.p_tamanho,25)
     const panel = workspace.children[0]
     assert.match(text(panel), /26 aguardando validação/)
+    assert.match(text(panel), /Execuções hoje: 5/)
+    assert.match(text(panel), /Resoluções confirmadas hoje: 1/)
     assert.match(text(panel), /<img src=x onerror=alert\(1\)>/)
     assert.ok(!walk(panel).some(n => n.tag === 'a' && String(n.href).startsWith('javascript:')))
     const review = walk(panel).find(n => n.textContent === 'Abrir para revisão'); await review.listeners.click(); assert.deepEqual(reviews,[7])

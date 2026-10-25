@@ -10,12 +10,20 @@ export function evidenceURL(value) {
 }
 export const displayDate = value => value && Number.isFinite(Date.parse(value))
   ? new Intl.DateTimeFormat('pt-BR', { timeZone: 'America/Sao_Paulo', dateStyle: 'short', timeStyle: 'short' }).format(new Date(value)) : 'Não informada'
+export function workerStatus(data) {
+  if (Number(data.em_processamento)>0) return 'Há item reservado em processamento'
+  if (!data.ultima_execucao) return 'Nenhuma execução registrada pelo monitor'
+  const age = Date.parse(data.consultado_em)-Date.parse(data.ultima_execucao)
+  return Number.isFinite(age) && age>=0 && age<=5*60000 ? 'Execução recente do processador confirmada' : 'Sem sinal recente do processador — verificar agendamento e função'
+}
 
 export function mountTracking({ workspace, button, db, openReview }) {
   const panel = el('section', undefined, 'admin-tracking'); panel.hidden = true
   const heading = el('h2', 'Acompanhamento do Radar e curadoria'); heading.tabIndex = -1
   panel.append(heading, el('p', 'A fila técnica identifica endereços; a curadoria decide o que publicar. Resolver um link não aprova uma notícia.'))
   panel.append(el('p', 'Prévias não salvas não contam como publicações aguardando revisão. A fila técnica pode conter links de prévias ou de notícias cadastradas. Descartes ativos têm lista própria. Nenhuma ação em lote ou aprovação automática é feita aqui.', 'admin-tracking-note'))
+  const monitor = el('section', undefined, 'admin-worker-monitor'); monitor.setAttribute('aria-label','Atividade do processador de links')
+  panel.append(monitor)
   const form = el('form', undefined, 'portal-form admin-tracking-filters')
   const inputs = {}
   const field = (name, label, choices, type = 'text') => {
@@ -65,9 +73,26 @@ export function mountTracking({ workspace, button, db, openReview }) {
     const version = ++request
     submit.disabled = prev.disabled = next.disabled = true
     status.textContent = 'Consultando o banco…'; totals.replaceChildren(); result.replaceChildren(); providers.replaceChildren(); pageLabel.textContent = ''
+    monitor.replaceChildren(el('h3','O processador está rodando e tentando converter?'),el('p','Consultando atividade…'))
     try {
-      const { data, error } = await db.rpc('observatorio_acompanhamento', { p_fila: mode, p_filtros: applied, p_pagina: page, p_tamanho: 25 })
+      const [listing, activity] = await Promise.all([
+        db.rpc('observatorio_acompanhamento', { p_fila: mode, p_filtros: applied, p_pagina: page, p_tamanho: 25 }),
+        db.rpc('observatorio_worker_situacao').catch(() => ({ error: true }))
+      ])
       if (version !== request) return
+      const { data, error } = listing
+      monitor.replaceChildren(el('h3','Atividade do processador — independente dos filtros'))
+      if (activity.error || !activity.data || !Object.hasOwn(activity.data,'execucoes_hoje')) {
+        monitor.append(el('p','Monitor de execução indisponível. Aplique a migration radar_worker_monitor. Não é possível afirmar se o processador está rodando apenas pelo total da fila.'))
+      } else {
+        const worker = activity.data
+        monitor.append(el('strong',workerStatus(worker)),el('p',`Última execução recebida no banco: ${displayDate(worker.ultima_execucao)} · Último estado: ${worker.ultimo_estado || 'Não registrado'}`))
+        const cards = el('div',undefined,'admin-tracking-totals')
+        for (const [key,label] of [['execucoes_hoje','Execuções hoje'],['tentativas_hoje','Tentativas com consulta concluídas hoje'],['resolvidos_hoje','Resoluções confirmadas hoje'],['sem_consulta_hoje','Avaliações sem consulta hoje'],['em_processamento','Em processamento agora'],['pendentes','Pendentes restantes']]) cards.append(el('p',`${label}: ${worker[key] ?? 0}`,'admin-tracking-total'))
+        monitor.append(cards,el('p',`Última tentativa com consulta concluída: ${displayDate(worker.ultima_tentativa)}`),el('p',`Última resolução confirmada: ${displayDate(worker.ultima_resolucao)}`),el('p',`Próxima elegibilidade da fila: ${displayDate(worker.proxima_elegivel)} (sujeita a pausas e cotas)`))
+        if (worker.ultimo_resultado) monitor.append(el('p',`Último resultado: ${worker.ultimo_resultado.situacao} · ${worker.ultimo_resultado.motivo || 'Sem impedimento registrado'} · ${displayDate(worker.ultimo_resultado.data)}`))
+        monitor.append(el('p','Execução não significa consulta externa. Uma tentativa só é contada quando o processador finaliza informando que consultou; pode envolver feeds, busca ou Google. Reservar um item ou aguardar uma pausa não conta como conversão. Contadores de hoje começam após ativar o monitor, em Brasília; não há reconstrução retroativa. Falhas antes de chegar ao banco ou antes da finalização não entram nesses contadores.','admin-tracking-note'))
+      }
       if (error || !data || !Array.isArray(data.itens)) throw new Error('Consulta indisponível. Confira a migration observatorio_acompanhamento e a permissão de administrador. Nenhum dado foi alterado.')
       totals.append(el('p', `${data.total} registro(s) nos filtros aplicados`, 'admin-tracking-total'))
       if (mode === 'editorial') totals.append(el('p', `${data.aguardando_validacao} aguardando validação editorial`, 'admin-tracking-total'))

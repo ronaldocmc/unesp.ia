@@ -592,7 +592,7 @@ try {
       mountAccessReport($('[data-admin-workspace]'), supabase)
     } catch { /* Estatísticas opcionais não impedem a administração. */ }
     try {
-      const { mountTracking } = await import('./observatorio-acompanhamento.js?v=20261025')
+      const { mountTracking } = await import('./observatorio-acompanhamento.js?v=20261025-monitor')
       trackingPanel = mountTracking({ workspace: $('[data-admin-workspace]'), button: $('[data-admin-tracking]'), db: supabase,
         openReview: async id => {
           const { data, error } = await supabase.from('observatorio_conteudos').select('*').eq('id',id).single()
