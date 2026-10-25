@@ -2,7 +2,7 @@ import test from 'node:test'
 import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
 import { pathToFileURL } from 'node:url'
-import { evidenceURL, displayDate, mountTracking, workerStatus } from '../assets/js/portal/observatorio-acompanhamento.js'
+import { evidenceURL, displayDate, mountTracking, workerStatus, retryFailedLink } from '../assets/js/portal/observatorio-acompanhamento.js'
 
 test('acompanhamento: links seguros e datas em Brasília', () => {
   for (const url of ['javascript:alert(1)','data:text/html,foo','https://user:secret@example.org/','not a url']) assert.equal(evidenceURL(url), null)
@@ -16,6 +16,18 @@ test('monitor não confunde execução, reserva e falta de sinal com conversão'
   assert.match(workerStatus({}),/Nenhuma execução/)
   assert.match(workerStatus({ultima_execucao:'2026-10-25T03:00:00Z',consultado_em:'2026-10-25T03:02:00Z'}),/recente/)
   assert.match(workerStatus({ultima_execucao:'2026-10-25T03:00:00Z',consultado_em:'2026-10-25T03:10:00Z'}),/Sem sinal recente/)
+})
+
+test('reprocessamento exige confirmação, apenas falhas e RPC autenticada sem requisição externa', async () => {
+  const row = {estado_link:'falhou',chave:'https://news.google.com/articles/FailedID',titulo:'Notícia em revisão'}
+  const calls = [], db = {rpc: (name,args) => ({then: resolve => resolve((calls.push({name,args}),{data:{ok:true,estado:'pendente'}}))})}
+  assert.equal(await retryFailedLink(db,row,()=>false),null); assert.equal(calls.length,0)
+  assert.equal((await retryFailedLink(db,row,message=>{assert.match(message,/até 5 consultas/);assert.match(message,/pausas/);return true})).estado,'pendente')
+  assert.equal(calls.length,1); assert.equal(calls[0].name,'observatorio_resolucao_reprocessar'); assert.deepEqual(calls[0].args,{p_chave:row.chave})
+  await assert.rejects(retryFailedLink(db,{...row,estado_link:'resolvido'},()=>true),/item com falha/)
+  await assert.rejects(retryFailedLink(db,{...row,chave:'javascript:alert(1)'},()=>true),/item com falha/)
+  await assert.rejects(retryFailedLink({rpc:async()=>({data:{ok:false}})},row,()=>true),/não está mais em falha/)
+  await assert.rejects(retryFailedLink({rpc:async()=>({error:new Error('denied')})},row,()=>true),/permissão/)
 })
 
 test('acompanhamento: RPC thenable sem catch, filtros, paginação e revisão existente', async () => {
@@ -37,13 +49,14 @@ test('acompanhamento: RPC thenable sem catch, filtros, paginação e revisão ex
     globalThis.document = { createElement: tag => new Node(tag), createTextNode: value => Object.assign(new Node('#text'),{textContent:value}), querySelectorAll: () => [] }
     const workspace = new Node('section'), regular = new Node('div'), hidden = new Node('div'), button = new Node('button')
     hidden.hidden = true; workspace.append(regular,hidden)
-    const calls = [], reviews = []; let fail = false, monitorFail = false
+    const calls = [], reviews = []; let fail = false, monitorFail = false, confirmChoice = false
     const result = { total:26,aguardando_validacao:26,contadores:{revisao:26},consultado_em:'2026-10-25T03:00:00Z',origens:[],itens:[{
       titulo:'<img src=x onerror=alert(1)>',situacao:'revisao',conteudo_id:7,tentativas:0,estado_link:'pendente',url_evidencia:'javascript:alert(1)'
     }] }
     const thenable = value => ({ then(resolve,reject) { return Promise.resolve(value).then(resolve,reject) } })
     assert.equal(thenable({}).catch, undefined)
-    const tracking = mountTracking({workspace,button,openReview:async id => reviews.push(id),db:{rpc:(name,args) => {
+    const tracking = mountTracking({workspace,button,openReview:async id => reviews.push(id),confirmRetry:()=>confirmChoice,db:{rpc:(name,args) => {
+      if (name === 'observatorio_resolucao_reprocessar') { calls.push({name,args}); return thenable({data:{ok:true,proxima_em:'2026-10-25T04:00:00Z'}}) }
       if (name === 'observatorio_worker_situacao') {
         if (monitorFail) throw new Error('Monitor indisponível')
         return thenable({data:{execucoes_hoje:5,tentativas_hoje:2,resolvidos_hoje:1}})
@@ -65,8 +78,19 @@ test('acompanhamento: RPC thenable sem catch, filtros, paginação e revisão ex
     const form = walk(panel).find(n => n.tag === 'form'), input = walk(panel).find(n => n.name === 'veiculo')
     input.value = 'Veículo'; form.listeners.submit({preventDefault(){}}); await flush()
     assert.equal(calls.at(-1).args.p_pagina,1); assert.equal(calls.at(-1).args.p_filtros.veiculo,'Veículo')
+    assert.ok(!walk(panel).some(n => n.textContent === 'Tentar novamente'))
+    Object.assign(result.itens[0],{estado_link:'falhou',situacao:'falhou',chave:'https://news.google.com/articles/FailedID',tentativas:5,proxima_em:'2026-10-25T04:00:00Z'})
+    const mode = walk(panel).find(n => n.name === 'fila'); mode.value = 'tecnica'; mode.listeners.change()
+    form.listeners.submit({preventDefault(){}}); await flush()
+    assert.match(text(panel), /Limite atingido/)
+    assert.ok(!text(panel).includes('Próxima tentativa elegível:'))
+    let retryButton = walk(panel).find(n => n.textContent === 'Tentar novamente')
+    await retryButton.listeners.click(); assert.ok(!calls.some(call => call.name === 'observatorio_resolucao_reprocessar'))
+    confirmChoice = true; await retryButton.listeners.click()
+    assert.equal(calls.filter(call => call.name === 'observatorio_resolucao_reprocessar').length,1)
+    assert.match(text(panel), /Reprocessamento solicitado/); assert.match(text(panel), /ainda não foi convertido/)
     monitorFail = true; form.listeners.submit({preventDefault(){}}); await flush()
-    assert.match(text(panel), /Monitor de execução indisponível/); assert.match(text(panel), /26 aguardando validação/)
+    assert.match(text(panel), /Monitor de execução indisponível/); assert.match(text(panel), /26 registro\(s\) nos filtros/)
     monitorFail = false
     fail = true; form.listeners.submit({preventDefault(){}}); await flush(); assert.match(text(panel), /migration observatorio_acompanhamento/)
     tracking.hide(); assert.equal(regular.hidden,false); assert.equal(hidden.hidden,true); assert.equal(panel.hidden,true)

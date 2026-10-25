@@ -16,8 +16,16 @@ export function workerStatus(data) {
   const age = Date.parse(data.consultado_em)-Date.parse(data.ultima_execucao)
   return Number.isFinite(age) && age>=0 && age<=5*60000 ? 'Execução recente do processador confirmada' : 'Sem sinal recente do processador — verificar agendamento e função'
 }
+export async function retryFailedLink(db, row, confirmRetry) {
+  if (row.estado_link !== 'falhou' || !/^https:\/\/news\.google\.com\/articles\/[A-Za-z0-9_-]+$/.test(row.chave || '')) throw new Error('Selecione um item com falha na fila técnica.')
+  if (!await confirmRetry(`Tentar novamente “${row.titulo || 'este link'}”? Isso libera um novo ciclo de até 5 consultas e preserva as pausas do provedor. Se faltam dados ou há divergência de título/data, confira ou corrija-os antes. Não há garantia de conversão.`)) return null
+  const { data, error } = await db.rpc('observatorio_resolucao_reprocessar', { p_chave: row.chave })
+  if (error) throw new Error('Não foi possível solicitar. Confira sua permissão e a migration radar_retry_controlado.')
+  if (!data?.ok) throw new Error(data?.motivo || 'O item não está mais em falha. Atualize a lista.')
+  return data
+}
 
-export function mountTracking({ workspace, button, db, openReview }) {
+export function mountTracking({ workspace, button, db, openReview, confirmRetry = message => window.confirm(message) }) {
   const panel = el('section', undefined, 'admin-tracking'); panel.hidden = true
   const heading = el('h2', 'Acompanhamento do Radar e curadoria'); heading.tabIndex = -1
   panel.append(heading, el('p', 'A fila técnica identifica endereços; a curadoria decide o que publicar. Resolver um link não aprova uma notícia.'))
@@ -98,19 +106,35 @@ export function mountTracking({ workspace, button, db, openReview }) {
       if (mode === 'editorial') totals.append(el('p', `${data.aguardando_validacao} aguardando validação editorial`, 'admin-tracking-total'))
       for (const [key, value] of Object.entries(data.contadores || {})) totals.append(el('p', `${labels[key] || key}: ${value}`, 'admin-tracking-total'))
       if (!data.itens.length) result.append(el('p','Nenhum registro corresponde aos filtros.'))
-      else result.append(table(['Conteúdo / origem','Situação / revisão','Evidências','Tentativas / motivo / datas','Revisar'], data.itens.map(row => {
+      else result.append(table(['Conteúdo / origem','Situação / revisão','Evidências','Tentativas / motivo / datas','Revisão / reprocessamento'], data.itens.map(row => {
         const title = el('div'); title.append(el('strong',row.titulo || 'Título não informado'),el('p',`Veículo: ${row.veiculo || 'Não informado'}`),el('p',`Fonte: ${row.fonte || 'Não informada'}`),el('p',`Categoria: ${row.categoria || 'Não informada'} · Origem: ${row.origem || 'Não informada'}`),el('p',`Feed: ${row.feed || 'Não informado'} · Publicação: ${row.data_publicacao || 'Não informada'}`))
         const workflow = el('div'); workflow.append(el('strong',labels[row.situacao] || row.situacao),el('p',`Estado do link: ${row.estado_link}`),el('p',`Revisão humana: ${row.revisao_humana == null ? 'Não se aplica' : row.revisao_humana ? 'Concluída' : 'Não concluída'}`),el('p',`Aprovação de curadoria registrada: ${row.aprovado_curadoria == null ? 'Não se aplica' : row.aprovado_curadoria ? 'Sim' : 'Não'}`))
         const links = el('div'); appendLink(links,'URL original identificada',row.url_original); appendLink(links,row.evidencia === 'google_rss' ? 'Abrir fallback Google Notícias' : 'Abrir evidência cadastrada',row.url_evidencia)
         if (row.url_rss && row.url_rss !== row.url_evidencia) appendLink(links,'URL RSS / coletada',row.url_rss)
         links.append(el('p',`Método: ${row.metodo || 'Não informado'}`))
         const info = el('div'); info.append(el('p',`Tentativas: ${row.tentativas}`),el('p',row.motivo || 'Sem motivo registrado'),el('p',`Cadastro: ${displayDate(row.criado_em)}`),el('p',`Atualização: ${displayDate(row.atualizado_em)}`))
-        if (row.proxima_em) info.append(el('p',`Próxima tentativa elegível: ${displayDate(row.proxima_em)} (sujeita a cotas e pausas)`))
+        if (row.estado_link === 'falhou') info.append(el('p',Number(row.tentativas)>=5 ? 'Limite atingido — requer reprocessamento autorizado.' : 'Revisão dos dados ou da fonte necessária antes de tentar novamente.'))
+        else if (mode === 'tecnica' && row.estado_link === 'pendente' && row.proxima_em) info.append(el('p',`Próxima tentativa elegível: ${displayDate(row.proxima_em)} (sujeita a cotas e pausas)`))
         const action = el('div')
         if (row.conteudo_id != null) {
           const review = el('button','Abrir para revisão','btn-small'); review.type = 'button'
           review.addEventListener('click', async () => { review.disabled = true; try { await openReview(row.conteudo_id) } catch { status.textContent = 'Não foi possível abrir o conteúdo. Atualize a lista e tente novamente.' } finally { review.disabled = false } }); action.append(review)
         } else action.append(el('span', mode === 'descartes' ? 'Descarte registrado; sem edição nesta lista.' : 'Sem conteúdo cadastrado associado. Não conta como pendência editorial.'))
+        if (mode === 'tecnica' && row.estado_link === 'falhou') {
+          const retry = el('button','Tentar novamente','btn-small'); retry.type = 'button'
+          retry.addEventListener('click', async () => {
+            if (retry.disabled) return
+            retry.disabled = true
+            try {
+              const queued = await retryFailedLink(db,row,confirmRetry)
+              if (!queued) return
+              await load()
+              status.textContent = `Reprocessamento solicitado. Próxima elegibilidade: ${displayDate(queued.proxima_em)} (sujeita às pausas e cotas). O link ainda não foi convertido.`
+            } catch (error) { status.textContent = error.message }
+            finally { retry.disabled = false }
+          })
+          action.append(retry)
+        }
         return [title,workflow,links,info,action]
       })))
       if (mode === 'tecnica') {
