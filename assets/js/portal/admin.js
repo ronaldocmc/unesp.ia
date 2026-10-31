@@ -587,6 +587,8 @@ try {
   }
   const curadoriaLink = $('[data-curadoria-users]')
   if (curadoriaLink) curadoriaLink.hidden = state.curador
+  const interestedLink = $('[data-interested-admin]')
+  if (interestedLink) interestedLink.hidden = state.curador
   await renderTable()
   if (adminScope === 'observatorio') {
     if (!state.curador) {

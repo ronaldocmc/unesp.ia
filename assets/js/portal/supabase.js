@@ -12,11 +12,11 @@ export function assertConfigured() {
   return supabase
 }
 
-export async function requireSession(returnTo = location.href) {
+export async function requireSession(returnTo = location.href, { loginPage = 'login.html' } = {}) {
   const client = assertConfigured()
   const { data: { session } } = await client.auth.getSession()
   if (!session) {
-    location.href = `login.html?returnTo=${encodeURIComponent(returnTo)}`
+    location.href = `${loginPage}?returnTo=${encodeURIComponent(returnTo)}`
     throw new Error('Autenticação necessária')
   }
   return session

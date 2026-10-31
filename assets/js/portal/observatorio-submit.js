@@ -79,12 +79,12 @@ async function submitObservation(event) {
   showMessage(message, 'Enviando para curadoria...', 'info')
   try {
     const payload = payloadFromForm()
-    const { error } = await supabase.from('observatorio_conteudos').insert(payload)
+    const { data, error } = await supabase.rpc('observatorio_enviar_sugestao', { p_dados: payload })
     if (error) throw error
     form.reset()
     linkForm.reset()
     form.elements.data_publicacao.value = today()
-    showMessage(message, 'Sugestão enviada. Ela ficará em revisão até a curadoria aprovar, editar ou arquivar.', 'success')
+    showMessage(message, data?.duplicada ? 'Este link já foi sugerido por você. Acompanhe em Minha conta.' : 'Sugestão enviada. Acompanhe em Minha conta; a curadoria ainda precisa revisar antes de publicar.', 'success')
   } catch (error) { showMessage(message, error.message, 'error') }
   finally { buttons.forEach(button => { button.disabled = false }) }
 }
@@ -97,7 +97,7 @@ linkForm.addEventListener('submit', previewLink)
 form.addEventListener('submit', submitObservation)
 
 try {
-  session = await requireSession(location.href)
+  session = await requireSession(location.href, { loginPage: 'participar-observatorio.html' })
   $('[data-logout]').hidden = false
   $('[data-logout]').addEventListener('click', async () => {
     await supabase.auth.signOut()

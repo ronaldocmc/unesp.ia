@@ -1,0 +1,11 @@
+.obs-account{max-width:1100px;margin-inline:auto;padding-block:36px}.obs-account>p{max-width:850px;line-height:1.65}
+.obs-account-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px;margin-block:28px}
+.obs-account-card{min-width:0;padding:26px;border:1px solid #b7cfe1;border-radius:18px;background:#f5faff}
+.obs-account-card h2{margin-top:0}.obs-account .portal-form{display:grid;grid-template-columns:1fr;gap:16px}
+.obs-account .obs-opt-in{display:flex;align-items:flex-start;gap:12px;line-height:1.6;font-weight:400}
+.obs-account .obs-opt-in input{width:22px;min-width:22px;height:22px;margin-top:4px}
+.obs-account table{width:100%;border-collapse:collapse}.obs-account td,.obs-account th{padding:14px;text-align:left;border-bottom:1px solid #caddeb;vertical-align:top;overflow-wrap:anywhere}
+.obs-account .table-wrap{overflow-x:auto}.obs-account .portal-message{scroll-margin-top:140px}
+.obs-account-nav{display:flex;gap:16px;flex-wrap:wrap;margin-block:24px}
+.obs-account-invite{padding-block:36px;border-top:1px solid #caddeb}.obs-account-invite p{max-width:850px;line-height:1.65}.obs-account-invite .obs-button{margin:8px 12px 8px 0}
+@media(max-width:720px){.obs-account-grid{grid-template-columns:1fr}.obs-account-card{padding:18px}.obs-account{padding-inline:18px}.obs-account .btn{white-space:normal}}

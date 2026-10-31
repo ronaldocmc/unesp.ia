@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="pt-br"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex">
+<title>Minha conta | Observar.IA</title><link rel="stylesheet" href="assets/css/style.css"><link rel="stylesheet" href="assets/css/observatorio-conta.css?v=20261031"></head>
+<body><header class="topbar"><a class="brand" href="observatorio.html"><img class="brand-logo" src="assets/img/observar-ia-logo.png" alt="Observar.IA"></a>
+<nav class="nav"><a href="observatorio.html">Observatório</a><a href="area-aluno.html">Meus cursos</a><button class="btn-small" type="button" data-account-logout>Sair</button></nav></header>
+<main class="container content obs-account"><h1>Minha conta no Observar.IA</h1>
+<p>Uma conta, escolhas independentes: você pode sugerir observações sem assinar o resumo.</p>
+<p data-account-message role="status" aria-live="polite" hidden></p>
+<nav class="obs-account-nav"><a class="btn" href="sugerir-observacao.html">Sugerir uma observação</a><a href="#minhas-sugestoes">Minhas sugestões</a><a href="privacidade-observatorio.html">Uso dos dados</a></nav>
+<section class="obs-account-card"><h2>Perfil e Observar.Dia</h2><p data-account-email></p>
+<p>O Observar.Dia será o resumo diário do Observar.IA. Nesta etapa, registramos apenas seu interesse: os envios ainda não começaram.</p>
+<form class="portal-form" data-preferences-form>
+<label>Nome<input name="nome" autocomplete="name" required minlength="2" maxlength="120" disabled></label>
+<label class="obs-opt-in"><input type="checkbox" name="assinatura" disabled><span>Quero receber o Observar.Dia por e-mail, com o resumo diário das observações. Posso cancelar nesta área a qualquer momento.</span></label>
+<p>Seu nome e e-mail serão usados para sua conta, suas sugestões e, se você escolher, a assinatura. A assinatura não é requisito para participar.</p>
+<div class="portal-form-actions"><button class="btn" type="submit" disabled>Salvar preferências</button><button class="btn secondary" type="button" data-cancel-subscription disabled>Cancelar assinatura</button></div></form></section>
+<section id="minhas-sugestoes"><h2>Minhas sugestões</h2><p>As sugestões passam por curadoria. Somente conteúdos publicados com revisão humana aparecem no Observatório.</p>
+<p data-suggestions-message role="status" aria-live="polite"></p><div class="table-wrap" data-my-suggestions></div>
+<div class="portal-form-actions"><button class="btn secondary" type="button" data-suggestions-prev disabled>Anterior</button><span data-suggestions-page></span><button class="btn secondary" type="button" data-suggestions-next disabled>Próxima</button></div></section>
+</main><script type="module" src="assets/js/portal/observatorio-conta.js?v=20261031"></script></body></html>

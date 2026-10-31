@@ -1,9 +1,17 @@
 import { assertConfigured, supabase, showMessage } from './supabase.js'
+import { safeAccountReturn } from './observatorio-conta-model.js'
 
 const form = document.querySelector('form[data-auth-form]')
 const message = document.querySelector('[data-auth-message]')
 
 try { assertConfigured() } catch (error) { showMessage(message, error.message, 'error') }
+if (form?.dataset.authForm === 'login') {
+  const link=document.createElement('a');link.textContent='Participar do Observar.IA: criar conta ou entrar com Google'
+  link.href='participar-observatorio.html'
+  const requested=new URLSearchParams(location.search).get('returnTo')
+  if(requested){const url=new URL(link.href,location.href);url.searchParams.set('returnTo',safeAccountReturn(requested,location.href));link.href=url.href}
+  form.after(link)
+}
 
 form?.addEventListener('submit', async (event) => {
   event.preventDefault()
@@ -18,11 +26,13 @@ form?.addEventListener('submit', async (event) => {
       })
       if (error) throw error
       const requested = new URLSearchParams(location.search).get('returnTo')
-      const target = requested ? new URL(requested, location.href) : new URL('area-aluno.html', location.href)
-      location.href = target.origin === location.origin ? target.href : 'area-aluno.html'
+      location.href = safeAccountReturn(requested, location.href, 'area-aluno.html')
     }
     if (mode === 'forgot') {
-      const redirectTo = new URL('redefinir-senha.html', location.href).href
+      const redirect = new URL('redefinir-senha.html', location.href)
+      const requested = new URLSearchParams(location.search).get('returnTo')
+      if(requested)redirect.searchParams.set('returnTo',safeAccountReturn(requested,location.href))
+      const redirectTo = redirect.href
       const { error } = await supabase.auth.resetPasswordForEmail(
         String(values.email).trim().toLowerCase(), { redirectTo }
       )
