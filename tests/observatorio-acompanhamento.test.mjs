@@ -94,6 +94,37 @@ test('acompanhamento: RPC thenable sem catch, filtros, paginação e revisão ex
     monitorFail = false
     fail = true; form.listeners.submit({preventDefault(){}}); await flush(); assert.match(text(panel), /migration observatorio_acompanhamento/)
     tracking.hide(); assert.equal(regular.hidden,false); assert.equal(hidden.hidden,true); assert.equal(panel.hidden,true)
+    fail = false
+    const curatorCalls = []; let finishReview
+    const curatorButton=new Node('button')
+    const queue=mountTracking({workspace,button:curatorButton,curator:true,
+      openReview:()=>new Promise(resolve=>{finishReview=resolve}),
+      db:{rpc:(name,args)=>{curatorCalls.push({name,args});return thenable({data:result})}}})
+    curatorButton.listeners.click(); await flush()
+    const cp=workspace.children[0], find=name=>walk(cp).find(n=>n.name===name)
+    assert.deepEqual(find('fila').children.map(n=>n.value),['editorial'])
+    assert.equal(curatorCalls.at(-1).args.p_filtros.revisao,'false')
+    assert.ok(curatorCalls.every(c=>c.name==='observatorio_acompanhamento'))
+    find('veiculo').value='Veículo preservado'
+    walk(cp).find(n=>n.tag==='form').listeners.submit({preventDefault(){}}); await flush()
+    walk(cp).find(n=>n.textContent==='Próxima').listeners.click(); await flush()
+    let restoredScroll
+    const oldWindow=globalThis.window
+    globalThis.window={scrollY:720,scrollTo:value=>{restoredScroll=value.top}}
+    try {
+      const pending=walk(cp).find(n=>n.textContent==='Abrir para revisão').listeners.click()
+      assert.equal(queue.isVisible(),true)
+      finishReview(); await pending
+      assert.equal(curatorCalls.at(-1).args.p_pagina,2)
+      assert.equal(curatorCalls.at(-1).args.p_filtros.veiculo,'Veículo preservado')
+      assert.equal(find('veiculo').value,'Veículo preservado')
+      assert.equal(restoredScroll,720)
+      assert.equal(queue.isVisible(),true)
+      result.itens=[]; result.total=25
+      const lastPageRefresh=walk(cp).find(n=>n.textContent==='Abrir para revisão').listeners.click()
+      finishReview(); await lastPageRefresh
+      assert.equal(curatorCalls.at(-1).args.p_pagina,1)
+    } finally { globalThis.window=oldWindow }
   } finally { globalThis.document = oldDocument }
 })
 
@@ -163,5 +194,17 @@ test('PostgreSQL: acompanhamento separa filas, pagina e protege dados privados',
     await db.exec('reset role')
     assert.equal((await db.query('select count(*)::int as n from private.radar_google_fila')).rows[0].n,3)
     assert.equal((await db.query("select count(*)::int as n from public.observatorio_conteudos where status='revisao'")).rows[0].n,32)
+    await db.exec(`create function private.is_observatorio_curador() returns boolean language sql as $$ select current_setting('test.curator',true)='yes' $$;`)
+    const curatorSQL=readFileSync(new URL('../supabase/migrations/202610270001_observatorio_curadoria_filtros.sql',import.meta.url),'utf8')
+    await db.exec(curatorSQL); await db.exec(curatorSQL)
+    await db.exec("set role authenticated; select set_config('test.curator','yes',false)")
+    assert.equal((await rpc('editorial',{revisao:'false',categoria:'Pesquisa'})).total,30)
+    assert.deepEqual((await rpc()).origens,[])
+    for(const mode of ['tecnica','descartes',null]) await assert.rejects(rpc(mode),/Acesso restrito/)
+    await db.exec("select set_config('test.curator','',false)")
+    await assert.rejects(rpc(),/Acesso restrito/)
+    await db.exec("select set_config('test.admin','yes',false)")
+    assert.equal((await rpc('tecnica')).total,3)
+    await db.exec('reset role')
   } finally { await db.close() }
 })

@@ -50,3 +50,26 @@ A migration de retry preserva os contratos das RPCs, leases, estados da fila e t
 - Atualizações concorrentes são serializadas por item: uma segunda solicitação encontra pendente e não reinicia o ciclo novamente. Resolvidos e itens já pendentes/processando não são alterados.
 - A tabela privada `radar_reprocessamentos` preserva data, identificador do solicitante, motivo e tentativas anteriores antes do reinício. Sem leitura pública ou pelo perfil comum. Não retorna esse histórico no painel.
 - Falhas terminais deixam de mostrar “próxima tentativa elegível”: mostram limite atingido ou necessidade de revisão. O botão não aprova, publica, remove notícias ou ignora HTTP 429.
+# Acesso do curador e retorno à lista (27/10/2026)
+
+Aplicar também `supabase/migrations/202610270001_observatorio_curadoria_filtros.sql`
+após a migration original de acompanhamento. Publicar os arquivos de interface
+atualizados; publicar somente o HTML/JS não aplica permissões no banco.
+
+O papel `observatorio_curador` entra no administrador do Observatório com seu
+login existente. A tela inicial passa a ser a lista editorial com revisão humana
+não concluída, sem período obrigatório (para não esconder pendências antigas).
+Pode filtrar por título, veículo, fonte, categoria, origem, data de cadastro,
+situação, revisão e evidência. O filtro de data não comprova a data de coleta.
+
+“Abrir para revisão” utiliza o editor existente. Salvar ou cancelar mantém a
+lista aberta, os filtros aplicados, a página e a posição de rolagem. Após salvar,
+a lista é consultada novamente: um item validado pode desaparecer do filtro de
+pendências. Se a última página ficar vazia, retorna à última página disponível.
+Nada é publicado automaticamente: continuam valendo as regras de publicação e
+a confirmação de revisão humana. O retorno é preservado na navegação da sessão,
+não após recarregar ou fechar o navegador.
+
+O banco permite ao curador somente `p_fila='editorial'`; as filas técnica e de
+descartes, o monitor e as estatísticas de acesso continuam exclusivos da
+administração. A alteração não concede acesso direto às tabelas privadas.

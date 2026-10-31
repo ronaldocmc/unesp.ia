@@ -516,7 +516,9 @@ async function saveRecord(event) {
       const { error } = await query
       if (error) throw error
     }
-    dialog.close(); state.lookups = {}; await renderTable()
+    const fromTracking = trackingPanel?.isVisible()
+    dialog.close(); state.lookups = {}
+    if (!fromTracking) await renderTable()
     if (state.table === 'observatorio_feeds') showMessage(message, 'Fonte salva. Recarregue o Radar para atualizar a seleção de fontes. Nenhuma coleta foi executada.', 'success')
     if (state.table === 'observatorio_conteudos') showMessage(message, payload.status === 'publicado'
       ? 'Publicação salva no banco e disponível no Observatório. Atualize a página pública para vê-la.'
@@ -586,22 +588,26 @@ try {
   const curadoriaLink = $('[data-curadoria-users]')
   if (curadoriaLink) curadoriaLink.hidden = state.curador
   await renderTable()
-  if (adminScope === 'observatorio' && !state.curador) {
+  if (adminScope === 'observatorio') {
+    if (!state.curador) {
+      try {
+        const { mountAccessReport } = await import('./observatorio-acessos-admin.js?v=20261022');
+        mountAccessReport($('[data-admin-workspace]'), supabase)
+      } catch { /* Estatísticas opcionais não impedem a administração. */ }
+    }
     try {
-      const { mountAccessReport } = await import('./observatorio-acessos-admin.js?v=20261022');
-      mountAccessReport($('[data-admin-workspace]'), supabase)
-    } catch { /* Estatísticas opcionais não impedem a administração. */ }
-    try {
-      const { mountTracking } = await import('./observatorio-acompanhamento.js?v=20261025-retry')
+      const { mountTracking } = await import('./observatorio-acompanhamento.js?v=20261027-curadoria')
       trackingPanel = mountTracking({ workspace: $('[data-admin-workspace]'), button: $('[data-admin-tracking]'), db: supabase,
+        curator: state.curador,
         openReview: async id => {
           const { data, error } = await supabase.from('observatorio_conteudos').select('*').eq('id',id).single()
           if (error || !data) throw error || new Error('Conteúdo não encontrado')
           state.table = 'observatorio_conteudos'
-          await renderTable()
           await openDialog(data)
+          await new Promise(resolve => dialog.addEventListener('close', resolve, { once: true }))
         }
       })
+      if (state.curador) $('[data-admin-tracking]').click()
     } catch { /* Acompanhamento opcional não impede o cadastro existente. */ }
   }
 }

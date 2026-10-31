@@ -25,7 +25,7 @@ export async function retryFailedLink(db, row, confirmRetry) {
   return data
 }
 
-export function mountTracking({ workspace, button, db, openReview, confirmRetry = message => window.confirm(message) }) {
+export function mountTracking({ workspace, button, db, openReview, curator = false, confirmRetry = message => window.confirm(message) }) {
   const panel = el('section', undefined, 'admin-tracking'); panel.hidden = true
   const heading = el('h2', 'Acompanhamento do Radar e curadoria'); heading.tabIndex = -1
   panel.append(heading, el('p', 'A fila técnica identifica endereços; a curadoria decide o que publicar. Resolver um link não aprova uma notícia.'))
@@ -41,7 +41,7 @@ export function mountTracking({ workspace, button, db, openReview, confirmRetry 
     else { input.type = type; if (type === 'text') input.maxLength = 200 }
     wrap.append(input); form.append(wrap); inputs[name] = input; return input
   }
-  field('fila','Lista', [['editorial','Curadoria — conteúdos cadastrados'],['tecnica','Técnica — resolução de links'],['descartes','Descartes ativos do Radar']])
+  field('fila','Lista', curator ? [['editorial','Curadoria — conteúdos cadastrados']] : [['editorial','Curadoria — conteúdos cadastrados'],['tecnica','Técnica — resolução de links'],['descartes','Descartes ativos do Radar']])
   field('busca','Título, veículo ou motivo'); field('inicio','Cadastro desde',null,'date'); field('fim','Cadastro até',null,'date')
   field('veiculo','Veículo'); field('fonte','Fonte'); field('categoria','Categoria'); field('origem','Origem do cadastro')
   field('feed','Feed registrado (nome/código ou nao_informado)')
@@ -53,12 +53,14 @@ export function mountTracking({ workspace, button, db, openReview, confirmRetry 
   const submit = el('button','Aplicar filtros / Atualizar','btn'); submit.type = 'submit'
   const clear = el('button','Limpar filtros','btn secondary'); clear.type = 'button'; actions.append(submit,clear); form.append(actions)
   panel.append(form, el('p', 'Período = data de cadastro (ou descarte), no fuso de Brasília; não a data de publicação. O feed só aparece quando foi registrado: não é inferido pelo veículo. Os totais abaixo respeitam todos os filtros aplicados.', 'admin-tracking-note'))
-  const status = el('p'); status.setAttribute('role','status'); status.setAttribute('aria-live','polite')
+  const status = el('p'); status.tabIndex = -1; status.setAttribute('role','status'); status.setAttribute('aria-live','polite')
   const totals = el('div', undefined, 'admin-tracking-totals'), result = el('div'), providers = el('div')
   const pagination = el('div', undefined, 'portal-form-actions'), prev = el('button','Anterior','btn secondary'), next = el('button','Próxima','btn secondary'), pageLabel = el('span')
   prev.type = next.type = 'button'; pagination.append(prev,pageLabel,next)
   panel.append(status,totals,result,pagination,providers); workspace.prepend(panel); button.hidden = false
-  let page = 1, applied = {}, mode = 'editorial', request = 0, previousHidden = null
+  let page = 1, applied = curator ? { revisao: 'false' } : {}, mode = 'editorial', request = 0, previousHidden = null
+  if (curator) inputs.revisao.value = 'false'
+  monitor.hidden = curator
   const updateStates = () => {
     inputs.situacao.replaceChildren()
     for (const value of ['', ...states[inputs.fila.value]]) { const option = el('option', labels[value] || 'Todas'); option.value = value; inputs.situacao.append(option) }
@@ -85,7 +87,7 @@ export function mountTracking({ workspace, button, db, openReview, confirmRetry 
     try {
       const [listing, activity] = await Promise.all([
         db.rpc('observatorio_acompanhamento', { p_fila: mode, p_filtros: applied, p_pagina: page, p_tamanho: 25 }),
-        Promise.resolve().then(() => db.rpc('observatorio_worker_situacao')).catch(() => ({ error: true }))
+        curator ? Promise.resolve({ error: true }) : Promise.resolve().then(() => db.rpc('observatorio_worker_situacao')).catch(() => ({ error: true }))
       ])
       if (version !== request) return
       const { data, error } = listing
@@ -101,7 +103,10 @@ export function mountTracking({ workspace, button, db, openReview, confirmRetry 
         if (worker.ultimo_resultado) monitor.append(el('p',`Último resultado: ${worker.ultimo_resultado.situacao} · ${worker.ultimo_resultado.motivo || 'Sem impedimento registrado'} · ${displayDate(worker.ultimo_resultado.data)}`))
         monitor.append(el('p','Execução não significa consulta externa. Uma tentativa só é contada quando o processador finaliza informando que consultou; pode envolver feeds, busca ou Google. Reservar um item ou aguardar uma pausa não conta como conversão. Contadores de hoje começam após ativar o monitor, em Brasília; não há reconstrução retroativa. Falhas antes de chegar ao banco ou antes da finalização não entram nesses contadores.','admin-tracking-note'))
       }
-      if (error || !data || !Array.isArray(data.itens)) throw new Error('Consulta indisponível. Confira a migration observatorio_acompanhamento e a permissão de administrador. Nenhum dado foi alterado.')
+      if (error || !data || !Array.isArray(data.itens)) throw new Error('Consulta indisponível. Confira a migration observatorio_acompanhamento, a atualização de acesso da curadoria e sua permissão. Nenhum dado foi alterado.')
+      if (!data.itens.length && page > 1 && data.total <= (page - 1) * 25) {
+        page = Math.max(1,Math.ceil(data.total/25)); return await load()
+      }
       totals.append(el('p', `${data.total} registro(s) nos filtros aplicados`, 'admin-tracking-total'))
       if (mode === 'editorial') totals.append(el('p', `${data.aguardando_validacao} aguardando validação editorial`, 'admin-tracking-total'))
       for (const [key, value] of Object.entries(data.contadores || {})) totals.append(el('p', `${labels[key] || key}: ${value}`, 'admin-tracking-total'))
@@ -118,7 +123,19 @@ export function mountTracking({ workspace, button, db, openReview, confirmRetry 
         const action = el('div')
         if (row.conteudo_id != null) {
           const review = el('button','Abrir para revisão','btn-small'); review.type = 'button'
-          review.addEventListener('click', async () => { review.disabled = true; try { await openReview(row.conteudo_id) } catch { status.textContent = 'Não foi possível abrir o conteúdo. Atualize a lista e tente novamente.' } finally { review.disabled = false } }); action.append(review)
+          review.addEventListener('click', async () => {
+            const scroll = globalThis.window?.scrollY
+            review.disabled = true
+            try {
+              await openReview(row.conteudo_id)
+              if (previousHidden) {
+                await load()
+                globalThis.window?.scrollTo?.({ top: scroll ?? 0, behavior: 'instant' })
+                status.focus?.({ preventScroll: true })
+              }
+            } catch { status.textContent = 'Não foi possível abrir o conteúdo. Atualize a lista e tente novamente.' }
+            finally { review.disabled = false }
+          }); action.append(review)
         } else action.append(el('span', mode === 'descartes' ? 'Descarte registrado; sem edição nesta lista.' : 'Sem conteúdo cadastrado associado. Não conta como pendência editorial.'))
         if (mode === 'tecnica' && row.estado_link === 'falhou') {
           const retry = el('button','Tentar novamente','btn-small'); retry.type = 'button'
@@ -159,5 +176,5 @@ export function mountTracking({ workspace, button, db, openReview, confirmRetry 
     if (!previousHidden) { previousHidden = [...workspace.children].filter(child => child !== panel).map(child => [child,child.hidden]); previousHidden.forEach(([child]) => { child.hidden = true }) }
     panel.hidden = false; button.classList.add('active'); document.querySelectorAll('[data-admin-tab]').forEach(tab => tab.classList.remove('active')); heading.focus(); void load()
   })
-  return { hide }
+  return { hide, isVisible: () => !panel.hidden }
 }
