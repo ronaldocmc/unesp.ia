@@ -1,3 +1,4 @@
+import { mountGeoReport } from './observatorio-acessos-mapa.js'
 const labels = { visita: 'Visitas', visualizacao: 'Visualizações de cartões', clique_original: 'Cliques na fonte direta', clique_fallback: 'Cliques via Google Notícias' }
 const node = (tag, text) => { const el = document.createElement(tag); if (text !== undefined) el.textContent = text; return el }
 export function mountAccessReport(workspace, db) {
@@ -39,5 +40,6 @@ export function mountAccessReport(workspace, db) {
     } catch (error) { status.textContent = error.message }
     finally { button.disabled = false }
   })
+  mountGeoReport(panel,db)
   workspace.prepend(panel)
 }

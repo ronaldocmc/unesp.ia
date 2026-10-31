@@ -593,7 +593,7 @@ try {
   if (adminScope === 'observatorio') {
     if (!state.curador) {
       try {
-        const { mountAccessReport } = await import('./observatorio-acessos-admin.js?v=20261022');
+        const { mountAccessReport } = await import('./observatorio-acessos-admin.js?v=20261031-mapa');
         mountAccessReport($('[data-admin-workspace]'), supabase)
       } catch { /* Estatísticas opcionais não impedem a administração. */ }
     }

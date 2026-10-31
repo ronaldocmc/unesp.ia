@@ -15,3 +15,7 @@ verify_jwt = false
 # A função valida o JWT com Auth.getUser e verifica o papel administrativo.
 verify_jwt = false
 
+[functions.observatorio-acessos-geografia]
+# Métricas sem login; gravação geográfica interna exclusiva de service_role.
+verify_jwt = false
+

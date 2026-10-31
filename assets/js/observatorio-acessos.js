@@ -70,6 +70,14 @@ export async function startAccessTracking(root) {
       body: JSON.stringify(body)
     })
     if (!response.ok) throw new Error('Métricas indisponíveis')
+    if (body.p_evento === 'visita') {
+      // Não espera geolocalização, não envia login, coordenadas ou IP do cliente.
+      void fetch(SUPABASE_URL + '/functions/v1/observatorio-acessos-geografia', {
+        method: 'POST', keepalive: true, referrerPolicy: 'no-referrer', signal: AbortSignal.timeout(6000),
+        headers: { apikey: SUPABASE_PUBLISHABLE_KEY, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ sessao: body.p_sessao })
+      }).catch(() => {})
+    }
   } })
   const tracking = installAccessTracking(root, { track })
   const visit = () => { if (document.visibilityState === 'visible') void track('visita') }
