@@ -5,8 +5,8 @@ export function approximatePosition(coords) {
   return {latitude:Math.round(coords.latitude*100)/100,longitude:Math.round(coords.longitude*100)/100,consentimento:'geo-navegador-v1'}
 }
 
-// Apenas um pedido por clique, sem watchPosition, conta ou coordenadas no storage.
-export function createGeoCollection({send,geolocation,button,status,ipButton}) {
+// Um pedido ao inicializar a página, sempre sujeito à permissão do navegador.
+export function createGeoCollection({send,geolocation,status}) {
   let session=null,position=null,queue=Promise.resolve(),request=0,busy=false
   const enqueue=()=>{
     const id=session,location=position
@@ -15,15 +15,13 @@ export function createGeoCollection({send,geolocation,button,status,ipButton}) {
     return queue
   }
   const show=text=>{if(status)status.textContent=text}
-  if(button){
-    button.disabled=!geolocation
-    button.addEventListener('click',()=>{
+  const locate=()=>{
       if(!geolocation||busy)return
-      const current=++request;busy=true;button.disabled=true
+      const current=++request;busy=true
       show('Aguardando sua permissão. Se recusar ou houver falha, permanece a estimativa por IP.')
       const fallback=()=>{
         if(current!==request)return
-        busy=false;button.disabled=false;position=null
+        busy=false;position=null
         show('Localização não fornecida ou imprecisa. Mantida a alternativa por IP, quando disponível.')
         void enqueue().catch(()=>{})
       }
@@ -37,15 +35,11 @@ export function createGeoCollection({send,geolocation,button,status,ipButton}) {
           if(current===request)show('Localização aproximada autorizada enviada. O município não é identificado automaticamente; não acompanhamos deslocamentos.')
         }catch{
           if(current===request){position=null;show('Não foi possível enviar a localização. Mantida a alternativa por IP.');void enqueue().catch(()=>{})}
-        }finally{if(current===request){busy=false;button.disabled=false}}
+        }finally{if(current===request)busy=false}
       },fallback,{enableHighAccuracy:false,timeout:8000,maximumAge:60000})}catch{fallback()}
-    })
   }
-  if(ipButton)ipButton.disabled=false
-  ipButton?.addEventListener('click',()=>{
-    ++request;busy=false;position=null;if(button)button.disabled=!geolocation
-    show('Sem novos pedidos de localização nesta página. Próximas visitas usarão IP; registros já enviados não são apagados por este botão.')
-    void enqueue().catch(()=>{})
-  })
-  return {visit(id){session=id;return enqueue().catch(()=>{})}}
+  locate()
+  return {visit(id){session=id;return enqueue().catch(()=>{
+    if(position){position=null;show('Não foi possível enviar a localização. Mantida a alternativa por IP.');return enqueue().catch(()=>{})}
+  })}}
 }

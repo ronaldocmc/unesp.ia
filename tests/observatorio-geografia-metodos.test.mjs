@@ -8,24 +8,24 @@ import { mapPlaces,geoMethodLabel } from '../assets/js/portal/observatorio-acess
 const tick=()=>new Promise(r=>setImmediate(r))
 const id='11111111-1111-4111-8111-111111111111'
 
-test('Navegador: opt-in, arredondamento antes de enviar, serialização com IP e recusa',async()=>{
-  const button={addEventListener(_,fn){this.click=fn}},ipButton={addEventListener(_,fn){this.click=fn}},status={}
+test('Navegador: pedido automático único, arredondamento, serialização com IP e recusa',async()=>{
+  const status={}
   let success,failure,requests=0;const calls=[]
-  const collection=createGeoCollection({button,ipButton,status,send:async body=>{calls.push(body)},
+  const collection=createGeoCollection({status,send:async body=>{calls.push(body)},
     geolocation:{getCurrentPosition(ok,no,options){requests++;success=ok;failure=no;assert.equal(options.timeout,8000)}}})
-  assert.equal(requests,0)
+  assert.equal(requests,1)
   await collection.visit(id);assert.deepEqual(calls,[{sessao:id}])
-  button.click();assert.equal(requests,1)
   await success({coords:{latitude:-22.275987,longitude:-51.498789,accuracy:30}})
   assert.deepEqual(calls[1].localizacao,{latitude:-22.28,longitude:-51.5,consentimento:'geo-navegador-v1'})
   assert.ok(!JSON.stringify(calls).includes('-22.275987'))
   assert.equal(approximatePosition({latitude:999,longitude:0,accuracy:10}),null)
   assert.equal(approximatePosition({latitude:10,longitude:0,accuracy:30000}),null)
-  ipButton.click();await tick();assert.deepEqual(calls.at(-1),{sessao:id})
-  button.click();failure({code:1});await tick();assert.deepEqual(calls.at(-1),{sessao:id})
+  await collection.visit(id);assert.equal(requests,1)
+  const denied=createGeoCollection({status,send:async body=>calls.push(body),geolocation:{getCurrentPosition(ok,no){no({code:1})}}})
+  await denied.visit(id);assert.deepEqual(calls.at(-1),{sessao:id})
   assert.match(status.textContent,/alternativa por IP/)
-  button.click();ipButton.click();const count=calls.length;await success({coords:{latitude:0,longitude:0,accuracy:1}});await tick()
-  assert.equal(calls.length,count+1) // somente IP; callback cancelado não transmite posição
+  const unavailable=createGeoCollection({send:async body=>calls.push(body)})
+  await unavailable.visit(id);assert.deepEqual(calls.at(-1),{sessao:id})
 })
 
 test('Edge: navegador não consulta terceiros e valida payload/consentimento',async()=>{

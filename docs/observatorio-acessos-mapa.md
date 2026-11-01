@@ -9,14 +9,14 @@ Manter verify_jwt=false e as configurações existentes do provedor/IP. Em segui
 publicar HTML/JS/privacy atualizados. Não precisa configurar geocodificador novo.
 Migração reaplicável; o fluxo anterior somente por IP continua compatível.
 
-O botão “Compartilhar localização aproximada” faz um único getCurrentPosition
-por clique com permissão do navegador. Não há watchPosition, pedido automático
-de permissão, localização em segundo plano nem coordenadas no storage.
+Ao inicializar a página, fazemos um único getCurrentPosition, sujeito à permissão
+do navegador. Uma decisão anterior pode ser lembrada sem novo aviso. Não há
+watchPosition, acompanhamento em segundo plano nem coordenadas no storage.
 As coordenadas são arredondadas **no navegador antes de transmitir**, a duas
 casas decimais (~1 km, variável com latitude), e revalidadas/arredondadas no
 servidor/banco. Precisão reportada acima de 20 km, recusa, indisponibilidade ou
 erro de envio mantêm a alternativa IP. DNT/GPC continuam desativando métricas e
-os botões ficam desabilitados se o tracker não puder iniciar.
+nenhuma localização é solicitada se o tracker não puder iniciar.
 
 Nenhum provedor externo recebe coordenadas do navegador. Sem geocodificação
 reversa, o nome do município/país/estado fica vazio nesse método; o mapa mostra
@@ -39,15 +39,14 @@ administrativos não retornam recibos ou identificadores de sessão. Recibos
 anteriores à migration não têm chave segura de substituição e não são alterados;
 para testar, iniciar sessão nova numa janela anônima nova.
 
-O botão de usar IP cancela callbacks pendentes e deixa de enviar localização
-nas próximas visitas dessa página. Não apaga agregados já enviados e não revoga
-a permissão do site no navegador. Nenhum IP substitui uma localização do navegador
+Para usar apenas IP, negar ou revogar a permissão do site no navegador.
+Isso não apaga agregados já enviados. Nenhum IP substitui uma localização do navegador
 já registrada nessa sessão/dia. Não há acompanhamento de deslocamento.
 
 Teste manual após implantação: janela anônima nova → visitar Observatório →
-autorizar botão → consultar origens sem filtros → método navegador e ponto.
+autorizar pedido do navegador → consultar origens sem filtros → método navegador e ponto.
 Em outra sessão, recusar → método IP (ou não identificado se cota/provedor/IP
-indisponível). Repetir clique autorizado não deve aumentar totais. Testar também
+indisponível). Atualizar na mesma sessão não deve aumentar totais. Testar também
 timeout, bloqueio de localização, DNT/GPC e painel sem carregar Leaflet.
 
 As seções abaixo descrevem o fluxo original somente por IP; esta atualização

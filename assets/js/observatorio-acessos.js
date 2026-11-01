@@ -1,5 +1,5 @@
 import { SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, configReady } from './portal/config.js'
-import { createGeoCollection } from './observatorio-geografia.js?v=20261031-metodos'
+import { createGeoCollection } from './observatorio-geografia.js?v=20261101-auto'
 
 const STORAGE_KEY = 'observar-acessos-sessao-v1'
 export function createTracker({ storage, uuid, send, now = Date.now, enabled = true }) {
@@ -65,7 +65,6 @@ export async function startAccessTracking(root) {
   try { storage = sessionStorage } catch { storage = { getItem: () => null, setItem: () => {} } }
   const geography=createGeoCollection({
     geolocation:globalThis.isSecureContext?navigator.geolocation:null,
-    button:document.getElementById('obs-share-location'),ipButton:document.getElementById('obs-ip-location'),
     status:document.getElementById('obs-location-status'),
     send:async body=>{
       const result=await fetch(SUPABASE_URL+'/functions/v1/observatorio-acessos-geografia',{
