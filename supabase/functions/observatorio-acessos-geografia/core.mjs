@@ -54,13 +54,20 @@ export function createGeoHandler({db,env={},fetchImpl=fetch}) {
       let text='',size=0;const decoder=new TextDecoder()
       for(;;){const {value,done}=await reader.read();if(done)break;size+=value.byteLength;if(size>200){await reader.cancel();return reply(413,{ok:false})}text+=decoder.decode(value,{stream:true})}
       const body=JSON.parse(text+decoder.decode())
-      if(!body||Object.keys(body).some(k=>k!=='sessao')||! /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(body.sessao || ''))return reply(400,{ok:false})
+      if(!body||Object.keys(body).some(k=>!['sessao','localizacao'].includes(k))||! /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(body.sessao || ''))return reply(400,{ok:false})
+      const browser=body.localizacao
+      if(browser!==undefined&&(!browser||Object.keys(browser).some(k=>!['latitude','longitude','consentimento'].includes(k))
+        ||browser.consentimento!=='geo-navegador-v1'||typeof browser.latitude!=='number'||!Number.isFinite(browser.latitude)||Math.abs(browser.latitude)>90
+        ||typeof browser.longitude!=='number'||!Number.isFinite(browser.longitude)||Math.abs(browser.longitude)>180))return reply(400,{ok:false})
       const ip=requestIP(req.headers,env),enabled=env.GEO_PROVIDER==='ipwhois'&&env.GEO_PROVIDER_ENABLED==='true'
-      const reservation=await db.rpc('observatorio_acesso_geo_reservar',{p_sessao:body.sessao,p_consultar:!!ip&&enabled})
+      // Navegador não consulta terceiros; aceite não é prova de integridade/GPS.
+      const reservation=browser
+        ?await db.rpc('observatorio_acesso_geo_reservar_v2',{p_sessao:body.sessao,p_consultar:false,p_navegador:true})
+        :await db.rpc('observatorio_acesso_geo_reservar',{p_sessao:body.sessao,p_consultar:!!ip&&enabled})
       if(reservation.error)return reply(503,{ok:false})
       if(!reservation.data?.reservado)return reply(200,{ok:true})
-      const lease=reservation.data;let geo={},pause=0
-      if(lease.consultar){
+      const lease=reservation.data;let geo=browser?{metodo:'navegador',latitude:Math.round(browser.latitude*100)/100,longitude:Math.round(browser.longitude*100)/100}:{},pause=0
+      if(!browser&&lease.consultar){
         try {
           const response=await fetchImpl(`https://ipwho.is/${encodeURIComponent(ip)}?fields=success,country_code,region,city,latitude,longitude`,
             {signal:AbortSignal.timeout(2000),redirect:'error',headers:{Accept:'application/json'}})
@@ -69,6 +76,7 @@ export function createGeoHandler({db,env={},fetchImpl=fetch}) {
             pause=Number.isFinite(seconds)&&seconds>0?Math.min(2147483647,Math.ceil(Math.max(900,seconds))):86400
           }else if(response.ok){
             geo=normalizeGeo(await readProvider(response))
+            if(geo.pais)geo.metodo='ip'
           }else pause=60
         }catch{pause=60}
       }

@@ -1,4 +1,5 @@
 import { SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, configReady } from './portal/config.js'
+import { createGeoCollection } from './observatorio-geografia.js?v=20261031-metodos'
 
 const STORAGE_KEY = 'observar-acessos-sessao-v1'
 export function createTracker({ storage, uuid, send, now = Date.now, enabled = true }) {
@@ -62,6 +63,18 @@ export async function startAccessTracking(root) {
     || navigator.globalPrivacyControl === true || navigator.doNotTrack === '1' || navigator.webdriver) return null
   let storage
   try { storage = sessionStorage } catch { storage = { getItem: () => null, setItem: () => {} } }
+  const geography=createGeoCollection({
+    geolocation:globalThis.isSecureContext?navigator.geolocation:null,
+    button:document.getElementById('obs-share-location'),ipButton:document.getElementById('obs-ip-location'),
+    status:document.getElementById('obs-location-status'),
+    send:async body=>{
+      const result=await fetch(SUPABASE_URL+'/functions/v1/observatorio-acessos-geografia',{
+        method:'POST',keepalive:true,referrerPolicy:'no-referrer',signal:AbortSignal.timeout(6000),
+        headers:{apikey:SUPABASE_PUBLISHABLE_KEY,'Content-Type':'application/json'},body:JSON.stringify(body)
+      })
+      if(!result.ok)throw new Error('Geografia indisponível')
+    }
+  })
   const track = createTracker({ storage, uuid: () => crypto.randomUUID(), send: async body => {
     const response = await fetch(SUPABASE_URL + '/rest/v1/rpc/observatorio_acesso_registrar', {
       method: 'POST', keepalive: true, referrerPolicy: 'no-referrer',
@@ -71,12 +84,8 @@ export async function startAccessTracking(root) {
     })
     if (!response.ok) throw new Error('Métricas indisponíveis')
     if (body.p_evento === 'visita') {
-      // Não espera geolocalização, não envia login, coordenadas ou IP do cliente.
-      void fetch(SUPABASE_URL + '/functions/v1/observatorio-acessos-geografia', {
-        method: 'POST', keepalive: true, referrerPolicy: 'no-referrer', signal: AbortSignal.timeout(6000),
-        headers: { apikey: SUPABASE_PUBLISHABLE_KEY, 'Content-Type': 'application/json' },
-        body: JSON.stringify({ sessao: body.p_sessao })
-      }).catch(() => {})
+      // Falha geográfica nunca interrompe métricas ou navegação.
+      void geography.visit(body.p_sessao)
     }
   } })
   const tracking = installAccessTracking(root, { track })

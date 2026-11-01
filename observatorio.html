@@ -16,7 +16,7 @@
   <link rel="stylesheet" href="assets/css/observatorio.css?v=20261019-conversa">
   <link rel="stylesheet" href="assets/css/observatorio-conta.css?v=20261031">
   <script src="assets/js/observatorio-model.js?v=20261020-resolucao-inteligente" defer></script>
-  <script src="assets/js/observatorio.js?v=20261031-mapa" defer></script>
+  <script src="assets/js/observatorio.js?v=20261031-metodos" defer></script>
 </head>
 <body class="ecosystem-page observatory-page">
   <a class="obs-skip" href="#conteudo">Ir para o conteúdo</a>
@@ -84,7 +84,12 @@
         </div>
         <p class="obs-section-note" id="observatory-data-note" hidden>Publicações sobre dados e indicadores. Painéis interativos em desenvolvimento.</p>
         <div class="obs-archive-grid" id="observatory-grid"><p class="obs-message">Carregando conteúdos…</p></div>
-        <p class="obs-message">Estatísticas de uso: contamos sessões, cartões visualizados e cliques, sem nome, e-mail ou IP nas tabelas de métricas. Quando habilitada, a origem é estimada pela rede, sem GPS, e agregada por região. Não são pessoas únicas. Respeitamos Do Not Track e Global Privacy Control. <a href="privacidade-observatorio.html">Como funciona</a>.</p>
+        <p class="obs-message">Estatísticas de uso: contamos sessões, cartões visualizados e cliques, sem vínculo com sua conta. Por padrão, a origem é estimada pelo IP. Opcionalmente, autorize a localização do navegador: enviaremos somente coordenadas arredondadas (cerca de 1 km), sem acompanhar deslocamentos. O método fica registrado; não guardamos o IP nas tabelas de métricas. Respeitamos Do Not Track e Global Privacy Control. <a href="privacidade-observatorio.html">Como funciona</a>.</p>
+        <div aria-label="Localização opcional para estatísticas">
+          <button id="obs-share-location" class="btn secondary" type="button" disabled>Compartilhar localização aproximada</button>
+          <button id="obs-ip-location" class="btn secondary" type="button" disabled>Usar apenas estimativa por IP</button>
+          <p id="obs-location-status" role="status" aria-live="polite">A localização do navegador é opcional. Sem autorização, permanece a estimativa por IP quando disponível. O município não é identificado automaticamente pelas coordenadas.</p>
+        </div>
         <p class="obs-message" id="observatory-empty" hidden>Nenhum conteúdo publicado corresponde a esta seleção. Experimente outro tema ou limpe os filtros.</p>
       </div>
       <noscript><p>Ative o JavaScript para consultar o acervo publicado no banco do Observatório e filtrar os conteúdos.</p></noscript>

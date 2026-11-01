@@ -1,4 +1,5 @@
 const node=(tag,text)=>{const n=document.createElement(tag);if(text!==undefined)n.textContent=text;return n}
+export const geoMethodLabel=method=>({navegador:'Navegador autorizado (aproximado)',ip:'Estimativa por IP',nao_identificado:'Não identificado',legado:'Histórico — método não registrado'}[method]||'Método não registrado')
 let leafletPromise
 export function loadLeaflet() {
   if(globalThis.L?.map)return Promise.resolve(globalThis.L)
@@ -17,7 +18,7 @@ export function loadLeaflet() {
   return leafletPromise
 }
 export function mapPlaces(rows) {
-  return rows.filter(row=>row.pais && typeof row.latitude==='number' && Number.isFinite(row.latitude)&&Math.abs(row.latitude)<=90
+  return rows.filter(row=>(row.pais||row.metodo==='navegador') && typeof row.latitude==='number' && Number.isFinite(row.latitude)&&Math.abs(row.latitude)<=90
     &&typeof row.longitude==='number'&&Number.isFinite(row.longitude)&&Math.abs(row.longitude)<=180&&Number(row.quantidade)>0)
 }
 export function renderGeoMap(L,container,rows,{tileURL='https://tile.openstreetmap.org/{z}/{x}/{y}.png',
@@ -26,7 +27,7 @@ export function renderGeoMap(L,container,rows,{tileURL='https://tile.openstreetm
   L.tileLayer(tileURL,{attribution,maxZoom:8}).addTo(map)
   const points=mapPlaces(rows)
   for(const row of points){
-    const popup=node('div');popup.append(node('strong',[row.cidade,row.regiao,row.pais].filter(Boolean).join(' · ')),node('p',`${row.quantidade} visita(s) · origem aproximada, não localização individual`))
+    const popup=node('div');popup.append(node('strong',[row.cidade,row.regiao,row.pais].filter(Boolean).join(' · ')||'Área aproximada — município não identificado'),node('p',`${row.quantidade} visita(s) · ${geoMethodLabel(row.metodo)} · não comprova presença física`))
     L.circleMarker([row.latitude,row.longitude],{radius:Math.min(30,5+Math.sqrt(Number(row.quantidade))*2),color:'#075b91',fillColor:'#24a1bc',fillOpacity:0.55,weight:1}).addTo(map).bindPopup(popup)
   }
   if(points.length)map.fitBounds(points.map(row=>[row.latitude,row.longitude]),{padding:[25,25],maxZoom:6})
@@ -35,7 +36,7 @@ export function renderGeoMap(L,container,rows,{tileURL='https://tile.openstreetm
 }
 export function mountGeoReport(parent,db,{leaflet=loadLeaflet,mapOptions={}}={}) {
   const panel=node('section');panel.className='obs-geo-report'
-  panel.append(node('h3','Mapa de origem aproximada dos acessos'),node('p','Localização estimada pela rede, não GPS. VPNs e operadoras podem indicar outra cidade. Sem vínculo com contas. Os filtros abaixo afetam apenas este mapa e sua tabela.'))
+  panel.append(node('h3','Mapa de origem aproximada dos acessos'),node('p','Dois métodos: navegador com autorização e coordenadas arredondadas, ou estimativa por IP. Nenhum comprova presença física. O navegador não identifica automaticamente o município: esses pontos aparecem sem país/cidade; deixe os filtros geográficos vazios para vê-los. Histórico anterior não tem método comprovado. Sem vínculo com contas.'))
   const form=node('form');form.className='portal-form';const fields={}
   for(const [name,label,type]of [['inicio','Início do período','date'],['fim','Fim do período','date'],['pais','País (código, ex.: BR)','text'],['regiao','Estado / região','text'],['cidade','Cidade aproximada','text']]){
     const input=node('input');input.type=type;input.name=name;input.maxLength=name==='pais'?2:100
@@ -66,11 +67,11 @@ export function mountGeoReport(parent,db,{leaflet=loadLeaflet,mapOptions={}}={})
       if(error||!Array.isArray(data?.locais))throw new Error()
       rows=data.locais.map(row=>({...row,latitude:row.latitude==null?null:Number(row.latitude),longitude:row.longitude==null?null:Number(row.longitude)}))
       const semRegistro=Math.max(0,Number(data.visitas_periodo)-Number(data.geografia_registrada))
-      status.textContent=`Período completo: ${data.visitas_periodo} visitas; ${data.localizadas} com país estimado; ${data.nao_identificadas} não identificadas; ${semRegistro} sem registro geográfico. Filtros: ${data.visitas_filtradas} visitas em ${data.total_locais} localidade(s).`
+      status.textContent=`Período completo: ${data.visitas_periodo} visitas; ${data.localizadas} com localização aproximada; ${data.nao_identificadas} não identificadas; ${semRegistro} sem registro geográfico. Filtros: ${data.visitas_filtradas} visitas em ${data.total_locais} área(s)/método(s).`
       if(Number(data.total_locais)>1000)output.append(node('p','Exibindo as 1.000 localidades com mais visitas. Refine os filtros.'))
       const table=node('table');table.className='admin-table';const head=node('thead'),tr=node('tr'),body=node('tbody')
-      for(const label of ['País','Estado / região','Cidade aproximada','Visitas']){const th=node('th',label);th.scope='col';tr.append(th)}head.append(tr);table.append(head,body)
-      for(const row of rows){const tr=node('tr');for(const value of [row.pais||'Não identificado',row.regiao||'Não informada',row.cidade||'Não informada',row.quantidade])tr.append(node('td',String(value)));body.append(tr)}
+      for(const label of ['País','Estado / região','Cidade aproximada','Método de coleta','Visitas']){const th=node('th',label);th.scope='col';tr.append(th)}head.append(tr);table.append(head,body)
+      for(const row of rows){const tr=node('tr');for(const value of [row.pais||'Não identificado',row.regiao||'Não informada',row.cidade||'Não informada',geoMethodLabel(row.metodo),row.quantidade])tr.append(node('td',String(value)));body.append(tr)}
       const wrap=node('div');wrap.className='table-wrap';wrap.append(table);output.append(wrap)
       if(!rows.length)output.append(node('p','Nenhum registro geográfico corresponde aos filtros.'))
       mapButton.hidden=mapPlaces(rows).length===0
