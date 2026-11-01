@@ -4,9 +4,17 @@ import { readFileSync } from 'node:fs'
 import { pathToFileURL } from 'node:url'
 import { approximatePosition,createGeoCollection } from '../assets/js/observatorio-geografia.js'
 import { createGeoHandler } from '../supabase/functions/observatorio-acessos-geografia/core.mjs'
-import { mapPlaces,geoMethodLabel } from '../assets/js/portal/observatorio-acessos-mapa.js'
+import { mapPlaces,geoMethodLabel,geoMethodTotals } from '../assets/js/portal/observatorio-acessos-mapa.js'
 const tick=()=>new Promise(r=>setImmediate(r))
 const id='11111111-1111-4111-8111-111111111111'
+test('Contagem por método não infere IP pela cidade nem mistura histórico',()=>{
+  assert.deepEqual(geoMethodTotals([
+    {metodo:'navegador',quantidade:2},{metodo:'ip',quantidade:'3'},
+    {metodo:'legado',quantidade:4},{metodo:'nao_identificado',quantidade:1},
+    {cidade:'Regente Feijó',quantidade:10},{metodo:'desconhecido',quantidade:1},
+    {metodo:'ip',quantidade:-1}
+  ]),{navegador:2,ip:3,legado:4,nao_identificado:1,nao_registrado:11})
+})
 
 test('Navegador: pedido automático único, arredondamento, serialização com IP e recusa',async()=>{
   const status={}

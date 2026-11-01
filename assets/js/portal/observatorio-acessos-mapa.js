@@ -1,6 +1,15 @@
 const node=(tag,text)=>{const n=document.createElement(tag);if(text!==undefined)n.textContent=text;return n}
 export const geoMethodLabel=method=>({navegador:'Navegador autorizado (aproximado)',ip:'Estimativa por IP',nao_identificado:'Não identificado',legado:'Histórico — método não registrado'}[method]||'Método não registrado')
 let leafletPromise
+export function geoMethodTotals(rows) {
+  const totals={navegador:0,ip:0,nao_identificado:0,legado:0,nao_registrado:0}
+  for(const row of rows){
+    const method=Object.hasOwn(totals,row.metodo)?row.metodo:'nao_registrado'
+    const count=Number(row.quantidade)
+    if(Number.isFinite(count)&&count>0)totals[method]+=count
+  }
+  return totals
+}
 export function loadLeaflet() {
   if(globalThis.L?.map)return Promise.resolve(globalThis.L)
   if(leafletPromise)return leafletPromise
@@ -69,6 +78,20 @@ export function mountGeoReport(parent,db,{leaflet=loadLeaflet,mapOptions={}}={})
       const semRegistro=Math.max(0,Number(data.visitas_periodo)-Number(data.geografia_registrada))
       status.textContent=`Período completo: ${data.visitas_periodo} visitas; ${data.localizadas} com localização aproximada; ${data.nao_identificadas} não identificadas; ${semRegistro} sem registro geográfico. Filtros: ${data.visitas_filtradas} visitas em ${data.total_locais} área(s)/método(s).`
       if(Number(data.total_locais)>1000)output.append(node('p','Exibindo as 1.000 localidades com mais visitas. Refine os filtros.'))
+      const totals=geoMethodTotals(rows)
+      output.append(node('h4','Visitas por método de coleta'))
+      output.append(node('p',Number(data.total_locais)>rows.length
+        ?'Contagem parcial: somente as áreas exibidas. Refine o período ou os filtros para contabilizar todas.'
+        :'Contagem das visitas nos filtros aplicados; não são pessoas únicas.'))
+      const summary=node('table');summary.className='admin-table'
+      const summaryHead=node('thead'),summaryHeader=node('tr'),summaryBody=node('tbody')
+      for(const label of ['Método de coleta','Visitas']){const th=node('th',label);th.scope='col';summaryHeader.append(th)}
+      summaryHead.append(summaryHeader);summary.append(summaryHead,summaryBody)
+      for(const [method,count]of Object.entries(totals)){
+        const row=node('tr');row.append(node('td',geoMethodLabel(method)),node('td',String(count)));summaryBody.append(row)
+      }
+      output.append(summary,node('p',`${semRegistro} visita(s) no período completo sem registro geográfico (fora da contagem por método).`))
+      if(totals.nao_registrado>0)output.append(node('p','O banco retornou visitas sem informar o método. Confira a aplicação da migration 202610310003_observatorio_geografia_metodos.sql e a atualização da função observatorio-acessos-geografia. Não inferimos o método pela cidade.'))
       const table=node('table');table.className='admin-table';const head=node('thead'),tr=node('tr'),body=node('tbody')
       for(const label of ['País','Estado / região','Cidade aproximada','Método de coleta','Visitas']){const th=node('th',label);th.scope='col';tr.append(th)}head.append(tr);table.append(head,body)
       for(const row of rows){const tr=node('tr');for(const value of [row.pais||'Não identificado',row.regiao||'Não informada',row.cidade||'Não informada',geoMethodLabel(row.metodo),row.quantidade])tr.append(node('td',String(value)));body.append(tr)}

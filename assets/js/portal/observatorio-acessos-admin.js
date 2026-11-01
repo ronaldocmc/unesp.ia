@@ -1,4 +1,4 @@
-import { mountGeoReport } from './observatorio-acessos-mapa.js?v=20261031-metodos'
+import { mountGeoReport } from './observatorio-acessos-mapa.js?v=20261101-contagem'
 const labels = { visita: 'Visitas', visualizacao: 'Visualizações de cartões', clique_original: 'Cliques na fonte direta', clique_fallback: 'Cliques via Google Notícias' }
 const node = (tag, text) => { const el = document.createElement(tag); if (text !== undefined) el.textContent = text; return el }
 export function mountAccessReport(workspace, db) {
