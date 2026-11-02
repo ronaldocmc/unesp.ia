@@ -45,7 +45,7 @@ export function renderGeoMap(L,container,rows,{tileURL='https://tile.openstreetm
 }
 export function mountGeoReport(parent,db,{leaflet=loadLeaflet,mapOptions={}}={}) {
   const panel=node('section');panel.className='obs-geo-report'
-  panel.append(node('h3','Mapa de origem aproximada dos acessos'),node('p','Dois métodos: navegador com autorização e coordenadas arredondadas, ou estimativa por IP. Nenhum comprova presença física. O navegador não identifica automaticamente o município: esses pontos aparecem sem país/cidade; deixe os filtros geográficos vazios para vê-los. Histórico anterior não tem método comprovado. Sem vínculo com contas.'))
+  panel.append(node('h3','Mapa de origem aproximada dos acessos'),node('p','Dois métodos: navegador com autorização e coordenadas arredondadas, ou estimativa por IP. Nenhum comprova presença física. Nas novas visitas, o município brasileiro é estimado localmente com a malha simplificada IBGE 2022. Células na divisa, fora da base ou sem correspondência ficam sem município; deixe os filtros geográficos vazios para vê-las. A base não corrige imprecisões do dispositivo. Histórico anterior não tem método comprovado. Sem vínculo com contas.'))
   const form=node('form');form.className='portal-form';const fields={}
   for(const [name,label,type]of [['inicio','Início do período','date'],['fim','Fim do período','date'],['pais','País (código, ex.: BR)','text'],['regiao','Estado / região','text'],['cidade','Cidade aproximada','text']]){
     const input=node('input');input.type=type;input.name=name;input.maxLength=name==='pais'?2:100
@@ -85,7 +85,7 @@ export function mountGeoReport(parent,db,{leaflet=loadLeaflet,mapOptions={}}={})
         :'Contagem das visitas nos filtros aplicados; não são pessoas únicas.'))
       const summary=node('table');summary.className='admin-table'
       const summaryHead=node('thead'),summaryHeader=node('tr'),summaryBody=node('tbody')
-      for(const label of ['Método de coleta','Visitas']){const th=node('th',label);th.scope='col';summaryHeader.append(th)}
+      for(const label of ['Método de coleta','Referência municipal','Visitas']){const th=node('th',label);th.scope='col';summaryHeader.append(th)}
       summaryHead.append(summaryHeader);summary.append(summaryHead,summaryBody)
       for(const [method,count]of Object.entries(totals)){
         const row=node('tr');row.append(node('td',geoMethodLabel(method)),node('td',String(count)));summaryBody.append(row)
@@ -93,8 +93,8 @@ export function mountGeoReport(parent,db,{leaflet=loadLeaflet,mapOptions={}}={})
       output.append(summary,node('p',`${semRegistro} visita(s) no período completo sem registro geográfico (fora da contagem por método).`))
       if(totals.nao_registrado>0)output.append(node('p','O banco retornou visitas sem informar o método. Confira a aplicação da migration 202610310003_observatorio_geografia_metodos.sql e a atualização da função observatorio-acessos-geografia. Não inferimos o método pela cidade.'))
       const table=node('table');table.className='admin-table';const head=node('thead'),tr=node('tr'),body=node('tbody')
-      for(const label of ['País','Estado / região','Cidade aproximada','Método de coleta','Visitas']){const th=node('th',label);th.scope='col';tr.append(th)}head.append(tr);table.append(head,body)
-      for(const row of rows){const tr=node('tr');for(const value of [row.pais||'Não identificado',row.regiao||'Não informada',row.cidade||'Não informada',geoMethodLabel(row.metodo),row.quantidade])tr.append(node('td',String(value)));body.append(tr)}
+      for(const label of ['País','Estado / região','Cidade aproximada','Método de coleta','Referência municipal','Visitas']){const th=node('th',label);th.scope='col';tr.append(th)}head.append(tr);table.append(head,body)
+      for(const row of rows){const tr=node('tr');for(const value of [row.pais||'Não identificado',row.regiao||'Não informada',row.cidade||'Não informada',geoMethodLabel(row.metodo),row.codigo_ibge?`${row.base_geografica} · ${row.codigo_ibge}`:'Não registrada',row.quantidade])tr.append(node('td',String(value)));body.append(tr)}
       const wrap=node('div');wrap.className='table-wrap';wrap.append(table);output.append(wrap)
       if(!rows.length)output.append(node('p','Nenhum registro geográfico corresponde aos filtros.'))
       mapButton.hidden=mapPlaces(rows).length===0

@@ -146,7 +146,7 @@
     conversationLoaded = true;
     render();
     try {
-      const { startAccessTracking } = await import('./observatorio-acessos.js?v=20261101-auto');
+      const { startAccessTracking } = await import('./observatorio-acessos.js?v=20261102-ibge');
       accessTracking = await startAccessTracking($('observatory-grid'));
     } catch { /* Contagem opcional nunca impede o acervo. */ }
   }

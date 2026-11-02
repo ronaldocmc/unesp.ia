@@ -1,4 +1,5 @@
 import { isIP } from 'node:net'
+import { municipalityAt } from './ibge.mjs'
 export function publicIP(value) {
   if(typeof value!=='string' || value.length>64 || isIP(value)===0)return null
   const ip=value.toLowerCase()
@@ -67,6 +68,10 @@ export function createGeoHandler({db,env={},fetchImpl=fetch}) {
       if(reservation.error)return reply(503,{ok:false})
       if(!reservation.data?.reservado)return reply(200,{ok:true})
       const lease=reservation.data;let geo=browser?{metodo:'navegador',latitude:Math.round(browser.latitude*100)/100,longitude:Math.round(browser.longitude*100)/100}:{},pause=0
+      if(browser){
+        // Falha/ambiguidade na classificação não impede registrar a visita.
+        try{Object.assign(geo,municipalityAt(geo.latitude,geo.longitude)||{})}catch{/* mantém apenas coordenadas aproximadas */}
+      }
       if(!browser&&lease.consultar){
         try {
           const response=await fetchImpl(`https://ipwho.is/${encodeURIComponent(ip)}?fields=success,country_code,region,city,latitude,longitude`,

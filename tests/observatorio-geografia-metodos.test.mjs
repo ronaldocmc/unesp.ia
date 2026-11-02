@@ -46,7 +46,7 @@ test('Edge: navegador não consulta terceiros e valida payload/consentimento',as
   assert.equal((await handler(req(point))).status,200);assert.equal(external,0)
   assert.equal(calls[0].name,'observatorio_acesso_geo_reservar_v2')
   assert.equal(calls[0].args.p_consultar,false)
-  assert.deepEqual(calls.at(-1).args.p_geo,{metodo:'navegador',latitude:-22.28,longitude:-51.5})
+  assert.deepEqual(calls.at(-1).args.p_geo,{metodo:'navegador',latitude:-22.28,longitude:-51.5,pais:'BR',regiao:'São Paulo',cidade:'Pirapozinho',codigo_ibge:'3539202',base_geografica:'IBGE-malhas-2022-simplificada'})
   for(const invalid of [{...point,consentimento:''},{...point,latitude:91},{...point,latitude:'10'},{...point,email:'x'},null]){
     assert.equal((await handler(req(invalid))).status,400)
   }
@@ -64,6 +64,7 @@ test('Banco: migração preserva histórico, método, upgrade sem duplicação e
   await db.exec(sql('202610220001_observatorio_acessos.sql'));await db.exec(sql('202610310002_observatorio_acessos_geografia.sql'))
   await db.exec("insert into private.observatorio_acessos_geo_dia values(current_date,'BR','SP','Histórico',-22,-51,2)")
   const migration=sql('202610310003_observatorio_geografia_metodos.sql');await db.exec(migration);await db.exec(migration)
+  const ibgeMigration=sql('202611010001_observatorio_geografia_ibge.sql');await db.exec(ibgeMigration);await db.exec(ibgeMigration)
   assert.equal((await db.query("select metodo from private.observatorio_acessos_geo_dia")).rows[0].metodo,'legado')
   const visit=async session=>db.query("select public.observatorio_acesso_registrar($1,'visita',0)",[session])
   const reserve=async(browser=false)=>(await db.query('select public.observatorio_acesso_geo_reservar_v2($1,false,$2) as r',[id,browser])).rows[0].r
@@ -74,18 +75,20 @@ test('Banco: migração preserva histórico, método, upgrade sem duplicação e
   assert.equal((await reserve()).reservado,false)
   const browser=await reserve(true);assert.equal(browser.reservado,true);assert.equal(browser.consultar,false)
   assert.equal((await reserve(true)).reservado,false)
-  const geo={metodo:'navegador',latitude:-22.275987,longitude:-51.498789}
+  const geo={metodo:'navegador',latitude:-22.275987,longitude:-51.498789,pais:'BR',regiao:'São Paulo',cidade:'Pirapozinho',codigo_ibge:'3539202',base_geografica:'IBGE-malhas-2022-simplificada'}
   assert.equal(await finish(browser,geo),true);assert.equal(await finish(browser,geo),false)
   assert.equal((await reserve(true)).reservado,false);assert.equal((await reserve()).reservado,false)
   await db.exec('reset role')
   assert.equal((await db.query("select count(*)::int as n from private.observatorio_acessos_geo_dia where metodo='ip'")).rows[0].n,0)
   const row=(await db.query("select * from private.observatorio_acessos_geo_dia where metodo='navegador'")).rows[0]
-  assert.equal(Number(row.latitude),-22.28);assert.equal(row.pais,'');assert.equal(Number(row.quantidade),1)
+  assert.equal(Number(row.latitude),-22.28);assert.equal(row.pais,'BR');assert.equal(Number(row.quantidade),1)
+  assert.equal(row.codigo_ibge,'3539202');assert.equal(row.cidade,'Pirapozinho');assert.equal(row.base_geografica,'IBGE-malhas-2022-simplificada')
   assert.equal((await db.query('select consultas from private.observatorio_geo_controle')).rows[0].consultas,0)
   await db.exec("set role authenticated;select set_config('test.admin','yes',false)")
   const report=(await db.query('select public.observatorio_acessos_geografia(current_date-1,current_date+1) as r')).rows[0].r
   assert.equal(Number(report.geografia_registrada),3) // dois antigos + uma visita, sem duplicação
   assert.ok(report.locais.some(x=>x.metodo==='navegador'))
+  assert.ok(report.locais.some(x=>x.codigo_ibge==='3539202'&&x.base_geografica==='IBGE-malhas-2022-simplificada'))
   assert.ok(!JSON.stringify(report).includes(id))
  }finally{await db.close()}
 })

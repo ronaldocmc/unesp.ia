@@ -1,0 +1,12 @@
+{
+  "fonte": "IBGE — API Malhas e Localidades",
+  "edicao": 2022,
+  "qualidade": "minima (simplificada; não cadastral)",
+  "municipios": 5570,
+  "geometryURL": "https://servicodados.ibge.gov.br/api/v3/malhas/paises/BR?formato=application/vnd.geo%2Bjson&qualidade=minima&intrarregiao=municipio&periodo=2022",
+  "namesURL": "https://servicodados.ibge.gov.br/api/v1/localidades/municipios",
+  "obtido_em": "2026-11-01T10:17:47.154Z",
+  "sha256_malha": "5efffedf8772dc8654322affafac4e3e8b001839e7c2af5cab4eb1094dcd6240",
+  "sha256_nomes": "86ecdccdf97d72e7e5e46f0854cfcea8bacc28154cc1bc4ed0e6110e3a6c9c02",
+  "documentacao": "https://servicodados.ibge.gov.br/api/docs/malhas?versao=3"
+}

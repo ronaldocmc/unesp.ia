@@ -32,7 +32,7 @@ export function createGeoCollection({send,geolocation,status}) {
         position=approximate
         try{
           await enqueue()
-          if(current===request)show('Localização aproximada autorizada enviada. O município não é identificado automaticamente; não acompanhamos deslocamentos.')
+          if(current===request)show('Localização aproximada autorizada enviada. O município poderá ser estimado com a base local IBGE; não acompanhamos deslocamentos.')
         }catch{
           if(current===request){position=null;show('Não foi possível enviar a localização. Mantida a alternativa por IP.');void enqueue().catch(()=>{})}
         }finally{if(current===request)busy=false}

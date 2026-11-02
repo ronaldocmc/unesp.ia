@@ -1,5 +1,5 @@
 import { SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, configReady } from './portal/config.js'
-import { createGeoCollection } from './observatorio-geografia.js?v=20261101-auto'
+import { createGeoCollection } from './observatorio-geografia.js?v=20261102-ibge'
 
 const STORAGE_KEY = 'observar-acessos-sessao-v1'
 export function createTracker({ storage, uuid, send, now = Date.now, enabled = true }) {
