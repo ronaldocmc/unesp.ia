@@ -32,6 +32,11 @@ export function mountTracking({ workspace, button, db, openReview, curator = fal
   panel.append(el('p', 'Prévias não salvas não contam como publicações aguardando revisão. A fila técnica pode conter links de prévias ou de notícias cadastradas. Descartes ativos têm lista própria. Nenhuma ação em lote ou aprovação automática é feita aqui.', 'admin-tracking-note'))
   const monitor = el('section', undefined, 'admin-worker-monitor'); monitor.setAttribute('aria-label','Atividade do processador de links')
   panel.append(monitor)
+  const shortcuts = el('div', undefined, 'admin-review-shortcuts')
+  const pending = el('button','Pendências de revisão','btn'), first = el('button','Revisar primeiro item','btn secondary')
+  pending.type = first.type = 'button'; first.disabled = true
+  shortcuts.append(pending, first); panel.append(shortcuts)
+  let firstReview = null
   const form = el('form', undefined, 'portal-form admin-tracking-filters')
   const inputs = {}
   const field = (name, label, choices, type = 'text') => {
@@ -81,6 +86,8 @@ export function mountTracking({ workspace, button, db, openReview, curator = fal
   }
   async function load() {
     const version = ++request
+    firstReview = null; first.disabled = true
+    monitor.hidden = curator || mode === 'editorial'
     submit.disabled = prev.disabled = next.disabled = true
     status.textContent = 'Consultando o banco…'; totals.replaceChildren(); result.replaceChildren(); providers.replaceChildren(); pageLabel.textContent = ''
     monitor.replaceChildren(el('h3','O processador está rodando e tentando converter?'),el('p','Consultando atividade…'))
@@ -123,6 +130,7 @@ export function mountTracking({ workspace, button, db, openReview, curator = fal
         const action = el('div')
         if (row.conteudo_id != null) {
           const review = el('button','Abrir para revisão','btn-small'); review.type = 'button'
+          if (mode === 'editorial' && !row.revisao_humana && !firstReview) { firstReview = review; first.disabled = false }
           review.addEventListener('click', async () => {
             const scroll = globalThis.window?.scrollY
             review.disabled = true
@@ -165,6 +173,11 @@ export function mountTracking({ workspace, button, db, openReview, curator = fal
     finally { if (version === request) submit.disabled = false }
   }
   form.addEventListener('submit', event => { event.preventDefault(); mode = inputs.fila.value; applied = Object.fromEntries(Object.entries(inputs).filter(([key]) => key !== 'fila').map(([key,input]) => [key,input.value])); page = 1; void load() })
+  pending.addEventListener('click', () => {
+    form.reset(); inputs.fila.value = 'editorial'; updateStates(); inputs.revisao.value = 'false'
+    mode = 'editorial'; applied = { revisao: 'false' }; page = 1; void load()
+  })
+  first.addEventListener('click', () => firstReview?.click())
   clear.addEventListener('click', () => { form.reset(); updateStates(); mode = inputs.fila.value; applied = {}; page = 1; void load() })
   prev.addEventListener('click', () => { if (page > 1) { page--; void load() } }); next.addEventListener('click', () => { page++; void load() })
   const hide = () => {

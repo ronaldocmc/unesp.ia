@@ -601,7 +601,7 @@ try {
       } catch { /* Estatísticas opcionais não impedem a administração. */ }
     }
     try {
-      const { mountTracking } = await import('./observatorio-acompanhamento.js?v=20261027-curadoria')
+      const { mountTracking } = await import('./observatorio-acompanhamento.js?v=20261103-curadoria')
       trackingPanel = mountTracking({ workspace: $('[data-admin-workspace]'), button: $('[data-admin-tracking]'), db: supabase,
         curator: state.curador,
         openReview: async id => {
