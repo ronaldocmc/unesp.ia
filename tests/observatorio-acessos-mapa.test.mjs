@@ -104,8 +104,8 @@ test('Leaflet: filtros, pontos seguros, uso sob demanda e remoção ao atualizar
   const walk=n=>[n,...n.children.flatMap(walk)],text=n=>[n.textContent,...n.children.map(text)].join(' ')
   try{
     globalThis.document={createElement:t=>new Node(t)}
-    let tiles,removed=0,loaded=0;const popups=[],markers=[],map={setView(){return this},fitBounds(){},invalidateSize(){},remove(){removed++}}
-    const L={map:()=>map,tileLayer:(url,options)=>{tiles={url,options};return {addTo(){}}},circleMarker:(point)=>{markers.push(point);return {addTo(){return this},bindPopup(p){popups.push(p)}}}}
+    let tiles,options,removed=0,loaded=0,fitted=0;const popups=[],markers=[],map={setView(){return this},fitBounds(){fitted++},invalidateSize(){},remove(){removed++}}
+    const L={map:(_container,settings)=>{options=settings;return map},tileLayer:(url,options)=>{tiles={url,options};return {addTo(){}}},circleMarker:(point)=>{markers.push(point);return {addTo(){return this},bindPopup(p){popups.push(p)}}}}
     const root=new Node('div'),calls=[]
     const rows=[{pais:'BR',regiao:'SP',cidade:'<img onerror=alert(1)>',latitude:-22.1,longitude:-51.1,quantidade:3},{pais:'',latitude:null,longitude:null,quantidade:1}]
     assert.equal(mapPlaces(rows).length,1);assert.equal(mapPlaces([{...rows[0],latitude:999}]).length,0)
@@ -116,6 +116,10 @@ test('Leaflet: filtros, pontos seguros, uso sob demanda e remoção ao atualizar
     assert.match(text(root),/2 sem registro geográfico/)
     const button=walk(root).find(n=>n.textContent==='Carregar mapa Leaflet');button.listeners.click();await new Promise(r=>setImmediate(r))
     assert.equal(loaded,1);assert.equal(markers.length,1);assert.match(text(popups[0]),/<img onerror/)
+    assert.equal(options.scrollWheelZoom,true);assert.equal(options.keyboard,true);assert.equal(options.maxZoom,18)
+    walk(root).find(n=>n.textContent==='Mostrar todos os pontos').listeners.click();assert.equal(fitted,2)
+    walk(root).find(n=>n.textContent==='Ver Brasil').listeners.click()
+    assert.ok(walk(root).some(n=>n.textContent==='Tela cheia'))
     assert.equal(tiles.url,'https://tile.openstreetmap.org/{z}/{x}/{y}.png');assert.match(tiles.options.attribution,/OpenStreetMap/)
     await form.listeners.submit({preventDefault(){}});assert.equal(removed,1)
     view.destroy()

@@ -7,6 +7,7 @@
   <link rel="stylesheet" href="assets/css/style.css?v=20261016-menu-radar">
   <link rel="stylesheet" href="assets/css/observatorio-acompanhamento.css?v=20261025-monitor">
   <link rel="stylesheet" href="assets/css/observatorio-acessos-mapa.css?v=20261031">
+  <link rel="stylesheet" href="assets/css/observatorio-admin.css?v=20261102">
 </head>
 <body data-admin-scope="observatorio">
   <div class="topbar">
@@ -20,7 +21,7 @@
       <p data-admin-message hidden></p>
       <div class="admin-shell">
         <nav class="admin-nav" aria-label="Seções administrativas do Observar.IA">
-          <p class="admin-nav-label">Observar.IA</p>
+          <p class="admin-nav-label">Conteúdo e curadoria</p>
           <button class="active" data-admin-tab="observatorio_conteudos">Publicações do Observatório</button>
           <button data-admin-tracking hidden>Acompanhamento do Radar e curadoria</button>
           <details class="admin-nav-group" data-radar-menu>
@@ -30,6 +31,12 @@
               <button data-admin-tab="observatorio_feeds">Fontes Radar</button>
             </div>
           </details>
+          <div data-admin-analytics hidden>
+            <p class="admin-nav-label">Audiência</p>
+            <button data-admin-report="access">Estatísticas de acesso</button>
+            <button data-admin-report="geo">Mapa de acessos</button>
+          </div>
+          <p class="admin-nav-label">Cadastros e organização</p>
           <button data-admin-tab="observatorio_categorias">Categorias</button>
           <button data-admin-tab="observatorio_veiculos">Veículos de comunicação</button>
           <button data-admin-tab="observatorio_downloads">Downloads</button>
@@ -72,6 +79,6 @@
     </div>
   </dialog>
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-  <script type="module" src="assets/js/portal/admin.js?v=20261101-ibge"></script>
+  <script type="module" src="assets/js/portal/admin.js?v=20261102-menus"></script>
 </body>
 </html>

@@ -1,0 +1,22 @@
+body[data-admin-scope="observatorio"] .container.content{max-width:1440px;width:calc(100% - 40px)}
+body[data-admin-scope="observatorio"] .topbar{position:relative;padding:16px 24px;gap:20px;flex-wrap:wrap}
+body[data-admin-scope="observatorio"] .brand-logo{max-height:76px;width:auto}
+body[data-admin-scope="observatorio"] .admin-shell{display:grid;grid-template-columns:240px minmax(0,1fr);gap:28px;align-items:start}
+body[data-admin-scope="observatorio"] [data-admin-workspace]{min-width:0}
+body[data-admin-scope="observatorio"] .admin-nav{gap:8px}
+body[data-admin-scope="observatorio"] .admin-nav-label{font-size:12px;margin:20px 0 8px;letter-spacing:.08em}
+body[data-admin-scope="observatorio"] [data-admin-analytics] button{display:block;width:100%;margin-bottom:8px;text-align:left}
+body[data-admin-scope="observatorio"] [hidden]{display:none!important}
+.obs-access-report .portal-form,.obs-geo-report .portal-form{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;align-items:end}
+.obs-access-report .portal-form label,.obs-geo-report .portal-form label{min-width:0}
+.obs-access-report .portal-form input,.obs-geo-report .portal-form input{width:100%;box-sizing:border-box}
+.obs-geo-report{margin-top:0;border-top:0;padding:24px;background:#f4faff;border:1px solid #c4dced;border-radius:16px}
+.obs-map-shell{margin:20px 0;background:#fff;border:1px solid #a8cbdc;border-radius:12px;overflow:hidden}
+.obs-map-toolbar{display:flex;flex-wrap:wrap;gap:8px;padding:12px}
+.obs-map-shell .obs-geo-map{height:520px;margin:0;border:0;border-radius:0}
+.obs-map-shell:fullscreen,.obs-map-shell.obs-map-expanded{background:white;width:100%;height:100%;border-radius:0;display:flex;flex-direction:column}
+.obs-map-shell.obs-map-expanded{position:fixed;inset:0;z-index:10000}
+.obs-map-shell:fullscreen .obs-geo-map,.obs-map-expanded .obs-geo-map{flex:1;min-height:0}
+.obs-map-help{padding:0 12px;font-size:13px}
+@media(max-width:900px){body[data-admin-scope="observatorio"] .admin-shell{grid-template-columns:1fr}body[data-admin-scope="observatorio"] .admin-nav{display:flex;flex-wrap:wrap}body[data-admin-scope="observatorio"] .admin-nav>*{flex:1 1 200px}.obs-map-shell .obs-geo-map{height:400px}}
+@media(max-width:540px){.obs-access-report .portal-form,.obs-geo-report .portal-form{grid-template-columns:1fr}.obs-geo-report{padding:14px}body[data-admin-scope="observatorio"] .container.content{width:calc(100% - 24px)}}

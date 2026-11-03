@@ -112,6 +112,7 @@ let allowedSections = adminScope === 'observatorio' ? observatorioSections : Obj
 const initialTable = allowedSections.includes(requestedSection) ? requestedSection : (adminScope === 'observatorio' ? 'observatorio_conteudos' : 'ecossistema_eixos')
 const state = { table: initialTable, rows: [], editing: null, lookups: {}, saving: false, importing: false, curador: false }
 let trackingPanel = null
+let reportsPanel = null
 const $ = (selector) => document.querySelector(selector)
 const message = $('[data-admin-message]')
 const dialog = $('[data-record-dialog]')
@@ -251,6 +252,7 @@ function lookupLabel(table, row) {
 }
 
 async function renderTable() {
+  reportsPanel?.hide()
   trackingPanel?.hide()
   const radarMenu = document.querySelector('[data-radar-menu]')
   if (radarMenu && state.table === 'observatorio_feeds') radarMenu.open = true
@@ -593,8 +595,9 @@ try {
   if (adminScope === 'observatorio') {
     if (!state.curador) {
       try {
-        const { mountAccessReport } = await import('./observatorio-acessos-admin.js?v=20261101-ibge');
-        mountAccessReport($('[data-admin-workspace]'), supabase)
+        const { mountAdminReports } = await import('./observatorio-admin-reports.js?v=20261102');
+        reportsPanel = mountAdminReports($('[data-admin-workspace]'), supabase, () => trackingPanel?.hide())
+        $('[data-admin-tracking]').addEventListener('click', () => reportsPanel.hide())
       } catch { /* Estatísticas opcionais não impedem a administração. */ }
     }
     try {

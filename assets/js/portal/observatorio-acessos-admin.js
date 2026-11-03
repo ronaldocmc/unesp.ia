@@ -1,9 +1,9 @@
 import { mountGeoReport } from './observatorio-acessos-mapa.js?v=20261101-ibge'
 const labels = { visita: 'Visitas', visualizacao: 'Visualizações de cartões', clique_original: 'Cliques na fonte direta', clique_fallback: 'Cliques via Google Notícias' }
 const node = (tag, text) => { const el = document.createElement(tag); if (text !== undefined) el.textContent = text; return el }
-export function mountAccessReport(workspace, db) {
-  const panel = node('details'); panel.className = 'admin-link-import'
-  panel.append(node('summary', 'Estatísticas de acesso do Observar.IA'))
+export function mountAccessReport(workspace, db, { separate = false } = {}) {
+  const panel = node(separate ? 'section' : 'details'); panel.className = 'admin-link-import obs-access-report'
+  panel.append(node(separate ? 'h2' : 'summary', 'Estatísticas de acesso do Observar.IA'))
   panel.append(node('p', 'Sessões anônimas encerradas após 30 minutos de inatividade. Cada cartão visível por 1 segundo (ao menos 50%) e cada tipo de clique são contados uma vez por sessão e dia. Não são pessoas únicas nem comprovação de leitura.'))
   const form = node('form'); form.className = 'portal-form'
   const today = new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Sao_Paulo' }).format(new Date())
@@ -40,6 +40,7 @@ export function mountAccessReport(workspace, db) {
     } catch (error) { status.textContent = error.message }
     finally { button.disabled = false }
   })
-  mountGeoReport(panel,db)
+  if (!separate) mountGeoReport(panel,db)
   workspace.prepend(panel)
+  return panel
 }

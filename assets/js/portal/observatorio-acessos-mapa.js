@@ -32,8 +32,9 @@ export function mapPlaces(rows) {
 }
 export function renderGeoMap(L,container,rows,{tileURL='https://tile.openstreetmap.org/{z}/{x}/{y}.png',
   attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'}={}) {
-  const map=L.map(container,{maxZoom:8,scrollWheelZoom:false}).setView([-15,-48],3)
-  L.tileLayer(tileURL,{attribution,maxZoom:8}).addTo(map)
+  const map=L.map(container,{maxZoom:18,scrollWheelZoom:true,keyboard:true,doubleClickZoom:true,touchZoom:true,dragging:true}).setView([-15,-48],3)
+  L.tileLayer(tileURL,{attribution,maxZoom:19}).addTo(map)
+  L.control?.scale({imperial:false}).addTo(map)
   const points=mapPlaces(rows)
   for(const row of points){
     const popup=node('div');popup.append(node('strong',[row.cidade,row.regiao,row.pais].filter(Boolean).join(' · ')||'Área aproximada — município não identificado'),node('p',`${row.quantidade} visita(s) · ${geoMethodLabel(row.metodo)} · não comprova presença física`))
@@ -57,18 +58,41 @@ export function mountGeoReport(parent,db,{leaflet=loadLeaflet,mapOptions={}}={})
   const output=node('div'),mapButton=node('button','Carregar mapa Leaflet');mapButton.type='button';mapButton.className='btn secondary';mapButton.hidden=true
   const consent=node('p','Carregar o mapa conecta seu navegador de administrador ao CDN do Leaflet e aos mapas OpenStreetMap. Isso envia seu IP a esses serviços; não enviamos nomes ou identificadores dos visitantes. A tabela funciona sem carregar o mapa.')
   const container=node('div');container.className='obs-geo-map';container.hidden=true;container.setAttribute('role','region');container.setAttribute('aria-label','Mapa de visitas por região aproximada')
-  panel.append(form,status,output,consent,mapButton,container,node('p','Histórico anterior à ativação não pode ser localizado. Ausência de ponto pode significar cidade desconhecida, serviço indisponível ou cota. Os totais são sessões, não pessoas únicas. Até 1.000 localidades por consulta; refine os filtros se necessário.'))
+  const shell=node('div');shell.className='obs-map-shell';shell.hidden=true
+  const toolbar=node('div');toolbar.className='obs-map-toolbar';toolbar.setAttribute('role','group');toolbar.setAttribute('aria-label','Controles do mapa')
+  function control(label,action){const button=node('button',label);button.type='button';button.className='btn secondary';button.addEventListener('click',action);toolbar.append(button);return button}
+  control('Mostrar todos os pontos',()=>{const points=mapPlaces(rows);if(map&&points.length)map.fitBounds(points.map(row=>[row.latitude,row.longitude]),{padding:[35,35],maxZoom:12})})
+  control('Ver Brasil',()=>map?.setView([-15,-48],4))
+  let expanded=false
+  function fallback(value){expanded=value;shell.classList.toggle('obs-map-expanded',value);syncSize()}
+  function syncSize(){fullscreen.textContent=document.fullscreenElement===shell||expanded?'Sair da tela cheia':'Tela cheia';map?.invalidateSize()}
+  const fullscreen=control('Tela cheia',async()=>{
+    try{
+      if(document.fullscreenElement===shell)await document.exitFullscreen()
+      else if(expanded)fallback(false)
+      else if(shell.requestFullscreen)await shell.requestFullscreen()
+      else fallback(true)
+    }catch{fallback(!expanded)}
+    syncSize()
+  })
+  const escape=event=>{if(event.key==='Escape'&&expanded)fallback(false)}
+  document.addEventListener?.('fullscreenchange',syncSize)
+  document.addEventListener?.('keydown',escape)
+  const observer=globalThis.ResizeObserver?new ResizeObserver(()=>map?.invalidateSize()):null
+  observer?.observe(container)
+  shell.append(toolbar,container,node('p','Role o mouse para ampliar; arraste para navegar; use +/− ou as setas com o mapa em foco. O zoom não aumenta a precisão da localização.'))
+  panel.append(form,status,output,consent,mapButton,shell,node('p','Histórico anterior à ativação não pode ser localizado. Ausência de ponto pode significar cidade desconhecida, serviço indisponível ou cota. Os totais são sessões, não pessoas únicas. Até 1.000 localidades por consulta; refine os filtros se necessário.'))
   parent.append(panel);let map=null,rows=[],version=0
   async function showMap(){
     const current=version;mapButton.disabled=true
-    try{const L=await leaflet();if(current!==version)return;container.hidden=false;map?.remove();map=renderGeoMap(L,container,rows,mapOptions);mapButton.hidden=true}
+    try{const L=await leaflet();if(current!==version)return;shell.hidden=false;container.hidden=false;map?.remove();map=renderGeoMap(L,container,rows,mapOptions);mapButton.hidden=true}
     catch{if(current===version)status.textContent+=' Mapa indisponível. A tabela continua disponível.'}
     finally{mapButton.disabled=false}
   }
   mapButton.addEventListener('click',()=>void showMap())
   form.addEventListener('submit',async event=>{
     event.preventDefault();const current=++version
-    submit.disabled=true;map?.remove();map=null;container.hidden=true;mapButton.hidden=true;output.replaceChildren();status.textContent='Consultando origens…'
+    submit.disabled=true;map?.remove();map=null;shell.hidden=true;container.hidden=true;mapButton.hidden=true;output.replaceChildren();status.textContent='Consultando origens…'
     try{
       const {data,error}=await db.rpc('observatorio_acessos_geografia',{p_inicio:fields.inicio.value,p_fim:fields.fim.value,
         p_pais:fields.pais.value.trim().toUpperCase(),p_regiao:fields.regiao.value.trim(),p_cidade:fields.cidade.value.trim()})
@@ -85,7 +109,7 @@ export function mountGeoReport(parent,db,{leaflet=loadLeaflet,mapOptions={}}={})
         :'Contagem das visitas nos filtros aplicados; não são pessoas únicas.'))
       const summary=node('table');summary.className='admin-table'
       const summaryHead=node('thead'),summaryHeader=node('tr'),summaryBody=node('tbody')
-      for(const label of ['Método de coleta','Referência municipal','Visitas']){const th=node('th',label);th.scope='col';summaryHeader.append(th)}
+      for(const label of ['Método de coleta','Visitas']){const th=node('th',label);th.scope='col';summaryHeader.append(th)}
       summaryHead.append(summaryHeader);summary.append(summaryHead,summaryBody)
       for(const [method,count]of Object.entries(totals)){
         const row=node('tr');row.append(node('td',geoMethodLabel(method)),node('td',String(count)));summaryBody.append(row)
@@ -101,5 +125,5 @@ export function mountGeoReport(parent,db,{leaflet=loadLeaflet,mapOptions={}}={})
     }catch{if(current===version)status.textContent='Geografia indisponível. Confira a migration de acessos geográficos; as estatísticas tradicionais continuam independentes.'}
     finally{if(current===version)submit.disabled=false}
   })
-  return {destroy(){++version;map?.remove();panel.remove()}}
+  return {resize(){map?.invalidateSize()},destroy(){++version;observer?.disconnect();document.removeEventListener?.('fullscreenchange',syncSize);document.removeEventListener?.('keydown',escape);map?.remove();panel.remove()}}
 }
