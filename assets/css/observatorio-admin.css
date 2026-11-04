@@ -6,6 +6,8 @@ body[data-admin-scope="observatorio"] [data-admin-workspace]{min-width:0}
 body[data-admin-scope="observatorio"] .admin-nav{gap:8px}
 body[data-admin-scope="observatorio"] .admin-nav button,body[data-admin-scope="observatorio"] .admin-nav a,body[data-admin-scope="observatorio"] .admin-nav summary{font-family:inherit;font-size:14px;line-height:1.4;text-align:left}
 .admin-review-shortcuts{display:flex;flex-wrap:wrap;gap:10px;margin:16px 0}
+.admin-menu-toolbar{margin:16px 0}
+body[data-admin-scope="observatorio"] .admin-shell.sidebar-collapsed{grid-template-columns:minmax(0,1fr)}
 body[data-admin-scope="observatorio"] .admin-nav-label{font-size:12px;margin:20px 0 8px;letter-spacing:.08em}
 body[data-admin-scope="observatorio"] [data-admin-analytics] button{display:block;width:100%;margin-bottom:8px;text-align:left}
 body[data-admin-scope="observatorio"] [hidden]{display:none!important}

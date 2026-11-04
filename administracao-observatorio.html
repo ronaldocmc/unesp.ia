@@ -7,7 +7,7 @@
   <link rel="stylesheet" href="assets/css/style.css?v=20261016-menu-radar">
   <link rel="stylesheet" href="assets/css/observatorio-acompanhamento.css?v=20261025-monitor">
   <link rel="stylesheet" href="assets/css/observatorio-acessos-mapa.css?v=20261031">
-  <link rel="stylesheet" href="assets/css/observatorio-admin.css?v=20261103">
+  <link rel="stylesheet" href="assets/css/observatorio-admin.css?v=20261104">
 </head>
 <body data-admin-scope="observatorio">
   <div class="topbar">
@@ -19,8 +19,9 @@
       <h1>Administração do Observar.IA</h1>
       <p>Ambiente separado para curadoria, publicação e organização das observações do Observatório de Inteligência Artificial.</p>
       <p data-admin-message hidden></p>
+      <div class="admin-menu-toolbar"><button type="button" class="btn secondary" data-sidebar-toggle aria-controls="observatorio-menu" aria-expanded="true" hidden>☰ Ocultar menu</button></div>
       <div class="admin-shell">
-        <nav class="admin-nav" aria-label="Seções administrativas do Observar.IA">
+        <nav id="observatorio-menu" class="admin-nav" aria-label="Seções administrativas do Observar.IA">
           <p class="admin-nav-label">Conteúdo e curadoria</p>
           <button class="active" data-admin-tab="observatorio_conteudos">Publicações do Observatório</button>
           <button data-admin-tracking hidden>Acompanhamento do Radar e curadoria</button>
@@ -80,5 +81,6 @@
   </dialog>
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
   <script type="module" src="assets/js/portal/admin.js?v=20261103-curadoria"></script>
+  <script type="module" src="assets/js/portal/admin-sidebar.js?v=20261104"></script>
 </body>
 </html>
