@@ -9,5 +9,9 @@ Deno.serve(createHandler({
     })
     const { data: { user }, error } = await client.auth.getUser(authorization.slice(7))
     if (error || !user) throw new ImportError('Sessão expirada. Entre novamente para continuar.', 401)
+    const reservation = await client.rpc('observatorio_importador_reservar')
+    if (reservation.error) throw new ImportError('Não foi possível autorizar a importação.', 503)
+    if (reservation.data === 'limite') throw new ImportError('Limite de importações atingido. Aguarde um minuto.', 429)
+    if (reservation.data !== 'ok') throw new ImportError('Acesso restrito à curadoria.', 403)
   },
 }))

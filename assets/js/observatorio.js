@@ -130,7 +130,7 @@
     try {
       const config = await import('./portal/config.js');
       if (!config.configReady()) return { items: [], available: false };
-      const endpoint = config.SUPABASE_URL + '/rest/v1/observatorio_conteudos?select=*&status=eq.publicado&revisao_humana=eq.true&order=destaque.desc,data_publicacao.desc';
+      const endpoint = config.SUPABASE_URL + '/rest/v1/observatorio_acervo_publico?select=*&status=eq.publicado&revisao_humana=eq.true&order=destaque.desc,data_publicacao.desc';
       const response = await fetch(endpoint, { signal: controller.signal, headers: { apikey: config.SUPABASE_PUBLISHABLE_KEY, Authorization: 'Bearer ' + config.SUPABASE_PUBLISHABLE_KEY } });
       if (!response.ok) throw new Error('Acervo remoto indisponível');
       const rows = await response.json();

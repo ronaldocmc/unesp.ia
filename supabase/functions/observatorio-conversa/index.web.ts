@@ -158,7 +158,7 @@ function createConversationHandler({ createClient, env, fetchImpl = fetch, now =
       const auth = await client.auth.getUser(token)
       if (auth.error || !auth.data?.user) throw new ConversationError('Sessão inválida. Entre novamente.', 401)
       const input = conversationInput(await boundedJSON(request.body, 8192))
-      const { data, error } = await client.from('observatorio_conteudos').select('id,titulo,resumo,tipo,categoria,data_publicacao,fonte,veiculo,url,palavras_chave,status,revisao_humana').eq('status', 'publicado').eq('revisao_humana', true).order('data_publicacao', { ascending: false }).limit(1000)
+      const { data, error } = await client.from('observatorio_acervo_publico').select('id,titulo,resumo,tipo,categoria,data_publicacao,fonte,veiculo,url,palavras_chave,status,revisao_humana').eq('status', 'publicado').eq('revisao_humana', true).order('data_publicacao', { ascending: false }).limit(1000)
       if (error || !Array.isArray(data)) throw new ConversationError('Acervo indisponível. Tente mais tarde.', 503)
       // Defesa adicional: não confiar em campos de contexto enviados pelo navegador.
       const publicRows = data.filter(row => row.status === 'publicado' && row.revisao_humana === true)
