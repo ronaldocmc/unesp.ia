@@ -39,7 +39,7 @@ test('Navegador: pedido automático único, arredondamento, serialização com I
 test('Edge: navegador não consulta terceiros e valida payload/consentimento',async()=>{
   const calls=[];let external=0
   const handler=createGeoHandler({env:{},fetchImpl:async()=>{external++;throw new Error()},db:{rpc:async(name,args)=>{
-    calls.push({name,args});return name.includes('reservar')?{data:{reservado:true,consultar:true,token:'T',dia:'2026-10-31'}}:{data:true}
+      calls.push({name,args});return name.includes('reservar')?{data:{reservado:true,consultar:true,token:'T',dia:'2026-10-31'}}:name==='observatorio_municipio_ibge'?{data:{pais:'BR',regiao:'São Paulo',cidade:'Pirapozinho',codigo_ibge:'3539202',base_geografica:'IBGE-malhas-2022-simplificada'}}:{data:true}
   }}})
   const req=localizacao=>new Request('https://example.com',{method:'POST',headers:{origin:'https://ronaldocmc.github.io'},body:JSON.stringify({sessao:id,localizacao})})
   const point={latitude:-22.275987,longitude:-51.498789,consentimento:'geo-navegador-v1'}

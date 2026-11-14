@@ -77,7 +77,7 @@ export function createRadarHandler({ createClient, env, fetchImpl = fetch, downl
         const queueDB = createClient(env.SUPABASE_URL, env.SUPABASE_SERVICE_ROLE_KEY, { auth: { persistSession: false, autoRefreshToken: false } })
         const result = await processGoogleQueue({ db: queueDB, readPage, fetchImpl, now,
           smartResolver: createURLResolutionService({ db: queueDB, env, readPage, download, fetchImpl, now }) })
-        return json({ ok: true, acao: 'processar_fila_google', versao_radar: '20261020-resolucao-inteligente', ...result })
+        return json({ ok: true, acao: 'processar_fila_google', versao_radar: '20261021-resolucao-simplificada', ...result })
       }
       if (body.acao === 'resolver_link_google') {
         if (contexto !== 'manual') throw new RadarError('Conversão individual restrita à curadoria autenticada.', 403)
@@ -95,7 +95,7 @@ export function createRadarHandler({ createClient, env, fetchImpl = fetch, downl
         let state = {}
         const url = await resolver(body.url, { somenteCache: true, allowOffline: false, timeoutMs: 8000, onDiagnostic: value => { diagnostico = value }, onState: value => { state = value } })
         if (url) { try { queue = await enqueueGoogleLinks(cacheDB, [body.url]) } catch { /* Cache continua utilizável. */ } }
-        return json({ ok: true, versao_radar: '20261020-resolucao-inteligente', acao: 'resolver_link_google', resolvido: !!url, url: url || body.url, diagnostico: url ? null : diagnostico,
+        return json({ ok: true, versao_radar: '20261021-resolucao-simplificada', acao: 'resolver_link_google', resolvido: !!url, url: url || body.url, diagnostico: url ? null : diagnostico,
           fila: queue?.itens?.[0]?.estado || null, origem_resolucao: state.origem || 'indisponivel', cache: state.origem === 'cache', retomar_em: state.retomar_em || null })
       }
       const options = radarOptions(body)
@@ -224,7 +224,7 @@ export function createRadarHandler({ createClient, env, fetchImpl = fetch, downl
           inserted = data || []
         }
       }
-      return json({ ok: true, agente: 'radar', versao_radar: '20261020-resolucao-inteligente', modo: options.modo, ...details,
+      return json({ ok: true, agente: 'radar', versao_radar: '20261021-resolucao-simplificada', modo: options.modo, ...details,
         previa: options.previa, previas: options.previa ? unique.map(toConteudo) : [],
         itens_descartados_anteriormente: discardedPreviously,
         candidatos: candidates.length, duplicados: candidates.length - unique.length, inseridos: inserted.length, itens: inserted,

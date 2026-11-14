@@ -205,7 +205,7 @@ function parseFeed(xml, fonte) {
     const veiculo = cleanText(tagValue(block, 'source'), 200)
     const sourceURL = /<source\b[^>]*\burl=["']([^"']+)["']/i.exec(block)?.[1]
     let dominio_veiculo = null
-    try { const source = new URL(decode(sourceURL || '')); if (source.protocol === 'https:' && !source.username && !source.password) dominio_veiculo = source.hostname } catch { /* Pista opcional, nunca autorização para baixar feed arbitrário. */ }
+    try { const source = new URL(decode(sourceURL || '')); if (['https:', 'http:'].includes(source.protocol) && !source.username && !source.password && !source.port) dominio_veiculo = source.hostname } catch { /* Apenas pista de domínio; nunca faz download HTTP nem autoriza feed arbitrário. */ }
     return { link, titulo, resumo, data, data_confirmada: !!publishedDate && Number.isFinite(Date.parse(cleanText(publishedDate, 200))), dominio_veiculo,
       fonte: veiculo && /^https:\/\/news\.google\.com\//i.test(link) ? { ...fonte, origem: veiculo } : fonte }
   }).filter(item => item.link && item.titulo)
@@ -917,6 +917,61 @@ function createSharedGoogleResolver({ db, readPage, fetchImpl, now = () => new D
 }
 
 
+const validReviewDay = value => typeof value === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(value)
+  && Number.isFinite(Date.parse(value)) && new Date(value).toISOString().slice(0, 10) === value
+const dateReviewMarker = '[Radar: revisão de data]'
+
+// Identidade da matéria e qualidade da data são decisões independentes.
+function assessResolutionDate(item, extracted) {
+  const rss = item.data_confirmada !== false && validReviewDay(item.data) ? item.data : null
+  const published = extracted?.date_source !== 'url' && validReviewDay(extracted?.draft?.data_publicacao)
+    ? extracted.draft.data_publicacao : null
+  const situacao = !rss || !published ? 'nao_confirmada' : rss === published ? 'confirmada' : 'divergente'
+  return { situacao, data_rss: rss, data_pagina: published, pagina_confirmada: !!published }
+}
+
+function storedResolutionDate(item, review) {
+  if (!review || !['confirmada','divergente','nao_confirmada'].includes(review.situacao)) return null
+  return assessResolutionDate(item, { date_source: review.pagina_confirmada === true ? 'meta' : 'url',
+    draft: { data_publicacao: review.data_pagina } })
+}
+
+function dateReviewNote(review) {
+  if (!review || review.situacao === 'confirmada') return null
+  if (review.situacao === 'divergente') return `${dateReviewMarker} URL original identificada. Data do RSS: ${review.data_rss}; data da página: ${review.data_pagina}. Confira a data antes de publicar; o cadastro não foi alterado.`
+  return `${dateReviewMarker} URL original identificada, mas a data de publicação não foi confirmada ${review.data_rss ? 'na página' : 'no RSS'}. Confira a data antes de publicar; o cadastro não foi alterado.`
+}
+
+function withDateReviewNote(note, review) {
+  const existing = String(note || '').split(/\r?\n/).filter(line => !line.startsWith(dateReviewMarker)).join('\n').trim()
+  return [existing, dateReviewNote(review)].filter(Boolean).join('\n') || null
+}
+
+// Acrescenta só o aviso. Nunca modifica data, URL, aprovação ou registros revisados.
+async function annotateResolutionDate(db, key, url, review) {
+  if (!dateReviewNote(review)) return true
+  const eligible = query => query.in('agente_origem', ['radar','radar_gemini']).eq('status', 'revisao')
+    .eq('revisao_humana', false).eq('aprovado_curadoria', false).is('curadoria_por', null).is('curadoria_em', null)
+  try {
+    const found = await eligible(db.from('observatorio_conteudos').select('id,url_rss,data_publicacao,observacao_colaborador'))
+      .eq('url', url).limit(20)
+    if (found.error || !Array.isArray(found.data)) return false
+    for (const row of found.data) {
+      if (googleNewsCacheKey(row.url_rss) !== key) continue
+      const note = withDateReviewNote(row.observacao_colaborador, review)
+      if (note === row.observacao_colaborador) continue
+      let update = eligible(db.from('observatorio_conteudos').update({ observacao_colaborador: note }))
+        .eq('id', row.id).eq('url', url).eq('url_rss', row.url_rss)
+      update = row.data_publicacao == null ? update.is('data_publicacao', null) : update.eq('data_publicacao', row.data_publicacao)
+      update = row.observacao_colaborador == null ? update.is('observacao_colaborador', null) : update.eq('observacao_colaborador', row.observacao_colaborador)
+      const result = await update
+      if (result.error) return false
+    }
+    return true
+  } catch { return false }
+}
+
+
 const resolutionText = value => cleanText(value, 500).normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim()
 function resolutionDomain(value) {
   if (typeof value !== 'string') return null
@@ -965,11 +1020,49 @@ function matchingFeeds(feeds, item) {
     return !!vehicle && names.some(name => name === vehicle || name.startsWith(vehicle + ' '))
   }).slice(0, 2)
 }
+
+// Fallback pequeno, conferido nas páginas oficiais; não inventa domínios pelo nome.
+// https://agenciabrasil.ebc.com.br/ | https://obia.nic.br/ | https://www.tse.jus.br/
+const resolutionKnownPublishers = [
+  { nomes: ['Agência Brasil', 'AgenciaBrasil'], dominio: 'agenciabrasil.ebc.com.br' },
+  { nomes: ['Observatório Brasileiro de Inteligência Artificial', 'OBIA', 'Observatório IA RNP'], dominio: 'obia.nic.br' },
+  { nomes: ['Tribunal Superior Eleitoral', 'TSE'], dominio: 'tse.jus.br' },
+]
+function resolutionPublisherDomain(item, feeds = [], vehicles = [], allowKnown = true) {
+  const hint = resolutionDomain(item.dominio_veiculo)
+  if (hint) return hint
+  const feedDomains = [...new Set(feeds.map(feed => resolutionDomain(feed.dominio)).filter(Boolean))]
+  if (feedDomains.length === 1) return feedDomains[0]
+  const name = resolutionText(item.veiculo)
+  const registered = [...new Set(vehicles.filter(row => resolutionText(row.nome) === name)
+    .map(row => resolutionDomain(row.url)).filter(Boolean))]
+  if (registered.length) return registered.length === 1 ? registered[0] : null
+  const known = allowKnown && resolutionKnownPublishers.find(row => row.nomes.some(value => resolutionText(value) === name))
+  if (known) return known.dominio
+  // Alguns RSS usam o próprio hostname como nome do veículo.
+  return typeof item.veiculo === 'string' && /^[a-z0-9-]+(?:\.[a-z0-9-]+)+$/i.test(item.veiculo)
+    ? resolutionDomain(item.veiculo) : null
+}
 async function registerResolutionItems(db, items) {
-  const data = items.filter(item => googleNewsCacheKey(item.google_news_url || item.link) || publisherURL(item.link)).slice(0, 300).map(item => ({ url_rss: item.google_news_url || item.link,
+  const preserveContext = new Set()
+  // A coleta reaproveita o aviso do vínculo em cache, sem apagá-lo ao renovar o contexto.
+  for (const item of items) {
+    const key = googleNewsCacheKey(item.google_news_url || item.link)
+    if (!key) continue
+    try {
+      const previous = await db.rpc('observatorio_resolucao_contexto', { p_chave: key })
+      if (previous.error || previous.data?.ok !== true) { preserveContext.add(item); continue }
+      const known = publisherURL(previous.data?.cache || previous.data?.contexto?.url_original)
+      if (!known || (item.google_news_url && known !== publisherURL(item.link))) continue
+      const review = storedResolutionDate(item, previous.data?.contexto?.revisao_data)
+      if (review) { item.revisao_data = review; item.observacao_colaborador = withDateReviewNote(item.observacao_colaborador, review) }
+    } catch { preserveContext.add(item) /* Não sobrescreve contexto que não foi possível ler. */ }
+  }
+  const data = items.filter(item => !preserveContext.has(item) && (googleNewsCacheKey(item.google_news_url || item.link) || publisherURL(item.link))).slice(0, 300).map(item => ({ url_rss: item.google_news_url || item.link,
     url_original: item.google_news_url ? publisherURL(item.link) : null,
     titulo: cleanText(item.titulo, 300), veiculo: cleanText(item.fonte?.origem || item.fonte || '', 200), data: item.data,
-    data_confirmada: item.data_confirmada === true, dominio_veiculo: item.dominio_veiculo || null }))
+    data_confirmada: item.data_confirmada === true, dominio_veiculo: item.dominio_veiculo || null,
+    ...(item.revisao_data ? { revisao_data: item.revisao_data } : {}) }))
   if (!data.length) return
   const result = await db.rpc('observatorio_resolucao_registrar', { p_itens: data })
   if (result.error || result.data?.ok !== true) throw new Error('Metadados de resolução indisponíveis.')
@@ -1004,23 +1097,42 @@ function createURLResolutionService({ db, env = {}, readPage = downloadRadarPage
     if (contextResult.error || contextResult.data?.ok !== true) return { url: null, metodo: 'pendente', status: 'indisponivel', motivo: 'Atualize a migration radar_resolucao_inteligente.' }
     context = contextResult.data
     const item = context.contexto || {}, feeds = matchingFeeds(Array.isArray(context.feeds) ? context.feeds : [], item)
-    const domain = resolutionDomain(item.dominio_veiculo) || resolutionDomain(feeds[0]?.dominio)
+    let domain = resolutionPublisherDomain(item, feeds, [], false)
     const cached = publisherURL(context.cache)
-    if (cached && (!domain || inDomain(cached, domain))) return { url: cached, metodo: 'cache', status: 'resolvido', consultou: false }
-    if (somenteCache) return { url: null, metodo: 'pendente', status: 'pendente', consultou: false }
+    const storedReview = storedResolutionDate(item, item.revisao_data)
+    if (cached && (!domain || inDomain(cached, domain))) return { url: cached, metodo: 'cache', status: 'resolvido', consultou: false,
+      revisao_data: storedReview, motivo: dateReviewNote(storedReview) }
+    if (somenteCache) return { url: null, metodo: 'pendente', status: 'pendente', consultou: false, revisao_data: storedReview }
+    const waiting = async (message, status = 'aguardando_dados') => {
+      await metric('pendente', status, null, Date.now())
+      return { url: null, metodo: 'pendente', status, motivo: message, consultou: false,
+        retomar_em: new Date(now().getTime() + 6 * 3600000).toISOString() }
+    }
+    if (!item.titulo || resolutionText(item.titulo).length < 12) return waiting('Título ausente ou insuficiente; aguardando dados da notícia, sem consumir tentativa.')
+    if (!domain) {
+      try {
+        const registry = await db.from('observatorio_veiculos').select('nome,url').eq('ativo', true).order('nome').limit(300)
+        if (!registry.error && Array.isArray(registry.data)) domain = resolutionPublisherDomain(item, feeds, registry.data)
+      } catch { /* Cadastro indisponível não bloqueia o fallback validado por veículo. */ }
+      domain ||= resolutionPublisherDomain(item, feeds)
+    }
+    if (!domain && !resolutionText(item.veiculo)) return waiting('Veículo e domínio ausentes; aguardando dados da fonte, sem consumir tentativa.')
     const deadline = Date.now() + 42000
-    async function guarded(url, method, operation, interval = 900, daily = 100) {
+    async function guarded(url, method, operation, interval = 900, daily = 100, countAttempt = true) {
       const origin = new URL(url).origin, start = Date.now()
       if (Date.now() >= deadline) return null
       let result
-      try { result = await db.rpc('observatorio_resolucao_origem_iniciar', { p_origem: origin, p_intervalo: interval, p_limite: daily }) } catch { return null }
+      try { result = await db.rpc('observatorio_resolucao_origem_iniciar', { p_origem: origin, p_intervalo: interval, p_limite: daily }) }
+      catch { reason = 'Controle de acesso ao provedor indisponível; nenhum novo acesso autorizado.'; deferred.push(new Date(now().getTime() + 300000).toISOString()); return null }
       if (result.error || result.data?.ok !== true) {
+        reason = result.error ? 'Controle de acesso ao provedor indisponível; nenhum novo acesso autorizado.' : 'Aguardando intervalo, cota ou pausa compartilhada do provedor.'
         if (result.data?.retomar_em) deferred.push(result.data.retomar_em)
+        else deferred.push(new Date(now().getTime() + 300000).toISOString())
         await metric(method, 'aguardar', null, start); return null
       }
       const token = result.data.token
       let status = 200, wait = null
-      try { attempt(); const value = await operation(); await metric(method, 'consultado', 200, start); return value }
+      try { if (countAttempt) attempt(); const value = await operation(); await metric(method, 'consultado', 200, start); return value }
       catch (error) {
         status = Number.isInteger(error?.httpStatus) ? error.httpStatus : 503
         wait = googleRetrySeconds(error?.retryAfter, now().getTime())
@@ -1032,7 +1144,18 @@ function createURLResolutionService({ db, env = {}, readPage = downloadRadarPage
         try { await db.rpc('observatorio_resolucao_origem_finalizar', { p_origem: origin, p_token: token, p_http: status, p_espera: wait }) } catch { /* Lease expira e continua bloqueando concorrência. */ }
       }
     }
-    const resolved = async (url, metodo) => { await metric(metodo, 'resolvido', null, Date.now()); return { url, metodo, status: 'resolvido', consultou: attempted } }
+    const dateReviews = new Map()
+    const resolved = async (url, metodo) => {
+      const review = dateReviews.get(url) || null
+      if (review) {
+        const saved = await db.rpc('observatorio_resolucao_registrar', { p_itens: [{ ...item, url_rss: item.url_rss || link,
+          url_original: url, revisao_data: review }] })
+        if (saved.error || saved.data?.ok !== true) throw new Error('Não foi possível registrar a avaliação da data.')
+      }
+      await metric(metodo, 'resolvido', null, Date.now())
+      if (dateReviewNote(review)) await metric(metodo, 'data_requer_revisao', null, Date.now())
+      return { url, metodo, status: 'resolvido', consultou: attempted, revisao_data: review, motivo: dateReviewNote(review) }
+    }
     // 1. Conteúdo já identificado no banco, por título + veículo/domínio + data.
     if (domain && validDay(item.data)) {
       try {
@@ -1060,15 +1183,27 @@ function createURLResolutionService({ db, env = {}, readPage = downloadRadarPage
     }
     async function verifyPage(url) {
       const target = publisherURL(url)
-      if (!target || !domain || !inDomain(target, domain)) return null
+      const targetDomain = domain || resolutionDomain(target)
+      if (!target || !targetDomain || !inDomain(target, targetDomain)) { reason = 'Destino retornado inválido ou fora do domínio do veículo.'; return null }
       const page = await guarded(target, 'pagina', () => readPage(target, 4000), 10, 200)
-      if (!page || !inDomain(page.url, domain)) return null
+      if (!page) return null
+      if (!inDomain(page.url, targetDomain)) { reason = 'Redirecionamento para domínio diferente; confirmação manual necessária.'; return null }
       const extracted = extractRadarPageMetadata(page.html, page.url)
-      if (extracted.date_source === 'url') return null
-      return matchResolution(item, [{ url: page.url, titulo: extracted.draft.titulo, data: extracted.draft.data_publicacao }], domain)
+      // Sem domínio previamente conhecido, exige também confirmação explícita do veículo.
+      if (!domain && resolutionText(extracted.draft.fonte) !== resolutionText(item.veiculo)) {
+        reason = 'Veículo não confirmado na página de destino; endereço mantido como candidato.'; return null
+      }
+      const review = assessResolutionDate(item, extracted)
+      // Com data incerta/divergente exige título normalizado EXATO, não só similaridade.
+      const titleMatches = review.situacao === 'confirmada'
+        ? resolutionTitleScore(item.titulo, extracted.draft.titulo, item.veiculo) >= .94
+        : titleOf(item.titulo, item.veiculo) === titleOf(extracted.draft.titulo, item.veiculo)
+      if (!titleMatches) { reason = 'Título da página não corresponde ao título do RSS; revisão necessária.'; return null }
+      dateReviews.set(page.url, review)
+      return page.url
     }
     // 3. API opcional, endpoint fixo e chave apenas no header; não usa LLM.
-    if (env.RADAR_URL_SEARCH_PROVIDER === 'brave' && env.BRAVE_SEARCH_API_KEY && domain && item.titulo && validDay(item.data) && item.data_confirmada !== false) {
+    if (env.RADAR_URL_SEARCH_PROVIDER === 'brave' && env.BRAVE_SEARCH_API_KEY && domain && item.titulo) {
       const endpoint = new URL('https://api.search.brave.com/res/v1/web/search')
       endpoint.searchParams.set('q', `site:${domain} "${cleanText(item.titulo, 200)}"`)
       endpoint.searchParams.set('count', '3')
@@ -1077,16 +1212,19 @@ function createURLResolutionService({ db, env = {}, readPage = downloadRadarPage
       const candidates = (Array.isArray(data?.web?.results) ? data.web.results : []).filter(row => row && inDomain(row.url, domain) && resolutionTitleScore(item.titulo, row.title, item.veiculo) >= .94).slice(0, 2)
       const matches = []
       for (const candidate of candidates) { const checked = await verifyPage(candidate.url); if (checked) matches.push(checked) }
-      if (new Set(matches).size === 1) return resolved(matches[0], 'busca')
+      const confirmed = [...new Set(matches.filter(url => dateReviews.get(url)?.situacao === 'confirmada'))]
+      if (confirmed.length === 1) return resolved(confirmed[0], 'busca')
+      if (new Set(matches).size === 1 && new Set(candidates.map(row => publisherURL(row.url))).size === 1) return resolved(matches[0], 'busca')
+      if (new Set(matches).size > 1) reason = 'Mais de uma matéria corresponde ao título; confirmação manual necessária.'
     }
     // 4. Último recurso: decoder JavaScript/Deno existente, sem serviço externo adicional.
     const mode = env.RADAR_URL_DECODER_PROVIDER || 'legacy'
-    // Sem essas evidências não há como confirmar um destino decodificado.
-    const verifiable = !!domain && !!item.titulo && validDay(item.data) && item.data_confirmada !== false
+    // O feed oficial é opcional. Sem domínio cadastrado, a página deve confirmar também o veículo.
+    const verifiable = !!(domain || resolutionText(item.veiculo))
     let decoded
     const decoderMethod = 'google_legado'
     const previousCandidate = publisherURL(context.candidata)
-    if (verifiable && previousCandidate && inDomain(previousCandidate, domain)
+    if (verifiable && previousCandidate && (!domain || inDomain(previousCandidate, domain))
       && context.candidata_metodo === decoderMethod) {
       // Se só a página do veículo falhou, não repete a decodificação já concluída.
       decoded = previousCandidate
@@ -1095,19 +1233,25 @@ function createURLResolutionService({ db, env = {}, readPage = downloadRadarPage
       decoded = await guarded('https://news.google.com/articles/resolution', decoderMethod, async () => {
         let blocked
         const value = await resolve(link, {
-          timeoutMs: 5000, persistOriginal: false, onDiagnostic: value => { reason = value },
+          timeoutMs: 5000, persistOriginal: false, onAttempt: attempt, onDiagnostic: value => { reason = value },
           onState: state => { if (state.retomar_em) deferred.push(state.retomar_em); if (state.origem === 'pausa') blocked = state.retomar_em },
         })
         if (blocked) throw Object.assign(new Error('Pausa Google compartilhada.'), { httpStatus: 429, retryAfter: blocked })
         return value
-      }, 60, 100)
+      }, 60, 100, false)
     }
-    if (decoded && publisherURL(decoded) && inDomain(decoded, domain)) {
+    if (decoded && publisherURL(decoded) && (!domain || inDomain(decoded, domain))) {
       if (decoded !== previousCandidate) {
         try { await db.rpc('observatorio_resolucao_candidata', { p_chave: key, p_url: publisherURL(decoded), p_metodo: decoderMethod, p_token: reservationToken }) } catch { /* A confirmação final ainda precisa persistir o resultado. */ }
       }
       const verified = await verifyPage(decoded); if (verified) return resolved(verified, decoderMethod)
     }
+    else if (decoded) reason = 'Destino retornado inválido ou fora do domínio do veículo.'
+    if (!attempted && !deferred.length) return waiting(
+      mode !== 'legacy' && !previousCandidate
+        ? 'Nenhum provedor disponível para este item: decodificação desativada e nenhuma correspondência local. Sem consumir tentativa.'
+        : reason === 'Nenhuma correspondência verificável.' ? 'Nenhuma consulta externa autorizada nesta rodada; aguardando dados ou configuração, sem consumir tentativa.' : reason,
+      'aguardando_configuracao')
     const retry = deferred.filter(value => Number.isFinite(Date.parse(value))).sort((a, b) => Date.parse(a) - Date.parse(b))[0]
     await metric('pendente', 'nao_resolvido', null, Date.now())
     return { url: null, metodo: 'pendente', status: 'pendente', motivo: reason, consultou: attempted, retomar_em: retry || null }
@@ -1132,7 +1276,11 @@ async function enqueueGoogleItems(db, items) {
     if (!original) continue
     item.google_news_url = item.link
     item.link = original
-    if (item.observacao_colaborador?.startsWith('Link do Google Notícias')) delete item.observacao_colaborador
+    if (item.observacao_colaborador?.startsWith('Link do Google Notícias')) {
+      const note = item.observacao_colaborador.split(/\r?\n/).filter(line => !line.startsWith('Link do Google Notícias')).join('\n').trim()
+      if (note) item.observacao_colaborador = note
+      else delete item.observacao_colaborador
+    }
   }
   return result
 }
@@ -1145,17 +1293,17 @@ async function processGoogleQueue({ db, readPage, fetchImpl, now, resolver, smar
   if (job.situacao !== 'processar') return { situacao: job.situacao, processados: 0, retomar_em: job.retomar_em || null }
   if (!googleNewsCacheKey(job.chave) || typeof job.token !== 'string') throw new RadarError('Reserva de fila inválida.', 503)
   let consulted = false, state = {}, reason = 'Conversão não concluída.'
-  let method = null
+  let method = null, dateReview = null
   let url = publisherURL(job.url_original)
-  if (!url && smartResolver) {
+  if (smartResolver) {
     try {
-      const result = await smartResolver(job.chave, { reservationToken: job.token, onAttempt: () => { consulted = true } })
-      url = publisherURL(result.url); method = result.metodo || 'pendente'; reason = result.motivo || reason
+      const result = await smartResolver(job.chave, { reservationToken: job.token, somenteCache: !!url, onAttempt: () => { consulted = true } })
+      url = url || publisherURL(result.url); method = url ? (result.metodo === 'pendente' ? 'cache' : result.metodo || 'cache') : result.metodo || 'pendente'; reason = result.motivo || reason
+      dateReview = result.revisao_data || null
       state = { retomar_em: result.retomar_em }
-      // Uma rodada sem evidência/configuração também termina no limite de tentativas;
-      // espera por cota/pausa não consome tentativa adicional.
-      if (!url && !result.retomar_em && result.status !== 'indisponivel') consulted = true
-    } catch { reason = 'Resolução inteligente indisponível; coleta preservada.'; method = 'pendente' }
+      // Só conta acesso efetivo. Falta de dados/configuração não gasta tentativa.
+      consulted = consulted || result.consultou === true
+    } catch { reason = 'Resolução inteligente indisponível; coleta preservada.'; method = url ? 'cache' : 'pendente' }
   } else if (!url) {
     const resolve = resolver || createSharedGoogleResolver({ db, readPage, fetchImpl, now })
     try {
@@ -1168,9 +1316,13 @@ async function processGoogleQueue({ db, readPage, fetchImpl, now, resolver, smar
   const finished = await db.rpc(smartResolver ? 'observatorio_resolucao_finalizar' : 'observatorio_google_fila_finalizar', { p_chave: job.chave, p_token: job.token,
     p_url: url || null, ...(smartResolver ? { p_metodo: method || 'cache' } : {}), p_consultou: consulted, p_retomar: retryAt, p_motivo: String(reason).slice(0, 300) })
   if (finished.error || finished.data?.ok !== true) throw new RadarError('Não foi possível concluir a reserva da fila. Nenhum conteúdo foi publicado.', 503)
+  const warningSaved = url && dateReviewNote(dateReview) ? await annotateResolutionDate(db, job.chave, url, dateReview) : true
   return { situacao: finished.data.estado, processados: 1, resolvidos: url ? 1 : 0,
     atualizados: finished.data.aplicacao?.atualizados || 0, conflitos: finished.data.aplicacao?.conflitos || 0,
-    tentativas: finished.data.tentativas, retomar_em: url ? null : finished.data.proxima_em }
+    tentativas: finished.data.tentativas, revisao_data: dateReview,
+    motivo: url ? dateReviewNote(dateReview) : String(reason).slice(0, 300),
+    ...(warningSaved ? {} : { aviso: 'URL identificada; aviso de data salvo na fila, mas não foi possível anotá-lo no conteúdo.' }),
+    retomar_em: url ? null : finished.data.proxima_em }
 }
 
 
@@ -1241,7 +1393,7 @@ function createRadarHandler({ createClient, env, fetchImpl = fetch, download = d
         const queueDB = createClient(env.SUPABASE_URL, env.SUPABASE_SERVICE_ROLE_KEY, { auth: { persistSession: false, autoRefreshToken: false } })
         const result = await processGoogleQueue({ db: queueDB, readPage, fetchImpl, now,
           smartResolver: createURLResolutionService({ db: queueDB, env, readPage, download, fetchImpl, now }) })
-        return json({ ok: true, acao: 'processar_fila_google', versao_radar: '20261020-resolucao-inteligente', ...result })
+        return json({ ok: true, acao: 'processar_fila_google', versao_radar: '20261021-url-data-separadas', ...result })
       }
       if (body.acao === 'resolver_link_google') {
         if (contexto !== 'manual') throw new RadarError('Conversão individual restrita à curadoria autenticada.', 403)
@@ -1259,7 +1411,15 @@ function createRadarHandler({ createClient, env, fetchImpl = fetch, download = d
         let state = {}
         const url = await resolver(body.url, { somenteCache: true, allowOffline: false, timeoutMs: 8000, onDiagnostic: value => { diagnostico = value }, onState: value => { state = value } })
         if (url) { try { queue = await enqueueGoogleLinks(cacheDB, [body.url]) } catch { /* Cache continua utilizável. */ } }
-        return json({ ok: true, versao_radar: '20261020-resolucao-inteligente', acao: 'resolver_link_google', resolvido: !!url, url: url || body.url, diagnostico: url ? null : diagnostico,
+        let review = null
+        if (url) {
+          try {
+            const context = await cacheDB.rpc('observatorio_resolucao_contexto', { p_chave: googleNewsCacheKey(body.url) })
+            if (!context.error) review = storedResolutionDate(context.data?.contexto || {}, context.data?.contexto?.revisao_data)
+          } catch { /* Avisos não impedem a leitura do endereço em cache. */ }
+        }
+        return json({ ok: true, versao_radar: '20261021-url-data-separadas', acao: 'resolver_link_google', resolvido: !!url, url: url || body.url, diagnostico: url ? null : diagnostico,
+          revisao_data: review, aviso_data: dateReviewNote(review),
           fila: queue?.itens?.[0]?.estado || null, origem_resolucao: state.origem || 'indisponivel', cache: state.origem === 'cache', retomar_em: state.retomar_em || null })
       }
       const options = radarOptions(body)
@@ -1388,7 +1548,7 @@ function createRadarHandler({ createClient, env, fetchImpl = fetch, download = d
           inserted = data || []
         }
       }
-      return json({ ok: true, agente: 'radar', versao_radar: '20261020-resolucao-inteligente', modo: options.modo, ...details,
+      return json({ ok: true, agente: 'radar', versao_radar: '20261021-url-data-separadas', modo: options.modo, ...details,
         previa: options.previa, previas: options.previa ? unique.map(toConteudo) : [],
         itens_descartados_anteriormente: discardedPreviously,
         candidatos: candidates.length, duplicados: candidates.length - unique.length, inseridos: inserted.length, itens: inserted,

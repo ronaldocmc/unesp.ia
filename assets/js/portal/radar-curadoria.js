@@ -1,5 +1,5 @@
 import { supabase, showMessage } from './supabase.js'
-import { buildRadarLinkDiagnostic, readRadarFunctionError } from './radar-diagnostico.js?v=20261020-resolucao-inteligente'
+import { buildRadarLinkDiagnostic, readRadarFunctionError } from './radar-diagnostico.js?v=20261021-resolucao-simplificada'
 
 export function initRadarCuradoria({ canDecide, setBusy, isBusy, sourceLink, schedule = setTimeout, cancelSchedule = clearTimeout }) {
   const container = document.querySelector('[data-radar-preview]')

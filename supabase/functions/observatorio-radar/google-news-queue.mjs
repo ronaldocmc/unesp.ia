@@ -40,9 +40,8 @@ export async function processGoogleQueue({ db, readPage, fetchImpl, now, resolve
       const result = await smartResolver(job.chave, { reservationToken: job.token, onAttempt: () => { consulted = true } })
       url = publisherURL(result.url); method = result.metodo || 'pendente'; reason = result.motivo || reason
       state = { retomar_em: result.retomar_em }
-      // Uma rodada sem evidência/configuração também termina no limite de tentativas;
-      // espera por cota/pausa não consome tentativa adicional.
-      if (!url && !result.retomar_em && result.status !== 'indisponivel') consulted = true
+      // Só conta acesso efetivo. Falta de dados/configuração não gasta tentativa.
+      consulted = consulted || result.consultou === true
     } catch { reason = 'Resolução inteligente indisponível; coleta preservada.'; method = 'pendente' }
   } else if (!url) {
     const resolve = resolver || createSharedGoogleResolver({ db, readPage, fetchImpl, now })
@@ -58,5 +57,5 @@ export async function processGoogleQueue({ db, readPage, fetchImpl, now, resolve
   if (finished.error || finished.data?.ok !== true) throw new RadarError('Não foi possível concluir a reserva da fila. Nenhum conteúdo foi publicado.', 503)
   return { situacao: finished.data.estado, processados: 1, resolvidos: url ? 1 : 0,
     atualizados: finished.data.aplicacao?.atualizados || 0, conflitos: finished.data.aplicacao?.conflitos || 0,
-    tentativas: finished.data.tentativas, retomar_em: url ? null : finished.data.proxima_em }
+    tentativas: finished.data.tentativas, motivo: url ? null : String(reason).slice(0, 300), retomar_em: url ? null : finished.data.proxima_em }
 }

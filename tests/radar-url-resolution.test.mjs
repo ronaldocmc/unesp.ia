@@ -1,6 +1,6 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
-import { createURLResolutionService, matchResolution, resolutionTitleScore, resolutionDomain, registerResolutionItems, indexOfficialFeed } from '../supabase/functions/observatorio-radar/url-resolution.mjs'
+import { createURLResolutionService, matchResolution, resolutionTitleScore, resolutionDomain, resolutionPublisherDomain, registerResolutionItems, indexOfficialFeed } from '../supabase/functions/observatorio-radar/url-resolution.mjs'
 import { parseFeed } from '../supabase/functions/observatorio-radar/core.mjs'
 import { requestRadarJSON } from '../supabase/functions/observatorio-radar/feed-network.mjs'
 import { processGoogleQueue } from '../supabase/functions/observatorio-radar/google-news-queue.mjs'
@@ -23,6 +23,10 @@ function fixture(overrides = {}) {
     if (name.endsWith('_existentes') || name.endsWith('_documentos')) return { data: { ok: true, itens: [] } }
     return { data: { ok: true } }
   } }
+  if (overrides.vehicles) db.from = table => {
+    assert.equal(table, 'observatorio_veiculos')
+    return { select: () => ({ eq: () => ({ order: () => ({ limit: async () => ({ data: overrides.vehicles }) }) }) }) }
+  }
   const forbidden = async () => { throw new Error('Unexpected external call') }
   const resolve = createURLResolutionService({ db, env: { RADAR_URL_DECODER_PROVIDER: 'off', ...overrides.env },
     download: forbidden, readPage: forbidden, jsonRequest: forbidden, googleResolver: forbidden,
@@ -150,7 +154,7 @@ test('destino candidato já decodificado é revalidado sem outra chamada Google'
 
 test('429 do decoder bloqueia origem Google e propaga espera', async () => {
   const f = fixture({ env: { RADAR_URL_DECODER_PROVIDER: 'legacy' }, dependencies: {
-    googleResolver: async () => { throw Object.assign(new Error('secret must not be logged'), { httpStatus: 429, retryAfter: '1200' }) },
+    googleResolver: async (_url, options) => { options.onAttempt(); throw Object.assign(new Error('secret must not be logged'), { httpStatus: 429, retryAfter: '1200' }) },
   } })
   const result = await f.resolve(link)
   assert.equal(result.url, null); assert.equal(result.consultou, true); assert.ok(Date.parse(result.retomar_em) > Date.now())
@@ -177,17 +181,112 @@ test('Retry-After de dois dias não é encurtado para um dia', async () => {
   assert.equal(f.calls.find(call => call.name.endsWith('_origem_finalizar')).args.p_espera, 172800)
 })
 
-test('worker usa nova finalização e limita rodadas sem evidência, preservando esperas', async () => {
+test('worker conta somente consulta efetiva, preservando esperas', async () => {
   for (const waiting of [false, true]) {
     let finished
     const db = { async rpc(name, args) {
       if (name.endsWith('_reservar')) return { data: { situacao: 'processar', chave: link.replace('/rss/', '/').split('?')[0], token: 'lease' } }
       finished = { name, args }; return { data: { ok: true, estado: 'pendente' } }
     } }
-    await processGoogleQueue({ db, smartResolver: async () => ({ url: null, metodo: 'pendente', retomar_em: waiting ? new Date(Date.now() + 900000).toISOString() : null }) })
+    await processGoogleQueue({ db, smartResolver: async () => ({ url: null, metodo: 'pendente', consultou: !waiting, retomar_em: waiting ? new Date(Date.now() + 900000).toISOString() : null }) })
     assert.equal(finished.name, 'observatorio_resolucao_finalizar')
     assert.equal(finished.args.p_consultou, !waiting)
   }
+})
+
+test('domínio não depende de feed: cadastro, pistas, hostname e referências oficiais', () => {
+  assert.equal(resolutionPublisherDomain({ veiculo: 'Agência Brasil' }), 'agenciabrasil.ebc.com.br')
+  assert.equal(resolutionPublisherDomain({ veiculo: 'Observatório Brasileiro de Inteligência Artificial' }), 'obia.nic.br')
+  assert.equal(resolutionPublisherDomain({ veiculo: 'Tribunal Superior Eleitoral' }), 'tse.jus.br')
+  assert.equal(resolutionPublisherDomain({ veiculo: 'veiculo.org' }), 'veiculo.org')
+  assert.equal(resolutionPublisherDomain(item), 'veiculo.org')
+  assert.equal(resolutionPublisherDomain({ veiculo: 'Fonte' }, [], [{ nome: 'Fonte', url: 'https://site.org/' }]), 'site.org')
+  assert.equal(resolutionPublisherDomain({ veiculo: 'Fonte' }, [], [{ nome: 'Fonte', url: 'https://a.org/' }, { nome: 'Fonte', url: 'https://b.org/' }]), null)
+  assert.equal(resolutionPublisherDomain({ veiculo: 'Nome desconhecido' }), null)
+  assert.equal(resolutionPublisherDomain({ veiculo: 'localhost.local' }), null)
+})
+
+test('usa cadastro de veículos sem feed oficial e sem nova migração', async () => {
+  let decoded = 0
+  const f = fixture({ context: { contexto: { ...item, dominio_veiculo: null } }, vehicles: [{ nome: 'Veículo', url: 'https://veiculo.org/' }],
+    env: { RADAR_URL_DECODER_PROVIDER: 'legacy' }, dependencies: {
+      googleResolver: async (_url, options) => { decoded++; options.onAttempt(); return target }, readPage: async () => page,
+    } })
+  const result = await f.resolve(link)
+  assert.equal(result.url, target); assert.equal(decoded, 1)
+})
+
+test('Agência Brasil antiga sem domínio é encaminhada ao decoder, sem exigir RSS oficial', async () => {
+  let decoded = 0
+  const agencyURL = 'https://agenciabrasil.ebc.com.br/noticia'
+  const f = fixture({ context: { contexto: { ...item, veiculo: 'Agência Brasil', dominio_veiculo: null } },
+    env: { RADAR_URL_DECODER_PROVIDER: 'legacy' }, dependencies: {
+      googleResolver: async (_url, options) => { decoded++; options.onAttempt(); return agencyURL },
+      readPage: async () => ({ ...page, url: agencyURL }),
+    } })
+  assert.equal((await f.resolve(link)).url, agencyURL); assert.equal(decoded, 1)
+})
+
+test('sem domínio conhecido confirma título, data e veículo explícito na página', async () => {
+  let decoded = 0
+  const f = fixture({ context: { contexto: { ...item, veiculo: 'Fonte Nova', dominio_veiculo: null } },
+    env: { RADAR_URL_DECODER_PROVIDER: 'legacy' }, dependencies: {
+      googleResolver: async (_url, options) => { decoded++; options.onAttempt(); return target },
+      readPage: async () => ({ ...page, html: page.html.replace('<head>', '<head><meta property="og:site_name" content="Fonte Nova">') }),
+    } })
+  assert.equal((await f.resolve(link)).url, target); assert.equal(decoded, 1)
+})
+
+test('sem domínio conhecido não aceita título/data iguais com veículo divergente ou ausente', async () => {
+  for (const source of ['', '<meta property="og:site_name" content="Outra fonte">']) {
+    const f = fixture({ context: { contexto: { ...item, veiculo: 'Fonte Nova', dominio_veiculo: null } },
+      env: { RADAR_URL_DECODER_PROVIDER: 'legacy' }, dependencies: {
+        googleResolver: async (_url, options) => { options.onAttempt(); return target },
+        readPage: async () => ({ ...page, html: page.html.replace('<head>', '<head>' + source) }),
+      } })
+    const result = await f.resolve(link)
+    assert.equal(result.url, null); assert.match(result.motivo, /Veículo não confirmado/)
+  }
+})
+
+test('dados ausentes aguardam seis horas sem nenhuma chamada externa ou tentativa', async () => {
+  for (const context of [{ ...item, titulo: '' }, { ...item, data: null }, { ...item, data_confirmada: false }, { ...item, veiculo: '', dominio_veiculo: null }]) {
+    const f = fixture({ context: { contexto: context }, env: { RADAR_URL_DECODER_PROVIDER: 'legacy' } })
+    const start = Date.now(), result = await f.resolve(link)
+    assert.equal(result.status, 'aguardando_dados'); assert.equal(result.consultou, false)
+    assert.ok(Date.parse(result.retomar_em) >= start + 6 * 3600000)
+    assert.equal(f.calls.some(call => call.name.endsWith('_origem_iniciar')), false)
+    assert.doesNotMatch(result.motivo, /Nenhuma correspondência verificável/)
+  }
+})
+
+test('sem provedor habilitado não consome tentativas nem entra em repetição a cada minuto', async () => {
+  const f = fixture()
+  const result = await f.resolve(link)
+  assert.equal(result.consultou, false); assert.equal(result.status, 'aguardando_configuracao')
+  assert.match(result.motivo, /decodificação desativada/); assert.ok(result.retomar_em)
+})
+
+test('pausa Google legada descoberta após reserva não consome tentativa', async () => {
+  const until = new Date(Date.now() + 900000).toISOString()
+  const f = fixture({ env: { RADAR_URL_DECODER_PROVIDER: 'legacy' }, dependencies: {
+    googleResolver: async (_url, options) => { options.onState({ origem: 'pausa', retomar_em: until }); return null },
+  } })
+  const result = await f.resolve(link)
+  assert.equal(result.consultou, false); assert.ok(result.retomar_em)
+})
+
+test('diagnóstico de data divergente é explícito e não aceita a URL', async () => {
+  const f = fixture({ context: { candidata: target, candidata_metodo: 'google_legado' }, dependencies: {
+    readPage: async () => ({ ...page, html: page.html.replace('2026-10-20', '2025-10-20') }),
+  } })
+  const result = await f.resolve(link)
+  assert.equal(result.url, null); assert.match(result.motivo, /Data da página diferente/)
+})
+
+test('RSS com source HTTP fornece apenas pista de domínio, sem download inseguro', () => {
+  const [parsed] = parseFeed(xml.replace('</item>', '<source url="http://veiculo.org">Veículo</source></item>'), {})
+  assert.equal(parsed.dominio_veiculo, 'veiculo.org')
 })
 
 test('JSON de provedor rejeita DNS privado, redirecionamento e respostas grandes', async () => {

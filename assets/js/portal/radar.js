@@ -1,6 +1,6 @@
 import { requireRole, supabase, showMessage } from './supabase.js'
 import { radarSourceSelection } from './radar-model.js?v=20261020-resolucao-inteligente'
-import { initRadarCuradoria } from './radar-curadoria.js?v=20261020-resolucao-inteligente'
+import { initRadarCuradoria } from './radar-curadoria.js?v=20261021-resolucao-simplificada'
 
 const form = document.querySelector('[data-radar-form]')
 const message = document.querySelector('[data-radar-message]')

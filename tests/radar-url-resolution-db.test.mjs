@@ -107,5 +107,13 @@ test('PostgreSQL: upgrade idempotente, privilégios, metadados, fila, cotas e bl
     await db.exec('reset role')
     assert.equal((await db.query('select tentativas from private.radar_google_fila')).rows[0].tentativas, 0)
     assert.equal((await db.query("select quantidade from private.radar_url_origens where origem='https://veiculo.org'")).rows[0].quantidade, 2)
+    // Sem alteração de schema: espera por dados preserva o contador e o prazo explícito.
+    await db.exec("update private.radar_google_fila_controle set proxima_em='-infinity'; set role service_role")
+    const missingDataJob = await rpc('observatorio_google_fila_reservar')
+    assert.equal(missingDataJob.situacao, 'processar')
+    const retry = new Date(Date.now() + 6 * 3600000).toISOString()
+    const deferred = await rpc('observatorio_resolucao_finalizar', [missingDataJob.chave, missingDataJob.token, null, 'pendente', false, retry, 'Data de publicação ausente; aguardando dados, sem consumir tentativa.'])
+    assert.equal(deferred.estado, 'pendente'); assert.equal(deferred.tentativas, 0)
+    assert.ok(Date.parse(deferred.proxima_em) >= Date.parse(retry))
   } finally { await db.close() }
 })

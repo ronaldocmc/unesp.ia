@@ -52,6 +52,29 @@ function matchingFeeds(feeds, item) {
     return !!vehicle && names.some(name => name === vehicle || name.startsWith(vehicle + ' '))
   }).slice(0, 2)
 }
+
+// Fallback pequeno, conferido nas páginas oficiais; não inventa domínios pelo nome.
+// https://agenciabrasil.ebc.com.br/ | https://obia.nic.br/ | https://www.tse.jus.br/
+const resolutionKnownPublishers = [
+  { nomes: ['Agência Brasil', 'AgenciaBrasil'], dominio: 'agenciabrasil.ebc.com.br' },
+  { nomes: ['Observatório Brasileiro de Inteligência Artificial', 'OBIA', 'Observatório IA RNP'], dominio: 'obia.nic.br' },
+  { nomes: ['Tribunal Superior Eleitoral', 'TSE'], dominio: 'tse.jus.br' },
+]
+export function resolutionPublisherDomain(item, feeds = [], vehicles = [], allowKnown = true) {
+  const hint = resolutionDomain(item.dominio_veiculo)
+  if (hint) return hint
+  const feedDomains = [...new Set(feeds.map(feed => resolutionDomain(feed.dominio)).filter(Boolean))]
+  if (feedDomains.length === 1) return feedDomains[0]
+  const name = resolutionText(item.veiculo)
+  const registered = [...new Set(vehicles.filter(row => resolutionText(row.nome) === name)
+    .map(row => resolutionDomain(row.url)).filter(Boolean))]
+  if (registered.length) return registered.length === 1 ? registered[0] : null
+  const known = allowKnown && resolutionKnownPublishers.find(row => row.nomes.some(value => resolutionText(value) === name))
+  if (known) return known.dominio
+  // Alguns RSS usam o próprio hostname como nome do veículo.
+  return typeof item.veiculo === 'string' && /^[a-z0-9-]+(?:\.[a-z0-9-]+)+$/i.test(item.veiculo)
+    ? resolutionDomain(item.veiculo) : null
+}
 export async function registerResolutionItems(db, items) {
   const data = items.filter(item => googleNewsCacheKey(item.google_news_url || item.link) || publisherURL(item.link)).slice(0, 300).map(item => ({ url_rss: item.google_news_url || item.link,
     url_original: item.google_news_url ? publisherURL(item.link) : null,
@@ -91,23 +114,41 @@ export function createURLResolutionService({ db, env = {}, readPage = downloadRa
     if (contextResult.error || contextResult.data?.ok !== true) return { url: null, metodo: 'pendente', status: 'indisponivel', motivo: 'Atualize a migration radar_resolucao_inteligente.' }
     context = contextResult.data
     const item = context.contexto || {}, feeds = matchingFeeds(Array.isArray(context.feeds) ? context.feeds : [], item)
-    const domain = resolutionDomain(item.dominio_veiculo) || resolutionDomain(feeds[0]?.dominio)
+    let domain = resolutionPublisherDomain(item, feeds, [], false)
     const cached = publisherURL(context.cache)
     if (cached && (!domain || inDomain(cached, domain))) return { url: cached, metodo: 'cache', status: 'resolvido', consultou: false }
     if (somenteCache) return { url: null, metodo: 'pendente', status: 'pendente', consultou: false }
+    const waiting = async (message, status = 'aguardando_dados') => {
+      await metric('pendente', status, null, Date.now())
+      return { url: null, metodo: 'pendente', status, motivo: message, consultou: false,
+        retomar_em: new Date(now().getTime() + 6 * 3600000).toISOString() }
+    }
+    if (!item.titulo || resolutionText(item.titulo).length < 12) return waiting('Título ausente ou insuficiente; aguardando dados da notícia, sem consumir tentativa.')
+    if (!validDay(item.data) || item.data_confirmada === false) return waiting('Data de publicação ausente ou não confirmada; aguardando dados do RSS, sem consumir tentativa.')
+    if (!domain) {
+      try {
+        const registry = await db.from('observatorio_veiculos').select('nome,url').eq('ativo', true).order('nome').limit(300)
+        if (!registry.error && Array.isArray(registry.data)) domain = resolutionPublisherDomain(item, feeds, registry.data)
+      } catch { /* Cadastro indisponível não bloqueia o fallback validado por veículo. */ }
+      domain ||= resolutionPublisherDomain(item, feeds)
+    }
+    if (!domain && !resolutionText(item.veiculo)) return waiting('Veículo e domínio ausentes; aguardando dados da fonte, sem consumir tentativa.')
     const deadline = Date.now() + 42000
-    async function guarded(url, method, operation, interval = 900, daily = 100) {
+    async function guarded(url, method, operation, interval = 900, daily = 100, countAttempt = true) {
       const origin = new URL(url).origin, start = Date.now()
       if (Date.now() >= deadline) return null
       let result
-      try { result = await db.rpc('observatorio_resolucao_origem_iniciar', { p_origem: origin, p_intervalo: interval, p_limite: daily }) } catch { return null }
+      try { result = await db.rpc('observatorio_resolucao_origem_iniciar', { p_origem: origin, p_intervalo: interval, p_limite: daily }) }
+      catch { reason = 'Controle de acesso ao provedor indisponível; nenhum novo acesso autorizado.'; deferred.push(new Date(now().getTime() + 300000).toISOString()); return null }
       if (result.error || result.data?.ok !== true) {
+        reason = result.error ? 'Controle de acesso ao provedor indisponível; nenhum novo acesso autorizado.' : 'Aguardando intervalo, cota ou pausa compartilhada do provedor.'
         if (result.data?.retomar_em) deferred.push(result.data.retomar_em)
+        else deferred.push(new Date(now().getTime() + 300000).toISOString())
         await metric(method, 'aguardar', null, start); return null
       }
       const token = result.data.token
       let status = 200, wait = null
-      try { attempt(); const value = await operation(); await metric(method, 'consultado', 200, start); return value }
+      try { if (countAttempt) attempt(); const value = await operation(); await metric(method, 'consultado', 200, start); return value }
       catch (error) {
         status = Number.isInteger(error?.httpStatus) ? error.httpStatus : 503
         wait = googleRetrySeconds(error?.retryAfter, now().getTime())
@@ -147,12 +188,21 @@ export function createURLResolutionService({ db, env = {}, readPage = downloadRa
     }
     async function verifyPage(url) {
       const target = publisherURL(url)
-      if (!target || !domain || !inDomain(target, domain)) return null
+      const targetDomain = domain || resolutionDomain(target)
+      if (!target || !targetDomain || !inDomain(target, targetDomain)) { reason = 'Destino retornado inválido ou fora do domínio do veículo.'; return null }
       const page = await guarded(target, 'pagina', () => readPage(target, 4000), 10, 200)
-      if (!page || !inDomain(page.url, domain)) return null
+      if (!page) return null
+      if (!inDomain(page.url, targetDomain)) { reason = 'Redirecionamento para domínio diferente; confirmação manual necessária.'; return null }
       const extracted = extractRadarPageMetadata(page.html, page.url)
-      if (extracted.date_source === 'url') return null
-      return matchResolution(item, [{ url: page.url, titulo: extracted.draft.titulo, data: extracted.draft.data_publicacao }], domain)
+      // Sem domínio previamente conhecido, exige também confirmação explícita do veículo.
+      if (!domain && resolutionText(extracted.draft.fonte) !== resolutionText(item.veiculo)) {
+        reason = 'Veículo não confirmado na página de destino; endereço mantido como candidato.'; return null
+      }
+      if (extracted.date_source === 'url' || !validDay(extracted.draft.data_publicacao)) { reason = 'Página sem data de publicação verificável; endereço mantido como candidato.'; return null }
+      if (extracted.draft.data_publicacao !== item.data) { reason = 'Data da página diferente da data do RSS; revisão necessária.'; return null }
+      const match = matchResolution(item, [{ url: page.url, titulo: extracted.draft.titulo, data: extracted.draft.data_publicacao }], targetDomain)
+      if (!match) reason = 'Título da página não corresponde ao título do RSS; revisão necessária.'
+      return match
     }
     // 3. API opcional, endpoint fixo e chave apenas no header; não usa LLM.
     if (env.RADAR_URL_SEARCH_PROVIDER === 'brave' && env.BRAVE_SEARCH_API_KEY && domain && item.titulo && validDay(item.data) && item.data_confirmada !== false) {
@@ -168,12 +218,12 @@ export function createURLResolutionService({ db, env = {}, readPage = downloadRa
     }
     // 4. Último recurso: decoder JavaScript/Deno existente, sem serviço externo adicional.
     const mode = env.RADAR_URL_DECODER_PROVIDER || 'legacy'
-    // Sem essas evidências não há como confirmar um destino decodificado.
-    const verifiable = !!domain && !!item.titulo && validDay(item.data) && item.data_confirmada !== false
+    // O feed oficial é opcional. Sem domínio cadastrado, a página deve confirmar também o veículo.
+    const verifiable = !!(domain || resolutionText(item.veiculo))
     let decoded
     const decoderMethod = 'google_legado'
     const previousCandidate = publisherURL(context.candidata)
-    if (verifiable && previousCandidate && inDomain(previousCandidate, domain)
+    if (verifiable && previousCandidate && (!domain || inDomain(previousCandidate, domain))
       && context.candidata_metodo === decoderMethod) {
       // Se só a página do veículo falhou, não repete a decodificação já concluída.
       decoded = previousCandidate
@@ -182,19 +232,25 @@ export function createURLResolutionService({ db, env = {}, readPage = downloadRa
       decoded = await guarded('https://news.google.com/articles/resolution', decoderMethod, async () => {
         let blocked
         const value = await resolve(link, {
-          timeoutMs: 5000, persistOriginal: false, onDiagnostic: value => { reason = value },
+          timeoutMs: 5000, persistOriginal: false, onAttempt: attempt, onDiagnostic: value => { reason = value },
           onState: state => { if (state.retomar_em) deferred.push(state.retomar_em); if (state.origem === 'pausa') blocked = state.retomar_em },
         })
         if (blocked) throw Object.assign(new Error('Pausa Google compartilhada.'), { httpStatus: 429, retryAfter: blocked })
         return value
-      }, 60, 100)
+      }, 60, 100, false)
     }
-    if (decoded && publisherURL(decoded) && inDomain(decoded, domain)) {
+    if (decoded && publisherURL(decoded) && (!domain || inDomain(decoded, domain))) {
       if (decoded !== previousCandidate) {
         try { await db.rpc('observatorio_resolucao_candidata', { p_chave: key, p_url: publisherURL(decoded), p_metodo: decoderMethod, p_token: reservationToken }) } catch { /* A confirmação final ainda precisa persistir o resultado. */ }
       }
       const verified = await verifyPage(decoded); if (verified) return resolved(verified, decoderMethod)
     }
+    else if (decoded) reason = 'Destino retornado inválido ou fora do domínio do veículo.'
+    if (!attempted && !deferred.length) return waiting(
+      mode !== 'legacy' && !previousCandidate
+        ? 'Nenhum provedor disponível para este item: decodificação desativada e nenhuma correspondência local. Sem consumir tentativa.'
+        : reason === 'Nenhuma correspondência verificável.' ? 'Nenhuma consulta externa autorizada nesta rodada; aguardando dados ou configuração, sem consumir tentativa.' : reason,
+      'aguardando_configuracao')
     const retry = deferred.filter(value => Number.isFinite(Date.parse(value))).sort((a, b) => Date.parse(a) - Date.parse(b))[0]
     await metric('pendente', 'nao_resolvido', null, Date.now())
     return { url: null, metodo: 'pendente', status: 'pendente', motivo: reason, consultou: attempted, retomar_em: retry || null }

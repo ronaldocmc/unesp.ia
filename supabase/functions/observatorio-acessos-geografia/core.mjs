@@ -1,5 +1,4 @@
 import { isIP } from 'node:net'
-import { municipalityAt } from './ibge.mjs'
 export function publicIP(value) {
   if(typeof value!=='string' || value.length>64 || isIP(value)===0)return null
   const ip=value.toLowerCase()
@@ -70,7 +69,15 @@ export function createGeoHandler({db,env={},fetchImpl=fetch}) {
       const lease=reservation.data;let geo=browser?{metodo:'navegador',latitude:Math.round(browser.latitude*100)/100,longitude:Math.round(browser.longitude*100)/100}:{},pause=0
       if(browser){
         // Falha/ambiguidade na classificação não impede registrar a visita.
-        try{Object.assign(geo,municipalityAt(geo.latitude,geo.longitude)||{})}catch{/* mantém apenas coordenadas aproximadas */}
+        try{
+          const result=await db.rpc('observatorio_municipio_ibge',{p_latitude:geo.latitude,p_longitude:geo.longitude})
+          const place=result.data
+          if(!result.error && place?.pais==='BR' && /^[0-9]{7}$/.test(place.codigo_ibge || '')
+            && place.base_geografica==='IBGE-malhas-2022-simplificada'
+            && typeof place.cidade==='string' && typeof place.regiao==='string'){
+            Object.assign(geo,{pais:'BR',cidade:place.cidade,regiao:place.regiao,codigo_ibge:place.codigo_ibge,base_geografica:place.base_geografica})
+          }
+        }catch{/* mantém apenas coordenadas aproximadas */}
       }
       if(!browser&&lease.consultar){
         try {

@@ -1,6 +1,19 @@
 # Resolução inteligente de URLs — Radar.IA
 
-Implementação local: `20261020-resolucao-inteligente`. Publicar no GitHub não instala a migração nem atualiza a Edge Function. Não foram alterados os horários de coleta diária.
+Versão atual: `20261021-resolucao-simplificada`. Publicar no GitHub não atualiza a Edge Function. Não foram alterados os horários de coleta diária.
+
+## Correção de 21/10: atualização sem novo SQL
+
+Se a migração `202610200002_radar_resolucao_inteligente.sql` já está instalada, esta correção exige apenas atualizar **observatorio-radar** com o `index.web.ts` atual. Não troca tokens, não altera Cron e não exige nova migração. Publique os arquivos do painel apenas para atualizar a identificação da versão nos diagnósticos; o worker não depende disso.
+
+- Feed oficial é opcional, não um pré-requisito para identificar o domínio.
+- Usa a pista `<source url>` do RSS, os feeds oficiais compatíveis e o cadastro ativo `observatorio_veiculos` (`nome`, `url`). O cadastro tem prioridade sobre o fallback embutido, que contém Agência Brasil, OBIA e TSE, conferidos nas páginas oficiais. Não deduz domínios a partir de nomes arbitrários. RSS com source HTTP fornece só uma pista de hostname: nenhum download HTTP é feito.
+- Sem domínio conhecido, o último recurso pode decodificar, mas só confirma o destino se a página pública verificar **veículo explícito, título e data**. Sem confirmar o veículo, mantém o endereço como candidato, não como original.
+- Dados ausentes ou nenhum provedor habilitado produzem motivo específico e espera de seis horas, sem consumir tentativa. Reservas, limites compartilhados, pausas Google e validações de URL continuam ativos.
+- Uma consulta externa sem resultado continua contando tentativa. Espera por cota/pausa ou falta de configuração não conta. Contagens/falhas antigas não são apagadas automaticamente; falhas encerradas podem ser reabertas pela curadoria em **Reprocessar link**.
+- A resposta do worker contém `motivo`, `tentativas` e `retomar_em`, para distinguir falta de dados, data divergente, veículo não confirmado e bloqueio do provedor. HTTP 200 sozinho não significa conversão.
+
+Referências do pequeno fallback de domínios: [Agência Brasil](https://agenciabrasil.ebc.com.br/), [OBIA](https://obia.nic.br/), [TSE](https://www.tse.jus.br/).
 
 ## Mapeamento da arquitetura existente
 
@@ -24,10 +37,10 @@ As migrations anteriores continuam necessárias. A nova migração estende a fil
 2. Reutiliza o vínculo conhecido no cache/fila; procura também resoluções anteriores de outros IDs e matérias publicadas/revisadas no mesmo domínio/data, evitando refazer a conversão para outro ID da mesma matéria.
 3. Consulta o índice dos feeds **explicitamente marcados como oficiais**. A coleta normal indexa os itens que já baixou, sem novo download. O worker pode atualizar até dois feeds compatíveis com o veículo. Google Notícias nunca deve ser marcado como feed oficial de todos os veículos.
 4. Opcionalmente consulta Brave Search, com `site:dominio "título"`, até três resultados. Confere no máximo duas páginas candidatas, sem LLM. Título e data precisam ser confirmados na página, não apenas no resultado da busca ou no caminho da URL.
-5. Só depois tenta o decoder. O destino retornado também precisa passar por validação da página. Sem título, data e domínio verificáveis, a decodificação externa é evitada.
+5. Só depois tenta o decoder. O destino retornado também precisa passar por validação da página. Sem título/data verificáveis, a decodificação externa é evitada. Se não houver domínio conhecido, a página precisa confirmar também o veículo indicado pelo RSS.
 6. Ausência de resultado, bloqueio, ambiguidade ou dados insuficientes preservam a URL RSS e deixam o item pendente. A resolução não publica notícias.
 
-Correspondência exige domínio cadastrado/indicado pelo veículo, data de publicação exata e título normalizado. Aceita igualdade ou similaridade Dice de palavras >= 0,94, com pelo menos seis palavras distintas para correspondências não exatas. Dois destinos diferentes compatíveis são tratados como ambiguidade. Acentos, pontuação e sufixo do veículo são normalizados. Datas inventadas pelo fallback de exibição, `updated` isolado ou data extraída apenas da URL não confirmam uma correspondência. Isso é deliberadamente conservador: algumas matérias legítimas continuarão exigindo revisão.
+Correspondência exige domínio conhecido (ou confirmação explícita do veículo na página decodificada), data de publicação exata e título normalizado. Aceita igualdade ou similaridade Dice de palavras >= 0,94, com pelo menos seis palavras distintas para correspondências não exatas. Dois destinos diferentes compatíveis são tratados como ambiguidade. Acentos, pontuação e sufixo do veículo são normalizados. Datas inventadas pelo fallback de exibição, `updated` isolado ou data extraída apenas da URL não confirmam uma correspondência. Isso é deliberadamente conservador: algumas matérias legítimas continuarão exigindo revisão.
 
 ## Ativação, nesta ordem
 
@@ -75,7 +88,7 @@ As chamadas respeitam a fila e os bloqueios compartilhados, sem proxies, rotaç�
 Os contadores são compartilhados entre processos deste projeto. Etapas que usam a mesma origem compartilham o mesmo contador, mesmo com orçamentos diferentes; prevalece o teto da etapa solicitada. São orçamentos conservadores por operação, **não cotas oficiais publicadas pelo Google**. Uma conversão do decoder pode envolver mais de uma requisição interna. O transporte existente permite até três redirecionamentos públicos revalidados; o orçamento é da origem inicial da operação. A leitura RSS normal mantém seus limites anteriores e lotes de quatro fontes; a tabela acima rege a resolução em segundo plano.
 
 - Reserva por origem: 1 minuto; reserva do item: 2 minutos. Resultado de um lease antigo não finaliza um item reservado novamente. Mesmo ID não gera conversões paralelas na fila.
-- Backoff do item: 1, 2, 4, 8 minutos. Esperas sem acesso não gastam tentativas; rodadas sem evidência/configuração contam para evitar repetição infinita. Execuções interrompidas contam.
+- Backoff do item: 1, 2, 4, 8 minutos para tentativas efetivas. Esperas sem acesso ou falta de dados/configuração não gastam tentativas; essas últimas usam espera de seis horas para evitar repetição a cada minuto. Execuções interrompidas contam. Depois de corrigir os dados ou habilitar um provedor, o item será reavaliado na próxima execução em que estiver pronto.
 - HTTP 403/429/503: bloqueio compartilhado por origem, respeitando Retry-After; padrão 15 minutos e mínimo local de 1 minuto. Não reduz uma espera válida de vários dias indicada pelo provedor. Uma nova resposta de bloqueio pode estender a pausa. A pausa Google também é sincronizada com o controle legado.
 - Índice de RSS: validade de 1 dia, atualização no máximo a cada 15 minutos no resolvedor; mapeamento rápido de URLs: 30 dias. O vínculo durável da fila resolvida é mantido por compatibilidade. O fim de uma pausa não garante desbloqueio do provedor.
 - Um destino já decodificado, mas ainda sem título/data confirmados, fica separado como `url_candidata` por até 30 dias. A próxima rodada verifica a página sem repetir o decoder. Candidata não é exibida como original nem aplicada à notícia antes da confirmação.

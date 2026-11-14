@@ -62,7 +62,7 @@ export function parseFeed(xml, fonte) {
     const veiculo = cleanText(tagValue(block, 'source'), 200)
     const sourceURL = /<source\b[^>]*\burl=["']([^"']+)["']/i.exec(block)?.[1]
     let dominio_veiculo = null
-    try { const source = new URL(decode(sourceURL || '')); if (source.protocol === 'https:' && !source.username && !source.password) dominio_veiculo = source.hostname } catch { /* Pista opcional, nunca autorização para baixar feed arbitrário. */ }
+    try { const source = new URL(decode(sourceURL || '')); if (['https:', 'http:'].includes(source.protocol) && !source.username && !source.password && !source.port) dominio_veiculo = source.hostname } catch { /* Apenas pista de domínio; nunca faz download HTTP nem autoriza feed arbitrário. */ }
     return { link, titulo, resumo, data, data_confirmada: !!publishedDate && Number.isFinite(Date.parse(cleanText(publishedDate, 200))), dominio_veiculo,
       fonte: veiculo && /^https:\/\/news\.google\.com\//i.test(link) ? { ...fonte, origem: veiculo } : fonte }
   }).filter(item => item.link && item.titulo)

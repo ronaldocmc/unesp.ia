@@ -2,6 +2,8 @@
 
 ## Atualização: resolução inteligente de URLs
 
+Correção `20261021-resolucao-simplificada`: com a migração de resolução já instalada, basta redeploy de `observatorio-radar` usando `index.web.ts`. Não exige outro SQL, novo token ou mudança de Cron. Feed oficial é opcional; há recuperação de domínio pelo cadastro de veículos e verificação do veículo na página quando não há domínio conhecido. Falta de configuração/dados não consome tentativa. Veja `RESOLUCAO_SETUP.md`.
+
 Consulte **[RESOLUCAO_SETUP.md](RESOLUCAO_SETUP.md)** para a arquitetura, migração, provedores opcionais e limites. O bundle atual exige também essa atualização no banco para o worker de links; a coleta permanece compatível com o esquema anterior, mas a nova resolução não deve ser ativada antes da migração.
 
 ## Atualização: fila automática de links (20/10/2026)

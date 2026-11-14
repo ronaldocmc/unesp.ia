@@ -1,0 +1,16 @@
+{
+  "total": 5570,
+  "invalidas_apos_reparo": 0,
+  "shapely": "2.1.2",
+  "geos": "3.13.1",
+  "metodo": "make_valid linework; polygonal components only",
+  "sha256_csv": "8b57cefa53c247d1145cddb54550c0773a509b8200144a6d0142e226f3cfcba8",
+  "reparos": [
+    {
+      "codigo_ibge": "1303007",
+      "nome": "Nhamundá",
+      "motivo": "Ring Self-intersection[-59.1923 0.2635]",
+      "area_delta_graus2": 2.220446049250313e-16
+    }
+  ]
+}
